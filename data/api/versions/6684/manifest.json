@@ -1,0 +1,80 @@
+{
+  "client_version": 6684,
+  "latest_run": "20260902T135031Z",
+  "runs_preserved": true,
+  "run_manifest": "data/api/versions/6684/runs/20260902T135031Z/manifest.json",
+  "raw": {
+    "client_versions": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/client-versions",
+      "file": "data/api/versions/6684/raw/client_versions.json",
+      "fetched_at": "2026-09-02T13:50:28Z",
+      "bytes": 4031,
+      "sha256": "b8244d69333dab121c630acba43ad0e0fbec3dfe121ea5d510901654e2ea304d",
+      "unchanged_existing": true
+    },
+    "items": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/items?client_version=6684",
+      "file": "data/api/versions/6684/raw/items.json",
+      "fetched_at": "2026-09-02T13:50:29Z",
+      "bytes": 5771537,
+      "sha256": "75ee1c872303fd753327e56d3daa037171168567f42c7ca55f39d7fe45202474",
+      "unchanged_existing": true
+    },
+    "heroes": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/heroes?client_version=6684",
+      "file": "data/api/versions/6684/raw/heroes.json",
+      "fetched_at": "2026-09-02T13:50:29Z",
+      "bytes": 1420449,
+      "sha256": "8ea4dda5bab4efe5cc98d0ae9a113806dfc523da282048180608a788dd6d4a6e",
+      "unchanged_existing": true
+    },
+    "generic_data": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/generic-data?client_version=6684",
+      "file": "data/api/versions/6684/raw/generic_data.json",
+      "fetched_at": "2026-09-02T13:50:29Z",
+      "bytes": 12667,
+      "sha256": "a5d8d2cbe4a93c727abbaccf3804781e1e918b15f501b2027dd87d7acf0a0009",
+      "unchanged_existing": true
+    },
+    "npc_units": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/npc-units?client_version=6684",
+      "file": "data/api/versions/6684/raw/npc_units.json",
+      "fetched_at": "2026-09-02T13:50:29Z",
+      "bytes": 45802,
+      "sha256": "e84f35a8da6f02f1564b2aab300274fa67b4a47c254e20fab8e197fce50ac2c8",
+      "unchanged_existing": true
+    },
+    "misc_entities": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/misc-entities?client_version=6684",
+      "file": "data/api/versions/6684/raw/misc_entities.json",
+      "fetched_at": "2026-09-02T13:50:30Z",
+      "bytes": 32359,
+      "sha256": "51c6f066cdcdf785753061c75b4d296a5a231cf88816693ecc2f413b287a3093",
+      "unchanged_existing": true
+    },
+    "loot_tables": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/loot-tables?client_version=6684",
+      "file": "data/api/versions/6684/raw/loot_tables.json",
+      "fetched_at": "2026-09-02T13:50:30Z",
+      "bytes": 11317,
+      "sha256": "d513f17ce960953404e5d43c8f2ed384cece4d129890df20a733dcc7b1bb55db",
+      "unchanged_existing": true
+    },
+    "map": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/map?client_version=6684",
+      "file": "data/api/versions/6684/raw/map.json",
+      "fetched_at": "2026-09-02T13:50:30Z",
+      "bytes": 13379,
+      "sha256": "19e3d23339568e3f6ce8a7def80890229a7188a4f3cd9fc3836e5cf7334e06b7",
+      "unchanged_existing": true
+    },
+    "ranked_seasons": {
+      "endpoint": "https://api.deadlock-api.com/v1/assets/ranked-seasons?client_version=6684",
+      "file": "data/api/versions/6684/raw/ranked_seasons.json",
+      "fetched_at": "2026-09-02T13:50:30Z",
+      "bytes": 262,
+      "sha256": "8ee79031f41d7ad8930038588e8fb90c6338675fe95201d00154beb60e5b501d",
+      "unchanged_existing": true
+    }
+  }
+}

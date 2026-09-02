@@ -1,0 +1,82 @@
+{
+  "schema_version": "0.1.0-research",
+  "verified_patch": "Minor Update - 08-22-2026",
+  "level_range": {
+    "min": 0,
+    "max": 35,
+    "source_ids": [
+      "HSRC-0009"
+    ]
+  },
+  "ability_unlocks": {
+    "soul_thresholds": [
+      600,
+      1100,
+      2000,
+      3800
+    ],
+    "boon_levels": [
+      0,
+      2,
+      4,
+      7
+    ],
+    "rule": "The first three unlocks can be assigned to non-ultimate abilities; the ultimate unlocks at 3800 souls / boon 7.",
+    "source_ids": [
+      "HSRC-0008",
+      "HSRC-0009"
+    ]
+  },
+  "ability_points": {
+    "maximum": 32,
+    "upgrade_costs": [
+      1,
+      2,
+      5
+    ],
+    "rule": "Ability points are granted at boon levels that do not grant an ability unlock.",
+    "source_ids": [
+      "HSRC-0008",
+      "HSRC-0009"
+    ]
+  },
+  "maximum_ability_upgrade_level": 3,
+  "stat_growth_reference": "data/heroes/hero_stats.csv:value_per_level",
+  "global_economy_reference": "data/core/economy.json",
+  "item_investment_separated": true,
+  "innate_coverage_status": "complete_for_explicit_Innate_sections_on_the_38_post_patch_hero_pages",
+  "hero_specific_deviations": [],
+  "special_slots": [
+    {
+      "hero_id": "silver",
+      "condition": "Lycan Curse transformation",
+      "ability_slots": [
+        "transformation_1",
+        "transformation_2",
+        "transformation_3"
+      ],
+      "source_ids": [
+        "HSRC-0003",
+        "HSRC-0004"
+      ]
+    }
+  ],
+  "innates": [
+    {
+      "hero_id": "ivy",
+      "ability_id": "ivy_innate"
+    },
+    {
+      "hero_id": "billy",
+      "ability_id": "billy_innate"
+    },
+    {
+      "hero_id": "rem",
+      "ability_id": "rem_innate"
+    },
+    {
+      "hero_id": "celeste",
+      "ability_id": "celeste_innate"
+    }
+  ]
+}

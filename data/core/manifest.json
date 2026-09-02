@@ -1,0 +1,37 @@
+{
+  "data_as_of": "2026-08-22",
+  "patch": "Minor Update - 08-22-2026",
+  "latest_update_verified_first": true,
+  "client_build": null,
+  "mode": "Standard Match (6v6, three lanes)",
+  "item_count": 156,
+  "item_mechanics_count": 836,
+  "upgrade_edge_count": 64,
+  "verified_at": "2026-09-02T09:17:55Z",
+  "research_date": "2026-09-02",
+  "schema_version": "0.1.0-research",
+  "source_ids": [
+    "SRC-0001",
+    "SRC-0003",
+    "SRC-0004",
+    "SRC-0006",
+    "SRC-0020"
+  ],
+  "source_state": {
+    "updates_revision_at": "2026-08-28T21:19:53Z",
+    "latest_patch_revision_at": "2026-08-22T22:56:15Z",
+    "item_data_revision_at": "2026-08-22T21:50:05Z",
+    "language_data_revision_at": "2026-08-22T21:50:07Z",
+    "investment_data_revision_at": "2026-07-28T00:13:35Z",
+    "item_data_patch_sync_check": "passed: Radiant Regeneration=65; Restorative Locket Spirit Resist=8%",
+    "item_effect_exposure_check": "187 non-visible raw fields excluded and preserved as UNC-0014",
+    "later_hotfix_check": "Updates index contains no entry after 2026-08-22 at access time"
+  },
+  "scope_exclusions": [
+    "hero master data",
+    "hero-specific interactions",
+    "build recommendations",
+    "Street Brawl Legendary items",
+    "Street Brawl Enhanced variants"
+  ]
+}

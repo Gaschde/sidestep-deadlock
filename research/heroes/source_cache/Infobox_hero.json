@@ -1,0 +1,171 @@
+{
+	"hero_default": {
+		"bg-image": "Default_select_background.png",
+		"bg-height": "x700px",
+		"logo-height": "x35px"
+	},
+	"hero_astro": {
+		"bg-image": "Holliday_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_atlas": {
+		"bg-image": "Abrams_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_bebop": {
+		"bg-image": "Bebop_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_bookworm": {
+		"bg-image": "Paige_select_background.png",
+		"logo-height": "x49px"
+	},
+	"hero_chrono": {
+		"bg-image": "Paradox_select_background.png",
+		"logo-height": "x28px"
+	},
+	"hero_doorman": {
+		"bg-image": "Doorman_select_background.png",
+		"bg-height": "x550px",
+		"logo-height": "x42px"
+	},
+	"hero_drifter": {
+		"bg-image": "Drifter_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_dynamo": {
+		"bg-image": "Dynamo_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_familiar": {
+		"bg-image": "Rem_select_background.png",
+		"bg-height": "x600px",
+		"logo-height": "x47px"
+	},
+	"hero_fencer": {
+		"bg-image": "Apollo_select_background.png",
+		"logo-height": "x49px"
+	},
+	"hero_forge": {
+		"bg-image": "Mcginnis_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_frank": {
+		"bg-image": "Victor_select_background.png",
+		"logo-height": "x38px"
+	},
+	"hero_ghost": {
+		"bg-image": "Geist_select_background.png",
+		"logo-height": "x32px"
+	},
+	"hero_gigawatt": {
+		"bg-image": "Seven_select_background.png",
+		"logo-height": "x38px"
+	},
+	"hero_haze": {
+		"bg-image": "Haze_select_background.png",
+		"logo-height": "x24px"
+	},
+	"hero_hornet": {
+		"bg-image": "Vindicta_select_background.png",
+		"logo-height": "x34px"
+	},
+	"hero_inferno": {
+		"bg-image": "Infernus_select_background.png",
+		"logo-height": "x36px"
+	},
+	"hero_kelvin": {
+		"bg-image": "Kelvin_select_background.png",
+		"logo-height": "x40px"
+	},
+	"hero_krill": {
+		"bg-image": "Krill_select_background.png",
+		"logo-height": "x40px"
+	},
+	"hero_lash": {
+		"bg-image": "Lash_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_magician": {
+		"bg-image": "Sinclair_select_background.png",
+		"bg-height": "x450px",
+		"logo-height": "x42px"
+	},
+	"hero_mirage": {
+		"bg-image": "Mirage_select_background.png",
+		"logo-height": "x49px"
+	},
+	"hero_nano": {
+		"bg-image": "Calico_select_background.png",
+		"logo-height": "x42px"
+	},
+	"hero_necro": {
+		"bg-image": "Graves_select_background.png",
+		"bg-height": "x600px",
+		"logo-height": "x36px"
+	},
+	"hero_orion": {
+		"bg-image": "Greytalon_select_background.png",
+		"logo-height": "x32px"
+	},
+	"hero_priest": {
+		"bg-image": "Venator_select_background.png",
+		"logo-height": "x40px"
+	},
+	"hero_punkgoat": {
+		"bg-image": "Billy_select_background.png",
+		"logo-height": "x46px"
+	},
+	"hero_shiv": {
+		"bg-image": "Shiv_select_background.png",
+		"logo-height": "x45px"
+	},
+	"hero_synth": {
+		"bg-image": "Pocket_select_background.png",
+		"logo-height": "x45px"
+	},
+	"hero_tengu": {
+		"bg-image": "Ivy_select_background.png",
+		"logo-height": "x45px"
+	},
+	"hero_unicorn": {
+		"bg-image": "Celeste_select_background.png",
+		"logo-height": "x49px"
+	},
+	"hero_vampirebat": {
+		"bg-image": "Mina_select_background.png",
+		"bg-height": "x650px",
+		"logo-height": "x45px"
+	},
+	"hero_viper": {
+		"bg-image": "Vyper_select_background.png",
+		"bg-height": "x650px",
+		"logo-height": "x45px"
+	},
+	"hero_viscous": {
+		"bg-image": "Viscous_select_background.png",
+		"logo-height": "x45px"
+	},
+	"hero_warden": {
+		"bg-image": "Warden_select_background.png",
+		"logo-height": "x30px"
+	},
+	"hero_werewolf": {
+		"bg-image": "Silver_select_background.png",
+		"bg-height": "x325px",
+		"logo-height": "x55px"
+	},
+	"hero_werewolf_transformed": {
+		"bg-image": "Silver_select_background.png",
+		"bg-height": "x325px",
+		"logo-height": "x55px"
+	},
+	"hero_wraith": {
+		"bg-image": "Wraith_select_background.png",
+		"logo-height": "x38px"
+	},
+	"hero_yamato": {
+		"bg-image": "Yamato_select_background.png",
+		"logo-height": "x32px"
+	}
+}

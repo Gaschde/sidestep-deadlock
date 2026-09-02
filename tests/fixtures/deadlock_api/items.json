@@ -1,0 +1,26 @@
+[
+  {
+    "id": 10,
+    "class_name": "upgrade_test_item",
+    "name": "Test Item",
+    "type": "upgrade",
+    "slot_type": "spirit",
+    "tier": 1,
+    "cost": 900,
+    "activation": "Passive",
+    "properties": {
+      "TechPower": 12,
+      "UnknownFutureField": {"value": 7}
+    }
+  },
+  {
+    "id": 11,
+    "class_name": "ability_test_blast",
+    "name": "Test Blast",
+    "type": "ability",
+    "hero_id": 1,
+    "slot": 1,
+    "cooldown": 18,
+    "properties": {"Damage": 50}
+  }
+]

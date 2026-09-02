@@ -1,0 +1,16 @@
+field_pattern,reason,source_id
+camera,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+sound,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+particle,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+visual,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+_fx,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+fx_,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+model_swap,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+preview,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+ai_,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+nav_mesh,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+navmesh,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+physics,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+view_punch,presentation/implementation metadata without a verified gameplay calculation,HSRC-0004
+Role/Playstyle/Type,subjective role/playstyle metadata excluded by scope,HSRC-0003
+unregistered modifier internals,not expanded into gameplay rules without explicit primary evidence,HSRC-0004

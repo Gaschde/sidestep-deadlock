@@ -1,0 +1,97 @@
+{
+  "source_ids": [
+    "SRC-0006",
+    "SRC-0007",
+    "SRC-0009",
+    "SRC-0015"
+  ],
+  "starting_slots": {
+    "universal": 9
+  },
+  "unlocks": [
+    {
+      "slot_index": 10,
+      "slot_type": "extra",
+      "condition": "1 gegnerischen Walker zerstören",
+      "team_wide": true,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0009",
+        "SRC-0015"
+      ]
+    },
+    {
+      "slot_index": 11,
+      "slot_type": "extra",
+      "condition": "2 gegnerische Walker zerstören",
+      "team_wide": true,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0009",
+        "SRC-0015"
+      ]
+    },
+    {
+      "slot_index": 12,
+      "slot_type": "extra",
+      "condition": "3 gegnerische Walker zerstören",
+      "team_wide": true,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0009",
+        "SRC-0015"
+      ]
+    }
+  ],
+  "item_limit": 12,
+  "active_item_limit": 4,
+  "slot_types": [
+    {
+      "slot_type": "universal",
+      "capacity": 9,
+      "allowed_categories": [
+        "Weapon",
+        "Vitality",
+        "Spirit"
+      ],
+      "source_ids": [
+        "SRC-0006"
+      ]
+    },
+    {
+      "slot_type": "extra",
+      "capacity": 3,
+      "allowed_categories": [
+        "Weapon",
+        "Vitality",
+        "Spirit"
+      ],
+      "source_ids": [
+        "SRC-0006",
+        "SRC-0009"
+      ]
+    },
+    {
+      "slot_type": "active_key",
+      "capacity": 4,
+      "is_additional_binding": true,
+      "source_ids": [
+        "SRC-0006",
+        "SRC-0007"
+      ]
+    }
+  ],
+  "upgrade_behavior": [
+    {
+      "rule_id": "SLOT-UPG-001",
+      "rule": "Die Wiki dokumentiert den Komponentenrabatt, aber keinen belastbaren separaten temporären Slotbedarf während des Upgrades.",
+      "temporary_slot_requirement": null,
+      "confidence": "low",
+      "source_ids": [
+        "SRC-0006",
+        "SRC-0007"
+      ],
+      "uncertainty_id": "UNC-0004"
+    }
+  ]
+}

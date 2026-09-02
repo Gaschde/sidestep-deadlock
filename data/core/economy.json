@@ -1,0 +1,375 @@
+{
+  "source_ids": [
+    "SRC-0006",
+    "SRC-0007",
+    "SRC-0008"
+  ],
+  "tier_prices": {
+    "1": 800,
+    "2": 1600,
+    "3": 3200,
+    "4": 6400
+  },
+  "sellback": {
+    "rate": 0.5,
+    "basis": "tatsächlich bezahlte Anschaffungskosten",
+    "confidence": "high",
+    "source_ids": [
+      "SRC-0006",
+      "SRC-0007"
+    ]
+  },
+  "refund": {
+    "rate": 1.0,
+    "eligibility": "unmittelbare Rückgabe im Kaufzustand; die Wiki-Seiten unterscheiden sich bei Shopfenster versus Shopbereich",
+    "confidence": "medium",
+    "source_ids": [
+      "SRC-0006",
+      "SRC-0007"
+    ],
+    "uncertainty_id": "UNC-0003"
+  },
+  "investments": {
+    "basis": "Summe der total_cost-Werte aktuell besessener Items je Kategorie",
+    "maximum_counted_investment": 28800,
+    "category_rewards": {
+      "weapon": "weapon_damage_percent",
+      "vitality": "max_health_percent",
+      "spirit": "spirit_power"
+    },
+    "item_stats_are_separate": true,
+    "confidence": "high",
+    "source_ids": [
+      "SRC-0006",
+      "SRC-0008"
+    ]
+  },
+  "investment_thresholds": [
+    {
+      "category_investment": 800,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 9,
+          "cumulative_bonus": 9,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 9,
+          "cumulative_bonus": 9,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 7,
+          "cumulative_bonus": 7,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 1600,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 3,
+          "cumulative_bonus": 12,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 3,
+          "cumulative_bonus": 12,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 11,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 2400,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 3,
+          "cumulative_bonus": 15,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 3,
+          "cumulative_bonus": 15,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 15,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 3200,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 3,
+          "cumulative_bonus": 18,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 5,
+          "cumulative_bonus": 20,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 19,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 4800,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 28,
+          "cumulative_bonus": 46,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 18,
+          "cumulative_bonus": 38,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 19,
+          "cumulative_bonus": 38,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": true,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 6400,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 8,
+          "cumulative_bonus": 54,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 42,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 7,
+          "cumulative_bonus": 45,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 8000,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 8,
+          "cumulative_bonus": 62,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 46,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 7,
+          "cumulative_bonus": 52,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 11200,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 12,
+          "cumulative_bonus": 74,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 50,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 7,
+          "cumulative_bonus": 59,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 16000,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 12,
+          "cumulative_bonus": 86,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 4,
+          "cumulative_bonus": 54,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 7,
+          "cumulative_bonus": 66,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 22400,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 14,
+          "cumulative_bonus": 100,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 6,
+          "cumulative_bonus": 60,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 9,
+          "cumulative_bonus": 75,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    },
+    {
+      "category_investment": 28800,
+      "bonuses": {
+        "weapon": {
+          "incremental_bonus": 15,
+          "cumulative_bonus": 115,
+          "unit": "percent"
+        },
+        "vitality": {
+          "incremental_bonus": 6,
+          "cumulative_bonus": 66,
+          "unit": "percent"
+        },
+        "spirit": {
+          "incremental_bonus": 25,
+          "cumulative_bonus": 100,
+          "unit": "spirit_power"
+        }
+      },
+      "is_major_spike": false,
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0008",
+        "SRC-0006"
+      ]
+    }
+  ],
+  "component_cost_handling": {
+    "raw_item_cost_field": "items.total_cost",
+    "upgrade_payment": "to_total_cost minus value of owned component(s)",
+    "category_investment_after_upgrade": "total_cost des besessenen Ziel-Items; nicht die isolierte Kassenzahlung",
+    "confidence": "high",
+    "source_ids": [
+      "SRC-0006",
+      "SRC-0007"
+    ]
+  },
+  "upgrade_cost_rules": [
+    {
+      "rule_id": "ECO-UPG-001",
+      "rule": "Eine vorhandene Komponente reduziert die Zahlung für das Ziel-Item um ihren Preis.",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0006",
+        "SRC-0007"
+      ]
+    },
+    {
+      "rule_id": "ECO-UPG-002",
+      "rule": "Wenn eine Komponente in mehrere Items ausgebaut werden kann, wird ihr Rabatt nur beim zuerst gekauften Upgrade genutzt.",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0006"
+      ]
+    }
+  ],
+  "special_rules": [
+    {
+      "rule_id": "ECO-SPEC-001",
+      "rule": "Aktive Items belegen zusätzlich einen von vier Active-Key-Slots; höchstens vier aktive Items können gleichzeitig gehalten werden.",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0006",
+        "SRC-0007"
+      ]
+    }
+  ]
+}

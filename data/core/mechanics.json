@@ -1,0 +1,849 @@
+{
+  "damage_rules": [
+    {
+      "rule_id": "DMG-001",
+      "mechanic": "weapon_damage",
+      "statement": "Weapon Damage bestimmt Bullet Damage und erhöht Melee Damage; manche Fähigkeiten verursachen ebenfalls Weapon Damage.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0021"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-002",
+      "mechanic": "weapon_damage_formula",
+      "statement": "Flat Weapon Damage wird nach dem prozentualen Weapon-Multiplikator addiert und danach von Falloff, Resistenzen und Crit beeinflusst.",
+      "formula": "final_damage=((base_damage*weapon_multiplier)+flat_bonus)*falloff*resistance_multipliers*crit_multiplier",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0021"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-003",
+      "mechanic": "melee_weapon_scaling",
+      "statement": "Melee Damage ist Weapon Damage und profitiert zu 50 % von Weapon-Damage-Boni.",
+      "formula": "melee_bonus_from_weapon_damage=weapon_damage_bonus*0.5",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0021",
+        "SRC-0023"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-004",
+      "mechanic": "spirit_damage",
+      "statement": "Spirit Damage wird durch Spirit Power und den jeweiligen Spirit-Scaling-Koeffizienten beeinflusst.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0022"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-005",
+      "mechanic": "pure_damage",
+      "statement": "Pure Damage ist weder Spirit-, Weapon- noch Melee-Damage und wird weder durch Damage Resistance noch durch Barriers reduziert; Invincibility kann ihn blockieren.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0041"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-006",
+      "mechanic": "damage_falloff",
+      "statement": "Weapon-Falloff reduziert Schaden über die Distanz linear von 100 % bis 10 % innerhalb der hero-spezifischen Falloff-Spanne.",
+      "formula": "",
+      "scope": "global_formula_only",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0021"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DMG-007",
+      "mechanic": "weakpoint_multiplier",
+      "statement": "Troopers, Lane Guardians und Heroes besitzen Weakpoints mit 1,65-fachem Bullet Damage; Ausnahmen sind hero-spezifisch und nicht Bestandteil dieses Core-Datensatzes.",
+      "formula": "weakpoint_damage=bullet_damage*1.65",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0021"
+      ],
+      "notes": ""
+    }
+  ],
+  "resistance_rules": [
+    {
+      "rule_id": "RES-001",
+      "mechanic": "resistance_types",
+      "statement": "Bullet Resist reduziert Weapon- und Melee-Damage; Melee Resist reduziert zusätzlich nur Melee-Damage; Spirit Resist reduziert Spirit Damage.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0024"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RES-002",
+      "mechanic": "resistance_stacking",
+      "statement": "Mehrere Quellen derselben Resistenz stapeln multiplikativ.",
+      "formula": "total_resist=1-product(1-R_i)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0024"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RES-003",
+      "mechanic": "resistance_reduction",
+      "statement": "Resistance Reduction (Shred) wird zuerst separat multiplikativ zusammengeführt und anschließend von der Gesamtresistenz abgezogen.",
+      "formula": "total_reduction=1-product(1-S_i); final_resist=total_resist-total_reduction",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0024"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RES-004",
+      "mechanic": "negative_resistance",
+      "statement": "Negative Endresistenz verstärkt eingehenden Schaden: -30 % Resistenz bedeutet 130 % eingehenden Schaden.",
+      "formula": "damage_multiplier=1-final_resist",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0024"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RES-005",
+      "mechanic": "reduction_vs_penetration",
+      "statement": "Die aktuelle Wiki-Mechanik dokumentiert Resistance Reduction/Shred als von Penetration getrennten Rechenschritt; ein allgemeiner, aktueller Penetrationswert ist nicht als globale Stat-Regel dokumentiert.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "medium",
+      "source_ids": [
+        "SRC-0024",
+        "SRC-0041"
+      ],
+      "notes": ""
+    }
+  ],
+  "lifesteal_rules": [
+    {
+      "rule_id": "LFS-001",
+      "mechanic": "lifesteal_stacking",
+      "statement": "Mehrere Quellen desselben Lifesteal-Typs stapeln multiplikativ; Bullet und Spirit Lifesteal werden getrennt berechnet.",
+      "formula": "total_lifesteal=1-product(1-L_i)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0025"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "LFS-002",
+      "mechanic": "bullet_lifesteal_nonhero",
+      "statement": "Bullet Lifesteal wirkt gegen Creeps/Nicht-Hero-Einheiten mit 60 % Effektivität.",
+      "formula": "nonhero_bullet_lifesteal=hero_effect*0.60",
+      "scope": "nonhero",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0025"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "LFS-003",
+      "mechanic": "spirit_lifesteal_nonhero",
+      "statement": "Spirit Lifesteal wirkt gegen Creeps/Nicht-Hero-Einheiten mit 40 % Effektivität.",
+      "formula": "nonhero_spirit_lifesteal=hero_effect*0.40",
+      "scope": "nonhero",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0025"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "LFS-004",
+      "mechanic": "melee_item_heal",
+      "statement": "Die Items Melee Lifesteal und Lifestrike sind cooldown-gesteuerte Heileffekte pro Melee-Treffer und nicht identisch mit permanent aktivem Lifesteal.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0025"
+      ],
+      "notes": ""
+    }
+  ],
+  "healing_rules": [
+    {
+      "rule_id": "HEAL-001",
+      "mechanic": "healing_amp",
+      "statement": "Healing Amp erhöht vom Heiler verursachte Selbst- und Verbündetenheilung, einschließlich Heal-over-Time von Items/Fähigkeiten.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0026"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "HEAL-002",
+      "mechanic": "healing_reduction_stacking",
+      "statement": "Verschiedene Healing-Reduction-Quellen stapeln multiplikativ; dieselbe Quelle wird während ihrer Laufzeit nur einmal angewendet.",
+      "formula": "total_heal_reduction=1-product(1-R_i)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0026"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "HEAL-003",
+      "mechanic": "final_healing",
+      "statement": "Healing Reduction wird vor Healing Amp angewendet.",
+      "formula": "final_healing=initial_healing*(1-total_reduction)*(1+healing_amp)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0026"
+      ],
+      "notes": ""
+    }
+  ],
+  "cooldown_rules": [
+    {
+      "rule_id": "CD-001",
+      "mechanic": "ability_cooldown",
+      "statement": "Ability Cooldown ist die Zeit bis eine Fähigkeit wieder nutzbar ist.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0027"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CD-002",
+      "mechanic": "cooldown_reduction_stacking",
+      "statement": "Mehrere Cooldown-Reduction-Quellen stapeln multiplikativ.",
+      "formula": "total_cdr=1-product(1-CDR_i)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0027"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CD-003",
+      "mechanic": "item_vs_ability_cooldown",
+      "statement": "Item Cooldown gilt für aktive und passive Items und ist von Ability Cooldown getrennt; Item Cooldown Reduction wirkt auf Item Cooldowns.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0027"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CD-004",
+      "mechanic": "charge_delay",
+      "statement": "Bei Charged Abilities ist der Wiederherstellungs-Cooldown einer Charge von der kürzeren Verzögerung zwischen zwei Einsätzen zu unterscheiden; diese Verzögerung wird nicht durch Cooldown Reduction beeinflusst.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0027",
+        "SRC-0029"
+      ],
+      "notes": ""
+    }
+  ],
+  "charge_up_rules": [
+    {
+      "rule_id": "CUP-001",
+      "mechanic": "charge_up",
+      "statement": "Charge-up-Items können vor voller Aufladung ausgelöst werden; ihre Effektstärke entspricht grundsätzlich dem erreichten Ladeanteil.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0028"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CUP-002",
+      "mechanic": "charge_up_vs_cooldown",
+      "statement": "Charge-up-Zeit wird nicht durch Cooldown Reduction beeinflusst und ist keine Cooldown-Zeit.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0028",
+        "SRC-0027"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CUP-003",
+      "mechanic": "charge_up_nonhero",
+      "statement": "Tankbuster kann an Nicht-Spieler-Einheiten auslösen, verbraucht dort laut Wiki aber keinen Charge-up-Fortschritt.",
+      "formula": "",
+      "scope": "nonhero",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0028"
+      ],
+      "notes": ""
+    }
+  ],
+  "ability_charge_rules": [
+    {
+      "rule_id": "CHG-001",
+      "mechanic": "ability_charges",
+      "statement": "Eine Nutzung verbraucht eine Charge; fehlt eine Charge, ist die Fähigkeit bis zur Wiederherstellung nicht nutzbar.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0029"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CHG-002",
+      "mechanic": "charge_restoration",
+      "statement": "Charges werden grundsätzlich einzeln wiederhergestellt; der Ability Cooldown entspricht der Wiederherstellungszeit einer Charge.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0029"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "CHG-003",
+      "mechanic": "bonus_ability_charges",
+      "statement": "Bonus Ability Charges erhöhen nur Fähigkeiten, die bereits Charges verwenden.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0029"
+      ],
+      "notes": ""
+    }
+  ],
+  "duration_rules": [
+    {
+      "rule_id": "DUR-001",
+      "mechanic": "ability_duration",
+      "statement": "Ability Duration bestimmt, wie lange Effekte von Fähigkeiten und Items anhalten.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0030"
+      ],
+      "notes": ""
+    }
+  ],
+  "range_rules": [
+    {
+      "rule_id": "RNG-001",
+      "mechanic": "ability_range",
+      "statement": "Ability Range beeinflusst effektive Distanz und Cast Range und wird in Metern angegeben; Boni sind prozentual.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0031"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RNG-002",
+      "mechanic": "range_stacking",
+      "statement": "Mehrere Ability-Range-Quellen stapeln laut Wiki multiplikativ.",
+      "formula": "total_range_bonus=1-product(1-R_i)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0031"
+      ],
+      "notes": ""
+    }
+  ],
+  "movement_rules": [
+    {
+      "rule_id": "MOV-001",
+      "mechanic": "distance_units",
+      "statement": "Distanzen und Geschwindigkeiten werden als Meter beziehungsweise Meter pro Sekunde dargestellt; 1 Hammer Unit entspricht ungefähr 0,0254 m.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0032"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-002",
+      "mechanic": "sprint",
+      "statement": "Sprint beginnt automatisch nach fünf Sekunden außerhalb des Kampfes und endet bei Kampfeintritt oder Zoom; hero-spezifische Basiswerte sind ausgeschlossen.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0032"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-003",
+      "mechanic": "dash_jump_cost",
+      "statement": "Ein Dash kostet 1 Stamina; der anschließende Dash Jump kostet eine weitere Stamina, insgesamt 2.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0020",
+        "SRC-0032",
+        "SRC-0033"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-004",
+      "mechanic": "down_dash_cost",
+      "statement": "Ein Down Dash kostet 0,5 Stamina.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0020",
+        "SRC-0032",
+        "SRC-0033"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-005",
+      "mechanic": "wall_jump_cost",
+      "statement": "Der erste Wall Jump kostet keine Stamina; weitere Wall Jumps vor dem Landen kosten je 0,5 Stamina.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0020",
+        "SRC-0032",
+        "SRC-0033"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-006",
+      "mechanic": "slide_ammo",
+      "statement": "Während eines Slides steht unendliche Munition zur Verfügung.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0020",
+        "SRC-0033",
+        "SRC-0035"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "MOV-007",
+      "mechanic": "slide_threshold",
+      "statement": "Die aktuellen Wiki-Seiten nennen widersprüchliche Slide-Schwellen (8,9 m/s und 9,6 m/s); kein Einzelwert wird als kanonisch übernommen.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "low",
+      "source_ids": [
+        "SRC-0020",
+        "SRC-0032"
+      ],
+      "notes": "Siehe UNC-0011."
+    }
+  ],
+  "stamina_rules": [
+    {
+      "rule_id": "STA-001",
+      "mechanic": "stamina_actions",
+      "statement": "Stamina wird für Ground Dash, Air Dash, Air Jump und weitere Bewegungsaktionen verbraucht; Basiszahl und Regenerationszeit sind hero-spezifisch.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0033"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "STA-002",
+      "mechanic": "stamina_ui_limit",
+      "statement": "Die Anzeige unter dem Fadenkreuz zeigt höchstens 8 Stamina-Balken; darüberliegende Stamina bleibt unsichtbar.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0033"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "STA-003",
+      "mechanic": "wall_jump_regen_penalty",
+      "statement": "Ein Wall Jump im Kampf reduziert die Stamina-Regeneration für 5 Sekunden um 25 %.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0033"
+      ],
+      "notes": ""
+    }
+  ],
+  "fire_rate_rules": [
+    {
+      "rule_id": "FR-001",
+      "mechanic": "fire_rate_definition",
+      "statement": "Fire Rate ist Munition pro Sekunde; ihre Umkehrung ist die Gun Cycle Time in Sekunden pro Schuss.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0034"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "FR-002",
+      "mechanic": "fire_rate_modifier",
+      "statement": "Positive Fire-Rate-Boni addieren sich; Slows werden multiplikativ zusammengeführt und anschließend gegengerechnet.",
+      "formula": "modifier=sum(bonuses)-(1-product(1-slow_i))",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0034"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "FR-003",
+      "mechanic": "positive_fire_rate",
+      "statement": "Bei positivem Gesamtmodifikator wird Fire Rate direkt multipliziert.",
+      "formula": "final_fire_rate=base_fire_rate*(1+modifier)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0034"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "FR-004",
+      "mechanic": "negative_fire_rate",
+      "statement": "Bei negativem Gesamtmodifikator wird die Gun Cycle Time verlängert; der Modifikator ist bei -50 % gedeckelt.",
+      "formula": "final_fire_rate=base_fire_rate/(1+abs(modifier)); modifier>=-0.50",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0034"
+      ],
+      "notes": ""
+    }
+  ],
+  "ammo_reload_rules": [
+    {
+      "rule_id": "AMMO-001",
+      "mechanic": "ammo_formula",
+      "statement": "Flache Ammo-Boni werden zuerst auf Basis-Ammo addiert; Prozentboni addieren sich und das Ergebnis wird auf die nächste ganze Zahl aufgerundet.",
+      "formula": "final_ammo=ceil((base_ammo+flat_bonuses)*(1+sum(percent_bonuses)))",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0035"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "AMMO-002",
+      "mechanic": "burst_ammo",
+      "statement": "Bei Burst-Waffen verbraucht die pro Eingabe abgefeuerte Kugelzahl dieselbe Anzahl Ammo.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0035"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "AMMO-003",
+      "mechanic": "alternate_fire_low_ammo",
+      "statement": "Alternate Fire kann auch mit nur einer verbleibenden Runde genutzt werden, obwohl sie regulär mehrere Ammo verbraucht.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0035"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RLD-001",
+      "mechanic": "reload_interrupt",
+      "statement": "Melee und Dashing unterbrechen den Reload bis zum Ende der Animation; hero-spezifische Ausnahmen sind nicht im Core abgebildet.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0036"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "RLD-002",
+      "mechanic": "reload_types",
+      "statement": "Es gibt vollständigen Magazin-Reload und Single-Reload pro Projektil; Basiszeiten sind hero-spezifisch.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0036"
+      ],
+      "notes": ""
+    }
+  ],
+  "targeting_rules": [
+    {
+      "rule_id": "TGT-001",
+      "mechanic": "item_target_types",
+      "statement": "Item-Zielklassen werden in ItemData über TargetTypes kodiert; item_mechanics.csv bewahrt diese Enumerationen pro Effekt.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0004"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "TGT-002",
+      "mechanic": "hero_nonhero_objective",
+      "statement": "Hero-, Nicht-Hero- und Objective-Ziele dürfen nicht gleichgesetzt werden; fehlende Objective-Freigaben werden nicht aus AllEnemy oder NPC-Begriffen geraten.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "medium",
+      "source_ids": [
+        "SRC-0004",
+        "SRC-0042"
+      ],
+      "notes": ""
+    }
+  ],
+  "debuff_rules": [
+    {
+      "rule_id": "DEB-001",
+      "mechanic": "status_effects",
+      "statement": "Buffs sind positive und Debuffs negative Status Effects mit dokumentierter Dauer oder expliziter Entfernung.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0037"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "DEB-002",
+      "mechanic": "debuff_resist",
+      "statement": "Debuff Resist verkürzt die Dauer negativer Effekte proportional; Ausnahmen müssen effektbezogen dokumentiert werden.",
+      "formula": "final_duration=base_duration*(1-debuff_resist)",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0037"
+      ],
+      "notes": ""
+    }
+  ],
+  "stacking_rules": [
+    {
+      "rule_id": "STK-001",
+      "mechanic": "stack",
+      "statement": "Stacks sind diskrete Inkremente eines skalierenden Effekts; temporäre Stacks verschwinden meist gemeinsam nach Ablauf ihrer Dauer.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0038"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "STK-002",
+      "mechanic": "stack_vs_build_up",
+      "statement": "Stacks skalieren einen laufenden Effekt; Build-up ist dagegen ein Prozentmeter, das bei 100 % einen einzelnen Effekt auslöst.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0038",
+        "SRC-0039"
+      ],
+      "notes": ""
+    }
+  ],
+  "summon_rules": [
+    {
+      "rule_id": "SUM-001",
+      "mechanic": "hero_created_units",
+      "statement": "Hero-erzeugte Einheiten sind eine eigene Untergruppe von Units/NPCs; hero-spezifische Summon-Daten bleiben außerhalb von data/core/.",
+      "formula": "",
+      "scope": "nonhero",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0042"
+      ],
+      "notes": ""
+    }
+  ],
+  "nonhero_rules": [
+    {
+      "rule_id": "NPH-001",
+      "mechanic": "unit_classes",
+      "statement": "Units/NPCs umfassen Structures/Objectives, respawnende Creeps und Hero-erzeugte Einheiten.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0042"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "NPH-002",
+      "mechanic": "structure_respawn",
+      "statement": "Guardians, Walkers, Shrines und Patrons sind Structures/Objectives und respawnen nicht.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0042"
+      ],
+      "notes": ""
+    }
+  ],
+  "proc_rules": [
+    {
+      "rule_id": "PRC-001",
+      "mechanic": "build_up_threshold",
+      "statement": "Build-up sammelt durch Bullet- oder zulässige Melee-Treffer Prozentfortschritt; bei 100 % löst der Status aus.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0039"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "PRC-002",
+      "mechanic": "build_up_falloff",
+      "statement": "Build-up pro Schuss wird durch Damage Falloff bis auf 10 % des Basiswerts am maximalen Falloff reduziert.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0039"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "PRC-003",
+      "mechanic": "item_build_up_decay",
+      "statement": "Item-Build-up beginnt nach 2 Sekunden ohne neue Anwendung zu verfallen und verliert 20 % pro Sekunde.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0039"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "PRC-004",
+      "mechanic": "return_fire_proc",
+      "statement": "Return Fire baut laut Wiki keine Build-up-Effekte gegen den Angreifer auf.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0039"
+      ],
+      "notes": ""
+    }
+  ],
+  "damage_amplification_rules": [
+    {
+      "rule_id": "AMP-001",
+      "mechanic": "damage_amp_classes",
+      "statement": "Damage Amplification wird in additive, multiplikative, Instanz- und einzigartige Verstärkerklassen getrennt; die Klassen dürfen nicht pauschal gleich gestapelt werden.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0040"
+      ],
+      "notes": ""
+    },
+    {
+      "rule_id": "AMP-002",
+      "mechanic": "damage_reduction_live_behavior",
+      "statement": "Die Wiki dokumentiert, dass Standard-Damage-Reduction im getesteten Client aktuell als negative additive Verstärkung wirkt, obwohl Valve multiplikatives Verhalten beabsichtigt hat.",
+      "formula": "",
+      "scope": "global",
+      "confidence": "low",
+      "source_ids": [
+        "SRC-0040"
+      ],
+      "notes": "Client-Test-abhängig; siehe UNC-0010."
+    }
+  ]
+}

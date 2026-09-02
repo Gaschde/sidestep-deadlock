@@ -1,0 +1,16 @@
+source_id,title,revision_or_published_at,sync_status,used_for
+HSRC-0001,Updates,2026-08-28T21:19:53Z,current_index,No update entry after 2026-08-22 at access time.
+HSRC-0002,Minor Update - 08-22-2026,2026-08-22T22:56:15Z,latest_patch_verified,Revision 114029.
+HSRC-0003,Data:HeroData.json,2026-08-12T23:07:18Z,post_aug12_pre_aug22; no Aug22 base-stat changes,Revision 108817; 60 structured hero records.
+HSRC-0004,Data:AbilityData.json,2026-08-22T21:50:03Z,same_day_as_latest_patch; Celeste values cross-checked,Revision 114011.
+HSRC-0005,Data:Lang en.json,2026-08-22T21:50:07Z,same_export_batch_as_ability_data,Revision 114015.
+HSRC-0006,Data:HeroMeaningfulStats.json,2026-07-06T22:39:49Z,field-selection metadata; not a value source,Revision 88916.
+HSRC-0007,Heroes,2026-08-25T18:58:50Z,post_patch_public_roster,Revision 114815; explicitly lists 38 available heroes.
+HSRC-0008,Abilities,2026-08-14T17:03:08Z,current_rules; dynamic tables may lag,"Revision 108904; unlocks, upgrade costs, charges, scaling distinctions."
+HSRC-0009,Boon,2026-07-23T01:57:01Z,current_global_progression_rules,Revision 98787.
+HSRC-0010,Hero Comparison Table,2026-07-27T22:49:14Z,pre_latest_patch; corroborative_only,Revision 103886; not used to override structured values.
+HSRC-0011,Minor Update - 08-12-2026,2026-08-12,included_for_hero_data_sync_check,Revision 114025.
+HSRC-0012,Ivy,2026-08-31T19:31:08Z,post_patch,Revision 124889; explicit Innate section.
+HSRC-0013,Billy,2026-09-02T00:44:18Z,post_patch,Revision 125748; explicit Innate section.
+HSRC-0014,Rem,2026-09-01T00:05:57Z,post_patch,Revision 124942; explicit Innate section.
+HSRC-0015,Celeste,2026-09-01T03:35:30Z,post_patch,Revision 125568; explicit Innate section.

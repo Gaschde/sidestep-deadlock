@@ -1,0 +1,873 @@
+[
+  {
+    "from_item_id": "upgrade_non_player_bonus",
+    "to_item_id": "upgrade_non_player_bonus_sacrifice",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_chain_lightning",
+    "to_item_id": "upgrade_capacitor",
+    "from_cost": 3200,
+    "to_total_cost": 6400,
+    "additional_cost": 3200,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_high_velocity_mag",
+    "to_item_id": "upgrade_pristine_emblem",
+    "from_cost": "",
+    "to_total_cost": 1600,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_slowing_bullets",
+    "to_item_id": "upgrade_weighted_shots",
+    "from_cost": "",
+    "to_total_cost": 3200,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_long_range",
+    "to_item_id": "upgrade_sharpshooter",
+    "from_cost": 1600,
+    "to_total_cost": 3200,
+    "additional_cost": 1600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_high_velocity_mag",
+    "to_item_id": "upgrade_sharpshooter",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_headshot_booster",
+    "to_item_id": "upgrade_headhunter",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_tech_defense_shredders",
+    "to_item_id": "upgrade_spellslinger_headshots",
+    "from_cost": 1600,
+    "to_total_cost": 3200,
+    "additional_cost": 1600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_headshot_booster2",
+    "to_item_id": "upgrade_banshee_slugs",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_close_range",
+    "to_item_id": "upgrade_close_quarter_combat",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_ricochet",
+    "to_item_id": "upgrade_apex_combat",
+    "from_cost": 6400,
+    "to_total_cost": 9999,
+    "additional_cost": 3599,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_endurance",
+    "to_item_id": "upgrade_healing_booster",
+    "from_cost": "",
+    "to_total_cost": 1600,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health",
+    "to_item_id": "upgrade_chonky",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_vampire",
+    "to_item_id": "upgrade_damage_recycler",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health_stealing_magic",
+    "to_item_id": "upgrade_damage_recycler",
+    "from_cost": "",
+    "to_total_cost": 6400,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_sprint_booster",
+    "to_item_id": "upgrade_trophy_collector",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_sprint_booster",
+    "to_item_id": "upgrade_cardio_calibrator",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_improved_stamina",
+    "to_item_id": "upgrade_superior_stamina",
+    "from_cost": "",
+    "to_total_cost": 3200,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_superior_stamina",
+    "to_item_id": "upgrade_aerial_supremacy",
+    "from_cost": 3200,
+    "to_total_cost": 9999,
+    "additional_cost": 6799,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_grit",
+    "to_item_id": "upgrade_weapon_shielding",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_grit",
+    "to_item_id": "upgrade_spirit_bubble",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_improved_spirit",
+    "to_item_id": "upgrade_soaring_spirit",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health_stealing_magic",
+    "to_item_id": "upgrade_tech_overflow",
+    "from_cost": "",
+    "to_total_cost": 6400,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_reach",
+    "to_item_id": "upgrade_tech_range",
+    "from_cost": "",
+    "to_total_cost": 3200,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_burst",
+    "to_item_id": "upgrade_magic_shock",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_vulnerability",
+    "to_item_id": "upgrade_escalating_exposure",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_extra_charge",
+    "to_item_id": "upgrade_rapid_recharge",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_tempo",
+    "to_item_id": "upgrade_cooldown_reduction",
+    "from_cost": 1600,
+    "to_total_cost": 3200,
+    "additional_cost": 1600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_cooldown_reduction",
+    "to_item_id": "upgrade_transcendent_cooldown",
+    "from_cost": 3200,
+    "to_total_cost": 6400,
+    "additional_cost": 3200,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_transcendent_cooldown",
+    "to_item_id": "upgrade_timeless_emblem",
+    "from_cost": 6400,
+    "to_total_cost": 9999,
+    "additional_cost": 3599,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_spirit_sap",
+    "to_item_id": "upgrade_focus_lens",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_withering_whip",
+    "to_item_id": "upgrade_greater_withering_whip",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health_stimpak",
+    "to_item_id": "upgrade_rescue_beam",
+    "from_cost": "",
+    "to_total_cost": 3200,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_containment",
+    "to_item_id": "upgrade_aoe_root",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health_stimpak",
+    "to_item_id": "upgrade_health_nova",
+    "from_cost": "",
+    "to_total_cost": 3200,
+    "additional_cost": "",
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health_stealing_magic",
+    "to_item_id": "upgrade_infuser",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_grit",
+    "to_item_id": "upgrade_guardian_ward",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_guardian_ward",
+    "to_item_id": "upgrade_divine_barrier",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_improved_stamina",
+    "to_item_id": "upgrade_kinetic_sash",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_improved_stamina",
+    "to_item_id": "upgrade_arcane_surge",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_debuff_reducer",
+    "to_item_id": "upgrade_unstoppable",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_health",
+    "to_item_id": "upgrade_colossus",
+    "from_cost": 800,
+    "to_total_cost": 6400,
+    "additional_cost": 5600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_cold_front",
+    "to_item_id": "upgrade_arctic_blast",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_arcane_extension",
+    "to_item_id": "upgrade_imbued_duration_extender",
+    "from_cost": 1600,
+    "to_total_cost": 3200,
+    "additional_cost": 1600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_vampire",
+    "to_item_id": "upgrade_fury_trance",
+    "from_cost": 1600,
+    "to_total_cost": 3200,
+    "additional_cost": 1600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_vampire",
+    "to_item_id": "upgrade_surging_power",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_lifestrike_gauntlets",
+    "to_item_id": "upgrade_boxing_glove",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_acolytes_glove",
+    "to_item_id": "upgrade_spirit_snatch",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_melee_charge",
+    "to_item_id": "upgrade_crushing_fists",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_mystic_regeneration",
+    "to_item_id": "upgrade_resonant_healing",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_soaring_spirit",
+    "to_item_id": "upgrade_boundless_spirit",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_rapid_rounds",
+    "to_item_id": "upgrade_burst_fire",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_improved_spirit",
+    "to_item_id": "upgrade_magic_storm",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_quick_silver",
+    "to_item_id": "upgrade_ethereal_bullets",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_clip_size",
+    "to_item_id": "upgrade_reinforcing_casings",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_rapid_rounds",
+    "to_item_id": "upgrade_blitz_bullets",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_sprint_booster",
+    "to_item_id": "upgrade_veil_walker",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_grit",
+    "to_item_id": "upgrade_vex_barrier",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_vex_barrier",
+    "to_item_id": "upgrade_auto_cleanse",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_clip_size",
+    "to_item_id": "upgrade_titan_round",
+    "from_cost": 800,
+    "to_total_cost": 1600,
+    "additional_cost": 800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_slow",
+    "to_item_id": "upgrade_ultimate_burst",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_healing_booster",
+    "to_item_id": "upgrade_healbuff",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_high_velocity_mag",
+    "to_item_id": "upgrade_aprounds",
+    "from_cost": 800,
+    "to_total_cost": 6400,
+    "additional_cost": 5600,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_debuff_reducer",
+    "to_item_id": "upgrade_spellbreaker",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_cardio_calibrator",
+    "to_item_id": "upgrade_juggernaut",
+    "from_cost": 1600,
+    "to_total_cost": 6400,
+    "additional_cost": 4800,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_high_velocity_mag",
+    "to_item_id": "upgrade_express_shot",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  },
+  {
+    "from_item_id": "upgrade_magic_reach",
+    "to_item_id": "upgrade_bulletshredimbue",
+    "from_cost": 800,
+    "to_total_cost": 3200,
+    "additional_cost": 2400,
+    "cross_category": "",
+    "temporary_slot_requirement": "",
+    "_provenance": {
+      "client_version": 6684,
+      "source": "deadlock-api"
+    }
+  }
+]

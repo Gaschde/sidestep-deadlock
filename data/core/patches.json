@@ -1,0 +1,149 @@
+{
+  "latest_verified_update": {
+    "date": "2026-08-22",
+    "title": "Minor Update - 08-22-2026",
+    "source_ids": [
+      "SRC-0001",
+      "SRC-0002",
+      "SRC-0003"
+    ]
+  },
+  "changes": [
+    {
+      "date": "2026-08-22",
+      "affected_entity_or_mechanic": "upgrade_resonant_healing.HealingPerCast",
+      "old_value": 70,
+      "new_value": 65,
+      "unit": "hp",
+      "change_type": "nerf",
+      "source_ids": [
+        "SRC-0001",
+        "SRC-0004"
+      ]
+    },
+    {
+      "date": "2026-08-22",
+      "affected_entity_or_mechanic": "upgrade_restorative_locket.TechResist",
+      "old_value": 10,
+      "new_value": 8,
+      "unit": "percent",
+      "change_type": "nerf",
+      "source_ids": [
+        "SRC-0001",
+        "SRC-0004"
+      ]
+    },
+    {
+      "date": "2026-06-30",
+      "affected_entity_or_mechanic": "lane_guardian.reward_souls_total",
+      "old_value": 1500,
+      "new_value": 1250,
+      "unit": "souls",
+      "change_type": "economy",
+      "source_ids": [
+        "SRC-0013"
+      ]
+    },
+    {
+      "date": "2026-06-30",
+      "affected_entity_or_mechanic": "walker.reward.souls_total",
+      "old_value": 4000,
+      "new_value": 3500,
+      "unit": "souls",
+      "change_type": "economy",
+      "source_ids": [
+        "SRC-0015"
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "affected_entity_or_mechanic": "walker.base_bullet_resist_percent",
+      "old_value": 25,
+      "new_value": 35,
+      "unit": "percent",
+      "change_type": "balance",
+      "source_ids": [
+        "SRC-0015"
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "affected_entity_or_mechanic": "base_guardian.base_bullet_resist_percent",
+      "old_value": 10,
+      "new_value": 20,
+      "unit": "percent",
+      "change_type": "balance",
+      "source_ids": [
+        "SRC-0014"
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "affected_entity_or_mechanic": "shrine.precondition",
+      "old_value": null,
+      "new_value": "invulnerable_until_one_base_guardian_pair_destroyed",
+      "unit": "rule",
+      "change_type": "protection",
+      "source_ids": [
+        "SRC-0014",
+        "SRC-0016"
+      ]
+    },
+    {
+      "date": "2026-05-22",
+      "affected_entity_or_mechanic": "midboss.spawn",
+      "old_value": null,
+      "new_value": "match_start",
+      "unit": "rule",
+      "change_type": "spawn",
+      "source_ids": [
+        "SRC-0018"
+      ],
+      "notes": "Der vorherige exakte Spawnzeitpunkt ist in der aktuellen Quelle nicht angegeben."
+    },
+    {
+      "date": "2026-03-10",
+      "affected_entity_or_mechanic": "base_guardian.health",
+      "old_value": 5500,
+      "new_value": 4000,
+      "unit": "hp",
+      "change_type": "balance",
+      "source_ids": [
+        "SRC-0014"
+      ]
+    },
+    {
+      "date": "2026-03-06",
+      "affected_entity_or_mechanic": "midboss.base_health",
+      "old_value": 11900,
+      "new_value": 13000,
+      "unit": "hp",
+      "change_type": "balance",
+      "source_ids": [
+        "SRC-0018"
+      ]
+    },
+    {
+      "date": "2026-03-06",
+      "affected_entity_or_mechanic": "midboss.reward.base_souls",
+      "old_value": 2000,
+      "new_value": 3000,
+      "unit": "souls",
+      "change_type": "economy",
+      "source_ids": [
+        "SRC-0018"
+      ]
+    },
+    {
+      "date": "2026-03-06",
+      "affected_entity_or_mechanic": "shrine.health",
+      "old_value": 8100,
+      "new_value": "5000_first_10000_second",
+      "unit": "hp",
+      "change_type": "balance",
+      "source_ids": [
+        "SRC-0016"
+      ]
+    }
+  ]
+}

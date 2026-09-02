@@ -1,0 +1,306 @@
+{
+  "guardian": {
+    "variants": [
+      {
+        "objective_id": "lane_guardian",
+        "health": 5500,
+        "reward_souls_total": 1250,
+        "damage_types_dealt": [
+          "weapon"
+        ],
+        "base_bullet_resist_percent": 10,
+        "player_bullet_vulnerability_percent": -25,
+        "time_damage_resist": {
+          "start_percent": 50,
+          "end_percent": -50,
+          "start_minute": 0,
+          "end_minute": 12,
+          "linear": true
+        },
+        "protection": "Unverwundbar, wenn keine gegnerischen Troopers oder Heroes innerhalb 24 m sind; Player-Schaden außerhalb der Guardian-Reichweite wird abgewiesen.",
+        "headshots": true,
+        "melee_parryable": true,
+        "backdoor_protection": false,
+        "confidence": "high",
+        "source_ids": [
+          "SRC-0013",
+          "SRC-0010"
+        ]
+      },
+      {
+        "objective_id": "base_guardian",
+        "health": 4000,
+        "reward_souls_total": 1000,
+        "damage_types_dealt": [
+          "weapon"
+        ],
+        "base_bullet_resist_percent": 20,
+        "player_bullet_vulnerability_percent": -25,
+        "enemy_scaling_bullet_resist": {
+          "start_percent": 40,
+          "reduction_per_nearby_enemy_hero_percent": 20,
+          "minimum_percent": 0,
+          "zero_at_enemy_heroes": 2
+        },
+        "backdoor_protection": {
+          "damage_resist_percent": 65,
+          "health_regen_per_second": 65
+        },
+        "headshots": false,
+        "melee_parryable": false,
+        "progression": [
+          "Zerstörung eines Paars beschleunigt die angreifende Zipline dieser Lane dauerhaft.",
+          "Mindestens ein zerstörtes Paar macht Shrines grundsätzlich angreifbar."
+        ],
+        "confidence": "high",
+        "source_ids": [
+          "SRC-0014",
+          "SRC-0010",
+          "SRC-0019"
+        ]
+      }
+    ]
+  },
+  "walker": {
+    "objective_id": "walker",
+    "health_by_walkers_remaining": {
+      "3": 6000,
+      "2": 9000,
+      "1": 12000
+    },
+    "reward": {
+      "souls_total": 3500,
+      "nearby_attackers_share_percent": 40,
+      "nearby_pool_souls": 1400,
+      "whole_team_share_percent": 60,
+      "whole_team_pool_souls": 2100,
+      "recent_damage_window_seconds": 20
+    },
+    "damage_types_dealt": [
+      "spirit"
+    ],
+    "base_bullet_resist_percent": 35,
+    "time_damage_resist": {
+      "start_percent": 65,
+      "end_percent": -65,
+      "start_minute": 0,
+      "end_minute": 18,
+      "linear": true
+    },
+    "nearby_enemy_weapon_resist_percent_by_count": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 20,
+      "4": 30,
+      "5": 40,
+      "6": 50,
+      "radius_meters": 50.8
+    },
+    "friendly_aura": {
+      "radius_meters": 28,
+      "bullet_resist_percent": 15,
+      "spirit_resist_percent": 15
+    },
+    "protection": {
+      "dormant_invulnerability_enemy_radius_meters": 22,
+      "backdoor_damage_resist_percent": 65,
+      "backdoor_health_regen_per_second": 65
+    },
+    "attacks": {
+      "fire_beam": {
+        "max_health_damage_per_second_percent": 2
+      },
+      "stomp": {
+        "flat_damage": 350,
+        "max_health_damage_percent": 15,
+        "stun_seconds": 2,
+        "radius_meters": 14.5,
+        "cooldown_seconds": null,
+        "uncertainty_id": "UNC-0008"
+      },
+      "rocket_barrage": {
+        "projectiles": 6,
+        "impact_damage_each": 200,
+        "cooldown_seconds": 10,
+        "ground_fire_dps": 25,
+        "ground_fire_duration_seconds": 5,
+        "bullet_resist_reduction_percent": 10,
+        "spirit_resist_reduction_percent": 10
+      }
+    },
+    "slot_unlock": "Ein Extra Slot für das gesamte angreifende Team pro zerstörtem Walker.",
+    "confidence": "high",
+    "source_ids": [
+      "SRC-0015",
+      "SRC-0010",
+      "SRC-0019",
+      "SRC-0009"
+    ]
+  },
+  "shrines": {
+    "objective_id": "shrine",
+    "health_first": 5000,
+    "health_remaining_after_first_destroyed": 10000,
+    "base_bullet_resist_percent": 20,
+    "enemy_scaling_bullet_resist": {
+      "start_percent": 60,
+      "reduction_per_nearby_enemy_hero_percent": 20,
+      "minimum_percent": 0,
+      "zero_at_enemy_heroes": 3
+    },
+    "protection": [
+      "Unverwundbar, bis mindestens ein Paar Base Guardians zerstört ist.",
+      "Immun gegen Schaden von außerhalb der eigenen Plattform.",
+      "Backdoor Protection: 65 % Damage Resist und 65 HP/s."
+    ],
+    "reward_souls": null,
+    "reward_uncertainty_id": "UNC-0006",
+    "progression": {
+      "one_destroyed": "Super Troopers für die zugeordnete Lane; Blue/Middle erst bei beiden Shrines.",
+      "both_destroyed": "Patron wird verwundbar.",
+      "super_trooper_damage_percent": 60,
+      "super_trooper_health_percent": 40,
+      "super_trooper_soul_bounty_percent": -15
+    },
+    "confidence": "medium",
+    "source_ids": [
+      "SRC-0016",
+      "SRC-0010",
+      "SRC-0019"
+    ],
+    "notes": "Bullet-Resist-Historie und aktueller Wert sind separat in UNC-0007 dokumentiert."
+  },
+  "patron": {
+    "objective_id": "patron",
+    "phase_1": {
+      "base_health": 12000,
+      "unkillable_until": "beide Shrines zerstört",
+      "health_growth_start_minute": 20,
+      "health_growth_per_minute": 250
+    },
+    "phase_2": {
+      "base_health": 12000,
+      "health_growth_start_minute_after_phase_start": 1,
+      "health_growth_per_minute": 450,
+      "outside_pit_damage_immunity": true,
+      "defender_damage_resist": {
+        "one_ally_after_2_seconds_percent": 50,
+        "two_or_more_allies_percent": 100
+      }
+    },
+    "resists": {
+      "bullet_percent": 0,
+      "spirit_percent": 0
+    },
+    "regeneration": {
+      "out_of_combat_hp_per_second": 120,
+      "out_of_combat_delay_seconds": 20,
+      "backdoor_additional_hp_per_second": 75,
+      "backdoor_damage_resist_percent": 65
+    },
+    "attacks": {
+      "phase_1_laser": {
+        "player_dps_flat": 440,
+        "max_health_dps_percent": 5,
+        "bullet_resist_reduction_percent": 10,
+        "spirit_resist_reduction_percent": 10
+      },
+      "shrine_or_pit_explosion": {
+        "cast_delay_seconds": 3.5,
+        "flat_damage": 300,
+        "max_health_damage_percent": 20,
+        "debuff": "curse"
+      },
+      "phase_2_pulse": {
+        "damage_per_second": 75,
+        "max_targets": 3,
+        "radius_meters": 19.05
+      },
+      "phase_2_explosion_cooldown_seconds": null
+    },
+    "phase_2_explosion_uncertainty_id": "UNC-0009",
+    "confidence": "medium",
+    "source_ids": [
+      "SRC-0017",
+      "SRC-0010",
+      "SRC-0019"
+    ]
+  },
+  "midboss": {
+    "objective_id": "midboss",
+    "spawn": "zu Matchbeginn vorhanden",
+    "base_health": 13000,
+    "health_growth_per_minute": 195,
+    "health_regen_per_second": 15,
+    "bullet_resist_percent": 15,
+    "spirit_resist_percent": 0,
+    "debuff_resist_percent": 35,
+    "shield_absorption_per_second": {
+      "base": 35,
+      "growth_per_minute": 5
+    },
+    "targeting": "Greift den nächsten Hero im Pit an; außerhalb des Pits nicht angreifbar und nimmt von dort keinen Schaden.",
+    "reward": {
+      "base_souls": 3000,
+      "souls_growth_per_minute": 50,
+      "permanent_buffs_per_player": 2,
+      "rejuvenator_descent_seconds": 6
+    },
+    "rejuvenator": {
+      "claim_method": "Heavy Melee",
+      "maximum_team_credits": 3,
+      "credit_per_successful_hit": 1,
+      "first_claim_heal_percent": 100,
+      "either_team_can_claim": true,
+      "duration_seconds": 180,
+      "respawn_health_percent": 100,
+      "respawn_delay_seconds": 3,
+      "consumed_on_death": true
+    },
+    "respawn_minutes_after_death_number": {
+      "1": 7,
+      "2": 6,
+      "3_plus": 5
+    },
+    "confidence": "high",
+    "source_ids": [
+      "SRC-0018",
+      "SRC-0010",
+      "SRC-0011",
+      "SRC-0012"
+    ]
+  },
+  "general_rules": [
+    {
+      "rule_id": "OBJ-001",
+      "rule": "Backdoor Protection gilt für Walker, Base Guardians, Shrines und Patron, nicht für Lane Guardians im Standardmodus.",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0019"
+      ]
+    },
+    {
+      "rule_id": "OBJ-002",
+      "rule": "Objective-spezifische Reduktionen einzelner Hero-Fähigkeiten sind absichtlich nicht im Core enthalten und gehören später nach data/interactions/.",
+      "confidence": "high",
+      "source_ids": [
+        "SRC-0013",
+        "SRC-0014",
+        "SRC-0015",
+        "SRC-0016",
+        "SRC-0017"
+      ]
+    },
+    {
+      "rule_id": "OBJ-003",
+      "rule": "Fehlende Item-Objective-Zielangaben werden nicht aus Hero-/NPC-Zielklassen abgeleitet.",
+      "confidence": "medium",
+      "source_ids": [
+        "SRC-0004",
+        "SRC-0042"
+      ],
+      "uncertainty_id": "UNC-0005"
+    }
+  ]
+}

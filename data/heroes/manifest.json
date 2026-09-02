@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1.0-research",
+  "research_date": "2026-09-02",
+  "verified_at": "2026-09-02T10:21:28Z",
+  "data_as_of": "2026-08-22",
+  "patch": "Minor Update - 08-22-2026",
+  "client_build": null,
+  "mode": "Standard Match (6v6, three lanes)",
+  "research_started_at": "2026-09-02T00:00:00Z",
+  "research_completed_at": "2026-09-02T10:21:28Z",
+  "primary_source": "https://deadlock.wiki/",
+  "excluded_domains": [
+    "deadlockwiki.org"
+  ],
+  "core_dataset_path": "data/core/",
+  "core_schema_version": "0.1.0-research",
+  "core_patch": "Minor Update - 08-22-2026",
+  "core_verified_at": "2026-09-02T09:17:55Z",
+  "core_compatibility_status": "compatible_same_patch_with_documented_hero_sync_warning",
+  "hero_count": 60,
+  "publicly_playable_hero_count": 38,
+  "documented_nonpublic_hero_count": 22,
+  "ability_count": 159,
+  "ability_effect_count": 3211,
+  "ability_upgrade_count": 896,
+  "summon_count": 7,
+  "interaction_count": 93,
+  "source_count": 15,
+  "uncertainty_count": 6,
+  "dataset_status": "research_complete_with_preserved_uncertainties",
+  "validation_status": "PASS_WITH_WARNINGS",
+  "notes": "Current structured values are source-backed. Client build, complete item interaction matrix, and summon inheritance remain explicitly unresolved; all explicit post-patch Innate sections are registered."
+}
