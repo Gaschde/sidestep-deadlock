@@ -1,20 +1,23 @@
 # Sidestep Deadlock
 
-Sidestep Deadlock ist eine verlässliche Datengrundlage für nachvollziehbare Deadlock-Builds. Das Projekt sammelt Spielwerte nicht einfach an einem Ort, sondern trennt sauber zwischen Recherche, geprüften Daten und daraus berechneten Empfehlungen. So bleibt sichtbar, woher ein Wert kommt und wie ein Build zustande gekommen ist.
+> **Ein datenbasierter Build-Assistent für Deadlock:** Du nennst einen Helden und dein Ziel. Codex vergleicht geprüfte Spielwerte und erstellt daraus eine verständliche Item- und Kaufempfehlung.
 
-## Wie das Projekt aufgebaut ist
+Sidestep Deadlock ist kein eigenständiges Programm mit Benutzeroberfläche. Dieses Repository ist die Wissens- und Rechengrundlage, mit der Codex Deadlock-Builds analysiert. Statt Empfehlungen aus Bauchgefühl zu geben, arbeitet es mit hinterlegten Itemkosten, Heldenwerten, Upgrades, Slots und besonderen Interaktionen.
 
-Der Weg von der Quelle bis zum fertigen Build sieht so aus:
+## Kurz gesagt
 
-`Master Research` → `data/core/` → `Helden-Recherche` → `data/heroes/` + `data/interactions/` → `Build Optimizer` → `builds/`
+- **Eingabe:** Held, Spielstil, Match-Situation oder gewünschtes Ziel.
+- **Analyse:** Codex prüft passende Items, Kosten, Upgradepfade, Schwellenwerte und verfügbare Slots.
+- **Ergebnis:** ein begründeter Build mit Kaufreihenfolge, Alternativen und klar benannten Unsicherheiten.
+- **Datengrundlage:** Spielwerte werden nach Quelle und Patch getrennt gespeichert. Ungeprüfte Annahmen gelten nicht als Fakten.
 
-- In `research/master/` werden Quellen für allgemeine Spielmechaniken gesammelt und geprüft.
-- `data/core/` enthält die verifizierten Kerndaten – zum Beispiel Items, Kosten, Slots und Objectives. Quellen und offene Unsicherheiten werden dort ebenfalls festgehalten.
-- `research/heroes/` ist der Arbeitsbereich für heldenspezifische Recherche. Geprüfte Ergebnisse landen anschließend in `data/heroes/` oder `data/interactions/`.
-- `builds/` ist für fertige, aus den Daten abgeleitete Build-Ergebnisse gedacht.
-- In `prompts/` liegen wiederverwendbare Arbeitsanweisungen, in `schemas/` die vereinbarten Datenformate und in `archive/` ältere, nicht mehr aktive Stände.
+## So verwendest du es
 
-Die Felder und Speicherformate der Kerndaten sind in `schemas/core_data_schema.md` beschrieben. Ungeprüfte Vermutungen werden bewusst nicht in die verbindlichen Daten übernommen.
+Öffne das Repository als Codex-Projekt und stelle eine konkrete Build-Frage, zum Beispiel:
+
+> Erstelle mir einen Tank-Build für Abrams. Ich spiele meistens im Team und möchte möglichst lange an der Front überleben.
+
+Codex liest die Projektregeln und die benötigten Datensätze, rechnet die relevanten Werte nach und erklärt anschließend, warum die empfohlenen Items zum Ziel passen.
 
 ## Build-Analysen mit Codex
 
@@ -28,6 +31,21 @@ Dabei gilt:
 - Vor einer Empfehlung werden unter anderem Kosten, Upgradepfade, Investments, Schwellenwerte, Slots, Cooldowns und bekannte Unsicherheiten geprüft.
 
 Das Ziel ist keine scheinbare Präzision, sondern eine Empfehlung, deren Annahmen und Rechenweg verständlich bleiben.
+
+## Wo die Daten liegen
+
+Der Weg von der Recherche bis zum fertigen Build sieht so aus:
+
+`Recherche` → `data/core/` + `data/heroes/` + `data/interactions/` → `Build Optimizer` → `builds/`
+
+- `data/core/` enthält geprüfte Kerndaten wie Items, Kosten, Slots, Objectives und allgemeine Spielmechaniken.
+- `data/heroes/` enthält Werte, Fähigkeiten, Upgrades und Ressourcen der Helden.
+- `data/interactions/` hält verifizierte Sonderinteraktionen fest.
+- `research/` dokumentiert die Recherche und Prüfung der Quellen.
+- `builds/` ist für gespeicherte Build-Ergebnisse vorgesehen.
+- `prompts/` enthält Arbeitsanweisungen, `schemas/` die Datenformate und `archive/` ältere Stände.
+
+Die Felder und Speicherformate der Kerndaten sind in `schemas/core_data_schema.md` beschrieben.
 
 ## Daten mit der Deadlock API abgleichen
 
