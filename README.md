@@ -1,100 +1,147 @@
 # Sidestep Deadlock
 
-> **Ein datenbasierter Build-Assistent für Deadlock:** Du nennst einen Helden und dein Ziel. Codex vergleicht geprüfte Spielwerte und erstellt daraus eine verständliche Item- und Kaufempfehlung.
+> A data-driven, auditable build optimizer for Deadlock.
 
-Sidestep Deadlock ist kein eigenständiges Programm mit Benutzeroberfläche. Dieses Repository ist die Wissens- und Rechengrundlage, mit der Codex Deadlock-Builds analysiert. Statt Empfehlungen aus Bauchgefühl zu geben, arbeitet es mit hinterlegten Itemkosten, Heldenwerten, Upgrades, Slots und besonderen Interaktionen.
+Sidestep turns a hero, budget, and gameplay objective into a reproducible build analysis. Instead of treating a build as a static list of popular items, it evaluates verified game data, legal purchase paths, upgrade costs, inventory limits, power spikes, and explicit combat assumptions.
 
-## Kurz gesagt
+## Why Sidestep is different
 
-- **Eingabe:** Held, Spielstil, Match-Situation oder gewünschtes Ziel.
-- **Analyse:** Codex prüft passende Items, Kosten, Upgradepfade, Schwellenwerte und verfügbare Slots.
-- **Ergebnis:** ein begründeter Build mit Kaufreihenfolge, Alternativen und klar benannten Unsicherheiten.
-- **Datengrundlage:** Spielwerte werden nach Quelle und Patch getrennt gespeichert. Ungeprüfte Annahmen gelten nicht als Fakten.
+Most build lists answer **what to buy**. Sidestep is designed to answer **why this build wins under these exact conditions**.
 
-## So verwendest du es
+- **Traceable conclusions:** Important values remain linked to canonical hero, item, effect, and source IDs.
+- **Patch-safe analysis:** Core and hero manifests must agree on patch and game mode before a result is accepted.
+- **Complete purchase paths:** The optimizer evaluates component consumption, upgrade payments, category investments, threshold bonuses, budget checkpoints, normal slots, Walker slots, and active-item limits—not just the final inventory.
+- **Explicit assumptions:** Conditional effects and proc scenarios are opt-in. They are never silently treated as permanently active.
+- **Safety around incomplete mechanics:** Unhandled effects, unresolved downsides, API conflicts, and missing interactions are surfaced as warnings instead of being hidden inside a score.
+- **Transparent comparisons:** Score profiles expose their metrics and weights, hard minimum requirements remain separate, and Pareto results preserve meaningful damage-versus-survivability trade-offs.
+- **Reproducible results:** The same data, constraints, candidate pool, and scenario produce the same output.
+- **Conservative data updates:** API snapshots are versioned and reviewed; they cannot silently overwrite the canonical research dataset.
 
-Öffne das Repository als Codex-Projekt und stelle eine konkrete Build-Frage, zum Beispiel:
+Sidestep does not claim to know what the data cannot prove. A missing interaction means **unknown**, not automatically “works” or “does not work.”
 
-> Erstelle mir einen Tank-Build für Abrams. Ich spiele meistens im Team und möchte möglichst lange an der Front überleben.
+## Current status
 
-Codex liest die Projektregeln und die benötigten Datensätze, rechnet die relevanten Werte nach und erklärt anschließend, warum die empfohlenen Items zum Ziel passen.
+The repository already contains:
 
-## Build-Analysen mit Codex
+- a verified, patch-specific dataset for items, heroes, abilities, progression, global mechanics, and documented special interactions;
+- a deterministic calculator for evaluating a specified build;
+- a bounded beam search for comparing builds within an explicit candidate space;
+- legal purchase-path generation with component upgrades and budget checkpoints;
+- target profiles, hard stat requirements, transparent score profiles, Pareto selection, and marginal item-value reporting;
+- a versioned Deadlock Assets API import and review workflow;
+- automated tests for the calculator, path generation, search, and API importer.
 
-Die Datei `AGENTS.md` gibt neuen Codex-Tasks automatisch die Regeln dieses Projekts mit. Bei einer Build-Anfrage folgt Codex dem Ablauf in `docs/prompts/build_optimizer.md`.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. Beam search can discard intermediate candidates, and several systems still require explicit assumptions or further implementation—including sales, objective timing, hit/headshot rates, and automatically estimated proc uptime.
 
-Dabei gilt:
+## Quick start
 
-- `docs/schemas/build_request_schema.md` beschreibt, wie eine Anfrage eingeordnet wird.
-- `docs/schemas/build_result_schema.md` legt fest, wie ein überprüfbares Ergebnis aussehen soll.
-- Ergebnisse werden nur dann unter `builds/` gespeichert, wenn das ausdrücklich gewünscht ist.
-- Vor einer Empfehlung werden unter anderem Kosten, Upgradepfade, Investments, Schwellenwerte, Slots, Cooldowns und bekannte Unsicherheiten geprüft.
+Sidestep uses Python and the repository's local datasets. No installation step is required for the core command-line tools.
 
-Das Ziel ist keine scheinbare Präzision, sondern eine Empfehlung, deren Annahmen und Rechenweg verständlich bleiben.
-
-## Lokale Optimizer-Engine
-
-Unter `engine/` liegt die erste ausführbare Ausbaustufe. Der Calculator lädt einen Helden, sein Boon-Level und einen vorgegebenen Itemsatz und berechnet daraus nachvollziehbare Endwerte. Bedingte Effekte bleiben standardmäßig ausgeschaltet und müssen für ein konkretes Szenario ausdrücklich aktiviert werden.
-
-`engine/search.py` kann Builds innerhalb einer angegebenen Kandidatenmenge deterministisch vergleichen, harte Mindestwerte prüfen, ein gegnerisches Resistenzprofil berücksichtigen und legale Komponenten-/Upgrade-Kaufpfade an Budget-Checkpoints bewerten. Diese Suche ist noch kein globaler Optimierer; automatisch geschätzte Proc-Uptimes folgen in weiteren Ausbaustufen. Verwendung und Grenzen sind in `docs/engine.md` dokumentiert.
-
-## Wo die Daten liegen
-
-Der Weg von der Recherche bis zum fertigen Build sieht so aus:
-
-`Recherche` → `data/core/` + `data/heroes/` + `data/interactions/` → `Build Optimizer` → `builds/`
-
-- `data/core/` enthält geprüfte Kerndaten wie Items, Kosten, Slots, Objectives und allgemeine Spielmechaniken.
-- `data/heroes/` enthält Werte, Fähigkeiten, Upgrades und Ressourcen der Helden.
-- `data/interactions/` hält verifizierte Sonderinteraktionen fest.
-- `docs/research/` dokumentiert die Recherche und Prüfung der Quellen.
-- `builds/` ist für gespeicherte Build-Ergebnisse vorgesehen.
-- `docs/prompts/` enthält Arbeitsanweisungen, `docs/schemas/` die Datenformate und `archive/` ältere technische Stände.
-
-Die Felder und Speicherformate der Kerndaten sind in `docs/schemas/core_data_schema.md` beschrieben.
-
-## Daten mit der Deadlock API abgleichen
-
-Mit `tools/sync_deadlock_api.py` lässt sich die öffentliche, nach Client-Versionen getrennte Deadlock Assets API als technische Vergleichsquelle einlesen. Die zugehörige [API-Dokumentation](https://api.deadlock-api.com/docs) und die [OpenAPI-Spezifikation](https://api.deadlock-api.com/openapi.json) sind öffentlich erreichbar.
-
-Für einen lokalen Test ohne Netzwerkzugriff gibt es mitgelieferte Beispieldaten:
+Evaluate a specific build:
 
 ```text
-python tools/sync_deadlock_api.py --fixture-dir tests/fixtures/deadlock_api --dry-run
+python tools/calculate_build.py warden --boon 35 --walker-slots 3 \
+  --item upgrade_close_quarter_combat \
+  --item upgrade_titan_round
 ```
 
-Ein echter Snapshot-Lauf sucht standardmäßig die höchste verfügbare Client-Version und schreibt seine Ergebnisse ausschließlich nach `archive/api/`:
+Search a bounded public item pool:
+
+```text
+python tools/search_builds.py warden --boon 20 --budget 9600 \
+  --items 6 --beam-width 250
+```
+
+Add explicit constraints or a target profile:
+
+```text
+python tools/search_builds.py warden --boon 35 --budget 56000 \
+  --items 12 --walker-slots 3 \
+  --minimum-budget-utilization 0.9 \
+  --minimum-stat max_health=4500 \
+  --minimum-stat move_speed=6.5 \
+  --target-bullet-resist 30 \
+  --target-spirit-resist 20
+```
+
+Command output is JSON so calculations, warnings, score components, purchase steps, checkpoints, and marginal values can be inspected or consumed by another interface.
+
+See [the engine documentation](docs/engine.md) for the complete feature set, scenario controls, score profiles, and known limitations.
+
+## Using Sidestep with Codex
+
+The repository can also be opened as a Codex project. For example:
+
+> Create a survivability-focused build for Abrams at a 16,000 Soul budget. Compare the strongest evaluated alternatives and explain every important assumption.
+
+Codex follows the repository's analysis contract:
+
+- [AGENTS.md](AGENTS.md) contains the binding project rules.
+- [docs/prompts/build_optimizer.md](docs/prompts/build_optimizer.md) defines the complete analysis procedure.
+- [docs/schemas/build_request_schema.md](docs/schemas/build_request_schema.md) defines inputs and assumptions.
+- [docs/schemas/build_result_schema.md](docs/schemas/build_result_schema.md) defines a verifiable result.
+- Results are saved under `builds/` only when explicitly requested.
+
+A result may only be called **optimal** when the objective, constraints, and relevant search space are fully defined and covered. Otherwise, Sidestep uses **best evaluated build**.
+
+## How the data is organized
+
+```text
+Verified research
+  -> canonical data
+  -> deterministic calculator and bounded search
+  -> validated, explainable result
+```
+
+| Path | Purpose |
+|---|---|
+| `data/core/` | Items, costs, upgrades, investments, slots, objectives, and global mechanics |
+| `data/heroes/` | Hero stats, abilities, upgrades, resources, progression, and summons |
+| `data/interactions/` | Verified special interactions |
+| `engine/` | Data loading, calculation, path validation, auditing, and bounded search |
+| `docs/research/` | Source verification, dataset coverage, exclusions, and audit reports |
+| `docs/schemas/` | Data, request, interaction, API import, and result contracts |
+| `docs/prompts/` | Required build-analysis procedure and final validation checklist |
+| `archive/api/` | Versioned API snapshots and review-only comparisons |
+| `tests/` | Optimizer and importer tests plus offline API fixtures |
+
+`data/core/`, `data/heroes/`, and `data/interactions/` are authoritative. Research records and API mappings provide evidence and review context, but they never silently replace missing canonical values.
+
+## Calculation principles
+
+Sidestep keeps concepts separate when combining them would create misleading results:
+
+- cash paid versus current category investment;
+- base stats versus level growth, ability upgrades, item stats, and investment bonuses;
+- permanent effects versus conditional effects and theoretical maximum uptime;
+- bullet resistance reduction, penetration, and damage amplification;
+- ability cooldown, charge-up time, charge count, and charge restoration;
+- final-build strength versus the quality and legality of the path used to reach it.
+
+Every final recommendation must pass a second validation of costs, upgrade edges, investments, thresholds, slots, effects, references, and confidence warnings.
+
+## Deadlock API comparison
+
+`tools/sync_deadlock_api.py` stores technical snapshots by client version under `archive/api/`. A normal import does not modify `data/core/` or `data/heroes/`.
+
+Run an offline comparison with the included fixtures:
+
+```text
+python tools/sync_deadlock_api.py \
+  --fixture-dir tests/fixtures/deadlock_api \
+  --dry-run
+```
+
+Fetch a current snapshot:
 
 ```text
 python tools/sync_deadlock_api.py
 ```
 
-Mit `--client-version 6518` kann stattdessen gezielt eine bestimmte Version ausgewählt werden. Die Ergebnisse liegen anschließend unter `archive/api/versions/<client_version>/`:
+New, conflicting, or missing records appear in `review_required.json`. Applying a change requires an explicit approval file containing exact `change_id` values from the same diff. Unknown fields remain preserved in the raw archive and schema observations.
 
-- `raw/` enthält die Antworten unverändert.
-- Das jeweilige Laufverzeichnis enthält die aufbereiteten Daten in `mapped/` sowie `diff.json`, `review_required.json`, `validation.json`, `schema_observations.json` und ein Manifest.
-- Bereits gespeicherte Originaldaten werden nicht überschrieben. Falls dieselbe Version später andere Antworten liefert, werden diese unter `revisions/<timestamp>/` abgelegt.
+See [archive/api/README.md](archive/api/README.md) and [docs/schemas/api_import_schema.md](docs/schemas/api_import_schema.md) for the full integrity contract.
 
-Ein normaler Import verändert weder `data/core/` noch `data/heroes/`.
+## Guiding principle
 
-### Erst prüfen, dann übernehmen
-
-Mit `--dry-run` werden Daten abgerufen, geprüft und verglichen, ohne Dateien zu verändern. Neue Datensätze, widersprüchliche Werte und kanonische Einträge, die im API-Snapshot fehlen, erscheinen als `review_required`.
-
-Die automatisch erzeugten Mappings sind absichtlich noch keine verbindlichen Projektdaten. Direkt erkennbare Informationen wie IDs, Namen, Kosten, Tiers, Aktivierung, Cooldowns und einfache Property-Werte können übernommen werden. Bedeutung und Einheit eines Werts, Skalierungen, Bedingungen, Procs, Targeting, Objective-Verhalten, die Vererbung von Beschwörungen und Patchinterpretationen brauchen dagegen eine manuelle Prüfung.
-
-Unbekannte Felder bleiben im Raw-Archiv erhalten und werden in `schema_observations.json` sichtbar. Fehlen notwendige Identitäten, erzeugt die Validierung eine Warnung; strukturell ungültige Antworten führen zum Abbruch.
-
-Für kanonische Änderungen braucht es eine separat gepflegte Freigabedatei. Sie darf nur konkrete `change_id`-Werte aus demselben Diff enthalten:
-
-```json
-{"change_ids": ["<change_id-aus-review_required.json>"]}
-```
-
-Anschließend kann der geprüfte Lauf mit `--apply-approved path/to/approval.json` wiederholt werden. Vor der Übernahme prüft das Tool die Version, die Diff-ID und den bisherigen Wert. Neue Datensätze, Löschungen und vollständige Ersetzungen eines Datensatzes werden nicht automatisch angewendet.
-
-### Netzwerk und API-Key
-
-Der Importer kommt ohne zusätzliche Python-Pakete aus. Zwischen Anfragen wartet er standardmäßig `0.25` Sekunden. Bei Rate-Limits, Serverfehlern oder Netzwerkproblemen versucht er es mit wachsender Wartezeit erneut. Dieses Verhalten lässt sich über `--request-delay` und `--retries` anpassen.
-
-Für den normalen Asset-Import ist üblicherweise kein API-Key nötig. Falls doch einer verwendet werden soll, liest das Tool ihn aus der Umgebungsvariable `DEADLOCK_API_KEY` – oder aus einer anderen, mit `--api-key-env` angegebenen Variable – und sendet ihn als `X-API-KEY`. Der geheime Wert wird niemals in ein Manifest geschrieben.
+Sidestep should never produce false precision. Its purpose is to make a build's assumptions, trade-offs, purchase path, calculations, and remaining uncertainty visible enough for another person to verify.
