@@ -4,7 +4,7 @@ import unittest
 from decimal import Decimal
 from pathlib import Path
 
-from optimizer import BuildCalculator, BuildRequest, DataRepository, EffectSelection, TargetProfile
+from engine import BuildCalculator, BuildRequest, DataRepository, EffectSelection, TargetProfile
 
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -21,12 +21,12 @@ Codex liest die Projektregeln und die benötigten Datensätze, rechnet die relev
 
 ## Build-Analysen mit Codex
 
-Die Datei `AGENTS.md` gibt neuen Codex-Tasks automatisch die Regeln dieses Projekts mit. Bei einer Build-Anfrage folgt Codex dem Ablauf in `prompts/build_optimizer.md`.
+Die Datei `AGENTS.md` gibt neuen Codex-Tasks automatisch die Regeln dieses Projekts mit. Bei einer Build-Anfrage folgt Codex dem Ablauf in `docs/prompts/build_optimizer.md`.
 
 Dabei gilt:
 
-- `schemas/build_request_schema.md` beschreibt, wie eine Anfrage eingeordnet wird.
-- `schemas/build_result_schema.md` legt fest, wie ein überprüfbares Ergebnis aussehen soll.
+- `docs/schemas/build_request_schema.md` beschreibt, wie eine Anfrage eingeordnet wird.
+- `docs/schemas/build_result_schema.md` legt fest, wie ein überprüfbares Ergebnis aussehen soll.
 - Ergebnisse werden nur dann unter `builds/` gespeichert, wenn das ausdrücklich gewünscht ist.
 - Vor einer Empfehlung werden unter anderem Kosten, Upgradepfade, Investments, Schwellenwerte, Slots, Cooldowns und bekannte Unsicherheiten geprüft.
 
@@ -34,9 +34,9 @@ Das Ziel ist keine scheinbare Präzision, sondern eine Empfehlung, deren Annahme
 
 ## Lokale Optimizer-Engine
 
-Unter `optimizer/` liegt die erste ausführbare Ausbaustufe. Der Calculator lädt einen Helden, sein Boon-Level und einen vorgegebenen Itemsatz und berechnet daraus nachvollziehbare Endwerte. Bedingte Effekte bleiben standardmäßig ausgeschaltet und müssen für ein konkretes Szenario ausdrücklich aktiviert werden.
+Unter `engine/` liegt die erste ausführbare Ausbaustufe. Der Calculator lädt einen Helden, sein Boon-Level und einen vorgegebenen Itemsatz und berechnet daraus nachvollziehbare Endwerte. Bedingte Effekte bleiben standardmäßig ausgeschaltet und müssen für ein konkretes Szenario ausdrücklich aktiviert werden.
 
-`optimizer/search.py` kann Builds innerhalb einer angegebenen Kandidatenmenge deterministisch vergleichen, harte Mindestwerte prüfen, ein gegnerisches Resistenzprofil berücksichtigen und legale Komponenten-/Upgrade-Kaufpfade an Budget-Checkpoints bewerten. Diese Suche ist noch kein globaler Optimierer; automatisch geschätzte Proc-Uptimes folgen in weiteren Ausbaustufen. Verwendung und Grenzen sind in `optimizer/README.md` dokumentiert.
+`engine/search.py` kann Builds innerhalb einer angegebenen Kandidatenmenge deterministisch vergleichen, harte Mindestwerte prüfen, ein gegnerisches Resistenzprofil berücksichtigen und legale Komponenten-/Upgrade-Kaufpfade an Budget-Checkpoints bewerten. Diese Suche ist noch kein globaler Optimierer; automatisch geschätzte Proc-Uptimes folgen in weiteren Ausbaustufen. Verwendung und Grenzen sind in `docs/engine.md` dokumentiert.
 
 ## Wo die Daten liegen
 
@@ -47,11 +47,11 @@ Der Weg von der Recherche bis zum fertigen Build sieht so aus:
 - `data/core/` enthält geprüfte Kerndaten wie Items, Kosten, Slots, Objectives und allgemeine Spielmechaniken.
 - `data/heroes/` enthält Werte, Fähigkeiten, Upgrades und Ressourcen der Helden.
 - `data/interactions/` hält verifizierte Sonderinteraktionen fest.
-- `research/` dokumentiert die Recherche und Prüfung der Quellen.
+- `docs/research/` dokumentiert die Recherche und Prüfung der Quellen.
 - `builds/` ist für gespeicherte Build-Ergebnisse vorgesehen.
-- `prompts/` enthält Arbeitsanweisungen, `schemas/` die Datenformate und `archive/` ältere Stände.
+- `docs/prompts/` enthält Arbeitsanweisungen, `docs/schemas/` die Datenformate und `archive/` ältere technische Stände.
 
-Die Felder und Speicherformate der Kerndaten sind in `schemas/core_data_schema.md` beschrieben.
+Die Felder und Speicherformate der Kerndaten sind in `docs/schemas/core_data_schema.md` beschrieben.
 
 ## Daten mit der Deadlock API abgleichen
 
@@ -63,13 +63,13 @@ Für einen lokalen Test ohne Netzwerkzugriff gibt es mitgelieferte Beispieldaten
 python tools/sync_deadlock_api.py --fixture-dir tests/fixtures/deadlock_api --dry-run
 ```
 
-Ein echter Snapshot-Lauf sucht standardmäßig die höchste verfügbare Client-Version und schreibt seine Ergebnisse ausschließlich nach `data/api/`:
+Ein echter Snapshot-Lauf sucht standardmäßig die höchste verfügbare Client-Version und schreibt seine Ergebnisse ausschließlich nach `archive/api/`:
 
 ```text
 python tools/sync_deadlock_api.py
 ```
 
-Mit `--client-version 6518` kann stattdessen gezielt eine bestimmte Version ausgewählt werden. Die Ergebnisse liegen anschließend unter `data/api/versions/<client_version>/`:
+Mit `--client-version 6518` kann stattdessen gezielt eine bestimmte Version ausgewählt werden. Die Ergebnisse liegen anschließend unter `archive/api/versions/<client_version>/`:
 
 - `raw/` enthält die Antworten unverändert.
 - Das jeweilige Laufverzeichnis enthält die aufbereiteten Daten in `mapped/` sowie `diff.json`, `review_required.json`, `validation.json`, `schema_observations.json` und ein Manifest.

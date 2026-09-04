@@ -9,8 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from optimizer import BuildCalculator, DataRepository, EffectSelection, TargetProfile  # noqa: E402
-from optimizer.search import BuildSearch, SCORE_PROFILES, SearchConstraints  # noqa: E402
+from engine import BuildCalculator, DataRepository, EffectSelection, TargetProfile  # noqa: E402
+from engine.search import BuildSearch, SCORE_PROFILES, SearchConstraints  # noqa: E402
 
 
 def parse_minimum_stat(value: str) -> tuple[str, Decimal]:

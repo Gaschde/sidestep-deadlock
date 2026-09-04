@@ -1,6 +1,6 @@
 # Optimizer-Engine (erste Ausbaustufe)
 
-Diese Engine setzt den sicheren Rechenkern aus `prompts/build_optimizer.md` um. Sie verändert keine kanonischen Daten.
+Diese Engine setzt den sicheren Rechenkern aus `docs/prompts/build_optimizer.md` um. Sie verändert keine kanonischen Daten.
 
 ## Aktueller Umfang
 

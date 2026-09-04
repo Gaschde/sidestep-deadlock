@@ -3,7 +3,7 @@ from __future__ import annotations
 import unittest
 from pathlib import Path
 
-from optimizer import DataRepository, PurchaseAction, PurchasePathValidator
+from engine import DataRepository, PurchaseAction, PurchasePathValidator
 
 
 ROOT = Path(__file__).resolve().parents[1]

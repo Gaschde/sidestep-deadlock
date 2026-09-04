@@ -3,7 +3,7 @@
 
 The importer is deliberately conservative:
 
-* API responses are archived byte-for-byte below ``data/api/versions``.
+* API responses are archived byte-for-byte below ``archive/api/versions``.
 * mapped data and diffs are review artifacts, never canonical data;
 * an existing raw file is never replaced with different bytes;
 * canonical CSV files can only be changed through an explicit approval file.
@@ -868,7 +868,7 @@ def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description="Versionierter, konservativer Deadlock-API-Importer")
     result.add_argument("--base-url", default=DEFAULT_BASE_URL, help=f"API-Basis-URL (Standard: {DEFAULT_BASE_URL})")
     result.add_argument("--client-version", type=int, help="Bestimmte Client-Version; Standard ist die neueste verfügbare")
-    result.add_argument("--output-dir", default=str(ROOT / "data" / "api"), help="Archivziel (Standard: data/api)")
+    result.add_argument("--output-dir", default=str(ROOT / "archive" / "api"), help="Archivziel (Standard: archive/api)")
     result.add_argument("--fixture-dir", help="Offline-JSON-Fixtures statt Netzwerk verwenden")
     result.add_argument("--dry-run", action="store_true", help="Abrufen, validieren und diffen, ohne Dateien zu schreiben")
     result.add_argument("--validate", action="store_true", help="Strukturelle Validierung explizit anfordern (ist standardmäßig aktiv)")
