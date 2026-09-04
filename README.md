@@ -32,6 +32,12 @@ Dabei gilt:
 
 Das Ziel ist keine scheinbare Präzision, sondern eine Empfehlung, deren Annahmen und Rechenweg verständlich bleiben.
 
+## Lokale Optimizer-Engine
+
+Unter `optimizer/` liegt die erste ausführbare Ausbaustufe. Der Calculator lädt einen Helden, sein Boon-Level und einen vorgegebenen Itemsatz und berechnet daraus nachvollziehbare Endwerte. Bedingte Effekte bleiben standardmäßig ausgeschaltet und müssen für ein konkretes Szenario ausdrücklich aktiviert werden.
+
+`optimizer/search.py` kann Builds innerhalb einer angegebenen Kandidatenmenge deterministisch vergleichen, harte Mindestwerte prüfen, ein gegnerisches Resistenzprofil berücksichtigen und legale Komponenten-/Upgrade-Kaufpfade an Budget-Checkpoints bewerten. Diese Suche ist noch kein globaler Optimierer; automatisch geschätzte Proc-Uptimes folgen in weiteren Ausbaustufen. Verwendung und Grenzen sind in `optimizer/README.md` dokumentiert.
+
 ## Wo die Daten liegen
 
 Der Weg von der Recherche bis zum fertigen Build sieht so aus:
