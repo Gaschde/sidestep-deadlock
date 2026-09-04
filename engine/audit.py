@@ -32,12 +32,12 @@ class ConditionAuditor:
 
     @staticmethod
     def _load_properties(root: Path) -> dict[str, dict[str, dict]]:
-        manifest_path = root / "data/api/manifest.json"
+        manifest_path = root / "archive/api/manifest.json"
         if not manifest_path.exists():
             return {}
         manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
         version = manifest.get("latest_client_version")
-        raw_path = root / "data" / "api" / "versions" / str(version) / "raw" / "items.json"
+        raw_path = root / "archive" / "api" / "versions" / str(version) / "raw" / "items.json"
         if not raw_path.exists():
             return {}
         raw_items = json.loads(raw_path.read_text(encoding="utf-8-sig"))

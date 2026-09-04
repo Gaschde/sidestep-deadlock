@@ -4,8 +4,8 @@ import unittest
 from decimal import Decimal
 from pathlib import Path
 
-from optimizer import BuildCalculator, BuildRequest, DataRepository, EffectSelection
-from optimizer.search import BuildSearch, ScoreProfile, SearchConstraints, SURVIVABILITY
+from engine import BuildCalculator, BuildRequest, DataRepository, EffectSelection
+from engine.search import BuildSearch, ScoreProfile, SearchConstraints, SURVIVABILITY
 
 
 ROOT = Path(__file__).resolve().parents[1]

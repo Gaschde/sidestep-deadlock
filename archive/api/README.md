@@ -3,7 +3,7 @@
 Dieser Ordner wird von `tools/sync_deadlock_api.py` erzeugt. Er ist eine technische, versionierte Quelle und kein Ersatz für die geprüften Masterdaten in `data/core/` oder `data/heroes/`.
 
 ```text
-data/api/
+archive/api/
   manifest.json
   versions/<client_version>/
     manifest.json

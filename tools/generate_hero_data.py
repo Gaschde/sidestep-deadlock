@@ -10,11 +10,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / "research" / "heroes" / "source_cache"
+CACHE = ROOT / "docs" / "research" / "heroes" / "source_cache"
 HERO_DIR = ROOT / "data" / "heroes"
 INTERACTION_DIR = ROOT / "data" / "interactions"
-RESEARCH_DIR = ROOT / "research" / "heroes"
-SCHEMA_DIR = ROOT / "schemas"
+RESEARCH_DIR = ROOT / "docs" / "research" / "heroes"
+SCHEMA_DIR = ROOT / "docs" / "schemas"
 
 PATCH = "Minor Update - 08-22-2026"
 DATA_AS_OF = "2026-08-22"
@@ -1100,8 +1100,8 @@ Der Datensatz übernimmt aktuelle strukturierte Werte, trennt Basiswerte, Boon-W
     add_check("Current-patch Celeste values", "PASS" if not current_patch_failures else "FAIL", "ability_mechanics.csv; ability_upgrades.csv", current_patch_failures, "All eleven August 22 hero changes resolve to the current structured values." if not current_patch_failures else "Current values conflict with the latest patch notes.")
     add_check("Item interaction evidence", "WARNING", "data/interactions/hero_interactions.csv", len(item_rows), "Documented Melee/Heavy-Melee item interactions are included; the complete Item×Ability matrix remains open and no undocumented row was invented.", "HUNC-0004")
     add_check("Summon inheritance evidence", "WARNING", "data/heroes/summons.csv", len(summons), "Created-unit values are present, but inheritance/proc/objective behavior is not fully exposed.", "HUNC-0005")
-    add_check("HeroData patch synchronization", "WARNING", "research/heroes/page_sync_audit.csv", 1, "HeroData predates the latest patch; patch scope indicates no later base-stat edit, but full client sync remains unproven.", "HUNC-0002")
-    add_check("Stale/non-synchronized pages", "WARNING", "research/heroes/page_sync_audit.csv", 2, "HeroData and the rendered comparison table predate the latest patch; neither overrides the current AbilityData export.", "HUNC-0002; HUNC-0007")
+    add_check("HeroData patch synchronization", "WARNING", "docs/research/heroes/page_sync_audit.csv", 1, "HeroData predates the latest patch; patch scope indicates no later base-stat edit, but full client sync remains unproven.", "HUNC-0002")
+    add_check("Stale/non-synchronized pages", "WARNING", "docs/research/heroes/page_sync_audit.csv", 2, "HeroData and the rendered comparison table predate the latest patch; neither overrides the current AbilityData export.", "HUNC-0002; HUNC-0007")
     add_check("Objective/proc/summon evidence boundary", "PASS", "ability_mechanics.csv; hero_interactions.csv", 0, "Only explicit structured target-class fields are emitted; undocumented application is preserved as uncertainty.", "HUNC-0004; HUNC-0005")
     add_check("Model-knowledge substitution", "PASS", "all generated datasets", 0, "Values originate from cached deadlock.wiki primary data or explicit patch notes; exclusions are logged.")
     add_check("Core patch compatibility", "PASS" if core_manifest.get("patch") == PATCH else "FAIL", "data/core/manifest.json", 0 if core_manifest.get("patch") == PATCH else 1, f"Core patch is {core_manifest.get('patch')}; hero patch is {PATCH}.")
