@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#07100c" />
+    <title>Sidestep — Focus Build Workspace</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="workspace panel">
+        <div class="brand-row">
+          <div>
+            <p class="wordmark">SIDESTEP</p>
+            <p class="subtitle">Deadlock Build Optimizer</p>
+          </div>
+          <div class="data-status" aria-live="polite">
+            <span id="patch-badge" class="badge badge-muted">Daten werden geladen</span>
+            <span id="dataset-status" class="status-copy"><span class="status-dot"></span> Lokale Datenanbindung</span>
+          </div>
+        </div>
+
+        <div id="data-error" class="notice notice-error" hidden></div>
+
+        <div class="setup-grid">
+          <section class="setup-step">
+            <h2><span class="step-seal">1</span> Held wählen</h2>
+            <button id="hero-trigger" class="selection-card" type="button" aria-haspopup="dialog">
+              <span id="hero-avatar" class="avatar avatar-large"></span>
+              <span class="selection-copy"><strong id="hero-name">Warden</strong><small>Helden durchsuchen</small></span>
+              <span class="search-icon" aria-hidden="true">⌕</span>
+            </button>
+          </section>
+
+          <section class="setup-step">
+            <label for="playstyle"><span class="step-seal">2</span> Spielstil wählen</label>
+            <select id="playstyle" class="selection-card select-control">
+              <option value="weapon">Weapon Carry</option>
+              <option value="spirit">Spirit Burst</option>
+              <option value="tank">Tank / Bruiser</option>
+              <option value="hybrid">Hybrid / Balanced</option>
+              <option value="support">Support / Utility</option>
+              <option value="mobility">Mobility / Roamer</option>
+            </select>
+          </section>
+
+          <section class="setup-step opponents-step">
+            <h2><span class="step-seal">3</span> Lane-Gegner</h2>
+            <div class="opponent-grid">
+              <button class="selection-card opponent-trigger" data-opponent-slot="0" type="button"><span class="avatar"></span><span class="selection-copy"><small>Gegner 1</small><strong>Vyper</strong></span><span>⌄</span></button>
+              <button class="selection-card opponent-trigger" data-opponent-slot="1" type="button"><span class="avatar"></span><span class="selection-copy"><small>Gegner 2</small><strong>Abrams</strong></span><span>⌄</span></button>
+            </div>
+            <p class="hint">Optional · wird nur im Lane-Kontext ausgewertet</p>
+          </section>
+
+          <section class="setup-step build-step">
+            <h2><span class="step-seal">4</span> Vorschau</h2>
+            <button id="build-button" class="primary-button" type="button"><span aria-hidden="true">✦</span> Build prüfen</button>
+          </section>
+        </div>
+
+        <div class="options-row">
+          <span class="eyebrow">Schnellwahl</span>
+          <div class="quick-picks" aria-label="Spielstil-Schnellwahl">
+            <button type="button" data-style="weapon">Weapon Carry</button>
+            <button type="button" data-style="spirit">Spirit Burst</button>
+            <button type="button" data-style="hybrid">Hybrid</button>
+            <button type="button" data-style="tank">Tank / Bruiser</button>
+          </div>
+        </div>
+      </header>
+
+      <main id="results" class="results" data-focus="weapon">
+        <div class="result-heading">
+          <div>
+            <p class="eyebrow"><span class="focus-dot"></span> Geführter Kaufpfad</p>
+            <h1><span id="result-hero">Warden</span> Build-Vorschau</h1>
+            <p id="result-summary">Noch keine Build-Prüfung gestartet</p>
+          </div>
+          <div class="test-label"><strong>OPTIMIZER-SLICE</strong><span>Weapon Carry · begrenzter Geltungsbereich</span></div>
+        </div>
+
+        <div class="truth-banner" role="note">
+          <span class="truth-icon">i</span>
+          <div><strong>Transparenzhinweis</strong><p>Der aktuelle Slice prüft Warden Weapon Carry als legalen 12-Slot-Kaufpfad vorwärts. Das erste Weapon-Item und die 4'800er-Weapon-Schwelle werden ausdrücklich verfolgt, ohne den ersten Kauf, ein Item oder einen Preis vorzuschreiben. Schaden, Schutz, Sustain, Zugang, Mobilität und Upgrade-Pfade bleiben getrennte Kriterien – ohne addierten Geheimscore. Bedingte Effekte werden ohne belegte Uptime nicht in den DPS eingerechnet. Skills folgen später.</p></div>
+        </div>
+
+        <section id="phase-panel" class="phase-panel panel" aria-live="polite"></section>
+
+        <section class="ability-panel panel">
+          <div class="section-heading">
+            <div><p class="eyebrow">Fähigkeiten</p><h2 id="ability-title">Warden Skill-Übersicht</h2></div>
+            <span id="ability-meta" class="meta-chip">aus heroes/abilities.csv</span>
+          </div>
+          <div id="ability-board" class="ability-board"></div>
+          <p class="section-note">Von links nach rechts lesen: Lila markiert das Freischalten, helle Marker die Kosten für Stufe 1–3. Der Strahl ist mechanisch gültig, aber noch keine optimierte Skill-Priorität.</p>
+        </section>
+
+        <section class="source-panel panel">
+          <div class="section-heading">
+            <div><p class="eyebrow">Datenabdeckung</p><h2>Verbundene Quellen</h2></div>
+            <span id="source-patch" class="meta-chip"></span>
+          </div>
+          <div id="source-stats" class="source-stats"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="picker-dialog" class="picker-dialog">
+      <form method="dialog" class="picker-shell">
+        <div class="picker-heading"><div><p class="eyebrow" id="picker-eyebrow">Auswahl</p><h2 id="picker-title">Held wählen</h2></div><button class="icon-button" value="cancel" aria-label="Schließen">×</button></div>
+        <label class="search-field"><span>⌕</span><input id="picker-search" autocomplete="off" placeholder="Helden suchen …" /></label>
+        <div id="picker-list" class="picker-list"></div>
+        <button id="clear-opponent" class="secondary-button" type="button" hidden>Gegner entfernen</button>
+      </form>
+    </dialog>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

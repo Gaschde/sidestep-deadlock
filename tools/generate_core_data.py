@@ -374,9 +374,9 @@ def effect_type_for(key: str, activation: str) -> str:
     return "active" if activation != "Passive" else "passive"
 
 
-def trigger_for(key: str, activation: str) -> str:
+def trigger_for(key: str, activation: str, conditional: bool = False) -> str:
     low = key.lower()
-    if key in STATIC_PROPERTIES:
+    if key in STATIC_PROPERTIES and not conditional:
         return "equipped"
     if "perkill" in low or "onkill" in low:
         return "kill"
@@ -474,7 +474,13 @@ def build_items_and_effects(item_data: dict[str, Any], lang: dict[str, Any]) -> 
                     used_lang = False
                 else:
                     normalized, unit, label, used_lang = unit_for(key, value, lang)
-                conditional = key not in STATIC_PROPERTIES
+                usage_flags = raw.get("UsageFlags", raw.get("usage_flags", [])) if isinstance(raw, dict) else []
+                tooltip_section = raw.get("TooltipSection", raw.get("tooltip_section", "")) if isinstance(raw, dict) else ""
+                conditional = False if tooltip_section == "innate" else (
+                    key not in STATIC_PROPERTIES
+                    or "ConditionallyApplied" in usage_flags
+                    or tooltip_section in {"active", "passive"}
+                )
                 if conditional and description:
                     condition = f"Quellbedingung (englischer Tooltip): {description}"
                 elif conditional:
@@ -515,7 +521,7 @@ def build_items_and_effects(item_data: dict[str, Any], lang: dict[str, Any]) -> 
                         "value": normalized,
                         "unit": unit,
                         "condition": condition,
-                        "trigger": trigger_for(key, activation),
+                        "trigger": trigger_for(key, activation, conditional),
                         "target_scope": target_scope if conditional else "Self",
                         "nonhero_behavior": nonhero,
                         "objective_behavior": (
