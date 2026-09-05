@@ -43,7 +43,7 @@ Regeln:
 
 ## 2. Anfrage normalisieren
 
-Erstelle intern einen Build-Request gemäß `schemas/build_request_schema.md`.
+Erstelle intern einen Build-Request gemäß `docs/schemas/build_request_schema.md`.
 
 Mindestens erforderlich:
 
@@ -292,7 +292,7 @@ Bei einem Fehler korrigiere die Berechnung und führe die Kontrolle erneut aus. 
 
 ## 14. Ausgabeformat
 
-Gib das Ergebnis gemäß `schemas/build_result_schema.md` aus und beginne mit dem Ergebnis, nicht mit der Arbeitsbeschreibung.
+Gib das Ergebnis gemäß `docs/schemas/build_result_schema.md` aus und beginne mit dem Ergebnis, nicht mit der Arbeitsbeschreibung.
 
 Reihenfolge:
 

@@ -28,8 +28,8 @@ Gesamtstatus: **PASS_WITH_WARNINGS**
 | Current-patch Celeste values | PASS | `ability_mechanics.csv; ability_upgrades.csv` | 0 | All eleven August 22 hero changes resolve to the current structured values. | — |
 | Item interaction evidence | WARNING | `data/interactions/hero_interactions.csv` | 21 | Documented Melee/Heavy-Melee item interactions are included; the complete Item×Ability matrix remains open and no undocumented row was invented. | HUNC-0004 |
 | Summon inheritance evidence | WARNING | `data/heroes/summons.csv` | 7 | Created-unit values are present, but inheritance/proc/objective behavior is not fully exposed. | HUNC-0005 |
-| HeroData patch synchronization | WARNING | `research/heroes/page_sync_audit.csv` | 1 | HeroData predates the latest patch; patch scope indicates no later base-stat edit, but full client sync remains unproven. | HUNC-0002 |
-| Stale/non-synchronized pages | WARNING | `research/heroes/page_sync_audit.csv` | 2 | HeroData and the rendered comparison table predate the latest patch; neither overrides the current AbilityData export. | HUNC-0002; HUNC-0007 |
+| HeroData patch synchronization | WARNING | `docs/research/heroes/page_sync_audit.csv` | 1 | HeroData predates the latest patch; patch scope indicates no later base-stat edit, but full client sync remains unproven. | HUNC-0002 |
+| Stale/non-synchronized pages | WARNING | `docs/research/heroes/page_sync_audit.csv` | 2 | HeroData and the rendered comparison table predate the latest patch; neither overrides the current AbilityData export. | HUNC-0002; HUNC-0007 |
 | Objective/proc/summon evidence boundary | PASS | `ability_mechanics.csv; hero_interactions.csv` | 0 | Only explicit structured target-class fields are emitted; undocumented application is preserved as uncertainty. | HUNC-0004; HUNC-0005 |
 | Model-knowledge substitution | PASS | `all generated datasets` | 0 | Values originate from cached deadlock.wiki primary data or explicit patch notes; exclusions are logged. | — |
 | Core patch compatibility | PASS | `data/core/manifest.json` | 0 | Core patch is Minor Update - 08-22-2026; hero patch is Minor Update - 08-22-2026. | — |

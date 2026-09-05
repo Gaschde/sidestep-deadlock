@@ -23,7 +23,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE = ROOT / "data" / "core"
-RESEARCH = ROOT / "research" / "master"
+RESEARCH = ROOT / "docs" / "research" / "master"
 API = "https://deadlock.wiki/api.php"
 EXPECTED_LATEST_UPDATE = "August 22 2026"
 PATCH_TITLE = "Minor Update - 08-22-2026"
