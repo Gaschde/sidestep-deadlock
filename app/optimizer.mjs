@@ -30,7 +30,7 @@ const WEAPON_MECHANICS_CACHE = new WeakMap();
 const SCENARIO_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_BUDGETS = [3200, 4800, 7200, 12000, 20000, 30000, 40000];
-const COMPLETE_REPLACEMENT_SEED_LIMIT = 3;
+const COMPLETE_REPLACEMENT_SEED_LIMIT = 9;
 
 function number(value) {
   const parsed = Number(value);
@@ -714,7 +714,13 @@ function weaponFrontierMetrics(weapon) {
 
 function buildPathTrajectory(state, request, data) {
   const cachedProfiles = TRAJECTORY_PROFILE_CACHE.get(data) || new Map();
-  const cacheKey = `${request.heroId}:${number(request.budget)}:${state.events.map((event) => `${event.item_id}@${event.total_spent}`).join("|")}`;
+  const maximumTrajectoryBudget = Math.min(
+    number(request.budget),
+    state.spent,
+    Math.max(...TRAJECTORY_BUDGETS.filter((budget) => budget <= number(request.budget) && budget <= state.spent), 0)
+  );
+  const trajectoryEvents = state.events.filter((event) => number(event.total_spent) <= maximumTrajectoryBudget);
+  const cacheKey = `${request.heroId}:${number(request.budget)}:${maximumTrajectoryBudget}:${trajectoryEvents.map((event) => `${event.item_id}@${event.total_spent}`).join("|")}`;
   if (cachedProfiles.has(cacheKey)) return cachedProfiles.get(cacheKey);
   const entries = TRAJECTORY_BUDGETS
     .filter((budget) => budget <= number(request.budget) && budget <= state.spent)
@@ -1023,10 +1029,6 @@ function neutralSearchOrder(left, right) {
   return searchStateKey(left.state).localeCompare(searchStateKey(right.state));
 }
 
-function boundedNonDominatedSearchSlice(candidates, limit) {
-  return [...candidates].sort(neutralSearchOrder).slice(0, limit);
-}
-
 function capabilitySignature(candidate) {
   const { evaluation, state } = candidate;
   const weaponSignature = Object.values(weaponFrontierMetrics(evaluation.scenarios.weaponMechanics)).join(",");
@@ -1113,7 +1115,8 @@ export function rankedCarryStates(states, request, data, limit, requireCompleteP
     !candidates.some((other, otherIndex) => otherIndex !== index && dominates(other, candidate))
   );
   if (!requireCompletePortfolio) return budgetBalancedSlice(pareto, limit);
-  return pareto.sort(representativeOrder).slice(0, limit);
+  const order = options.neutralOrder ? neutralSearchOrder : representativeOrder;
+  return pareto.sort(order).slice(0, limit);
 }
 
 function oneStepReplacementStates(candidates, eligibleItems, request, data) {
@@ -1170,11 +1173,15 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     allStates.push(...frontier);
     if (!frontier.length) break;
   }
-  const finalPool = rankedCarryStates(allStates, normalizedRequest, data, Number.POSITIVE_INFINITY, true, { includeDecision: false });
-  const seedCandidates = boundedNonDominatedSearchSlice(
-    trajectoryPareto(finalPool, normalizedRequest, data),
-    COMPLETE_REPLACEMENT_SEED_LIMIT
+  const finalPool = rankedCarryStates(
+    allStates,
+    normalizedRequest,
+    data,
+    COMPLETE_REPLACEMENT_SEED_LIMIT,
+    true,
+    { includeDecision: false, neutralOrder: true }
   );
+  const seedCandidates = trajectoryPareto(finalPool, normalizedRequest, data);
   const replacementCandidates = rankedCarryStates(
     oneStepReplacementStates(seedCandidates, eligibleItems, normalizedRequest, data),
     normalizedRequest,
