@@ -8,6 +8,7 @@ import {
   assessWeaponItem,
   assessWeaponCarryItem,
   buildOptimizerData,
+  buildPathTrajectory,
   createInitialBuildState,
   createCarryScenarioPlan,
   evaluateCarryDecision,
@@ -343,6 +344,34 @@ test("Gleiches Inventar behält unterschiedliche Kaufgeschichten", () => {
   assert.equal(retained.length, 2);
   assert.deepEqual(retained.map((candidate) => candidate.state.inventory.map((item) => item.item_id)), [["damage"], ["damage"]]);
   assert.notEqual(retained[0].state.events.length, retained[1].state.events.length);
+});
+
+test("Trajektorien-Cache trennt Kauf- und Replacement-Historie bei gleichem Item und Soul-Stand", () => {
+  const data = fixture();
+  const spirit = data.itemsById.get("spirit");
+  const damage = data.itemsById.get("damage");
+  const purchasePath = {
+    inventory: [spirit, damage], spent: 3200, activeItems: 0,
+    events: [
+      { purchase_type: "purchase", item_id: "spirit", item: spirit, total_spent: 800 },
+      { purchase_type: "purchase", item_id: "damage", item: damage, total_spent: 3200 }
+    ]
+  };
+  const replacementPath = {
+    inventory: [damage], spent: 3200, activeItems: 0,
+    events: [
+      { purchase_type: "purchase", item_id: "spirit", item: spirit, total_spent: 800 },
+      { purchase_type: "replacement", item_id: "damage", item: damage, total_spent: 3200, upgradeFrom: spirit, replaces_item_id: "spirit" }
+    ]
+  };
+  const trajectoryRequest = { ...request, budget: 3200 };
+  const purchaseTrajectory = buildPathTrajectory(purchasePath, trajectoryRequest, data);
+  const replacementTrajectory = buildPathTrajectory(replacementPath, trajectoryRequest, data);
+
+  assert.notStrictEqual(purchaseTrajectory, replacementTrajectory);
+  assert.deepEqual(purchaseTrajectory.checkpoints[0].inventory, ["spirit", "damage"]);
+  assert.deepEqual(replacementTrajectory.checkpoints[0].inventory, ["damage"]);
+  assert.strictEqual(buildPathTrajectory(purchasePath, trajectoryRequest, data), purchaseTrajectory);
 });
 
 test("Fehlende Frühbasis verwirft einen sonst legalen Suchzustand nicht automatisch", () => {

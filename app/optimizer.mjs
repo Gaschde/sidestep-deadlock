@@ -713,7 +713,17 @@ function weaponFrontierMetrics(weapon) {
   };
 }
 
-function buildPathTrajectory(state, request, data) {
+function trajectoryEventKey(event) {
+  return [
+    event.purchase_type,
+    event.item_id,
+    event.total_spent,
+    event.upgradeFrom?.item_id || "",
+    event.replaces_item_id || ""
+  ].join("@");
+}
+
+export function buildPathTrajectory(state, request, data) {
   const cachedProfiles = TRAJECTORY_PROFILE_CACHE.get(data) || new Map();
   const maximumTrajectoryBudget = Math.min(
     number(request.budget),
@@ -721,7 +731,7 @@ function buildPathTrajectory(state, request, data) {
     Math.max(...TRAJECTORY_BUDGETS.filter((budget) => budget <= number(request.budget) && budget <= state.spent), 0)
   );
   const trajectoryEvents = state.events.filter((event) => number(event.total_spent) <= maximumTrajectoryBudget);
-  const cacheKey = `${request.heroId}:${number(request.budget)}:${maximumTrajectoryBudget}:${trajectoryEvents.map((event) => `${event.item_id}@${event.total_spent}`).join("|")}`;
+  const cacheKey = `${request.heroId}:${number(request.budget)}:${maximumTrajectoryBudget}:${trajectoryEvents.map(trajectoryEventKey).join("|")}`;
   if (cachedProfiles.has(cacheKey)) return cachedProfiles.get(cacheKey);
   const entries = TRAJECTORY_BUDGETS
     .filter((budget) => budget <= number(request.budget) && budget <= state.spent)
