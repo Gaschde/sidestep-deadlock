@@ -919,7 +919,7 @@ function paretoMetrics(candidate) {
 }
 
 function dominates(left, right) {
-  if (left.state.spent !== right.state.spent) return false;
+  if (left.state.spent !== right.state.spent || inventoryKey(left.state) !== inventoryKey(right.state)) return false;
   const leftMetrics = paretoMetrics(left);
   const rightMetrics = paretoMetrics(right);
   const keys = Object.keys(leftMetrics);

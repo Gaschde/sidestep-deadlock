@@ -228,12 +228,12 @@ test("Weapon-Frontier behält kurzfristig stärkeren und nachhaltig stärkeren P
   assert.deepEqual(new Set(retained.map((candidate) => candidate.state.inventory[0].item_id)), new Set(["burst", "sustained"]));
 });
 
-test("Weapon-Frontier entfernt mechanisch eindeutig unterlegenen Pfad", () => {
+test("Weapon-Frontier behält unterschiedliche Inventare trotz eindeutiger momentaner Überlegenheit", () => {
   const data = fixture();
   const burst = oneItemState(data.itemsById.get("burst"));
   const superior = oneItemState(data.itemsById.get("superior"));
   const retained = rankedCarryStates([burst, superior], request, data, 2);
-  assert.deepEqual(retained.map((candidate) => candidate.state.inventory[0].item_id), ["superior"]);
+  assert.deepEqual(new Set(retained.map((candidate) => candidate.state.inventory[0].item_id)), new Set(["burst", "superior"]));
 });
 
 test("Sustained Cycle DPS allein eliminiert keinen echten Weapon-Trade-off", () => {
@@ -269,7 +269,7 @@ test("Nicht dominierte vollständige Pfade erhalten Replacement-Suche unabhängi
   assert.ok(!result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("burst")));
 });
 
-test("Cross-Inventory-Pareto entfernt den einzigen späteren Upgrade-Pfad in der vollständigen Weapon-Carry-Suche", () => {
+test("Cross-Inventory-Pareto bewahrt den einzigen späteren Upgrade-Pfad in der vollständigen Weapon-Carry-Suche", () => {
   const data = crossInventoryUpgradeFixture();
   const searchRequest = { heroId: "hero", objective: "weapon_magazine_dps", budget: 1600 };
   const initial = createInitialBuildState();
@@ -286,14 +286,14 @@ test("Cross-Inventory-Pareto entfernt den einzigen späteren Upgrade-Pfad in der
   );
 
   const firstFrontier = rankedCarryStates([a, b], searchRequest, data, 30);
-  assert.deepEqual(firstFrontier.map((candidate) => candidate.state.inventory[0].item_id), ["a"]);
+  assert.deepEqual(new Set(firstFrontier.map((candidate) => candidate.state.inventory[0].item_id)), new Set(["a", "b"]));
 
   const result = optimizeWeaponCarryFullBuild(searchRequest, data);
   const returnedPaths = [result.winner, ...result.alternatives]
     .map((candidate) => candidate.state.inventory.map((item) => item.item_id).join("|"));
   assert.equal(result.status, "PASS_WITH_WARNINGS");
-  assert.ok(!returnedPaths.includes("c"));
-  assert.equal(result.winner.state.inventory[0].item_id, "a");
+  assert.ok(returnedPaths.includes("c"));
+  assert.equal(result.winner.state.inventory[0].item_id, "c");
 });
 
 test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen DPS", () => {
