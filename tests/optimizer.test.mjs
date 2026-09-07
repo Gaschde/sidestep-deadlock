@@ -218,6 +218,29 @@ test("Sustained Cycle DPS allein eliminiert keinen echten Weapon-Trade-off", () 
   assert.equal(byId.size, 2);
 });
 
+test("Nicht dominierte vollständige Pfade erhalten Replacement-Suche unabhängig vom Präferenzscore", () => {
+  const data = fixture();
+  for (const item of data.items) item.is_public_shop_item = "false";
+  for (const itemId of ["burst", "sustained", "superior"]) data.itemsById.get(itemId).is_public_shop_item = "true";
+  const sustained = oneItemState(data.itemsById.get("sustained"));
+  const superior = oneItemState(data.itemsById.get("superior"));
+  const sustainedDecision = evaluateCarryDecision({
+    state: sustained,
+    evaluation: { scenarios: evaluateCarryScenarios(sustained, request, data), foundations: { checkpoints: [] } }
+  }, request, data);
+  const superiorDecision = evaluateCarryDecision({
+    state: superior,
+    evaluation: { scenarios: evaluateCarryScenarios(superior, request, data), foundations: { checkpoints: [] } }
+  }, request, data);
+  assert.ok(sustainedDecision.robust_score < superiorDecision.robust_score);
+
+  const result = optimizeWeaponCarryFullBuild({ ...request, budget: 1600, maxTransactions: 1 }, data);
+  assert.equal(result.searchLimits.replacement_seed_paths, 2);
+  assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("sustained")));
+  assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("superior")));
+  assert.ok(!result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("burst")));
+});
+
 test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen DPS", () => {
   const data = fixture();
   const state = { inventory: [data.itemsById.get("spirit")], spent: 800, activeItems: 0, events: [] };
@@ -333,6 +356,8 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.equal(result.status, "PASS_WITH_WARNINGS");
   assert.deepEqual(result.budgetSensitivity.map((entry) => entry.budget), [35000, 40000, 45000, 60000]);
   assert.equal(result.searchLimits.replacement_depth, 1);
+  assert.ok(result.searchLimits.replacement_seed_paths >= 1);
+  assert.ok(result.searchLimits.final_non_dominated_paths >= 1);
   assert.equal(result.winner.state.inventory.length, 12);
   assert.equal(result.winner.evaluation.heroProfile.reviewStatus, "reviewed_first_slice");
   assert.equal(buildHeroCapabilityProfile("warden", data).hasSpiritWeaponScaling, true);

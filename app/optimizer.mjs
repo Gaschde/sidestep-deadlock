@@ -30,6 +30,7 @@ const WEAPON_MECHANICS_CACHE = new WeakMap();
 const SCENARIO_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_BUDGETS = [3200, 4800, 7200, 12000, 20000, 30000, 40000];
+const COMPLETE_REPLACEMENT_SEED_LIMIT = 3;
 
 function number(value) {
   const parsed = Number(value);
@@ -1018,6 +1019,14 @@ function representativeOrder(left, right) {
     searchStateKey(left.state).localeCompare(searchStateKey(right.state));
 }
 
+function neutralSearchOrder(left, right) {
+  return searchStateKey(left.state).localeCompare(searchStateKey(right.state));
+}
+
+function boundedNonDominatedSearchSlice(candidates, limit) {
+  return [...candidates].sort(neutralSearchOrder).slice(0, limit);
+}
+
 function capabilitySignature(candidate) {
   const { evaluation, state } = candidate;
   const weaponSignature = Object.values(weaponFrontierMetrics(evaluation.scenarios.weaponMechanics)).join(",");
@@ -1082,7 +1091,7 @@ function paretoPool(candidates, perSignature = 4) {
   return [...groups.values()].flatMap((group) => group.sort(representativeOrder).slice(0, perSignature));
 }
 
-export function rankedCarryStates(states, request, data, limit, requireCompletePortfolio = false) {
+export function rankedCarryStates(states, request, data, limit, requireCompletePortfolio = false, options = {}) {
   const unique = new Map();
   for (const state of states) {
     const key = searchStateKey(state);
@@ -1091,7 +1100,9 @@ export function rankedCarryStates(states, request, data, limit, requireCompleteP
     evaluation.scenarios = evaluateCarryScenarios(state, request, data);
     if (!evaluation.scenarios.valid) continue;
     evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(state, data);
-    evaluation.carryDecision = evaluateCarryDecision({ state, evaluation }, request, data);
+    evaluation.carryDecision = options.includeDecision === false
+      ? null
+      : evaluateCarryDecision({ state, evaluation }, request, data);
     if (requireCompletePortfolio && !carryPortfolioIsComplete(state, evaluation, request, data)) continue;
     const candidate = { state, evaluation };
     const current = unique.get(key);
@@ -1159,26 +1170,29 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     allStates.push(...frontier);
     if (!frontier.length) break;
   }
-  const finalPool = rankedCarryStates(allStates, normalizedRequest, data, 9, true);
-  const seedCandidates = trajectoryPareto(finalPool, normalizedRequest, data)
-    .sort(representativeOrder)
-    .slice(0, 3);
+  const finalPool = rankedCarryStates(allStates, normalizedRequest, data, Number.POSITIVE_INFINITY, true, { includeDecision: false });
+  const seedCandidates = boundedNonDominatedSearchSlice(
+    trajectoryPareto(finalPool, normalizedRequest, data),
+    COMPLETE_REPLACEMENT_SEED_LIMIT
+  );
   const replacementCandidates = rankedCarryStates(
     oneStepReplacementStates(seedCandidates, eligibleItems, normalizedRequest, data),
     normalizedRequest,
     data,
-    9,
-    true
+    Number.POSITIVE_INFINITY,
+    true,
+    { includeDecision: false }
   );
-  const candidates = trajectoryPareto(replacementCandidates, normalizedRequest, data)
+  const finalNonDominated = trajectoryPareto(replacementCandidates, normalizedRequest, data)
     .map((candidate) => {
-    const evaluation = evaluateWeaponCarryProfile(candidate.state, normalizedRequest, data, { includeCheckpoints: true });
-    evaluation.scenarios = evaluateCarryScenarios(candidate.state, normalizedRequest, data);
-    evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(candidate.state, data);
-    evaluation.carryDecision = evaluateCarryDecision({ state: candidate.state, evaluation }, normalizedRequest, data);
-    evaluation.trajectory = candidate.trajectory;
-    return { ...candidate, evaluation };
-  }).sort(representativeOrder).slice(0, 3);
+      const evaluation = evaluateWeaponCarryProfile(candidate.state, normalizedRequest, data, { includeCheckpoints: true });
+      evaluation.scenarios = evaluateCarryScenarios(candidate.state, normalizedRequest, data);
+      evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(candidate.state, data);
+      evaluation.carryDecision = evaluateCarryDecision({ state: candidate.state, evaluation }, normalizedRequest, data);
+      evaluation.trajectory = candidate.trajectory;
+      return { ...candidate, evaluation };
+    });
+  const candidates = [...finalNonDominated].sort(representativeOrder).slice(0, 3);
   const winner = candidates[0];
   if (!winner) return { status: "FAIL", reason: "NO_COMPLETE_BALANCED_CARRY_PATH" };
   return {
@@ -1203,9 +1217,12 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     searchLimits: {
       beam_width: beamWidth,
       max_transactions: normalizedRequest.maxTransactions,
-      replacement_search: "Alle relevanten Shop-Items werden für jeden Slot der drei besten vollständigen Vorwärtspfade als einzelne Ersetzung geprüft. Tieferketten aus mehreren Verkäufen bleiben außerhalb der ersten schnellen Suche.",
+      replacement_search: "Alle relevanten Shop-Items werden für jeden Slot von bis zu drei innerhalb der bestehenden Suchgrenzen nicht dominierten vollständigen Vorwärtspfaden als einzelne Ersetzung geprüft. Die bestehende Begrenzung ist deterministisch nach Zustands-/Kaufhistorie-Schlüssel, nicht nach einer Modellpräferenz. Tieferketten aus mehreren Verkäufen bleiben außerhalb der ersten schnellen Suche.",
       replacement_depth: 1,
-      replacement_seed_paths: seedCandidates.length
+      replacement_seed_limit: COMPLETE_REPLACEMENT_SEED_LIMIT,
+      replacement_seed_paths: seedCandidates.length,
+      replacement_seed_path_keys: seedCandidates.map((candidate) => searchStateKey(candidate.state)),
+      final_non_dominated_paths: finalNonDominated.length
     },
     winner: { ...winner, itemAssessments: winner.state.inventory.map((item) => ({ item_id: item.item_id, ...assessWeaponCarryItem(item, data, normalizedRequest) })) },
     alternatives: candidates.slice(1),
@@ -1221,7 +1238,7 @@ export function optimizeWeaponCarryFullBuild(request, data) {
         "Die Walker-Slot-Freischaltungen sind als 60'000-Souls-Planungsannahme modelliert; ihre tatsächliche zeitliche Zuordnung ist in den Daten unbekannt.",
         "Die Kaufhistorien-Erhaltung ist technisch auf drei nicht identische Verläufe pro aktuellem Inventar begrenzt; darüber hinaus gilt die Suchbegrenzung, nicht eine Spielregel.",
         "Skill-Reihenfolge und Item×Ability-Uptimes sind noch keine gemeinsam durchsuchte, verifizierte Ebene.",
-        "Ersetzungen werden als ein einzelner letzter Schritt über die drei besten vollständigen Vorwärtspfade geprüft; Ketten aus mehreren Verkäufen sind noch nicht Teil der schnellen Suche.",
+        `Ersetzungen werden als ein einzelner letzter Schritt über bis zu ${COMPLETE_REPLACEMENT_SEED_LIMIT} nicht dominierte vollständige Vorwärtspfade geprüft. Die bestehende Suchgrenze ist nur deterministisch nach Zustands-/Kaufhistorie-Schlüssel geordnet, nicht nach einer Modellpräferenz; Ketten aus mehreren Verkäufen sind noch nicht Teil der schnellen Suche.`,
         ...(request.budget ? [] : [`Kein Endbudget angegeben; ${assumedEndBudget.toLocaleString("de-CH")} Souls werden als offengelegte Analyseannahme verwendet.`]),
         "Die Skill-Reihenfolge wird in diesem Slice noch nicht gemeinsam mit den Käufen optimiert."
       ]
