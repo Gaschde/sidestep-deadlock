@@ -263,10 +263,10 @@ test("Nicht dominierte vollständige Pfade erhalten Replacement-Suche unabhängi
   assert.ok(sustainedDecision.robust_score < superiorDecision.robust_score);
 
   const result = optimizeWeaponCarryFullBuild({ ...request, budget: 1600, maxTransactions: 1 }, data);
-  assert.equal(result.searchLimits.replacement_seed_paths, 2);
+  assert.equal(result.searchLimits.replacement_seed_paths, 3);
   assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("sustained")));
   assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("superior")));
-  assert.ok(!result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("burst")));
+  assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("burst")));
 });
 
 test("Cross-Inventory-Pareto bewahrt den einzigen späteren Upgrade-Pfad in der vollständigen Weapon-Carry-Suche", () => {

@@ -29,6 +29,7 @@ const CHECKPOINT_PROFILE_CACHE = new WeakMap();
 const WEAPON_MECHANICS_CACHE = new WeakMap();
 const SCENARIO_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_PROFILE_CACHE = new WeakMap();
+const TRAJECTORY_CHECKPOINT_INDEX_CACHE = new WeakMap();
 const TRAJECTORY_BUDGETS = [3200, 4800, 7200, 12000, 20000, 30000, 40000];
 const COMPLETE_REPLACEMENT_SEED_LIMIT = 9;
 
@@ -749,20 +750,35 @@ function buildPathTrajectory(state, request, data) {
 }
 
 function trajectoryDominates(left, right) {
-  const rightByBudget = new Map(right.trajectory.checkpoints.filter((entry) => entry.valid !== false).map((entry) => [entry.budget, entry]));
-  const commonBudgets = left.trajectory.checkpoints.filter((entry) => entry.valid !== false && rightByBudget.has(entry.budget));
-  if (!commonBudgets.length) return false;
+  const leftIndex = trajectoryCheckpointIndex(left.trajectory);
+  const rightIndex = trajectoryCheckpointIndex(right.trajectory);
+  let hasCommonBudget = false;
   let strictlyBetter = false;
-  for (const leftEntry of commonBudgets) {
-    const rightEntry = rightByBudget.get(leftEntry.budget);
-    const leftMetrics = { ...leftEntry.metrics, unspentSouls: leftEntry.unspentSouls };
-    const rightMetrics = { ...rightEntry.metrics, unspentSouls: rightEntry.unspentSouls };
-    for (const metric of Object.keys(leftMetrics)) {
-      if (leftMetrics[metric] < rightMetrics[metric]) return false;
-      if (leftMetrics[metric] > rightMetrics[metric]) strictlyBetter = true;
+  for (const leftEntry of leftIndex.entries) {
+    const rightEntry = rightIndex.byBudget.get(leftEntry.budget);
+    if (!rightEntry) continue;
+    hasCommonBudget = true;
+    for (const metric of leftEntry.metricKeys) {
+      if (leftEntry.metrics[metric] < rightEntry.metrics[metric]) return false;
+      if (leftEntry.metrics[metric] > rightEntry.metrics[metric]) strictlyBetter = true;
     }
   }
-  return strictlyBetter;
+  return hasCommonBudget && strictlyBetter;
+}
+
+function trajectoryCheckpointIndex(trajectory) {
+  let index = TRAJECTORY_CHECKPOINT_INDEX_CACHE.get(trajectory);
+  if (!index) {
+    const entries = trajectory.checkpoints
+      .filter((entry) => entry.valid !== false)
+      .map((entry) => {
+        const metrics = { ...entry.metrics, unspentSouls: entry.unspentSouls };
+        return { budget: entry.budget, metrics, metricKeys: Object.keys(metrics) };
+      });
+    index = { entries, byBudget: new Map(entries.map((entry) => [entry.budget, entry])) };
+    TRAJECTORY_CHECKPOINT_INDEX_CACHE.set(trajectory, index);
+  }
+  return index;
 }
 
 function trajectoryPareto(candidates, request, data) {
@@ -770,9 +786,22 @@ function trajectoryPareto(candidates, request, data) {
     ...candidate,
     trajectory: buildPathTrajectory(candidate.state, request, data)
   }));
-  return withTrajectory.filter((candidate, index) =>
-    !withTrajectory.some((other, otherIndex) => otherIndex !== index && trajectoryDominates(other, candidate))
-  );
+  const groups = new Map();
+  for (const candidate of withTrajectory) {
+    const group = groups.get(candidate.trajectory) || [];
+    group.push(candidate);
+    groups.set(candidate.trajectory, group);
+  }
+  const groupEntries = [...groups.entries()];
+  const dominatedTrajectories = new Set();
+  for (const [trajectory, group] of groupEntries) {
+    if (groupEntries.some(([otherTrajectory, otherGroup]) =>
+      otherTrajectory !== trajectory && trajectoryDominates(otherGroup[0], group[0])
+    )) {
+      dominatedTrajectories.add(trajectory);
+    }
+  }
+  return withTrajectory.filter((candidate) => !dominatedTrajectories.has(candidate.trajectory));
 }
 
 function inventoryKey(state) {
@@ -1111,9 +1140,22 @@ export function rankedCarryStates(states, request, data, limit, requireCompleteP
     if (!current || representativeOrder(candidate, current) < 0) unique.set(key, candidate);
   }
   const candidates = paretoPool(retainDistinctPurchaseHistories([...unique.values()]));
-  const pareto = candidates.filter((candidate, index) =>
-    !candidates.some((other, otherIndex) => otherIndex !== index && dominates(other, candidate))
-  );
+  const comparisonGroups = new Map();
+  for (const [index, candidate] of candidates.entries()) {
+    const key = `${candidate.state.spent}:${inventoryKey(candidate.state)}`;
+    const group = comparisonGroups.get(key) || [];
+    group.push({ candidate, index });
+    comparisonGroups.set(key, group);
+  }
+  const dominated = new Set();
+  for (const group of comparisonGroups.values()) {
+    for (const { candidate, index } of group) {
+      if (group.some(({ candidate: other, index: otherIndex }) => otherIndex !== index && dominates(other, candidate))) {
+        dominated.add(index);
+      }
+    }
+  }
+  const pareto = candidates.filter((candidate, index) => !dominated.has(index));
   if (!requireCompletePortfolio) return budgetBalancedSlice(pareto, limit);
   const order = options.neutralOrder ? neutralSearchOrder : representativeOrder;
   return pareto.sort(order).slice(0, limit);
