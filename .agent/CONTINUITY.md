@@ -2,6 +2,8 @@
 
 Kurzes, gemeinsames Arbeitslog für alle Sidestep-Tasks. Nur Entscheidungen, Fortschritt und offene Punkte festhalten.
 
+2026-09-07T00:00:00+02:00 [DECISION] `.agent/CONTINUITY.md` ist die einzige laufend gepflegte Status- und Übergabedatei. `CURRENT_STATUS.md` wurde entfernt; Dokumentationsverweise zeigen ausschließlich auf diese Datei.
+
 2026-09-04T22:45:27+02:00 [MILESTONE] Projektstruktur ist bereinigt und auf `main` gemergt; GitHub-Repository besteht.
 
 2026-09-04T22:45:27+02:00 [CODE] Die lokale Web-App liest die kanonischen Daten. Der erste Weapon-Carry-Slice prüft legale Kaufpfade, Slots, Upgrades, Investments und dauerhaft verfügbare Weapon-Effekte. Er liefert nur einen „besten geprüften Build“, keinen vollwertig optimalen Build.

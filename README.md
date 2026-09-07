@@ -33,7 +33,7 @@ The repository already contains:
 - a versioned Deadlock Assets API import and review workflow;
 - automated tests for the calculator, path generation, current Warden slice, and API importer.
 
-The optimizer is intentionally described as **best evaluated**, not globally optimal. The current Warden slice has technical search bounds and still needs a separately reviewed selection model; it does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the concise local project status and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for a handover-ready technical summary.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. The current Warden slice has technical search bounds and still needs a separately reviewed selection model; it does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for the current project status, decisions, and open points, and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the technical handover summary.
 
 ## Current review roadmap
 

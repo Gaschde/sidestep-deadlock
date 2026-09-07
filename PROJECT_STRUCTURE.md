@@ -1,6 +1,6 @@
 # Sidestep Deadlock – Projektstruktur
 
-Stand: 7. September 2026. Diese Datei erklärt die Ordnerstruktur und die wichtigsten Einstiegspunkte. Für den inhaltlichen Gesamtstand und eine Übergabe siehe `PROJECT_CONTEXT.md` und `CURRENT_STATUS.md`.
+Stand: 7. September 2026. Diese Datei erklärt die Ordnerstruktur und die wichtigsten Einstiegspunkte. Für den laufenden Projektstand, Entscheidungen und eine Übergabe siehe `.agent/CONTINUITY.md`.
 
 ## Struktur auf einen Blick
 
@@ -55,11 +55,11 @@ Allgemeine Einführung für Nutzer und Entwickler. Beschreibt Produktidee, Daten
 
 ### `PROJECT_CONTEXT.md`
 
-Kompakte Übergabe mit Produktziel, verbindlichen Datenregeln, aktuellem Optimizer-Slice, Berechnungsstand und offenen Grenzen.
+Kompakte technische Übergabe mit Produktziel, verbindlichen Datenregeln, aktuellem Optimizer-Slice, Berechnungsstand und bekannten Grenzen. Den laufenden Status, Entscheidungen und offene Punkte führt ausschließlich `.agent/CONTINUITY.md`.
 
-### `CURRENT_STATUS.md`
+### `.agent/CONTINUITY.md`
 
-Kurzer, nutzerorientierter Projektstatus: Was die lokale App tatsächlich kann, welche Grenzen offen sind, letzter Prüfstand und nächster Schritt.
+Einzige laufend gepflegte Status- und Übergabedatei mit relevanten Projektänderungen, Entscheidungen und offenen Punkten.
 
 ### `PROJECT_STRUCTURE.md`
 
@@ -347,7 +347,7 @@ Vorgesehener Bereich für ältere Projektstände. Aktuell enthält er keine für
 
 | Aufgabe | Zuerst lesen |
 |---|---|
-| Projekt übernehmen | `AGENTS.md`, `PROJECT_CONTEXT.md`, `README.md` |
+| Projekt übernehmen | `AGENTS.md`, `.agent/CONTINUITY.md`, `PROJECT_CONTEXT.md`, `README.md` |
 | Build analysieren | `prompts/build_optimizer.md`, beide Manifeste, Build-Schemas |
 | Itemwerte prüfen | `data/core/manifest.json`, `items.csv`, `item_mechanics.csv`, `uncertainties.csv` |
 | Helden/Fähigkeiten prüfen | `data/heroes/manifest.json`, `heroes.csv`, `hero_stats.csv`, `abilities.csv`, `ability_mechanics.csv` |

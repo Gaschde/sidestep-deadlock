@@ -35,3 +35,7 @@ Bei jeder Anfrage nach einem Build, einer Kaufreihenfolge, einem Itemvergleich o
 - Recherchiere nur, wenn der Nutzer es verlangt, die Manifeste widersprüchlich sind oder der Datenstand erkennbar nicht aktuell genug ist.
 - `deadlock.wiki` bleibt bei neuer Spielrecherche die verpflichtende Primärquelle; `deadlockwiki.org` ist ausgeschlossen.
 
+## Projektkontinuität
+
+- `.agent/CONTINUITY.md` ist die einzige laufend gepflegte Status- und Übergabedatei. Relevante Projektänderungen, Entscheidungen und offene Punkte werden dort dokumentiert.
+
