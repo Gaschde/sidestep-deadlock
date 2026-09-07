@@ -35,6 +35,20 @@ The repository already contains:
 
 The optimizer is intentionally described as **best evaluated**, not globally optimal. The current Warden slice has technical search bounds and still needs a separately reviewed selection model; it does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the concise local project status and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for a handover-ready technical summary.
 
+## Current review roadmap
+
+The current Warden review is deliberately being implemented in small, testable steps:
+
+1. **Effect calculation — complete.** Spirit-DPS double counting was removed; permanent resistance stacking is multiplicative; conditional healing and movement remain separate from baseline values; lane healing, regeneration, and lifesteal are distinct; unknown level and skill states are explicit.
+2. **Selection decision — next.** A marginal DPS gain must not automatically defeat a meaningfully more robust path.
+3. Preserve non-dominated purchase histories during the search.
+4. Make a small set of distinct combat comparisons affect decisions.
+5. Continue upgrades and replacements beyond arbitrary budget or full-slot boundaries.
+6. Correct result presentation for upgrades, replacements, costs, and path labels.
+7. Prove quality and runtime with targeted regressions and like-for-like path comparisons.
+
+Steps 2–7 are not implemented yet. The existing selection/search behavior remains in place until each step is reviewed separately.
+
 ## Local web app
 
 The current desktop project also includes a JavaScript web app for interactively inspecting the Warden build path and the underlying verified item effects. Start it with:
