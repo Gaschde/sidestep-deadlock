@@ -26,6 +26,9 @@ function fixture() {
   const items = [
     { item_id: "component", name: "Komponente", category: "Weapon", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
     { item_id: "damage", name: "Schaden", category: "Weapon", tier: "2", total_cost: "1600", is_public_shop_item: "true", active_type: "", confidence: "high" },
+    { item_id: "burst", name: "Burst", category: "Weapon", tier: "2", total_cost: "1600", is_public_shop_item: "false", active_type: "", confidence: "high" },
+    { item_id: "sustained", name: "Sustain", category: "Weapon", tier: "2", total_cost: "1600", is_public_shop_item: "false", active_type: "", confidence: "high" },
+    { item_id: "superior", name: "Überlegen", category: "Weapon", tier: "2", total_cost: "1600", is_public_shop_item: "false", active_type: "", confidence: "high" },
     { item_id: "active", name: "Aktiv", category: "Weapon", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "InstantCast", confidence: "high" },
     { item_id: "irrelevant", name: "Ohne Weapon-Wert", category: "Vitality", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
     { item_id: "spirit", name: "Spirit", category: "Spirit", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
@@ -39,6 +42,13 @@ function fixture() {
     itemMechanics: [
       { item_id: "damage", effect_id: "damage_pct", mechanic: "base_attack_damage_percent", value: "20", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "damage", effect_id: "fire_rate", mechanic: "bonus_fire_rate", value: "10", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "burst", effect_id: "burst_damage", mechanic: "base_attack_damage_percent", value: "50", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "burst", effect_id: "burst_rate", mechanic: "bonus_fire_rate", value: "100", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "sustained", effect_id: "sustained_damage", mechanic: "base_attack_damage_percent", value: "25", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "sustained", effect_id: "sustained_clip", mechanic: "bonus_clip_size_percent", value: "700", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "superior", effect_id: "superior_damage", mechanic: "base_attack_damage_percent", value: "100", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "superior", effect_id: "superior_rate", mechanic: "bonus_fire_rate", value: "100", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "superior", effect_id: "superior_clip", mechanic: "bonus_clip_size_percent", value: "100", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "active", effect_id: "active_rate", mechanic: "bonus_fire_rate", value: "5", unit: "percent", condition: "Beim Aktivieren.", trigger: "item_activation", confidence: "high" },
       { item_id: "irrelevant", effect_id: "health", mechanic: "bonus_health", value: "300", unit: "hp", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "spirit", effect_id: "spirit_power", mechanic: "tech_power", value: "10", unit: "spirit_power", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
@@ -172,6 +182,40 @@ test("Bedingte Weapon-Effekte gelangen nicht in die permanente Weapon-Baseline",
   assert.equal(conditional.rounds_per_second, base.rounds_per_second);
   assert.equal(conditional.sustained_cycle_dps, base.sustained_cycle_dps);
   assert.deepEqual(conditional.effects.evidence, []);
+});
+
+function oneItemState(item) {
+  return { inventory: [item], spent: 1600, grossSpent: 1600, activeItems: 0, events: [] };
+}
+
+test("Weapon-Frontier behält kurzfristig stärkeren und nachhaltig stärkeren Pfad", () => {
+  const data = fixture();
+  const burst = oneItemState(data.itemsById.get("burst"));
+  const sustained = oneItemState(data.itemsById.get("sustained"));
+  const burstMechanics = evaluateWeaponMechanics(burst, request, data);
+  const sustainedMechanics = evaluateWeaponMechanics(sustained, request, data);
+  assert.ok(burstMechanics.weaponDamageAt(0.5) > sustainedMechanics.weaponDamageAt(0.5));
+  assert.ok(sustainedMechanics.sustained_cycle_dps > burstMechanics.sustained_cycle_dps);
+  const retained = rankedCarryStates([burst, sustained], request, data, 2);
+  assert.deepEqual(new Set(retained.map((candidate) => candidate.state.inventory[0].item_id)), new Set(["burst", "sustained"]));
+});
+
+test("Weapon-Frontier entfernt mechanisch eindeutig unterlegenen Pfad", () => {
+  const data = fixture();
+  const burst = oneItemState(data.itemsById.get("burst"));
+  const superior = oneItemState(data.itemsById.get("superior"));
+  const retained = rankedCarryStates([burst, superior], request, data, 2);
+  assert.deepEqual(retained.map((candidate) => candidate.state.inventory[0].item_id), ["superior"]);
+});
+
+test("Sustained Cycle DPS allein eliminiert keinen echten Weapon-Trade-off", () => {
+  const data = fixture();
+  const burst = oneItemState(data.itemsById.get("burst"));
+  const sustained = oneItemState(data.itemsById.get("sustained"));
+  const retained = rankedCarryStates([burst, sustained], request, data, 2);
+  const byId = new Map(retained.map((candidate) => [candidate.state.inventory[0].item_id, candidate]));
+  assert.ok(byId.get("sustained").evaluation.scenarios.common.sustained_weapon_dps > byId.get("burst").evaluation.scenarios.common.sustained_weapon_dps);
+  assert.equal(byId.size, 2);
 });
 
 test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen DPS", () => {

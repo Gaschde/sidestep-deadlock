@@ -679,7 +679,7 @@ function trajectoryMetrics(scenarios) {
   const common = scenarios.common;
   const laneHealing = common.sustain_by_availability;
   return {
-    sustainedWeaponDps: common.sustained_weapon_dps,
+    ...weaponFrontierMetrics(scenarios.weaponMechanics),
     bulletEffectiveHealth: common.effective_health_bullet ?? -Infinity,
     spiritEffectiveHealth: common.effective_health_spirit ?? -Infinity,
     laneHealingPermanentHeroHit: laneHealing.permanent.laneHealing.heroHit,
@@ -691,6 +691,23 @@ function trajectoryMetrics(scenarios) {
     directAccess: Number(common.access.direct),
     combatMobility: common.mobility.combatMoveSpeed + common.mobility.activeMoveSpeed,
     firingUptime: common.firing_uptime
+  };
+}
+
+/**
+ * Zeitfensterfreie Weapon-Dimensionen für Pareto-Vergleiche. Sie verwenden
+ * ausschließlich evaluateWeaponMechanics(): Die Suche erfindet damit weder
+ * eine bevorzugte Kampfdauer noch eine neue Schadensformel.
+ */
+function weaponFrontierMetrics(weapon) {
+  return {
+    damagePerBullet: weapon.damage_per_bullet,
+    roundsPerSecond: weapon.rounds_per_second,
+    clipSize: weapon.clip_size,
+    reloadEfficiency: -weapon.reload_time,
+    damagePerFullMagazine: weapon.damage_per_full_magazine,
+    sustainedWeaponDps: weapon.sustained_cycle_dps,
+    firingUptime: weapon.firing_uptime
   };
 }
 
@@ -874,7 +891,7 @@ function paretoMetrics(candidate) {
   const scenario = evaluation.scenarios.common;
   const laneHealing = scenario.sustain_by_availability;
   return {
-    sustainedWeaponDps: scenario.sustained_weapon_dps,
+    ...weaponFrontierMetrics(evaluation.scenarios.weaponMechanics),
     bulletEffectiveHealth: scenario.effective_health_bullet ?? -Infinity,
     spiritEffectiveHealth: scenario.effective_health_spirit ?? -Infinity,
     health: scenario.health,
@@ -1003,9 +1020,11 @@ function representativeOrder(left, right) {
 
 function capabilitySignature(candidate) {
   const { evaluation, state } = candidate;
+  const weaponSignature = Object.values(weaponFrontierMetrics(evaluation.scenarios.weaponMechanics)).join(",");
   return [
     state.spent,
     inventoryKey(state),
+    weaponSignature,
     ...Object.values(evaluation.capabilities.coverage).map(Number),
     evaluation.foundations.checkpoints.map((entry) => Number(entry.fulfilled)).join(""),
     Math.min(evaluation.capabilities.riskCount, 1),
