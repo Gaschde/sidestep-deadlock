@@ -12,6 +12,7 @@ import {
   createCarryScenarioPlan,
   evaluateCarryDecision,
   evaluateCarryScenarios,
+  evaluateWeaponMechanics,
   evaluateWeaponState,
   optimizeWeaponCarry,
   optimizeWeaponCarryFullBuild,
@@ -38,7 +39,7 @@ function fixture() {
     itemMechanics: [
       { item_id: "damage", effect_id: "damage_pct", mechanic: "base_attack_damage_percent", value: "20", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "damage", effect_id: "fire_rate", mechanic: "bonus_fire_rate", value: "10", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
-      { item_id: "active", effect_id: "active_rate", mechanic: "bonus_fire_rate", value: "5", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "active", effect_id: "active_rate", mechanic: "bonus_fire_rate", value: "5", unit: "percent", condition: "Beim Aktivieren.", trigger: "item_activation", confidence: "high" },
       { item_id: "irrelevant", effect_id: "health", mechanic: "bonus_health", value: "300", unit: "hp", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "spirit", effect_id: "spirit_power", mechanic: "tech_power", value: "10", unit: "spirit_power", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "bullet_resist_a", effect_id: "resist_a", mechanic: "bullet_resist", value: "20", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
@@ -118,6 +119,59 @@ test("Szenariomodell dokumentiert Annahmen und trennt Reload-DPS von bedingten E
   assert.ok(scenarios.common.sustained_weapon_dps < scenarios.common.damage_per_bullet * scenarios.common.rounds_per_second);
   assert.notEqual(scenarios.scenarios.find((scenario) => scenario.id === "skirmish").window_dps, scenarios.scenarios.find((scenario) => scenario.id === "teamfight").window_dps);
   assert.ok(createCarryScenarioPlan().planning_budgets.some((entry) => entry.souls === 40000));
+});
+
+test("Einheitliche Weapon-Mechanik bildet Feuern und Reload über weaponDamage(t) ab", () => {
+  const data = fixture();
+  const mechanics = evaluateWeaponMechanics(createInitialBuildState(), request, data);
+  assert.equal(mechanics.valid, true);
+  assert.equal(mechanics.damage_per_bullet, 20);
+  assert.equal(mechanics.rounds_per_second, 4);
+  assert.equal(mechanics.clip_size, 8);
+  assert.equal(mechanics.reload_time, 2);
+  assert.equal(mechanics.damage_per_full_magazine, 160);
+  assert.equal(mechanics.time_to_empty_clip, 2);
+  assert.equal(mechanics.sustained_cycle_dps, 40);
+  assert.equal(mechanics.firing_uptime, 0.5);
+  assert.equal(mechanics.weaponDamageAt(0), 0);
+  assert.equal(mechanics.weaponDamageAt(1), 80);
+  assert.equal(mechanics.weaponDamageAt(2), 160);
+  assert.equal(mechanics.weaponDamageAt(3), 160);
+  assert.equal(mechanics.weaponDamageAt(4), 160);
+  assert.equal(mechanics.weaponDamageAt(4.5), 200);
+});
+
+test("Weapon-Mechanik unterscheidet Magazin- und Reload-Charakteristiken", () => {
+  const fastReloadData = fixture();
+  fastReloadData.heroStats.find((entry) => entry.mechanic === "clip_size").base_value = "4";
+  fastReloadData.heroStats.find((entry) => entry.mechanic === "reload_time").base_value = "1";
+  const slowReloadData = fixture();
+  slowReloadData.heroStats.find((entry) => entry.mechanic === "clip_size").base_value = "8";
+  slowReloadData.heroStats.find((entry) => entry.mechanic === "reload_time").base_value = "3";
+  const fastReload = evaluateWeaponMechanics(createInitialBuildState(), request, fastReloadData);
+  const slowReload = evaluateWeaponMechanics(createInitialBuildState(), request, slowReloadData);
+  assert.equal(fastReload.damage_per_full_magazine, 80);
+  assert.equal(slowReload.damage_per_full_magazine, 160);
+  assert.equal(fastReload.sustained_cycle_dps, 40);
+  assert.equal(slowReload.sustained_cycle_dps, 32);
+  assert.ok(fastReload.weaponDamageAt(1.5) < slowReload.weaponDamageAt(1.5));
+});
+
+test("Bedingte Weapon-Effekte gelangen nicht in die permanente Weapon-Baseline", () => {
+  const data = fixture();
+  const base = evaluateWeaponMechanics(
+    { inventory: [data.itemsById.get("component")], spent: 800, activeItems: 0, events: [] },
+    request,
+    data
+  );
+  const conditional = evaluateWeaponMechanics(
+    { inventory: [data.itemsById.get("active")], spent: 800, activeItems: 1, events: [] },
+    request,
+    data
+  );
+  assert.equal(conditional.rounds_per_second, base.rounds_per_second);
+  assert.equal(conditional.sustained_cycle_dps, base.sustained_cycle_dps);
+  assert.deepEqual(conditional.effects.evidence, []);
 });
 
 test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen DPS", () => {

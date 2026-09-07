@@ -26,6 +26,7 @@ const CARRY_SURVIVAL_MECHANICS = new Set([
 
 const ALWAYS_AVAILABLE = /^(immer|base hero state)/i;
 const CHECKPOINT_PROFILE_CACHE = new WeakMap();
+const WEAPON_MECHANICS_CACHE = new WeakMap();
 const SCENARIO_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_PROFILE_CACHE = new WeakMap();
 const TRAJECTORY_BUDGETS = [3200, 4800, 7200, 12000, 20000, 30000, 40000];
@@ -274,6 +275,65 @@ function availabilitySummary(profile) {
   };
 }
 
+export function evaluateWeaponMechanics(state, request, data) {
+  const cached = WEAPON_MECHANICS_CACHE.get(data) || new Map();
+  const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
+  if (cached.has(cacheKey)) return cached.get(cacheKey);
+  const baseBulletDamage = heroStat(data.heroStats, request.heroId, "bullet_damage");
+  const baseRoundsPerSecond = heroStat(data.heroStats, request.heroId, "rounds_per_second");
+  const baseClip = heroStat(data.heroStats, request.heroId, "clip_size");
+  const reloadTime = heroStat(data.heroStats, request.heroId, "reload_time");
+  if ([baseBulletDamage, baseRoundsPerSecond, baseClip, reloadTime].some((value) => value === null)) {
+    const missing = { valid: false, reason: "HERO_WEAPON_STAT_MISSING" };
+    cached.set(cacheKey, missing);
+    WEAPON_MECHANICS_CACHE.set(data, cached);
+    return missing;
+  }
+  const effects = permanentWeaponEffects(state, data);
+  const thresholds = thresholdSnapshot(state.inventory, data.economy);
+  const spiritPower = permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower;
+  const spiritRpsScaling = heroStat(data.heroStats, request.heroId, "rounds_per_second_spirit_scaling") || 0;
+  const damageBonus = effects.damageBonus + thresholds.bonuses.weaponDamagePercent;
+  const roundsPerSecond = (baseRoundsPerSecond + spiritPower * spiritRpsScaling) * (1 + effects.fireRateBonus / 100);
+  const clipSize = Math.ceil((baseClip + effects.clipFlat) * (1 + effects.clipPercent / 100));
+  const damagePerBullet = baseBulletDamage * (1 + damageBonus / 100);
+  const timeToEmptyClip = clipSize / roundsPerSecond;
+  const magazineDamage = clipSize * damagePerBullet;
+  const cycleTime = timeToEmptyClip + reloadTime;
+  const weaponDamageAt = (seconds) => {
+    const elapsed = Math.max(0, number(seconds));
+    const fullCycles = Math.floor(elapsed / cycleTime);
+    const remaining = elapsed - fullCycles * cycleTime;
+    const remainingShots = Math.min(clipSize, remaining * roundsPerSecond);
+    return (fullCycles * clipSize + remainingShots) * damagePerBullet;
+  };
+  const profile = {
+    valid: true,
+    damage_per_bullet: damagePerBullet,
+    rounds_per_second: roundsPerSecond,
+    clip_size: clipSize,
+    reload_time: reloadTime,
+    damage_per_full_magazine: magazineDamage,
+    time_to_empty_clip: timeToEmptyClip,
+    sustained_cycle_dps: magazineDamage / cycleTime,
+    firing_uptime: timeToEmptyClip / cycleTime,
+    weaponDamageAt,
+    formula: "weaponDamage(t)=(vollständige Zyklen×Magazinschaden+min(Magazingröße, Restzeit×Schüsse/s)×Schaden/Schuss); während Reload bleibt der Schaden konstant.",
+    inputs: {
+      base_bullet_damage: { value: baseBulletDamage, origin: "game_data" },
+      base_rounds_per_second: { value: baseRoundsPerSecond, origin: "game_data" },
+      base_clip_size: { value: baseClip, origin: "game_data" },
+      reload_time: { value: reloadTime, origin: "game_data" },
+      permanent_effects: { origin: "game_data", effect_ids: effects.evidence }
+    },
+    thresholds,
+    effects
+  };
+  cached.set(cacheKey, profile);
+  WEAPON_MECHANICS_CACHE.set(data, cached);
+  return profile;
+}
+
 export function createCarryScenarioPlan() {
   const model = (id, label, seconds, range) => ({
     id,
@@ -308,40 +368,31 @@ export function evaluateCarryScenarios(state, request, data) {
   const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const plan = createCarryScenarioPlan();
-  const baseBulletDamage = heroStat(data.heroStats, request.heroId, "bullet_damage");
-  const baseRoundsPerSecond = heroStat(data.heroStats, request.heroId, "rounds_per_second");
-  const baseClip = heroStat(data.heroStats, request.heroId, "clip_size");
-  const reloadTime = heroStat(data.heroStats, request.heroId, "reload_time");
+  const weapon = evaluateWeaponMechanics(state, request, data);
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
-  if ([baseBulletDamage, baseRoundsPerSecond, baseClip, reloadTime, baseHealth].some((value) => value === null)) {
+  if (!weapon.valid || baseHealth === null) {
     const missing = { valid: false, reason: "HERO_COMBAT_STAT_MISSING", plan };
     cached.set(cacheKey, missing);
     SCENARIO_PROFILE_CACHE.set(data, cached);
     return missing;
   }
-  const effects = permanentWeaponEffects(state, data);
   const thresholds = thresholdSnapshot(state.inventory, data.economy);
   const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
   const capabilities = evaluateBuildCapabilities(state, data, heroProfile);
-  const spiritPower = permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower;
-  const spiritRpsScaling = heroStat(data.heroStats, request.heroId, "rounds_per_second_spirit_scaling") || 0;
-  const damageBonus = effects.damageBonus + thresholds.bonuses.weaponDamagePercent;
-  const roundsPerSecond = (baseRoundsPerSecond + spiritPower * spiritRpsScaling) * (1 + effects.fireRateBonus / 100);
-  const clipSize = Math.ceil((baseClip + effects.clipFlat) * (1 + effects.clipPercent / 100));
-  const damagePerBullet = baseBulletDamage * (1 + damageBonus / 100);
-  const magazineTime = clipSize / roundsPerSecond;
-  const cycleDps = (clipSize * damagePerBullet) / (magazineTime + reloadTime);
   const health = (baseHealth + capabilities.permanent.bonusHealth) * (1 + thresholds.bonuses.vitalityHealthPercent / 100);
   const effectiveHealth = (resist) => resist >= 100 ? null : health / (1 - resist / 100);
   const bulletResistance = combinedResistance(state, data, new Set(["bullet_resist"]));
   const spiritResistance = combinedResistance(state, data, new Set(["spirit_resist", "tech_resist"]));
   const common = {
-    sustained_weapon_dps: cycleDps,
-    damage_per_bullet: damagePerBullet,
-    rounds_per_second: roundsPerSecond,
-    clip_size: clipSize,
-    reload_time: reloadTime,
+    sustained_weapon_dps: weapon.sustained_cycle_dps,
+    damage_per_bullet: weapon.damage_per_bullet,
+    rounds_per_second: weapon.rounds_per_second,
+    clip_size: weapon.clip_size,
+    reload_time: weapon.reload_time,
+    damage_per_full_magazine: weapon.damage_per_full_magazine,
+    time_to_empty_clip: weapon.time_to_empty_clip,
+    firing_uptime: weapon.firing_uptime,
     health,
     effective_health_bullet: effectiveHealth(bulletResistance.percent),
     effective_health_spirit: effectiveHealth(spiritResistance.percent),
@@ -361,22 +412,12 @@ export function evaluateCarryScenarios(state, request, data) {
     conditional_effects_excluded: capabilities.sources.filter((source) => source.availability !== "permanent")
       .map((source) => ({ effect_id: source.effect_id, item_id: source.item_id, trigger: source.trigger, cooldown: source.cooldown, duration: source.duration, origin: "game_data" }))
   };
-  const finiteWindow = (seconds) => {
-    const cycleTime = magazineTime + reloadTime;
-    const fullCycles = Math.floor(seconds / cycleTime);
-    const remaining = seconds - fullCycles * cycleTime;
-    const remainingShots = Math.min(clipSize, remaining * roundsPerSecond);
-    const weaponDamage = (fullCycles * clipSize + remainingShots) * damagePerBullet;
-    return { damage: weaponDamage, dps: weaponDamage / seconds };
-  };
   const profile = {
     valid: true,
     plan,
+    weaponMechanics: weapon,
     inputs: {
-      base_bullet_damage: { value: baseBulletDamage, origin: "game_data" },
-      base_rounds_per_second: { value: baseRoundsPerSecond, origin: "game_data" },
-      base_clip_size: { value: baseClip, origin: "game_data" },
-      reload_time: { value: reloadTime, origin: "game_data" },
+      ...weapon.inputs,
       base_health: { value: baseHealth, origin: "game_data" },
       hero_level: request.heroLevel === undefined || request.heroLevel === null
         ? { value: null, origin: "unknown", treatment: "Nur kanonische Basiswerte; Level-/Boon-Wachstum wird nicht ergänzt." }
@@ -384,7 +425,6 @@ export function evaluateCarryScenarios(state, request, data) {
       ability_levels: request.abilityLevels
         ? { value: request.abilityLevels, origin: "model_input", treatment: "Nicht in Item- oder Kampfwerte übersetzt; gemeinsame Skill-/Item-Suche ist noch offen." }
         : { value: null, origin: "unknown", treatment: "Fähigkeitszustand ist nicht modelliert und liefert keine stillschweigenden Kampfboni." },
-      permanent_effects: { origin: "game_data", effect_ids: effects.evidence },
       formulas: [
         { value: "final_ammo=ceil((base_ammo+flat_bonuses)*(1+sum(percent_bonuses)))", origin: "game_data", source: "AMMO-001" },
         { value: "cycle_dps=(clip*damage_per_bullet)/(clip/rounds_per_second+reload_time)", origin: "model_assumption", reason: "Vergleichsformel für kontinuierliches Feuern ohne Trefferquote, Falloff oder Zielresistenzen." },
@@ -394,8 +434,8 @@ export function evaluateCarryScenarios(state, request, data) {
     },
     common,
     scenarios: plan.scenarios.map((scenario) => {
-      const window = finiteWindow(scenario.duration_seconds);
-      return { ...scenario, ...common, window_damage: window.damage, window_dps: window.dps };
+      const damage = weapon.weaponDamageAt(scenario.duration_seconds);
+      return { ...scenario, ...common, window_damage: damage, window_dps: damage / scenario.duration_seconds };
     })
   };
   cached.set(cacheKey, profile);
@@ -637,7 +677,6 @@ function buildBudgetSensitivity(state, request, data) {
 
 function trajectoryMetrics(scenarios) {
   const common = scenarios.common;
-  const magazineTime = common.clip_size / common.rounds_per_second;
   const laneHealing = common.sustain_by_availability;
   return {
     sustainedWeaponDps: common.sustained_weapon_dps,
@@ -651,7 +690,7 @@ function trajectoryMetrics(scenarios) {
     outOfCombatRegen: common.out_of_combat_regen,
     directAccess: Number(common.access.direct),
     combatMobility: common.mobility.combatMoveSpeed + common.mobility.activeMoveSpeed,
-    firingUptime: magazineTime / (magazineTime + common.reload_time)
+    firingUptime: common.firing_uptime
   };
 }
 

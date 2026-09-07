@@ -99,3 +99,7 @@ Kurzes, gemeinsames Arbeitslog für alle Sidestep-Tasks. Nur Entscheidungen, For
 2026-09-07 02:45 [TOOL] `npm.cmd test` besteht mit 15 Tests. Neue Regressionen prüfen erhaltene Kaufgeschichten bei gleichem Inventar, das Nicht-Verwerfen eines Zustands ohne Frühbasis und die robuste Auswahl gegen einen DPS-stärkeren, aber deutlich fragileren Kandidaten. Vollständiger Warden-Test ca. 16 Sekunden auf diesem Rechner.
 
 2026-09-07 02:45 [OPEN] Nächster Review-Schritt ist Punkt 4: unterschiedliche Kampfvergleichsszenarien müssen die Auswahl stärker und ohne fiktive Farm-/Gegnerannahmen beeinflussen.
+
+2026-09-07 09:10 [CODE] Einheitliche Weapon-Mechanik ergänzt: dieselbe permanente Effekt-, Investment- und Spirit-Feuerratenberechnung liefert nun Schaden pro Bullet, Schüsse/s, Magazingröße, Reload, Magazinschaden, Leerfeuerzeit, Cycle-DPS, Firing-Uptime und `weaponDamage(t)` für kontinuierliches Feuern. Szenarien verwenden diese Repräsentation; Active-/Conditional-Effekte bleiben ausgeschlossen.
+
+2026-09-07 09:10 [TOOL] `npm.cmd test` besteht mit 18 Tests. Neue Regressionen prüfen `weaponDamage(t)` vor/während/nach Reload, unterschiedliche Magazin-/Reload-Charakteristiken und den Ausschluss bedingter Weapon-Effekte aus der Baseline.
