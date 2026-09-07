@@ -25,13 +25,15 @@ The repository already contains:
 
 - a verified, patch-specific dataset for items, heroes, abilities, progression, global mechanics, and documented special interactions;
 - a deterministic calculator for evaluating a specified build;
-- a bounded beam search for comparing builds within an explicit candidate space;
-- legal purchase-path generation with component upgrades and budget checkpoints;
-- target profiles, hard stat requirements, transparent score profiles, Pareto selection, and marginal item-value reporting;
+- a local JavaScript Warden Weapon-Carry slice with bounded forward search, legal purchases, upgrades, one-step replacements, costs, investments, slots, active-item limits, path checkpoints, and a documented robust-foundation check;
+- a shared sustained-weapon-DPS calculation for the slice's result, path checkpoints, and legacy preselection. It derives Warden's Spirit contribution through verified fire-rate scaling without additionally adding an already-derived Spirit-DPS value;
+- multiplicative stacking of permanent Bullet and Spirit Resistance according to `RES-002` in `data/core/mechanics.json`;
+- separate permanent, active, and conditional healing/mobility profiles. Conditional values are documented but not silently added as simultaneous baseline effects;
+- explicit unknown-state handling: without a supplied and modeled level/skill state, the comparison uses only canonical base stats and does not invent ability bonuses;
 - a versioned Deadlock Assets API import and review workflow;
-- automated tests for the calculator, path generation, search, and API importer.
+- automated tests for the calculator, path generation, current Warden slice, and API importer.
 
-The optimizer is intentionally described as **best evaluated**, not globally optimal. Beam search can discard intermediate candidates, and several systems still require explicit assumptions or further implementation—including sales, objective timing, hit/headshot rates, and automatically estimated proc uptime.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. The current Warden slice has technical search bounds and still needs a separately reviewed selection model; it does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for the concise local project status and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for a handover-ready technical summary.
 
 ## Local web app
 

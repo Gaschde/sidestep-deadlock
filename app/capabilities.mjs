@@ -52,6 +52,16 @@ const WEAPON_MECHANICS = new Set([
 
 const SPIRIT_POWER_MECHANICS = new Set(["spirit_power", "tech_power"]);
 const RISK_MECHANICS = new Set(["max_health_loss_percent", "bonus_move_speed"]);
+const DISTANCE_ITEM_MECHANICS = new Set([
+  "bonus_attack_range_percent",
+  "close_range_bonus_weapon_power",
+  "close_range_bonus_damage_range",
+  "long_range_bonus_weapon_power",
+  "long_range_bonus_weapon_power_min_range",
+  "bonus_bullet_speed_percent",
+  "tech_range_multiplier",
+  "tech_range_multiplier_buff"
+]);
 
 const REVIEWED_HERO_PROFILES = {
   warden: {
@@ -80,6 +90,11 @@ const ITEM_CAPABILITY_CACHE = new WeakMap();
 function number(value) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function heroStatValue(heroStats, mechanic) {
+  const stat = heroStats.find((entry) => entry.mechanic === mechanic && entry.confidence !== "low");
+  return stat ? number(stat.base_value || stat.scaling_value) : null;
 }
 
 export function itemEffectAvailability(item, effect) {
@@ -121,6 +136,10 @@ function emptyMobilityProfile() {
     stamina: 0,
     staminaCooldownReduction: 0
   };
+}
+
+function detailedProfiles(factory) {
+  return Object.fromEntries(["permanent", "active", "conditional"].map((availability) => [availability, factory()]));
 }
 
 function addDetailedEffect(effect, target, includeValue) {
@@ -174,20 +193,78 @@ export function buildHeroCapabilityProfile(heroId, data) {
   }));
 
   const reviewed = REVIEWED_HERO_PROFILES[heroId];
+  const kitCoverage = Object.fromEntries(["damage", "protection", "sustain", "mobility", "control"].map((dimension) => [
+    dimension,
+    sources.filter((source) => source.dimension === dimension).map((source) => ({
+      ability_id: source.ability_id,
+      effect_id: source.effect_id,
+      mechanic: source.mechanic,
+      cooldown: source.cooldown,
+      duration: source.duration,
+      origin: "game_data"
+    }))
+  ]));
   const profile = {
     heroId,
     reviewStatus: reviewed?.reviewStatus || "unreviewed",
     requiredItemDimensions: reviewed?.requiredItemDimensions || [],
     needs: reviewed?.needs || {},
     abilityIds: [...abilityIds],
+    chargedAbilityIds: abilities
+      .filter((ability) => Number(ability.base_charge_count) > 0 || Number(ability.charge_restore_time) > 0)
+      .map((ability) => ability.ability_id),
+    hasChargedAbility: abilities.some((ability) => Number(ability.base_charge_count) > 0 || Number(ability.charge_restore_time) > 0),
     sources,
+    kitCoverage,
     scalingSources,
     hasSpiritWeaponScaling: scalingSources.some((entry) => entry.stat_group === "weapon"),
+    weaponGeometry: {
+      projectileSpeed: heroStatValue(heroStats, "bullet_speed"),
+      falloffStartRange: heroStatValue(heroStats, "falloff_start_range"),
+      falloffEndRange: heroStatValue(heroStats, "falloff_end_range"),
+      falloffEndScale: heroStatValue(heroStats, "falloff_end_scale"),
+      baseAttackRange: heroStatValue(heroStats, "attack_range"),
+      origin: "game_data"
+    },
     evidenceCount: sources.length + scalingSources.length
   };
   cachedProfiles.set(heroId, profile);
   HERO_PROFILE_CACHE.set(data, cachedProfiles);
   return profile;
+}
+
+export function evaluateHeroItemSynergies(item, data, heroProfile) {
+  const synergies = [];
+  for (const effect of data.mechanicsByItem.get(item.item_id) || []) {
+    if (effect.confidence === "low") continue;
+    const availability = itemEffectAvailability(item, effect);
+    if (SPIRIT_POWER_MECHANICS.has(effect.mechanic) && heroProfile.hasSpiritWeaponScaling) {
+      synergies.push({
+        kind: "spirit_weapon_scaling",
+        effect_id: effect.effect_id,
+        mechanic: effect.mechanic,
+        availability,
+        origin: "game_data",
+        evidence: heroProfile.scalingSources.filter((entry) => entry.stat_group === "weapon").map((entry) => entry.stat_id),
+        treatment: availability === "permanent" ? "included_in_weapon_calculation" : "documented_without_uptime"
+      });
+    }
+    if (DISTANCE_ITEM_MECHANICS.has(effect.mechanic)) {
+      const conditionalDistance = ["close_range_bonus_weapon_power", "close_range_bonus_damage_range", "long_range_bonus_weapon_power", "long_range_bonus_weapon_power_min_range"].includes(effect.mechanic);
+      synergies.push({
+        kind: conditionalDistance ? "distance_conditional_weapon_effect" : "weapon_or_ability_range",
+        effect_id: effect.effect_id,
+        mechanic: effect.mechanic,
+        availability,
+        origin: "game_data",
+        weapon_geometry: heroProfile.weaponGeometry,
+        treatment: conditionalDistance
+          ? "documented_without_position_assumption"
+          : availability === "permanent" ? "documented_for_scenario_review" : "documented_without_uptime"
+      });
+    }
+  }
+  return synergies;
 }
 
 export function evaluateItemCapabilities(item, data, heroProfile = null) {
@@ -213,7 +290,10 @@ export function evaluateItemCapabilities(item, data, heroProfile = null) {
     moveSpeed: 0,
     sprintSpeed: 0
   };
-  const detailed = { sustain: emptySustainProfile(), mobility: emptyMobilityProfile() };
+  const detailed = {
+    sustainByAvailability: detailedProfiles(emptySustainProfile),
+    mobilityByAvailability: detailedProfiles(emptyMobilityProfile)
+  };
   const risks = [];
   let weaponOperation = false;
 
@@ -235,7 +315,10 @@ export function evaluateItemCapabilities(item, data, heroProfile = null) {
       coverageByAvailability[dimension][state] = true;
     }
 
-    addDetailedEffect(effect, detailed, state === "permanent" || state === "active" || state === "conditional");
+    addDetailedEffect(effect, {
+      sustain: detailed.sustainByAvailability[state],
+      mobility: detailed.mobilityByAvailability[state]
+    }, true);
 
     if (state === "permanent") {
       if (SPIRIT_POWER_MECHANICS.has(effect.mechanic)) permanent.spiritPower += value;
@@ -265,8 +348,11 @@ export function evaluateItemCapabilities(item, data, heroProfile = null) {
     conditionalAccess: coverageByAvailability.access.conditional,
     weaponOperation,
     permanent,
-    sustain: detailed.sustain,
-    mobility: detailed.mobility,
+    sustain: detailed.sustainByAvailability.permanent,
+    sustainByAvailability: detailed.sustainByAvailability,
+    mobility: detailed.mobilityByAvailability.permanent,
+    mobilityByAvailability: detailed.mobilityByAvailability,
+    synergies: heroProfile ? evaluateHeroItemSynergies(item, data, heroProfile) : [],
     sources,
     risks
   };
@@ -290,8 +376,11 @@ export function evaluateBuildCapabilities(state, data, heroProfile) {
   };
   const sustain = emptySustainProfile();
   const mobility = emptyMobilityProfile();
+  const sustainByAvailability = detailedProfiles(emptySustainProfile);
+  const mobilityByAvailability = detailedProfiles(emptyMobilityProfile);
   const sources = [];
   const risks = [];
+  const synergies = [];
   let weaponOperation = false;
   const coverageByAvailability = Object.fromEntries(Object.keys(coverage).map((key) => [key, {
     permanent: false,
@@ -309,20 +398,31 @@ export function evaluateBuildCapabilities(state, data, heroProfile) {
       }
     }
     for (const key of Object.keys(permanent)) permanent[key] += itemProfile.permanent[key];
-    sustain.laneHealing.heroHit += itemProfile.sustain.laneHealing.heroHit;
-    sustain.laneHealing.npcHit += itemProfile.sustain.laneHealing.npcHit;
-    sustain.combatHealing.bulletLifestealPercent += itemProfile.sustain.combatHealing.bulletLifestealPercent;
-    sustain.combatHealing.abilityLifestealPercent += itemProfile.sustain.combatHealing.abilityLifestealPercent;
-    sustain.combatHealing.onKillHeal += itemProfile.sustain.combatHealing.onKillHeal;
-    sustain.regeneration.alwaysHealthPerSecond += itemProfile.sustain.regeneration.alwaysHealthPerSecond;
-    sustain.regeneration.outOfCombatHealthPerSecond += itemProfile.sustain.regeneration.outOfCombatHealthPerSecond;
-    mobility.combatMoveSpeed += itemProfile.mobility.combatMoveSpeed;
-    mobility.activeMoveSpeed += itemProfile.mobility.activeMoveSpeed;
-    mobility.sprintSpeed += itemProfile.mobility.sprintSpeed;
-    mobility.stamina += itemProfile.mobility.stamina;
-    mobility.staminaCooldownReduction += itemProfile.mobility.staminaCooldownReduction;
+    for (const availability of Object.keys(sustainByAvailability)) {
+      const itemSustain = itemProfile.sustainByAvailability[availability];
+      const itemMobility = itemProfile.mobilityByAvailability[availability];
+      for (const target of [sustainByAvailability[availability], availability === "permanent" ? sustain : null]) {
+        if (!target) continue;
+        target.laneHealing.heroHit += itemSustain.laneHealing.heroHit;
+        target.laneHealing.npcHit += itemSustain.laneHealing.npcHit;
+        target.combatHealing.bulletLifestealPercent += itemSustain.combatHealing.bulletLifestealPercent;
+        target.combatHealing.abilityLifestealPercent += itemSustain.combatHealing.abilityLifestealPercent;
+        target.combatHealing.onKillHeal += itemSustain.combatHealing.onKillHeal;
+        target.regeneration.alwaysHealthPerSecond += itemSustain.regeneration.alwaysHealthPerSecond;
+        target.regeneration.outOfCombatHealthPerSecond += itemSustain.regeneration.outOfCombatHealthPerSecond;
+      }
+      for (const target of [mobilityByAvailability[availability], availability === "permanent" ? mobility : null]) {
+        if (!target) continue;
+        target.combatMoveSpeed += itemMobility.combatMoveSpeed;
+        target.activeMoveSpeed += itemMobility.activeMoveSpeed;
+        target.sprintSpeed += itemMobility.sprintSpeed;
+        target.stamina += itemMobility.stamina;
+        target.staminaCooldownReduction += itemMobility.staminaCooldownReduction;
+      }
+    }
     sources.push(...itemProfile.sources.map((entry) => ({ ...entry, item_id: item.item_id })));
     risks.push(...itemProfile.risks.map((entry) => ({ ...entry, item_id: item.item_id })));
+    synergies.push(...itemProfile.synergies.map((entry) => ({ ...entry, item_id: item.item_id })));
   }
 
   const coverageCount = Object.values(coverage).filter(Boolean).length;
@@ -335,8 +435,11 @@ export function evaluateBuildCapabilities(state, data, heroProfile) {
     weaponOperation,
     permanent,
     sustain,
+    sustainByAvailability,
     mobility,
+    mobilityByAvailability,
     sources,
+    synergies,
     risks,
     riskCount: risks.length
   };

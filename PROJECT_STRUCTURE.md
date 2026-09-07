@@ -1,6 +1,6 @@
 # Sidestep Deadlock – Projektstruktur
 
-Stand: 4. September 2026. Diese Datei erklärt die Ordnerstruktur und die wichtigsten Einstiegspunkte. Für den inhaltlichen Gesamtstand und die Cloud-Übergabe siehe `PROJECT_CONTEXT.md`.
+Stand: 7. September 2026. Diese Datei erklärt die Ordnerstruktur und die wichtigsten Einstiegspunkte. Für den inhaltlichen Gesamtstand und eine Übergabe siehe `PROJECT_CONTEXT.md` und `CURRENT_STATUS.md`.
 
 ## Struktur auf einen Blick
 
@@ -17,7 +17,9 @@ sidestep-deadlock/
 │   ├── index.html
 │   ├── styles.css
 │   ├── app.js
-│   └── lib.mjs
+│   ├── lib.mjs
+│   ├── capabilities.mjs
+│   └── optimizer.mjs
 │
 ├── data/
 │   ├── core/
@@ -53,7 +55,11 @@ Allgemeine Einführung für Nutzer und Entwickler. Beschreibt Produktidee, Daten
 
 ### `PROJECT_CONTEXT.md`
 
-Übergabedokument für ein ChatGPT-Cloud-Projekt. Enthält aktuellen Git- und Arbeitsstand, Architektur, Datenabdeckung, bisherige Entscheidungen, offene Fragen und empfohlene nächste Schritte.
+Kompakte Übergabe mit Produktziel, verbindlichen Datenregeln, aktuellem Optimizer-Slice, Berechnungsstand und offenen Grenzen.
+
+### `CURRENT_STATUS.md`
+
+Kurzer, nutzerorientierter Projektstatus: Was die lokale App tatsächlich kann, welche Grenzen offen sind, letzter Prüfstand und nächster Schritt.
 
 ### `PROJECT_STRUCTURE.md`
 
@@ -64,7 +70,7 @@ Diese Datei. Sie dient als schnelle Navigationshilfe durch das Repository.
 Minimale Node-Konfiguration für die lokale UI:
 
 - `npm start` startet den lokalen Server.
-- `npm test` führt die Tests aus `tests/app.test.mjs` aus.
+- `npm test` führt die Node-Tests aus `tests/*.test.mjs` aus.
 
 Es gibt derzeit keine npm-Paketabhängigkeiten und kein Lockfile.
 
@@ -76,9 +82,9 @@ Kleiner statischer Node-HTTP-Server. Er stellt das Repository lokal auf `127.0.0
 
 Ignoriert lokale Secrets, Python-Caches, virtuelle Umgebungen, Editor-/Betriebssystemdateien, temporäre Dateien und `.superdesign/tmp/`.
 
-## `app/` – lokale Weboberfläche
+## `app/` – lokale Weboberfläche und erster Optimizer-Slice
 
-Dieser Bereich enthält die erste UI-Demo. Sie lädt echte lokale Projektdaten, erzeugt aber noch keine belastbare Build-Optimierung.
+Dieser Bereich lädt echte lokale Projektdaten und enthält einen begrenzten, nachvollziehbaren Warden-Weapon-Carry-Optimizer. Er ist kein globaler Optimalitätsbeweis und kein vollständiger Optimizer für alle Helden oder Spielstile.
 
 ### `app/index.html`
 
@@ -106,7 +112,20 @@ Browserseitige UI-Steuerung. Die Datei:
 - filtert die öffentlich spielbaren Helden;
 - verwaltet Helden-, Gegner-, Stil- und Phasenauswahl;
 - zeigt Patchkompatibilität und Datenabdeckung;
-- rendert Test-Kaufpfad, Fähigkeiten und Interaktionskontext.
+- rendert den gewählten Warden-Kaufpfad, Basis-Metriken, Annahmen, Fähigkeiten und Interaktionskontext.
+
+### `app/optimizer.mjs`
+
+Der aktuelle Warden-Weapon-Carry-Slice:
+
+- legale Vorwärtssuche mit Käufen, Upgrades und einzelnen Ersetzungen;
+- Kosten, Investments, Schwellen, Slots und Active-Limit;
+- gemeinsame Sustained-DPS-/EHP-Berechnung für Ergebnis und Pfadpunkte;
+- begrenzte Pareto-/Trajektorienprüfung mit offen dokumentierten Suchgrenzen.
+
+### `app/capabilities.mjs`
+
+Ordnet belegte Item- und Heldenwirkungen den getrennten Dimensionen Schaden, Schutz, Sustain, Zugang und Mobilität zu. Permanente, aktive und bedingte Werte bleiben getrennt.
 
 ### `app/lib.mjs`
 
@@ -115,9 +134,9 @@ Kleine wiederverwendbare Logikschicht:
 - CSV-Parser
 - Souls-Formatierung
 - Prüfung von Patch-/Moduskompatibilität
-- einfache, bewusst nicht optimierende Test-Build-Auswahl
+- Formatierung und Patch-/Moduskompatibilitätsprüfung
 
-Die Funktion `createTestBuild()` ist nur Demonstrationslogik und nicht die Umsetzung von `prompts/build_optimizer.md`.
+Die Build-Auswahl läuft in `optimizer.mjs`; `lib.mjs` enthält keine konkurrierende Test-Build-Logik mehr.
 
 ## `data/` – strukturierte Spieldaten
 

@@ -1,0 +1,30 @@
+{
+  "buildRequest": {
+    "hero_id": "EXAKTE_HELDEN_ID",
+    "objective": "Messbares Primärziel, zum Beispiel ausgewogene Weapon-Carry-Leistung bis 60000 Souls.",
+    "budget": 60000,
+    "budget_checkpoints": [800, 1600, 3200, 4800, 7200, 12000, 60000],
+    "risk_preference": "robust",
+    "minimum_requirements": {
+      "Beispiel": "Nur belegte Mindestanforderungen eintragen."
+    },
+    "constraints": [
+      "Keine nicht verifizierten Spielwerte verwenden.",
+      "Bedingte Effekte nicht als dauerhaft behandeln.",
+      "Nur bei vollständig definiertem Suchraum 'optimal' sagen; sonst 'bester geprüfter Build'."
+    ]
+  },
+  "verifiedData": {
+    "source": "Hier nur den kleinen, relevanten Auszug aus data/core, data/heroes und data/interactions einfügen: Manifeste, Economy, Slots, Hero-Profil, zulässige Kandidaten, Upgrade-Kanten, Mechaniken und Unsicherheiten.",
+    "items": [],
+    "hero": {},
+    "upgrades": [],
+    "economy_and_slots": {},
+    "interactions": [],
+    "uncertainties": []
+  },
+  "candidateBuild": {
+    "summary": "Hier den aktuellen, deterministisch erzeugten Kaufpfad einfügen. Die Modelle dürfen ihn kritisieren und ändern, aber nicht durch erfundene Daten ergänzen.",
+    "purchaseOrder": []
+  }
+}

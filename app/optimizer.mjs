@@ -8,7 +8,9 @@ import {
 
 const SUPPORTED_WEAPON_MECHANICS = new Set([
   "base_attack_damage_percent",
-  "bonus_fire_rate"
+  "bonus_fire_rate",
+  "bonus_clip_size_percent",
+  "bonus_clip_size"
 ]);
 
 const CARRY_SURVIVAL_MECHANICS = new Set([
@@ -24,6 +26,9 @@ const CARRY_SURVIVAL_MECHANICS = new Set([
 
 const ALWAYS_AVAILABLE = /^(immer|base hero state)/i;
 const CHECKPOINT_PROFILE_CACHE = new WeakMap();
+const SCENARIO_PROFILE_CACHE = new WeakMap();
+const TRAJECTORY_PROFILE_CACHE = new WeakMap();
+const TRAJECTORY_BUDGETS = [3200, 4800, 7200, 12000, 20000, 30000, 40000];
 
 function number(value) {
   const parsed = Number(value);
@@ -35,6 +40,7 @@ function cloneState(state) {
     inventory: [...state.inventory],
     spent: state.spent,
     activeItems: state.activeItems,
+    grossSpent: state.grossSpent || state.spent,
     events: [...state.events]
   };
 }
@@ -90,7 +96,7 @@ function buildEvent(state, item, payment, type, replacedItem = null, economy = n
 }
 
 export function createInitialBuildState() {
-  return { inventory: [], spent: 0, activeItems: 0, events: [] };
+  return { inventory: [], spent: 0, grossSpent: 0, activeItems: 0, events: [] };
 }
 
 export function applyPurchase(state, item, request, data) {
@@ -98,12 +104,17 @@ export function applyPurchase(state, item, request, data) {
   const payment = number(item.total_cost);
   if (next.spent + payment > number(request.budget)) return { ok: false, reason: "BUDGET_EXCEEDED" };
   if (next.inventory.some((owned) => owned.item_id === item.item_id)) return { ok: false, reason: "ITEM_ALREADY_OWNED" };
+  const ancestors = upgradeAncestors(item.item_id, data);
+  if (next.inventory.some((owned) => ancestors.has(owned.item_id) || upgradeAncestors(owned.item_id, data).has(item.item_id))) {
+    return { ok: false, reason: "UPGRADE_FAMILY_ALREADY_OWNED" };
+  }
   if (next.inventory.length >= slotCapacity(request, data.slots)) return { ok: false, reason: "SLOT_CAPACITY_EXCEEDED" };
   if (isActive(item) && next.activeItems >= Math.min(number(data.slots.active_item_limit), number(request.maxActiveItems))) {
     return { ok: false, reason: "ACTIVE_ITEM_LIMIT_EXCEEDED" };
   }
   next.inventory.push(item);
   next.spent += payment;
+  next.grossSpent += payment;
   if (isActive(item)) next.activeItems += 1;
   next.events.push(buildEvent(next, item, payment, "purchase", null, data.economy));
   return { ok: true, state: next };
@@ -126,8 +137,34 @@ export function applyUpgrade(state, edge, request, data) {
   next.inventory.splice(componentIndex, 1, target);
   next.activeItems = activeAfter;
   next.spent += payment;
+  next.grossSpent += payment;
   next.events.push(buildEvent(next, target, payment, "upgrade", replaced, data.economy));
   return { ok: true, state: next, warning: "UNC-0004" };
+}
+
+export function applyReplacement(state, soldItem, item, request, data) {
+  const componentIndex = state.inventory.findIndex((owned) => owned.item_id === soldItem.item_id);
+  if (componentIndex < 0) return { ok: false, reason: "REPLACED_ITEM_MISSING" };
+  if (soldItem.item_id === item.item_id || state.inventory.some((owned) => owned.item_id === item.item_id)) {
+    return { ok: false, reason: "ITEM_ALREADY_OWNED" };
+  }
+  const next = cloneState(state);
+  const proceeds = number(soldItem.total_cost) * number(data.economy.sellback?.rate);
+  const payment = number(item.total_cost) - proceeds;
+  if (next.spent + payment > number(request.budget)) return { ok: false, reason: "BUDGET_EXCEEDED" };
+  const activeAfter = next.activeItems - Number(isActive(soldItem)) + Number(isActive(item));
+  if (activeAfter > Math.min(number(data.slots.active_item_limit), number(request.maxActiveItems))) {
+    return { ok: false, reason: "ACTIVE_ITEM_LIMIT_EXCEEDED" };
+  }
+  next.inventory.splice(componentIndex, 1, item);
+  next.activeItems = activeAfter;
+  next.spent += payment;
+  next.grossSpent += number(item.total_cost);
+  const event = buildEvent(next, item, payment, "replacement", soldItem, data.economy);
+  event.sale_proceeds = proceeds;
+  event.gross_purchase_cost = number(item.total_cost);
+  next.events.push(event);
+  return { ok: true, state: next };
 }
 
 function relevantEffects(item, mechanicsByItem) {
@@ -161,6 +198,9 @@ export function assessWeaponCarryItem(item, data, request) {
   if (item.is_public_shop_item !== "true") return { eligible: false, reason: "NOT_PUBLIC_SHOP_ITEM" };
   if (request.activeItemPreference === "none" && isActive(item)) return { eligible: false, reason: "ACTIVE_ITEMS_DISABLED" };
   const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
+  if (itemRequiresChargedAbility(item, data) && !heroProfile.hasChargedAbility) {
+    return { eligible: false, reason: "HERO_HAS_NO_CHARGED_ABILITY" };
+  }
   const capabilityProfile = evaluateItemCapabilities(item, data, heroProfile);
   const contributes = Object.values(capabilityProfile.coverage).some(Boolean);
   if (contributes) return { eligible: true, capabilityProfile };
@@ -174,16 +214,193 @@ export function assessWeaponCarryItem(item, data, request) {
     : { eligible: false, reason: "NO_VERIFIED_CARRY_CONTRIBUTION" };
 }
 
+function itemRequiresChargedAbility(item, data) {
+  return (data.mechanicsByItem.get(item.item_id) || []).some((effect) =>
+    /charged abilities/i.test(effect.condition || "") ||
+    ["bonus_ability_charges", "cooldown_between_charge_reduction"].includes(effect.mechanic)
+  );
+}
+
 function heroWeaponDps(heroStats, heroId) {
   const stat = heroStats.find((entry) => entry.hero_id === heroId && entry.mechanic === "dps" && entry.stat_group === "weapon");
   return stat ? number(stat.base_value) : null;
 }
 
-function heroWeaponSpiritDpsScaling(heroStats, heroId) {
-  const stat = heroStats.find((entry) =>
-    entry.hero_id === heroId && entry.mechanic === "dps_spirit_scaling" && entry.stat_group === "weapon" && entry.confidence !== "low"
-  );
-  return stat ? number(stat.base_value || stat.scaling_value) : 0;
+function heroStat(heroStats, heroId, mechanic) {
+  const stat = heroStats.find((entry) => entry.hero_id === heroId && entry.mechanic === mechanic && entry.confidence !== "low");
+  return stat ? number(stat.base_value || stat.scaling_value) : null;
+}
+
+function permanentWeaponEffects(state, data) {
+  const totals = { damageBonus: 0, fireRateBonus: 0, clipFlat: 0, clipPercent: 0, evidence: [] };
+  for (const item of state.inventory) {
+    for (const effect of relevantEffects(item, data.mechanicsByItem)) {
+      if (effect.mechanic === "base_attack_damage_percent") totals.damageBonus += number(effect.value);
+      if (effect.mechanic === "bonus_fire_rate") totals.fireRateBonus += number(effect.value);
+      if (effect.mechanic === "bonus_clip_size") totals.clipFlat += number(effect.value);
+      if (effect.mechanic === "bonus_clip_size_percent") totals.clipPercent += number(effect.value);
+      totals.evidence.push(effect.effect_id);
+    }
+  }
+  return totals;
+}
+
+function combinedResistance(state, data, mechanics) {
+  const sources = [];
+  let damageMultiplier = 1;
+  for (const item of state.inventory) {
+    for (const effect of data.mechanicsByItem.get(item.item_id) || []) {
+      if (!mechanics.has(effect.mechanic) || itemEffectAvailability(item, effect) !== "permanent" || effect.confidence === "low") continue;
+      const resist = number(effect.value);
+      damageMultiplier *= 1 - resist / 100;
+      sources.push({ item_id: item.item_id, effect_id: effect.effect_id, resist_percent: resist, origin: "game_data" });
+    }
+  }
+  return {
+    percent: (1 - damageMultiplier) * 100,
+    damageMultiplier,
+    sources,
+    stacking_rule: { rule_id: "RES-002", formula: "total_resist=1-product(1-R_i)", origin: "game_data" }
+  };
+}
+
+function availabilitySummary(profile) {
+  return {
+    permanent: profile.permanent,
+    active: profile.active,
+    conditional: profile.conditional,
+    treatment: "Werte bleiben nach Verfügbarkeit getrennt; ohne Trigger- und Uptime-Annahme werden sie nicht summiert.",
+    origin: "game_data"
+  };
+}
+
+export function createCarryScenarioPlan() {
+  const model = (id, label, seconds, range) => ({
+    id,
+    label,
+    duration_seconds: seconds,
+    duration_variation_seconds: range,
+    origin: "model_assumption",
+    reason: "Offen ausgewiesenes Vergleichsfenster; Gegnerresistenzen, Trefferquote und Ablauf werden nicht erfunden."
+  });
+  return {
+    conditional_effect_policy: {
+      value: "excluded_from_baseline",
+      origin: "model_assumption",
+      reason: "Für Trigger, Uptime und Zielbedingungen gibt es keine allgemeine, verifizierte Annahme."
+    },
+    scenarios: [
+      model("lane_trade", "Lane: wiederholter Trade", 10, [6, 14]),
+      model("farm", "Farmen", 10, [6, 14]),
+      model("skirmish", "Kurzer Heldenkampf", 4, [3, 6]),
+      model("teamfight", "Längerer Teamkampf", 10, [8, 14])
+    ],
+    planning_budgets: [35000, 40000, 45000, 60000].map((souls) => ({
+      souls,
+      origin: "model_assumption",
+      reason: "Vom Nutzer gewünschter Planungspunkt, keine behauptete Matchphase."
+    }))
+  };
+}
+
+export function evaluateCarryScenarios(state, request, data) {
+  const cached = SCENARIO_PROFILE_CACHE.get(data) || new Map();
+  const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
+  if (cached.has(cacheKey)) return cached.get(cacheKey);
+  const plan = createCarryScenarioPlan();
+  const baseBulletDamage = heroStat(data.heroStats, request.heroId, "bullet_damage");
+  const baseRoundsPerSecond = heroStat(data.heroStats, request.heroId, "rounds_per_second");
+  const baseClip = heroStat(data.heroStats, request.heroId, "clip_size");
+  const reloadTime = heroStat(data.heroStats, request.heroId, "reload_time");
+  const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
+  const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
+  if ([baseBulletDamage, baseRoundsPerSecond, baseClip, reloadTime, baseHealth].some((value) => value === null)) {
+    const missing = { valid: false, reason: "HERO_COMBAT_STAT_MISSING", plan };
+    cached.set(cacheKey, missing);
+    SCENARIO_PROFILE_CACHE.set(data, cached);
+    return missing;
+  }
+  const effects = permanentWeaponEffects(state, data);
+  const thresholds = thresholdSnapshot(state.inventory, data.economy);
+  const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
+  const capabilities = evaluateBuildCapabilities(state, data, heroProfile);
+  const spiritPower = permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower;
+  const spiritRpsScaling = heroStat(data.heroStats, request.heroId, "rounds_per_second_spirit_scaling") || 0;
+  const damageBonus = effects.damageBonus + thresholds.bonuses.weaponDamagePercent;
+  const roundsPerSecond = (baseRoundsPerSecond + spiritPower * spiritRpsScaling) * (1 + effects.fireRateBonus / 100);
+  const clipSize = Math.ceil((baseClip + effects.clipFlat) * (1 + effects.clipPercent / 100));
+  const damagePerBullet = baseBulletDamage * (1 + damageBonus / 100);
+  const magazineTime = clipSize / roundsPerSecond;
+  const cycleDps = (clipSize * damagePerBullet) / (magazineTime + reloadTime);
+  const health = (baseHealth + capabilities.permanent.bonusHealth) * (1 + thresholds.bonuses.vitalityHealthPercent / 100);
+  const effectiveHealth = (resist) => resist >= 100 ? null : health / (1 - resist / 100);
+  const bulletResistance = combinedResistance(state, data, new Set(["bullet_resist"]));
+  const spiritResistance = combinedResistance(state, data, new Set(["spirit_resist", "tech_resist"]));
+  const common = {
+    sustained_weapon_dps: cycleDps,
+    damage_per_bullet: damagePerBullet,
+    rounds_per_second: roundsPerSecond,
+    clip_size: clipSize,
+    reload_time: reloadTime,
+    health,
+    effective_health_bullet: effectiveHealth(bulletResistance.percent),
+    effective_health_spirit: effectiveHealth(spiritResistance.percent),
+    bullet_resist: bulletResistance.percent,
+    spirit_resist: spiritResistance.percent,
+    resistance_sources: { bullet: bulletResistance, spirit: spiritResistance },
+    combat_healing: capabilities.sustain.combatHealing,
+    sustain_by_availability: availabilitySummary(capabilities.sustainByAvailability),
+    mobility_by_availability: availabilitySummary(capabilities.mobilityByAvailability),
+    out_of_combat_regen: (baseRegen || 0) + capabilities.sustain.regeneration.outOfCombatHealthPerSecond,
+    permanent_regen: (baseRegen || 0) + capabilities.sustain.regeneration.alwaysHealthPerSecond,
+    access: { direct: capabilities.directAccess, conditional: capabilities.conditionalAccess },
+    mobility: capabilities.mobility,
+    weapon_geometry: heroProfile.weaponGeometry,
+    kit_coverage: heroProfile.kitCoverage,
+    item_kit_synergies: capabilities.synergies,
+    conditional_effects_excluded: capabilities.sources.filter((source) => source.availability !== "permanent")
+      .map((source) => ({ effect_id: source.effect_id, item_id: source.item_id, trigger: source.trigger, cooldown: source.cooldown, duration: source.duration, origin: "game_data" }))
+  };
+  const finiteWindow = (seconds) => {
+    const cycleTime = magazineTime + reloadTime;
+    const fullCycles = Math.floor(seconds / cycleTime);
+    const remaining = seconds - fullCycles * cycleTime;
+    const remainingShots = Math.min(clipSize, remaining * roundsPerSecond);
+    const weaponDamage = (fullCycles * clipSize + remainingShots) * damagePerBullet;
+    return { damage: weaponDamage, dps: weaponDamage / seconds };
+  };
+  const profile = {
+    valid: true,
+    plan,
+    inputs: {
+      base_bullet_damage: { value: baseBulletDamage, origin: "game_data" },
+      base_rounds_per_second: { value: baseRoundsPerSecond, origin: "game_data" },
+      base_clip_size: { value: baseClip, origin: "game_data" },
+      reload_time: { value: reloadTime, origin: "game_data" },
+      base_health: { value: baseHealth, origin: "game_data" },
+      hero_level: request.heroLevel === undefined || request.heroLevel === null
+        ? { value: null, origin: "unknown", treatment: "Nur kanonische Basiswerte; Level-/Boon-Wachstum wird nicht ergänzt." }
+        : { value: request.heroLevel, origin: "model_input", treatment: "Der Wert wird ausgewiesen, aber ohne verifizierte Level→Boon-Zuordnung nicht in Werte übersetzt." },
+      ability_levels: request.abilityLevels
+        ? { value: request.abilityLevels, origin: "model_input", treatment: "Nicht in Item- oder Kampfwerte übersetzt; gemeinsame Skill-/Item-Suche ist noch offen." }
+        : { value: null, origin: "unknown", treatment: "Fähigkeitszustand ist nicht modelliert und liefert keine stillschweigenden Kampfboni." },
+      permanent_effects: { origin: "game_data", effect_ids: effects.evidence },
+      formulas: [
+        { value: "final_ammo=ceil((base_ammo+flat_bonuses)*(1+sum(percent_bonuses)))", origin: "game_data", source: "AMMO-001" },
+        { value: "cycle_dps=(clip*damage_per_bullet)/(clip/rounds_per_second+reload_time)", origin: "model_assumption", reason: "Vergleichsformel für kontinuierliches Feuern ohne Trefferquote, Falloff oder Zielresistenzen." },
+        { value: "effective_health=health/(1-resist)", origin: "model_assumption", reason: "Resistenzanwendung für getrennten Bullet-/Spirit-Vergleich; Kappung ist nicht ergänzt." },
+        { value: "spirit→weapon_dps wird ausschließlich über verifizierte rounds_per_second_spirit_scaling hergeleitet; sustained_dps_spirit_scaling wird als abgeleitete Kennzahl nicht zusätzlich addiert.", origin: "game_data", source: "warden:rounds_per_second_spirit_scaling" }
+      ]
+    },
+    common,
+    scenarios: plan.scenarios.map((scenario) => {
+      const window = finiteWindow(scenario.duration_seconds);
+      return { ...scenario, ...common, window_damage: window.damage, window_dps: window.dps };
+    })
+  };
+  cached.set(cacheKey, profile);
+  SCENARIO_PROFILE_CACHE.set(data, cached);
+  return profile;
 }
 
 function permanentSpiritPower(state, data) {
@@ -199,44 +416,32 @@ function permanentSpiritPower(state, data) {
 }
 
 export function evaluateWeaponState(state, request, data) {
-  const baseDps = heroWeaponDps(data.heroStats, request.heroId);
-  if (baseDps === null) return { valid: false, reason: "HERO_WEAPON_DPS_MISSING" };
-  let damageBonus = 0;
-  let fireRateBonus = 0;
-  const evidence = [];
-  for (const item of state.inventory) {
-    for (const effect of relevantEffects(item, data.mechanicsByItem)) {
-      if (effect.mechanic === "base_attack_damage_percent") damageBonus += number(effect.value);
-      if (effect.mechanic === "bonus_fire_rate") fireRateBonus += number(effect.value);
-      evidence.push(effect.effect_id);
-    }
-  }
+  const scenarios = evaluateCarryScenarios(state, request, data);
+  if (!scenarios.valid) return { valid: false, reason: scenarios.reason };
   const thresholds = thresholdSnapshot(state.inventory, data.economy);
-  damageBonus += thresholds.bonuses.weaponDamagePercent;
-  const spiritPower = permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower;
-  const spiritDpsScaling = heroWeaponSpiritDpsScaling(data.heroStats, request.heroId);
-  const spiritDpsBonus = spiritPower * spiritDpsScaling;
+  const effects = permanentWeaponEffects(state, data);
   return {
     valid: true,
-    baseDps,
-    damageBonus,
-    fireRateBonus,
-    spiritPower,
-    spiritDpsScaling,
-    spiritDpsBonus,
-    finalDps: (baseDps + spiritDpsBonus) * (1 + damageBonus / 100) * (1 + fireRateBonus / 100),
-    evidence,
-    thresholds
+    baseDps: heroWeaponDps(data.heroStats, request.heroId),
+    damageBonus: effects.damageBonus + thresholds.bonuses.weaponDamagePercent,
+    fireRateBonus: effects.fireRateBonus,
+    spiritPower: permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower,
+    finalDps: scenarios.common.sustained_weapon_dps,
+    evidence: effects.evidence,
+    thresholds,
+    scenarios,
+    calculationScope: "identisch_mit_carry_scenarios"
   };
 }
 
-export function evaluateWeaponCarryProfile(state, request, data) {
+export function evaluateWeaponCarryProfile(state, request, data, options = {}) {
   const weapon = evaluateWeaponState(state, request, data);
   if (!weapon.valid) return weapon;
   const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
   const capabilities = evaluateBuildCapabilities(state, data, heroProfile);
   capabilities.permanent.spiritPower += weapon.thresholds.bonuses.spiritPower;
   const pathMilestones = buildPathMilestones(state, data, heroProfile, "weapon");
+  const foundations = buildRobustFoundationStatus(state, request, data, heroProfile);
   const practical = {
     bonusHealth: 0,
     bulletResist: 0,
@@ -255,6 +460,8 @@ export function evaluateWeaponCarryProfile(state, request, data) {
       if (effect.mechanic === "bonus_sprint_speed") practical.sprintSpeed += number(effect.value);
     }
   }
+  practical.bulletResist = weapon.scenarios.common.bullet_resist;
+  practical.spiritResist = weapon.scenarios.common.spirit_resist;
   const categoryCounts = Object.fromEntries(["Weapon", "Vitality", "Spirit"].map((category) => [category.toLowerCase(), state.inventory.filter((item) => item.category === category).length]));
   const sustainEntries = capabilities.sources.filter((entry) => entry.dimension === "sustain");
   const sustainSources = new Set(sustainEntries.map((entry) => entry.item_id)).size;
@@ -272,7 +479,7 @@ export function evaluateWeaponCarryProfile(state, request, data) {
     capabilities.sustain.regeneration.alwaysHealthPerSecond > 0,
     capabilities.sustain.regeneration.outOfCombatHealthPerSecond > 0
   ].filter(Boolean).length;
-  const combatCheckpoints = buildCombatCheckpoints(state, request, data, heroProfile);
+  const combatCheckpoints = options.includeCheckpoints ? buildCombatCheckpoints(state, request, data, heroProfile) : [];
   return {
     ...weapon,
     practical,
@@ -284,7 +491,8 @@ export function evaluateWeaponCarryProfile(state, request, data) {
     combatCheckpoints,
     heroProfile,
     capabilities,
-    pathMilestones
+    pathMilestones,
+    foundations,
   };
 }
 
@@ -323,14 +531,15 @@ function buildCombatCheckpoints(state, request, data, heroProfile) {
       const checkpointState = { inventory: [...inventory], events: [], spent: budget, activeItems: 0 };
       const capabilities = evaluateBuildCapabilities(checkpointState, data, heroProfile);
       const weapon = evaluateWeaponState(checkpointState, request, data);
+      const common = weapon.scenarios?.common;
       profile = {
         weaponOperation: capabilities.weaponOperation,
         reliableSustainSources: reliableSustainCount(capabilities),
         protectionPresent: capabilities.permanent.bonusHealth > 0 ||
-          capabilities.permanent.bulletResist > 0 || capabilities.permanent.spiritResist > 0,
+          (common?.bullet_resist || 0) > 0 || (common?.spirit_resist || 0) > 0,
         bonusHealth: capabilities.permanent.bonusHealth,
-        bulletResist: capabilities.permanent.bulletResist,
-        spiritResist: capabilities.permanent.spiritResist,
+        bulletResist: common?.bullet_resist || 0,
+        spiritResist: common?.spirit_resist || 0,
         finalDps: weapon.finalDps
       };
       cache.set(cacheKey, profile);
@@ -342,6 +551,165 @@ function buildCombatCheckpoints(state, request, data, heroProfile) {
       ...profile
     };
   });
+}
+
+function stateAtSpentBudget(state, budget) {
+  const snapshot = createInitialBuildState();
+  for (const event of state.events) {
+    if (event.total_spent > budget) break;
+    const replacedIndex = event.upgradeFrom
+      ? snapshot.inventory.findIndex((item) => item.item_id === event.upgradeFrom.item_id)
+      : -1;
+    if (replacedIndex >= 0) snapshot.inventory.splice(replacedIndex, 1, event.item);
+    else snapshot.inventory.push(event.item);
+    snapshot.spent = event.total_spent;
+    snapshot.grossSpent += number(event.gross_purchase_cost || event.cash_cost);
+    snapshot.activeItems = snapshot.inventory.filter(isActive).length;
+    snapshot.events.push(event);
+  }
+  return snapshot;
+}
+
+function buildRobustFoundationStatus(state, request, data, heroProfile) {
+  const checkpoints = [4800, 7200]
+    .filter((budget) => budget <= state.spent && budget <= number(request.budget))
+    .map((budget) => {
+      const snapshot = stateAtSpentBudget(state, budget);
+      const capabilities = evaluateBuildCapabilities(snapshot, data, heroProfile);
+      const weaponOperation = capabilities.weaponOperation;
+      const protection = snapshot.inventory.some((item) => {
+        const profile = evaluateItemCapabilities(item, data, heroProfile);
+        return profile.permanent.bulletResist > 0 || profile.permanent.spiritResist > 0 ||
+          (item.category === "Vitality" && (
+            profile.permanent.bonusHealth > 0 ||
+            profile.coverageByAvailability.protection.active ||
+            profile.coverageByAvailability.protection.permanent
+          ));
+      });
+      const sustain = snapshot.inventory.some((item) => {
+        const itemSustain = evaluateItemCapabilities(item, data, heroProfile).sustainByAvailability;
+        return [itemSustain.permanent, itemSustain.conditional].some((profile) =>
+          profile.laneHealing.heroHit > 0 ||
+          profile.laneHealing.npcHit > 0 ||
+          profile.combatHealing.bulletLifestealPercent > 0 ||
+          profile.combatHealing.abilityLifestealPercent > 0 ||
+          profile.regeneration.alwaysHealthPerSecond > 0 ||
+          profile.regeneration.outOfCombatHealthPerSecond > 0
+        );
+      });
+      return {
+        budget,
+        spent: snapshot.spent,
+        weaponOperation,
+        protection,
+        sustain,
+        fulfilled: budget === 4800
+          ? weaponOperation && (protection || sustain)
+          : weaponOperation && protection && sustain,
+        origin: "model_assumption"
+      };
+    });
+  const expected = [4800, 7200].filter((budget) => budget <= state.spent && budget <= number(request.budget));
+  return {
+    checkpoints,
+    passed: checkpoints.length === expected.length && checkpoints.every((entry) => entry.fulfilled),
+    rule: "Robuster Standardpfad: bei 4'800 Souls mindestens Weapon-Wirkung plus Schutz oder ein bereits gekauftes Sustain-Item; bei 7'200 Souls Weapon-Wirkung, Schutz und ein bereits gekauftes Sustain-Item. Schutz bedeutet hierfür ein Vitality-Schutzitem oder eine dauerhafte Bullet-/Spirit-Resistenz; kleine Neben-HP eines Utility-Items genügt nicht. Heldenfähigkeiten zählen nicht als früher Sustain-Ersatz, solange keine Skill- und Level-Reihenfolge modelliert ist. Das sind strukturelle Modellannahmen ohne erfundene HP-/DPS-Schwelle.",
+    origin: "model_assumption"
+  };
+}
+
+function buildBudgetSensitivity(state, request, data) {
+  return createCarryScenarioPlan().planning_budgets
+    .filter((entry) => entry.souls <= number(request.budget))
+    .map((entry) => {
+      const snapshot = stateAtSpentBudget(state, entry.souls);
+      const scenarios = evaluateCarryScenarios(snapshot, request, data);
+      return {
+        budget: entry.souls,
+        origin: entry.origin,
+        spent: snapshot.spent,
+        unspent_souls: entry.souls - snapshot.spent,
+        inventory: snapshot.inventory.map((item) => item.item_id),
+        scenarios: scenarios.valid ? scenarios.common : { valid: false, reason: scenarios.reason }
+      };
+    });
+}
+
+function trajectoryMetrics(scenarios) {
+  const common = scenarios.common;
+  const magazineTime = common.clip_size / common.rounds_per_second;
+  const laneHealing = common.sustain_by_availability;
+  return {
+    sustainedWeaponDps: common.sustained_weapon_dps,
+    bulletEffectiveHealth: common.effective_health_bullet ?? -Infinity,
+    spiritEffectiveHealth: common.effective_health_spirit ?? -Infinity,
+    laneHealingPermanentHeroHit: laneHealing.permanent.laneHealing.heroHit,
+    laneHealingPermanentNpcHit: laneHealing.permanent.laneHealing.npcHit,
+    laneHealingConditionalHeroHit: laneHealing.conditional.laneHealing.heroHit,
+    laneHealingConditionalNpcHit: laneHealing.conditional.laneHealing.npcHit,
+    combatLifestealPercent: common.combat_healing.bulletLifestealPercent + common.combat_healing.abilityLifestealPercent,
+    outOfCombatRegen: common.out_of_combat_regen,
+    directAccess: Number(common.access.direct),
+    combatMobility: common.mobility.combatMoveSpeed + common.mobility.activeMoveSpeed,
+    firingUptime: magazineTime / (magazineTime + common.reload_time)
+  };
+}
+
+function buildPathTrajectory(state, request, data) {
+  const cachedProfiles = TRAJECTORY_PROFILE_CACHE.get(data) || new Map();
+  const cacheKey = `${request.heroId}:${number(request.budget)}:${state.events.map((event) => `${event.item_id}@${event.total_spent}`).join("|")}`;
+  if (cachedProfiles.has(cacheKey)) return cachedProfiles.get(cacheKey);
+  const entries = TRAJECTORY_BUDGETS
+    .filter((budget) => budget <= number(request.budget) && budget <= state.spent)
+    .map((budget) => {
+      const snapshot = stateAtSpentBudget(state, budget);
+      const scenarios = evaluateCarryScenarios(snapshot, request, data);
+      if (!scenarios.valid) return { budget, valid: false, reason: scenarios.reason };
+      return {
+        budget,
+        spent: snapshot.spent,
+        unspentSouls: budget - snapshot.spent,
+        inventory: snapshot.inventory.map((item) => item.item_id),
+        metrics: trajectoryMetrics(scenarios),
+        origin: "model_assumption"
+      };
+    });
+  const trajectory = {
+    checkpoints: entries,
+    comparisonRule: "Ein Pfad ist nur klar unterlegen, wenn ein anderer an jedem gemeinsamen Planungspunkt in allen ausgewiesenen Wirkungsdimensionen mindestens gleich gut und in mindestens einer besser ist. Nicht dominierte Abwägungen bleiben erhalten.",
+    planningBudgets: TRAJECTORY_BUDGETS.filter((budget) => budget <= number(request.budget)),
+    origin: "model_assumption"
+  };
+  cachedProfiles.set(cacheKey, trajectory);
+  TRAJECTORY_PROFILE_CACHE.set(data, cachedProfiles);
+  return trajectory;
+}
+
+function trajectoryDominates(left, right) {
+  const rightByBudget = new Map(right.trajectory.checkpoints.filter((entry) => entry.valid !== false).map((entry) => [entry.budget, entry]));
+  const commonBudgets = left.trajectory.checkpoints.filter((entry) => entry.valid !== false && rightByBudget.has(entry.budget));
+  if (!commonBudgets.length) return false;
+  let strictlyBetter = false;
+  for (const leftEntry of commonBudgets) {
+    const rightEntry = rightByBudget.get(leftEntry.budget);
+    const leftMetrics = { ...leftEntry.metrics, unspentSouls: leftEntry.unspentSouls };
+    const rightMetrics = { ...rightEntry.metrics, unspentSouls: rightEntry.unspentSouls };
+    for (const metric of Object.keys(leftMetrics)) {
+      if (leftMetrics[metric] < rightMetrics[metric]) return false;
+      if (leftMetrics[metric] > rightMetrics[metric]) strictlyBetter = true;
+    }
+  }
+  return strictlyBetter;
+}
+
+function trajectoryPareto(candidates, request, data) {
+  const withTrajectory = candidates.map((candidate) => ({
+    ...candidate,
+    trajectory: buildPathTrajectory(candidate.state, request, data)
+  }));
+  return withTrajectory.filter((candidate, index) =>
+    !withTrajectory.some((other, otherIndex) => otherIndex !== index && trajectoryDominates(other, candidate))
+  );
 }
 
 function stateKey(state) {
@@ -421,15 +789,11 @@ export function optimizeWeaponCarry(request, data) {
 }
 
 function carryPortfolioIsComplete(state, evaluation, request, data) {
-  const capacity = slotCapacity(request, data.slots);
-  const requiredDimensionsCovered = evaluation.heroProfile.requiredItemDimensions.every((dimension) =>
-    dimension === "access" ? evaluation.capabilities.directAccess : evaluation.capabilities.coverage[dimension]
-  );
-  return state.inventory.length === capacity &&
-    evaluation.categoryCounts.weapon >= 5 &&
-    evaluation.categoryCounts.vitality >= 3 &&
-    evaluation.reliableSustainSources >= 1 &&
-    requiredDimensionsCovered;
+  return state.inventory.length === slotCapacity(request, data.slots) &&
+    evaluation.scenarios?.valid &&
+    evaluation.upgradeFamilyOverlapCount === 0 &&
+    evaluation.capabilities.riskCount === 0 &&
+    evaluation.foundations.passed;
 }
 
 function upgradeAncestors(itemId, data) {
@@ -458,47 +822,28 @@ function upgradeFamilyOverlapCount(state, data) {
 }
 
 function paretoMetrics(candidate) {
-  const { evaluation, state } = candidate;
-  const bothCarryThresholds = evaluation.pathMilestones.majorThresholds.weapon !== null &&
-    evaluation.pathMilestones.majorThresholds.vitality !== null;
-  const carryThresholdSouls = bothCarryThresholds
-    ? Math.max(evaluation.pathMilestones.majorThresholdSouls.weapon, evaluation.pathMilestones.majorThresholdSouls.vitality)
-    : Number.MAX_SAFE_INTEGER;
-  const metrics = {
-    finalDps: evaluation.finalDps,
-    spiritPower: evaluation.heroProfile.hasSpiritWeaponScaling ? evaluation.capabilities.permanent.spiritPower : 0,
+  const { evaluation } = candidate;
+  const scenario = evaluation.scenarios.common;
+  const laneHealing = scenario.sustain_by_availability;
+  return {
+    sustainedWeaponDps: scenario.sustained_weapon_dps,
+    bulletEffectiveHealth: scenario.effective_health_bullet ?? -Infinity,
+    spiritEffectiveHealth: scenario.effective_health_spirit ?? -Infinity,
+    health: scenario.health,
+    laneHealingPermanentHeroHit: laneHealing.permanent.laneHealing.heroHit,
+    laneHealingPermanentNpcHit: laneHealing.permanent.laneHealing.npcHit,
+    laneHealingConditionalHeroHit: laneHealing.conditional.laneHealing.heroHit,
+    laneHealingConditionalNpcHit: laneHealing.conditional.laneHealing.npcHit,
+    combatLifesteal: scenario.combat_healing.bulletLifestealPercent + scenario.combat_healing.abilityLifestealPercent,
+    outOfCombatRegen: scenario.out_of_combat_regen,
+    directAccess: Number(scenario.access.direct),
+    conditionalAccess: Number(scenario.access.conditional),
+    combatMobility: scenario.mobility.combatMoveSpeed + scenario.mobility.activeMoveSpeed,
+    sprintMobility: scenario.mobility.sprintSpeed,
+    robustFoundationReadiness: evaluation.foundations.checkpoints.filter((entry) => entry.fulfilled).length,
     riskSafety: -evaluation.capabilities.riskCount,
-    upgradeCoherence: -evaluation.upgradeFamilyOverlapCount,
-    bothCarryThresholds: Number(bothCarryThresholds),
-    carryThresholdEconomy: -carryThresholdSouls,
-    sustainEconomy: -(evaluation.pathMilestones.firstSouls.sustain ?? Number.MAX_SAFE_INTEGER),
-    primaryItemEconomy: -(evaluation.pathMilestones.primaryItemSouls ?? Number.MAX_SAFE_INTEGER),
-    directAccessEconomy: -(evaluation.pathMilestones.directAccessSouls ?? Number.MAX_SAFE_INTEGER),
-    sustainModeCount: evaluation.sustainModeCount,
-    bonusHealth: evaluation.capabilities.permanent.bonusHealth,
-    bulletResist: evaluation.capabilities.permanent.bulletResist,
-    spiritResist: evaluation.capabilities.permanent.spiritResist,
-    laneHealingHero: evaluation.capabilities.sustain.laneHealing.heroHit,
-    laneHealingNpc: evaluation.capabilities.sustain.laneHealing.npcHit,
-    bulletLifesteal: evaluation.capabilities.sustain.combatHealing.bulletLifestealPercent,
-    abilityLifesteal: evaluation.capabilities.sustain.combatHealing.abilityLifestealPercent,
-    alwaysRegen: evaluation.capabilities.sustain.regeneration.alwaysHealthPerSecond,
-    outOfCombatRegen: evaluation.capabilities.sustain.regeneration.outOfCombatHealthPerSecond,
-    combatMoveSpeed: evaluation.capabilities.mobility.combatMoveSpeed,
-    activeMoveSpeed: evaluation.capabilities.mobility.activeMoveSpeed,
-    sprintSpeed: evaluation.capabilities.mobility.sprintSpeed
+    upgradeCoherence: -evaluation.upgradeFamilyOverlapCount
   };
-  for (const checkpoint of evaluation.combatCheckpoints) {
-    const prefix = `checkpoint${checkpoint.budget}`;
-    metrics[`${prefix}Sustain`] = Number(checkpoint.reliableSustainSources > 0);
-    metrics[`${prefix}Protection`] = Number(checkpoint.protectionPresent);
-    metrics[`${prefix}Weapon`] = Number(checkpoint.weaponOperation);
-    metrics[`${prefix}Dps`] = checkpoint.finalDps;
-    metrics[`${prefix}BonusHealth`] = checkpoint.bonusHealth;
-    metrics[`${prefix}BulletResist`] = checkpoint.bulletResist;
-    metrics[`${prefix}SpiritResist`] = checkpoint.spiritResist;
-  }
-  return metrics;
 }
 
 function dominates(left, right) {
@@ -510,61 +855,26 @@ function dominates(left, right) {
     (left.state.spent < right.state.spent || keys.some((key) => leftMetrics[key] > rightMetrics[key]));
 }
 
-function balancedCarryOrder(left, right) {
-  const leftBothThresholds = left.evaluation.pathMilestones.majorThresholds.weapon !== null && left.evaluation.pathMilestones.majorThresholds.vitality !== null;
-  const rightBothThresholds = right.evaluation.pathMilestones.majorThresholds.weapon !== null && right.evaluation.pathMilestones.majorThresholds.vitality !== null;
-  const leftThresholdSouls = leftBothThresholds
-    ? Math.max(left.evaluation.pathMilestones.majorThresholdSouls.weapon, left.evaluation.pathMilestones.majorThresholdSouls.vitality)
-    : Number.MAX_SAFE_INTEGER;
-  const rightThresholdSouls = rightBothThresholds
-    ? Math.max(right.evaluation.pathMilestones.majorThresholdSouls.weapon, right.evaluation.pathMilestones.majorThresholdSouls.vitality)
-    : Number.MAX_SAFE_INTEGER;
-  return left.evaluation.capabilities.riskCount - right.evaluation.capabilities.riskCount ||
-    left.evaluation.upgradeFamilyOverlapCount - right.evaluation.upgradeFamilyOverlapCount ||
-    compareCombatCheckpoints(left.evaluation.combatCheckpoints, right.evaluation.combatCheckpoints) ||
-    Number(rightBothThresholds) - Number(leftBothThresholds) ||
-    leftThresholdSouls - rightThresholdSouls ||
-    (left.evaluation.pathMilestones.firstSouls.sustain ?? Number.MAX_SAFE_INTEGER) - (right.evaluation.pathMilestones.firstSouls.sustain ?? Number.MAX_SAFE_INTEGER) ||
-    (left.evaluation.pathMilestones.primaryItemSouls ?? Number.MAX_SAFE_INTEGER) - (right.evaluation.pathMilestones.primaryItemSouls ?? Number.MAX_SAFE_INTEGER) ||
-    (left.evaluation.pathMilestones.directAccessSouls ?? Number.MAX_SAFE_INTEGER) - (right.evaluation.pathMilestones.directAccessSouls ?? Number.MAX_SAFE_INTEGER) ||
-    right.evaluation.sustainModeCount - left.evaluation.sustainModeCount ||
-    right.evaluation.finalDps - left.evaluation.finalDps ||
-    right.evaluation.capabilities.permanent.bonusHealth - left.evaluation.capabilities.permanent.bonusHealth ||
-    right.evaluation.capabilities.permanent.bulletResist - left.evaluation.capabilities.permanent.bulletResist ||
-    right.evaluation.capabilities.permanent.spiritResist - left.evaluation.capabilities.permanent.spiritResist ||
+function representativeOrder(left, right) {
+  const leftMetrics = paretoMetrics(left);
+  const rightMetrics = paretoMetrics(right);
+  return rightMetrics.sustainedWeaponDps - leftMetrics.sustainedWeaponDps ||
+    rightMetrics.bulletEffectiveHealth - leftMetrics.bulletEffectiveHealth ||
+    rightMetrics.spiritEffectiveHealth - leftMetrics.spiritEffectiveHealth ||
     left.state.spent - right.state.spent ||
     stateKey(left.state).localeCompare(stateKey(right.state));
-}
-
-function compareCombatCheckpoints(leftCheckpoints, rightCheckpoints) {
-  const length = Math.min(leftCheckpoints.length, rightCheckpoints.length);
-  for (let index = 0; index < length; index += 1) {
-    const left = leftCheckpoints[index];
-    const right = rightCheckpoints[index];
-    const comparison =
-      Number(right.reliableSustainSources > 0) - Number(left.reliableSustainSources > 0) ||
-      Number(right.protectionPresent) - Number(left.protectionPresent) ||
-      Number(right.weaponOperation) - Number(left.weaponOperation) ||
-      right.finalDps - left.finalDps ||
-      right.bonusHealth - left.bonusHealth ||
-      right.bulletResist - left.bulletResist ||
-      right.spiritResist - left.spiritResist ||
-      left.unspentSouls - right.unspentSouls;
-    if (comparison) return comparison;
-  }
-  return leftCheckpoints.length - rightCheckpoints.length;
 }
 
 function capabilitySignature(candidate) {
   const { evaluation, state } = candidate;
   return [
     state.spent,
-    Math.min(evaluation.categoryCounts.weapon, 5),
-    Math.min(evaluation.categoryCounts.vitality, 3),
-    Math.min(evaluation.categoryCounts.spirit, 3),
     ...Object.values(evaluation.capabilities.coverage).map(Number),
+    evaluation.foundations.checkpoints.map((entry) => Number(entry.fulfilled)).join(""),
     Math.min(evaluation.capabilities.riskCount, 1),
-    Number(evaluation.pathMilestones.primaryMajorThreshold !== null)
+    Number(evaluation.pathMilestones.majorThresholds.weapon !== null),
+    Number(evaluation.pathMilestones.majorThresholds.vitality !== null),
+    Number(evaluation.pathMilestones.majorThresholds.spirit !== null)
   ].join(":");
 }
 
@@ -577,7 +887,7 @@ function budgetBalancedSlice(candidates, limit) {
   }
   const queues = [...groups.entries()]
     .sort(([left], [right]) => left - right)
-    .map(([, group]) => group.sort(balancedCarryOrder));
+    .map(([, group]) => group.sort(representativeOrder));
   const selected = [];
   for (let index = 0; selected.length < limit; index += 1) {
     let added = false;
@@ -600,28 +910,43 @@ function paretoPool(candidates, perSignature = 4) {
     group.push(candidate);
     groups.set(key, group);
   }
-  return [...groups.values()].flatMap((group) => group.sort(balancedCarryOrder).slice(0, perSignature));
+  return [...groups.values()].flatMap((group) => group.sort(representativeOrder).slice(0, perSignature));
 }
 
 function rankedCarryStates(states, request, data, limit, requireCompletePortfolio = false) {
   const unique = new Map();
   for (const state of states) {
+    const key = stateKey(state);
     const evaluation = evaluateWeaponCarryProfile(state, request, data);
     if (!evaluation.valid) continue;
+    if (request.robustStandard && !evaluation.foundations.passed) continue;
+    evaluation.scenarios = evaluateCarryScenarios(state, request, data);
+    if (!evaluation.scenarios.valid) continue;
     evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(state, data);
     if (requireCompletePortfolio && !carryPortfolioIsComplete(state, evaluation, request, data)) continue;
-    const current = unique.get(stateKey(state));
     const candidate = { state, evaluation };
-    if (!current || balancedCarryOrder(candidate, current) < 0) {
-      unique.set(stateKey(state), candidate);
-    }
+    const current = unique.get(key);
+    if (!current || representativeOrder(candidate, current) < 0) unique.set(key, candidate);
   }
   const candidates = paretoPool([...unique.values()]);
   const pareto = candidates.filter((candidate, index) =>
     !candidates.some((other, otherIndex) => otherIndex !== index && dominates(other, candidate))
   );
   if (!requireCompletePortfolio) return budgetBalancedSlice(pareto, limit);
-  return pareto.sort(balancedCarryOrder).slice(0, limit);
+  return pareto.sort(representativeOrder).slice(0, limit);
+}
+
+function oneStepReplacementStates(candidates, eligibleItems, request, data) {
+  const states = candidates.map((candidate) => candidate.state);
+  for (const candidate of candidates) {
+    for (const owned of candidate.state.inventory) {
+      for (const item of eligibleItems) {
+        const replacement = applyReplacement(candidate.state, owned, item, request, data);
+        if (replacement.ok) states.push(replacement.state);
+      }
+    }
+  }
+  return states;
 }
 
 export function optimizeWeaponCarryFullBuild(request, data) {
@@ -638,11 +963,12 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     unlockedExtraSlots: (data.slots.unlocks || []).length,
     maxActiveItems: 2,
     activeItemPreference: "any",
+    robustStandard: true,
     maxTransactions: Math.max(16, number(request.maxTransactions) || 28)
   };
   const eligibleItems = data.items.filter((item) => assessWeaponCarryItem(item, data, normalizedRequest).eligible);
   const eligibleIds = new Set(eligibleItems.map((item) => item.item_id));
-  const beamWidth = 100;
+  const beamWidth = 30;
   let frontier = [createInitialBuildState()];
   let allStates = [];
   for (let turn = 0; turn < normalizedRequest.maxTransactions; turn += 1) {
@@ -664,16 +990,42 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     allStates.push(...frontier);
     if (!frontier.length) break;
   }
-  const candidates = rankedCarryStates(allStates, normalizedRequest, data, 3, true);
+  const finalPool = rankedCarryStates(allStates, normalizedRequest, data, 9, true);
+  const seedCandidates = trajectoryPareto(finalPool, normalizedRequest, data)
+    .sort(representativeOrder)
+    .slice(0, 3);
+  const replacementCandidates = rankedCarryStates(
+    oneStepReplacementStates(seedCandidates, eligibleItems, normalizedRequest, data),
+    normalizedRequest,
+    data,
+    9,
+    true
+  );
+  const candidates = trajectoryPareto(replacementCandidates, normalizedRequest, data)
+    .map((candidate) => {
+    const evaluation = evaluateWeaponCarryProfile(candidate.state, normalizedRequest, data, { includeCheckpoints: true });
+    evaluation.scenarios = evaluateCarryScenarios(candidate.state, normalizedRequest, data);
+    evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(candidate.state, data);
+    evaluation.trajectory = candidate.trajectory;
+    return { ...candidate, evaluation };
+  }).sort(representativeOrder).slice(0, 3);
   const winner = candidates[0];
   if (!winner) return { status: "FAIL", reason: "NO_COMPLETE_BALANCED_CARRY_PATH" };
   return {
     status: "PASS_WITH_WARNINGS",
     resultLabel: "best_evaluated",
-    scope: `Ausgewogener Warden Weapon Carry bis ${assumedEndBudget.toLocaleString("de-CH")} Souls: 12 Slots nach drei Walker-Freischaltungen. Die begrenzte Vorwärtssuche vergleicht die frühen Zustände bei 3'200 und 4'800 Souls einschließlich Sparphasen sowie spätere Pfade für Schaden, tatsächliche permanente Schutzwerte, getrennte Sustain- und Mobilitätsarten, Weapon-/Vitality-Schwellen, Upgrade-Kohärenz und belegte Heldenskalierungen. Final: mindestens 5 Weapon- und 3 Vitality-Slots, direkte Zugangsunterstützung sowie eine verlässliche Sustain-Quelle. Bedingte Effekte werden erfasst, aber nicht mit angenommener Uptime in den DPS eingerechnet.`,
+    scope: `Warden Weapon Carry bis ${assumedEndBudget.toLocaleString("de-CH")} Souls: begrenzte Vorwärtssuche mit legalen Käufen, Upgrades und Ersetzungen. Kandidaten bleiben bei gleicher Soul-Ausgabe nur dann erhalten, wenn sie nicht über die offen ausgewiesenen Dauer-DPS-, Bullet-/Spirit-EHP-, Sustain-, Zugang-, Mobilitäts- und Risikodimensionen dominiert sind. Vollständige Pfade werden zusätzlich an 3'200, 4'800, 7'200, 12'000, 20'000, 30'000 und 40'000 Souls verglichen; ein Endbuild darf keinen in allen gemeinsamen Wirkungsdimensionen klar besseren Kaufpfad verdecken. Für den robusten Standardpfad werden verifizierte Selbst-Risiken ausgeschlossen; sie bleiben ein späterer, separat auszuweisender Risiko-Modus. Die repräsentative Auswahl priorisiert danach den expliziten Primärfokus Sustained Weapon DPS; nicht dominierte Alternativen bleiben sichtbar. Bedingte Effekte werden mit Trigger, Dauer und Cooldown dokumentiert, aber ohne erfundene Uptime nicht als Dauerbonus gerechnet. Die drei Walker-Slots sind für die 60'000-Souls-Planung als Modellannahme freigeschaltet; die Daten enthalten keine Zuordnung von Walker-Fortschritt zu Souls.`,
     request: normalizedRequest,
     candidateCount: allStates.length,
     eligibleItemCount: eligibleItems.length,
+    budgetSensitivity: buildBudgetSensitivity(winner.state, normalizedRequest, data),
+    searchLimits: {
+      beam_width: beamWidth,
+      max_transactions: normalizedRequest.maxTransactions,
+      replacement_search: "Alle relevanten Shop-Items werden für jeden Slot der drei besten vollständigen Vorwärtspfade als einzelne Ersetzung geprüft. Tieferketten aus mehreren Verkäufen bleiben außerhalb der ersten schnellen Suche.",
+      replacement_depth: 1,
+      replacement_seed_paths: seedCandidates.length
+    },
     winner: { ...winner, itemAssessments: winner.state.inventory.map((item) => ({ item_id: item.item_id, ...assessWeaponCarryItem(item, data, normalizedRequest) })) },
     alternatives: candidates.slice(1),
     validation: {
@@ -681,10 +1033,13 @@ export function optimizeWeaponCarryFullBuild(request, data) {
       costs_and_upgrades: "PASS",
       investments_and_thresholds: "PASS",
       slots_and_active_limit: "PASS",
-      profile_rules: "PASS: geprüftes Warden-Profil; mindestens 5 Weapon, 3 Vitality und 1 verifizierte Sustain-Quelle; Sustain- und Mobilitätsarten bleiben getrennt.",
-      path_rules: "PASS: begrenzte Vorwärtssuche, Pareto-Vergleich bei identischen Soul-Ausgaben, keine Upgrade-Anzahl als Qualitätsbonus und keine parallelen Vor- und Endstufen derselben Upgrade-Linie.",
+      profile_rules: "PASS: geprüfter Warden-Slice; Sustain-, Schutz-, Bewegungs- und Zugangsarten bleiben getrennt. Es gibt keine starre 5-Weapon-/3-Vitality-Endbedingung.",
+      path_rules: "PASS: begrenzte Vorwärtssuche, Pareto-Vergleich bei identischen Soul-Ausgaben und an gemeinsamen Soul-Planungspunkten, Ersetzungen zum verifizierten Sellback-Satz, keine Upgrade-Anzahl als Qualitätsbonus und keine parallelen Vor- und Endstufen derselben Upgrade-Linie.",
       warnings: [
         "UNC-0004: Temporärer Slotbedarf beim Upgrade ist nicht verifiziert.",
+        "Die Walker-Slot-Freischaltungen sind als 60'000-Souls-Planungsannahme modelliert; ihre tatsächliche zeitliche Zuordnung ist in den Daten unbekannt.",
+        "Skill-Reihenfolge und Item×Ability-Uptimes sind noch keine gemeinsam durchsuchte, verifizierte Ebene.",
+        "Ersetzungen werden als ein einzelner letzter Schritt über die drei besten vollständigen Vorwärtspfade geprüft; Ketten aus mehreren Verkäufen sind noch nicht Teil der schnellen Suche.",
         ...(request.budget ? [] : [`Kein Endbudget angegeben; ${assumedEndBudget.toLocaleString("de-CH")} Souls werden als offengelegte Analyseannahme verwendet.`]),
         "Die Skill-Reihenfolge wird in diesem Slice noch nicht gemeinsam mit den Käufen optimiert."
       ]

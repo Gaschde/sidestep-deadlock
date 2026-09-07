@@ -1,66 +1,60 @@
 # Sidestep – aktueller Stand
 
-## Quick links
+Stand: 7. September 2026. Dieses Dokument beschreibt die lokale Arbeitskopie. GitHub kann abweichen, solange lokale Änderungen nicht committed und gepusht sind.
 
-- [GitHub repository](https://github.com/Gaschde/sidestep-deadlock)
-- [Current README on GitHub](https://github.com/Gaschde/sidestep-deadlock/blob/main/README.md)
-- [Local app](http://127.0.0.1:4173/app/) — available after running `npm start` in this project folder
-- [Local app source](C:/Users/sampa/Desktop/sidestep-deadlock/app/index.html)
-- [Local Superdesign system](C:/Users/sampa/Desktop/sidestep-deadlock/.superdesign/design-system.md)
-- [Local Superdesign prototype](C:/Users/sampa/Desktop/sidestep-deadlock/.superdesign/sidestep-v10-1.html)
-- [Engine documentation on GitHub](https://github.com/Gaschde/sidestep-deadlock/blob/main/docs/engine.md)
-- [Build-analysis procedure on GitHub](https://github.com/Gaschde/sidestep-deadlock/blob/main/docs/prompts/build_optimizer.md)
+## Was das Projekt jetzt wirklich kann
 
-Die App, die Superdesign-Dateien und dieses Statusdokument sind aktuell nur lokal vorhanden. Die Python-Optimizer-Engine und das englische README liegen auf GitHub.
+- Verifizierte, patch-kompatible Daten für Items, Helden, Fähigkeiten, Kosten, Upgrades, Investments, Slots, globale Mechaniken und belegte Sonderinteraktionen.
+- Lokale Web-App unter `http://127.0.0.1:4173/app/` nach `npm start`.
+- Ein echter, begrenzter **Warden Weapon-Carry-Optimizer**:
+  - legale Vorwärtssuche über Käufe und Upgrades;
+  - Kosten, Komponentenrabatte, aktuelle Kategorie-Investments, Schwellen, Slots und Active-Limit;
+  - einzelne Verkauf-/Ersetzungsschritte mit verifiziertem 50%-Sellback;
+  - keine Preis-/Tier-Sperre, keine vorgeschriebenen Startitems, keine starre Weapon-/Vitality-Endquote und kein Upgrade-Anzahl-Bonus;
+  - Kaufpfad-Messung bei 3'200, 4'800, 7'200, 12'000, 20'000, 30'000 und 40'000 Souls sowie getrennte 35k/40k/45k/60k-Sensitivitätsausgabe;
+  - eine robuste Frühbasis als offene Modellannahme: bei 4'800 Weapon plus Schutz oder gekauftes Sustain; bei 7'200 Weapon, Schutz und gekauftes Sustain. Kleine Neben-HP und unmodellierte Heldenskills zählen nicht als Ersatz;
+  - generische Kit-/Item-Bezüge für Spirit→Weapon, Reichweite, Projektilgeschwindigkeit und Distanzbedingungen. Ohne Positions-/Uptime-Annahme werden bedingte Vorteile nur dokumentiert, nicht eingerechnet;
+  - Charged-Ability-Items werden für Helden ohne dokumentierte Charges ausgeschlossen; Warden erhält deshalb Recharging Rush nicht.
 
-## Funktioniert jetzt
+## Berechnung – aktueller Stand
 
-- Lokale Daten für Helden, Items, Effekte, Kosten, Upgrades, Slots und Schwellen.
-- UI für Held, Spielstil und Kaufpfad – ohne manuell gewähltes Budget.
-- Erster echter Optimizer-Slice für **Weapon Carry**:
-  - berechnet einen vollständigen 12-Slot-Pfad nach drei Walker-Freischaltungen;
-  - baut den Pfad als echte Vorwärtssuche: Von jedem Kaufzustand prüft sie direkte, dauerhaft verifizierte Wirkung sowie registrierte Upgrade-Bausteine. Sie kann auf einen stärkeren Kauf sparen; feste Preis- oder Tier-Sperren gibt es nicht;
-  - prüft Upgrades, Slots, Active-Limit und Investments;
-  - verlangt als feste Schutzregel mindestens fünf Weapon-, drei Vitality-Slots und eine dauerhaft verifizierte Sustain-Quelle;
-  - besitzt ein geprüftes erstes Heldenprofil für Warden: belegte Spirit-zu-Weapon-Skalierung sowie Kit-Kontext für Schutz, Sustain und verzögerte Kontrolle;
-  - bewertet Schaden, Schutz, Sustain, Zugang, Mobilität, Risiken, Schwellen und Upgrade-Kohärenz getrennt. Es gibt keinen addierten Geheimscore;
-  - behält in einer begrenzten Vorwärtssuche mehrere nicht-dominierte Zustände und vergleicht frühe Grundlagen nach tatsächlich ausgegebenen Souls statt nur nach Schrittnummern;
-  - behandelt das erste Weapon-Item sowie die 4'800er-Weapon-Schwelle als eigene Pfadkriterien. Der erste Kauf, ein bestimmtes Item oder ein Preis werden nicht vorgeschrieben;
-  - vermeidet im gewählten Pfad belegte Selbst-Risiken und parallele Vor-/Endstufen derselben Upgrade-Linie;
-  - rechnet Wardens verifizierte Spirit-zu-Weapon-DPS-Skalierung ein. Bedingte Proc-Uptime wird weiterhin nicht erfunden.
-- `npm test`: 8 Tests bestehen.
+- Sustained Weapon DPS rechnet Magazin, Feuerrate und Nachladen aus denselben Basiswerten für Ergebnis, Pfadmesspunkte und die bestehende Vorauswahl.
+- Spirit erhöht Wardens Weapon-DPS nur über die verifizierte Rounds-per-Second-Skalierung. Die bereits abgeleitete `sustained_dps_spirit_scaling` wird nicht zusätzlich addiert.
+- Permanente Resistenzen gleicher Art werden nach der kanonischen Regel `RES-002` multiplikativ kombiniert.
+- Heilung pro Lane-Treffer, Heilung pro Zeit und Lifesteal-Prozente sind getrennte Werte.
+- Heilungs- und Bewegungswerte bleiben nach permanent, aktiv und bedingt getrennt. Ohne Trigger-/Uptime-Modell werden sie nicht als gleichzeitig verfügbar behandelt.
+- Ohne explizit eingegebenen und modellierten Heldenlevel/Skillzustand gelten nur kanonische Basiswerte. Skill- und Level-Boni werden nicht erfunden.
+- Selbst-Risiken mit belegten Nachteilen bleiben im robusten Standardpfad ausgeschlossen.
 
-## Noch nicht drin
+## Was die App zeigt
 
-- Late-Game-Entscheidung aus einem bereits laufenden Match (aktuelles Inventar, Souls, Verkauf und Ersatzkäufe).
-- Spirit, Tank, Support, Mobility und Hybrid als echte Optimizer-Modi.
-- Gegnerprofil und konkrete Todesursache als echte Entscheidungskriterien.
-- Fähigkeitsschaden, Skill-Reihenfolge, Procs, Uptime und Summons.
-- Langfristiger DPS inklusive Nachladen, Headshots und Reichweitenfalloff.
-- EHP, Heilung, Schilde, Debuff-Schutz und komplexe Defensive.
-- Aktuelles Inventar aus einem laufenden Match übernehmen oder speichern.
-- Darstellung der intern bewahrten Alternativen in der Oberfläche; derzeit wird nur der ausgewählte Pfad gezeigt.
-- Vollständige Ausgabe nach dem Build-Result-Schema mit Alternativen und Marginalnutzen.
-- Geprüfte Heldenprofile für weitere Helden; die Struktur ist allgemein, der fachlich geprüfte Inhalt derzeit bewusst nur Warden.
-- Gemeinsame Kauf- und Skillplanung: sinnvolle Fähigkeit-Upgrades nach dem gewählten Pfad bewerten statt den Skill-Strahl nur als Demo zu zeigen.
+- Den gesamten Kaufpfad mit Kaufreihenfolge, Kosten und Upgrade-/Ersetzungsereignissen.
+- Baseline-Sustained-DPS, Bullet-/Spirit-EHP, dokumentierte Kit-/Item-Bezüge und die Frühbasis-Prüfung.
+- Den offenen Vergleichszustand: unbekannter Level bedeutet Basiswerte; unbekannte Skillung bedeutet keine stillschweigend eingerechneten Fähigkeitseffekte.
 
-## UI noch offen
+## Was bewusst noch nicht gelöst ist
 
-- Echte Portraits für alle Helden; aktuell sind nur Warden, Vyper und Abrams hinterlegt.
-- Echte Item-Icons statt Buchstaben-Kacheln.
-- Darstellung von Metriken, Begründungen, Unsicherheiten und Alternativen im Ergebnis.
-- Bessere Anzeige für volles Inventar, Walker-Slots und mögliche Ersatzkäufe.
+- Die repräsentative Auswahl ist noch DPS-lastig. Punkt 2 des laufenden Reviews soll erst danach die Auswahlentscheidung überarbeiten; diese Logik wurde bisher nicht geändert.
+- Keine gemeinsame Suche über Kaufpfad, Heldenskillung und Heldenlevel.
+- Keine verifizierte Treffer-, Headshot-, Positions-, Reichweitenfalloff- oder Proc-Uptime-Annahme.
+- Keine echte Farm-Simulation und keine vollständige Gegner-/Teamfight-Simulation.
+- Mehrstufige Verkaufsketten, reale Walker-Freischaltungszeitpunkte und Entscheidungen aus einem laufenden Match sind noch begrenzt.
+- Die UI zeigt nur den repräsentativen Pfad; Alternativen, vollständige Begründungen und das gesamte Result-Schema sind noch nicht sichtbar.
+- Fachlich geprüft ist nur Warden Weapon Carry. Die Struktur ist auf weitere Helden ausgelegt, die inhaltlichen Profile sind es noch nicht.
 
-## Als Nächstes
+## Letzte messbare Korrektur
 
-**Den neuen Warden-Pfad ingame prüfen:**
+Beim gleichen zuvor gewählten Warden-Inventar sank die ausgewiesene Sustained-Weapon-DPS nach Entfernung der Spirit-Doppelzählung von **174.2 auf 168.1**. Bei mehreren Resistenzquellen gilt nun z. B. 20 % + 30 % = **44 %**, nicht fälschlich 50 %.
 
-Der korrigierte mehrdimensionale Lauf liefert 24 sichtbare Kauf-/Upgrade-Schritte bis 12 Endslots und 48'000 Souls. Der erste Kauf bleibt frei; im geprüften Beispiel folgt das erste Weapon-Item bei 2'400 Souls. Schutz, Sustain und Zugang sind bis 3'200 abgedeckt, die 4'800er-Weapon-Schwelle folgt bei 7'200. Slowing Hex ist dabei ein normal bewerteter Kandidat, keine fest eingebaute Warden-Regel.
+## Prüfstand
 
-Als nächstes zählt echtes Spiel-Feedback: Welcher konkrete Kauf fühlt sich zu früh, zu spät oder unpassend an? Danach wird entweder die belegte Fähigkeitsklassifikation korrigiert oder als nächste Schicht die Skill-Reihenfolge mit dem Kaufpfad gekoppelt. Weitere Heldenprofile folgen erst, wenn Warden stabil funktioniert.
+- `npm test`: 12 Tests bestehen.
+- Vollständiger Warden-Test: zuletzt rund 14 Sekunden auf diesem Rechner. Das ist unter dem 30-Sekunden-Ziel, keine allgemeine Laufzeitgarantie.
 
-Die Oberfläche zeigt den gesamten Pfad gleichzeitig in einer Deadlock-artigen Fläche: breite Early-Reihe, darunter Mid und Late. Es gibt keine 4/4/4-Phasen-Tabs mehr.
+## Nächster geplanter Schritt
+
+Punkt 1 des Reviews gemeinsam prüfen. Danach Punkt 2: die Auswahlentscheidung so umbauen, dass ein kleiner DPS-Vorteil robuste Alternativen nicht automatisch verdrängt.
 
 ## Merksatz
 
-Keine kanonischen Daten verändern. Erst einen kleinen Fall korrekt und testbar bauen, dann erweitern.
+Keine kanonischen Spieldaten ohne ausdrücklichen Datenpflegeauftrag ändern. Ein Ergebnis bleibt ein **bester geprüfter Build innerhalb dokumentierter Such- und Modellgrenzen**.

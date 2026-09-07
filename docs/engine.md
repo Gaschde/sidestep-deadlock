@@ -1,4 +1,6 @@
-# Optimizer-Engine (erste Ausbaustufe)
+# Optimizer-Engine – Python-Referenz
+
+> Diese Datei dokumentiert die separate Python-Referenzengine unter `tools/` und `engine/`. Der aktuelle lokale Produkt-Slice der Web-App liegt in `app/optimizer.mjs`; seinen tatsächlichen Stand beschreibt [CURRENT_STATUS.md](../CURRENT_STATUS.md). Beide Wege verwenden die kanonischen Daten, sind aber nicht dieselbe Implementierung.
 
 Diese Engine setzt den sicheren Rechenkern aus `docs/prompts/build_optimizer.md` um. Sie verändert keine kanonischen Daten.
 

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "datenpruefer",
+    "title": "Pfad-Planer",
+    "instruction": "Entwirf oder überarbeite einen vollständigen Kaufpfad vom ersten Kauf bis zum Endbudget. Verwende ausschließlich die bereitgestellten Item-IDs und Daten. Berücksichtige jeden Kaufzustand, Kosten, Upgrades, Slots, Investmentschwellen und harte Anforderungen. Wenn Daten für einen Schritt fehlen, markiere ihn als offen statt etwas zu erfinden."
+  },
+  {
+    "id": "theoretiker",
+    "title": "Gegenprüfer",
+    "instruction": "Greife den bisher vorgeschlagenen Kaufpfad konkret an: Suche illegale Käufe, tote Zwischenphasen, verfehlte Schwellen, übersehene Alternativen und Zielkonflikte. Schlage nur datenbelegte Ersetzungen oder Umordnungen vor und erkläre ihre Auswirkung von Early bis Late Game."
+  },
+  {
+    "id": "pro_spieler",
+    "title": "Pro-Spieler-Perspektive",
+    "instruction": "Prüfe den vorgeschlagenen Pfad auf durchgehende Spielbarkeit: erster Kauf, Lane, erster Powerspike, Midgame und Endbudget. Eine Spielpraxis-Aussage ist nur eine klar gekennzeichnete Heuristik, niemals ein erfundener Spielwert. Benenne konkret, wo der Pfad zu fragil, zu langsam oder zu situativ wäre."
+  },
+  {
+    "id": "auditor",
+    "title": "Skeptischer Auditor",
+    "instruction": "Entscheide zwischen den konkreten Pfadvorschlägen. Erstelle die beste geprüfte Konsensversion vom ersten Kauf bis zum Endbudget, streiche unbelegte Aussagen und nenne die entscheidenden offenen Unsicherheiten. Verwende 'optimal' nur bei vollständig definiertem und abgedecktem Suchraum, sonst 'bester geprüfter Build'."
+  }
+]

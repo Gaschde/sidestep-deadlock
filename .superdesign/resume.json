@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "build-optimizer": {
+      "targetKind": "new-ui",
+      "projectId": "1abd1b51-ad97-49a1-98b9-46fa901fde74",
+      "activeDraftId": "779a37e7-6453-4a0e-af43-8acc6a6d3785",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "1710fa80-7231-4432-aff1-c534b5387934",
+        "8fd7fdc7-f889-4be2-a31a-7ef589965f2a",
+        "22840956-9516-4c53-a76c-2f2c08563b4d",
+        "4e968709-4abf-4e98-9db9-1606f1531877",
+        "3c200396-de7e-41da-9dcb-844f4015c935",
+        "2bfe6f53-ffc6-43fc-a093-c5ba00eec390",
+        "1325b6b2-2fd7-4b2c-a974-d8dac53f56fc",
+        "32d251c2-4bd1-46d1-82c0-e37a34a847fb",
+        "eb3a393c-0557-4185-96ee-41b8071226cd",
+        "f6749fb9-d2d9-46e6-91fd-5a9a648d4b94",
+        "6312b1e6-2b58-4494-958a-a21605b1b8b5",
+        "068d8a22-b35b-49d2-9d46-026225f40f1e",
+        "487270b7-07e9-49b9-8ac5-f778691c44d9",
+        "9bd18db2-1dac-4745-a1be-40fc8d717098",
+        "c5fdf54e-aad4-42ef-837c-4d86571c6c71",
+        "b6098f3e-9ee9-4087-877b-65b95ff3b51a",
+        "8a10dd6a-cf4a-4907-b274-502d3bbc08da",
+        "26b8f2b2-d405-4818-a7fd-4d3c17665c8b",
+        "3a7eb063-e10c-4168-b27a-cd57a4707374",
+        "00f3520f-5f2c-42fb-8e91-f3dd275ff35b",
+        "fbfe2d1b-abdf-4493-ace6-dadd4362b27b",
+        "7be12d82-de35-44fa-a9f1-c694a7ddc1cc",
+        "f79d0dab-488c-4dbc-9616-6b99e6dce896",
+        "5edee509-57ae-441a-b9f0-72af643323b1",
+        "d3c803e9-52dd-451d-80dc-edb57b10208e",
+        "bb1aef0c-f4cc-4e2d-a884-9062cd547403",
+        "c0e32aea-0dde-4d46-910a-7de8a0e2999c",
+        "cb54e386-5392-4ea2-92a8-57b3817ee476",
+        "c8ce6fa6-3ef3-4411-9e9a-8da0e72ad95e",
+        "685890bc-0edc-4caa-bdd1-2cba72cb6338",
+        "e62bcbca-c5d4-4451-a777-3a92272cd088",
+        "45f8dce3-c41a-4b07-85f7-962ce28b32ac"
+      ],
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        ".superdesign/item-ui-assets.md"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "f4440668a58ade33c76944fb56884412cc400472dd94eec7a649b39430ac2aae",
+        ".superdesign/item-ui-assets.md": "0bd00a4118fe76c7b0e38d49c84c4af2b3b0f62379f7f10527b4c3fcb398363e"
+      },
+      "components": [],
+      "drafts": {
+        "eee8891a-0a1a-4ad2-8f28-1a210ae38161": {
+          "title": "Sidestep Tactical Build Dashboard",
+          "visualDirection": "dense tactical dashboard",
+          "currentVersion": 1
+        },
+        "7654d62c-2f07-462e-93f2-f921a7954d4c": {
+          "title": "Sidestep — Lane Counter Build Workspace",
+          "visualDirection": "Interactive modern green-black occult-noir workspace with a four-step setup, two searchable optional lane opponents, a match-focused next-purchase navigator, mutually exclusive Early/Mid/Late tab views, compact real-item rows, enhanced final slots, and a game-like chronological 16-step ability timeline with recognizable icons, one purple unlock per ability, and separate ivory/brass 1/2/5 AP upgrades",
+          "currentVersion": 10
+        },
+        "779a37e7-6453-4a0e-af43-8acc6a6d3785": {
+          "title": "Sidestep Version 10.1 — Focus Build Workspace",
+          "visualDirection": "English-only single-column build workspace with playstyle dropdown, no build navigator or right sidebar, final build at the bottom, and interactive orange, violet, green, or blended atmosphere based on weapon, spirit, tank, or hybrid focus",
+          "currentVersion": 2
+        }
+      },
+      "updatedAt": "2026-09-03T18:45:00+02:00"
+    }
+  }
+}

@@ -1,0 +1,2530 @@
+{
+  "buildRequest": {
+    "hero_id": "warden",
+    "objective": "weapon_magazine_dps mit robustem, legalem Kaufpfad bis 60000 Souls",
+    "budget": 60000,
+    "budget_checkpoints": [
+      3200,
+      4800,
+      60000
+    ],
+    "risk_preference": "robust",
+    "minimum_requirements": {
+      "final_weapon_slots": 5,
+      "final_vitality_slots": 3,
+      "reliable_sustain_source": 1,
+      "direct_access_support": 1
+    },
+    "constraints": [
+      "Nur die mitgelieferten IDs, Kosten, Mechaniken und Interaktionen verwenden.",
+      "Bedingte Effekte ohne verifizierte Uptime nicht als dauerhaft bewerten.",
+      "Kosten, Investment und Upgradezahlung getrennt halten.",
+      "Das Ergebnis darf nur bester_gepruefter_build heißen; der Suchraum ist begrenzt."
+    ]
+  },
+  "verifiedData": {
+    "manifests": {
+      "core": {
+        "data_as_of": "2026-08-22",
+        "patch": "Minor Update - 08-22-2026",
+        "latest_update_verified_first": true,
+        "client_build": null,
+        "mode": "Standard Match (6v6, three lanes)",
+        "item_count": 156,
+        "item_mechanics_count": 836,
+        "upgrade_edge_count": 64,
+        "verified_at": "2026-09-02T09:17:55Z",
+        "research_date": "2026-09-02",
+        "schema_version": "0.1.0-research",
+        "source_ids": [
+          "SRC-0001",
+          "SRC-0003",
+          "SRC-0004",
+          "SRC-0006",
+          "SRC-0020"
+        ],
+        "source_state": {
+          "updates_revision_at": "2026-08-28T21:19:53Z",
+          "latest_patch_revision_at": "2026-08-22T22:56:15Z",
+          "item_data_revision_at": "2026-08-22T21:50:05Z",
+          "language_data_revision_at": "2026-08-22T21:50:07Z",
+          "investment_data_revision_at": "2026-07-28T00:13:35Z",
+          "item_data_patch_sync_check": "passed: Radiant Regeneration=65; Restorative Locket Spirit Resist=8%",
+          "item_effect_exposure_check": "187 non-visible raw fields excluded and preserved as UNC-0014",
+          "later_hotfix_check": "Updates index contains no entry after 2026-08-22 at access time"
+        },
+        "scope_exclusions": [
+          "hero master data",
+          "hero-specific interactions",
+          "build recommendations",
+          "Street Brawl Legendary items",
+          "Street Brawl Enhanced variants"
+        ]
+      },
+      "heroes": {
+        "schema_version": "0.1.0-research",
+        "research_date": "2026-09-02",
+        "verified_at": "2026-09-02T10:21:28Z",
+        "data_as_of": "2026-08-22",
+        "patch": "Minor Update - 08-22-2026",
+        "client_build": null,
+        "mode": "Standard Match (6v6, three lanes)",
+        "research_started_at": "2026-09-02T00:00:00Z",
+        "research_completed_at": "2026-09-02T10:21:28Z",
+        "primary_source": "https://deadlock.wiki/",
+        "excluded_domains": [
+          "deadlockwiki.org"
+        ],
+        "core_dataset_path": "data/core/",
+        "core_schema_version": "0.1.0-research",
+        "core_patch": "Minor Update - 08-22-2026",
+        "core_verified_at": "2026-09-02T09:17:55Z",
+        "core_compatibility_status": "compatible_same_patch_with_documented_hero_sync_warning",
+        "hero_count": 60,
+        "publicly_playable_hero_count": 38,
+        "documented_nonpublic_hero_count": 22,
+        "ability_count": 159,
+        "ability_effect_count": 3211,
+        "ability_upgrade_count": 896,
+        "summon_count": 7,
+        "interaction_count": 93,
+        "source_count": 15,
+        "uncertainty_count": 6,
+        "dataset_status": "research_complete_with_preserved_uncertainties",
+        "validation_status": "PASS_WITH_WARNINGS",
+        "notes": "Current structured values are source-backed. Client build, complete item interaction matrix, and summon inheritance remain explicitly unresolved; all explicit post-patch Innate sections are registered."
+      }
+    },
+    "economy_and_slots": {
+      "economy": {
+        "source_ids": [
+          "SRC-0006",
+          "SRC-0007",
+          "SRC-0008"
+        ],
+        "tier_prices": {
+          "1": 800,
+          "2": 1600,
+          "3": 3200,
+          "4": 6400
+        },
+        "sellback": {
+          "rate": 0.5,
+          "basis": "tatsächlich bezahlte Anschaffungskosten",
+          "confidence": "high",
+          "source_ids": [
+            "SRC-0006",
+            "SRC-0007"
+          ]
+        },
+        "refund": {
+          "rate": 1,
+          "eligibility": "unmittelbare Rückgabe im Kaufzustand; die Wiki-Seiten unterscheiden sich bei Shopfenster versus Shopbereich",
+          "confidence": "medium",
+          "source_ids": [
+            "SRC-0006",
+            "SRC-0007"
+          ],
+          "uncertainty_id": "UNC-0003"
+        },
+        "investments": {
+          "basis": "Summe der total_cost-Werte aktuell besessener Items je Kategorie",
+          "maximum_counted_investment": 28800,
+          "category_rewards": {
+            "weapon": "weapon_damage_percent",
+            "vitality": "max_health_percent",
+            "spirit": "spirit_power"
+          },
+          "item_stats_are_separate": true,
+          "confidence": "high",
+          "source_ids": [
+            "SRC-0006",
+            "SRC-0008"
+          ]
+        },
+        "investment_thresholds": [
+          {
+            "category_investment": 800,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 9,
+                "cumulative_bonus": 9,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 9,
+                "cumulative_bonus": 9,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 7,
+                "cumulative_bonus": 7,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 1600,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 3,
+                "cumulative_bonus": 12,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 3,
+                "cumulative_bonus": 12,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 11,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 2400,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 3,
+                "cumulative_bonus": 15,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 3,
+                "cumulative_bonus": 15,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 15,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 3200,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 3,
+                "cumulative_bonus": 18,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 5,
+                "cumulative_bonus": 20,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 19,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 4800,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 28,
+                "cumulative_bonus": 46,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 18,
+                "cumulative_bonus": 38,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 19,
+                "cumulative_bonus": 38,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": true,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 6400,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 8,
+                "cumulative_bonus": 54,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 42,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 7,
+                "cumulative_bonus": 45,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 8000,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 8,
+                "cumulative_bonus": 62,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 46,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 7,
+                "cumulative_bonus": 52,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 11200,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 12,
+                "cumulative_bonus": 74,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 50,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 7,
+                "cumulative_bonus": 59,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 16000,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 12,
+                "cumulative_bonus": 86,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 4,
+                "cumulative_bonus": 54,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 7,
+                "cumulative_bonus": 66,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 22400,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 14,
+                "cumulative_bonus": 100,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 6,
+                "cumulative_bonus": 60,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 9,
+                "cumulative_bonus": 75,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          },
+          {
+            "category_investment": 28800,
+            "bonuses": {
+              "weapon": {
+                "incremental_bonus": 15,
+                "cumulative_bonus": 115,
+                "unit": "percent"
+              },
+              "vitality": {
+                "incremental_bonus": 6,
+                "cumulative_bonus": 66,
+                "unit": "percent"
+              },
+              "spirit": {
+                "incremental_bonus": 25,
+                "cumulative_bonus": 100,
+                "unit": "spirit_power"
+              }
+            },
+            "is_major_spike": false,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0008",
+              "SRC-0006"
+            ]
+          }
+        ],
+        "component_cost_handling": {
+          "raw_item_cost_field": "items.total_cost",
+          "upgrade_payment": "to_total_cost minus value of owned component(s)",
+          "category_investment_after_upgrade": "total_cost des besessenen Ziel-Items; nicht die isolierte Kassenzahlung",
+          "confidence": "high",
+          "source_ids": [
+            "SRC-0006",
+            "SRC-0007"
+          ]
+        },
+        "upgrade_cost_rules": [
+          {
+            "rule_id": "ECO-UPG-001",
+            "rule": "Eine vorhandene Komponente reduziert die Zahlung für das Ziel-Item um ihren Preis.",
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0006",
+              "SRC-0007"
+            ]
+          },
+          {
+            "rule_id": "ECO-UPG-002",
+            "rule": "Wenn eine Komponente in mehrere Items ausgebaut werden kann, wird ihr Rabatt nur beim zuerst gekauften Upgrade genutzt.",
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0006"
+            ]
+          }
+        ],
+        "special_rules": [
+          {
+            "rule_id": "ECO-SPEC-001",
+            "rule": "Aktive Items belegen zusätzlich einen von vier Active-Key-Slots; höchstens vier aktive Items können gleichzeitig gehalten werden.",
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0006",
+              "SRC-0007"
+            ]
+          }
+        ]
+      },
+      "slots": {
+        "source_ids": [
+          "SRC-0006",
+          "SRC-0007",
+          "SRC-0009",
+          "SRC-0015"
+        ],
+        "starting_slots": {
+          "universal": 9
+        },
+        "unlocks": [
+          {
+            "slot_index": 10,
+            "slot_type": "extra",
+            "condition": "1 gegnerischen Walker zerstören",
+            "team_wide": true,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0009",
+              "SRC-0015"
+            ]
+          },
+          {
+            "slot_index": 11,
+            "slot_type": "extra",
+            "condition": "2 gegnerische Walker zerstören",
+            "team_wide": true,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0009",
+              "SRC-0015"
+            ]
+          },
+          {
+            "slot_index": 12,
+            "slot_type": "extra",
+            "condition": "3 gegnerische Walker zerstören",
+            "team_wide": true,
+            "confidence": "high",
+            "source_ids": [
+              "SRC-0009",
+              "SRC-0015"
+            ]
+          }
+        ],
+        "item_limit": 12,
+        "active_item_limit": 4,
+        "slot_types": [
+          {
+            "slot_type": "universal",
+            "capacity": 9,
+            "allowed_categories": [
+              "Weapon",
+              "Vitality",
+              "Spirit"
+            ],
+            "source_ids": [
+              "SRC-0006"
+            ]
+          },
+          {
+            "slot_type": "extra",
+            "capacity": 3,
+            "allowed_categories": [
+              "Weapon",
+              "Vitality",
+              "Spirit"
+            ],
+            "source_ids": [
+              "SRC-0006",
+              "SRC-0009"
+            ]
+          },
+          {
+            "slot_type": "active_key",
+            "capacity": 4,
+            "is_additional_binding": true,
+            "source_ids": [
+              "SRC-0006",
+              "SRC-0007"
+            ]
+          }
+        ],
+        "upgrade_behavior": [
+          {
+            "rule_id": "SLOT-UPG-001",
+            "rule": "Die Wiki dokumentiert den Komponentenrabatt, aber keinen belastbaren separaten temporären Slotbedarf während des Upgrades.",
+            "temporary_slot_requirement": null,
+            "confidence": "low",
+            "source_ids": [
+              "SRC-0006",
+              "SRC-0007"
+            ],
+            "uncertainty_id": "UNC-0004"
+          }
+        ]
+      }
+    },
+    "hero": {
+      "record": [
+        {
+          "hero_id": "warden",
+          "name": "Warden",
+          "confidence": "high"
+        }
+      ],
+      "stats": [
+        {
+          "hero_id": "warden",
+          "stat_group": "health",
+          "mechanic": "max_health",
+          "base_value": "805",
+          "unit": "health",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "health",
+          "mechanic": "base_health_regen",
+          "base_value": "2",
+          "unit": "health_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "max_move_speed",
+          "base_value": "6.3",
+          "unit": "units_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "sprint_speed",
+          "base_value": "1.6",
+          "unit": "units_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "crouch_speed",
+          "base_value": "4.75",
+          "unit": "units_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "move_acceleration",
+          "base_value": "4",
+          "unit": "units_per_second_squared",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "ground_dash_distance_in_meters",
+          "base_value": "10",
+          "unit": "meters",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "ground_dash_duration",
+          "base_value": "0.68",
+          "unit": "seconds",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "ground_dash_speed",
+          "base_value": "14.7",
+          "unit": "units_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "air_dash_distance_in_meters",
+          "base_value": "8",
+          "unit": "meters",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "air_dash_duration",
+          "base_value": "0.47",
+          "unit": "seconds",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "air_dash_speed",
+          "base_value": "17",
+          "unit": "units_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "stamina",
+          "mechanic": "stamina",
+          "base_value": "3",
+          "unit": "count",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "stamina",
+          "mechanic": "stamina_cooldown",
+          "base_value": "4.5000045",
+          "unit": "seconds",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "health",
+          "mechanic": "stamina_regen_per_second",
+          "base_value": "0.222222",
+          "unit": "count_per_second",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "melee",
+          "mechanic": "light_melee_damage",
+          "base_value": "50",
+          "unit": "damage",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "melee",
+          "mechanic": "heavy_melee_damage",
+          "base_value": "116",
+          "unit": "damage",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "hero_bullet_lifesteal_effectiveness",
+          "base_value": "1",
+          "unit": "multiplier",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "spirit",
+          "mechanic": "hero_spirit_lifesteal_effectiveness",
+          "base_value": "1",
+          "unit": "multiplier",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "misc",
+          "mechanic": "crit_damage_bonus_percent",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "defense",
+          "mechanic": "crit_damage_received_percent",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "misc",
+          "mechanic": "weapon_power_scale",
+          "base_value": "1",
+          "unit": "multiplier",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "misc",
+          "mechanic": "proc_build_up_rate_scale",
+          "base_value": "1",
+          "unit": "multiplier",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "spirit",
+          "mechanic": "tech_range",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "spirit",
+          "mechanic": "tech_duration",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "misc",
+          "mechanic": "base_weapon_damage_increase",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "reload",
+          "mechanic": "reload_speed",
+          "base_value": "0",
+          "unit": "percent",
+          "condition": "base hero state",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "ammo",
+          "mechanic": "ammo_consumed_per_shot",
+          "base_value": "1",
+          "unit": "ammo",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "bullet_damage",
+          "base_value": "17.34",
+          "unit": "damage",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "bullet_gravity_scale",
+          "base_value": "0.25",
+          "unit": "multiplier",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "bullet_radius",
+          "base_value": "0.127",
+          "unit": "meters",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "bullet_speed",
+          "base_value": "290",
+          "unit": "units_per_second",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "bullets_per_burst",
+          "base_value": "1",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "bullets_per_shot",
+          "base_value": "1",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "burst_inter_shot_interval",
+          "base_value": "0",
+          "unit": "seconds",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "can_crit",
+          "base_value": "true",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "ammo",
+          "mechanic": "clip_size",
+          "base_value": "17",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "dps",
+          "base_value": "66.057",
+          "unit": "damage_per_second",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "falloff_end_range",
+          "base_value": "47",
+          "unit": "meters",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "falloff_end_scale",
+          "base_value": "0.1",
+          "unit": "multiplier",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "falloff_start_range",
+          "base_value": "18",
+          "unit": "meters",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "hit_once_across_all_bullets",
+          "base_value": "false",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "reload",
+          "mechanic": "reload_delay",
+          "base_value": "0",
+          "unit": "seconds",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "reload",
+          "mechanic": "reload_single",
+          "base_value": "false",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "reload",
+          "mechanic": "reload_time",
+          "base_value": "2.914",
+          "unit": "seconds",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "rounds_per_second",
+          "base_value": "3.8095",
+          "unit": "flat",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "movement",
+          "mechanic": "shoot_move_speed",
+          "base_value": "0.75",
+          "unit": "units_per_second",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "sustained_dps",
+          "base_value": "39.962",
+          "unit": "damage_per_second",
+          "condition": "primary fire",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "misc",
+          "mechanic": "power_increases",
+          "unit": "flat",
+          "condition": "per boon level",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "spirit",
+          "mechanic": "tech_power",
+          "unit": "flat",
+          "condition": "per boon level",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "rounds_per_second_spirit_scaling",
+          "base_value": "0.01",
+          "unit": "multiplier",
+          "condition": "scales with Spirit Power",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "fire_rate_spirit_scaling",
+          "base_value": "0.25",
+          "unit": "multiplier",
+          "condition": "scales with Spirit Power",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "dps_spirit_scaling",
+          "base_value": "0.1734",
+          "unit": "multiplier",
+          "condition": "scales with Spirit Power",
+          "confidence": "high"
+        },
+        {
+          "hero_id": "warden",
+          "stat_group": "weapon",
+          "mechanic": "sustained_dps_spirit_scaling",
+          "base_value": "0.063395",
+          "unit": "multiplier",
+          "condition": "scales with Spirit Power",
+          "confidence": "high"
+        }
+      ],
+      "abilities_out_of_scope": [
+        {
+          "ability_id": "warden_alchemical_flask",
+          "name": "Alchemical Flask",
+          "confidence": "high"
+        },
+        {
+          "ability_id": "warden_willpower",
+          "name": "Willpower",
+          "confidence": "high"
+        },
+        {
+          "ability_id": "warden_binding_word",
+          "name": "Binding Word",
+          "confidence": "high"
+        },
+        {
+          "ability_id": "warden_last_stand",
+          "name": "Last Stand",
+          "confidence": "high"
+        }
+      ],
+      "note": "Skills und bedingte Fähigkeits-Uptime sind nicht Teil dieses Kaufpfad-Slices."
+    },
+    "candidate_items": [
+      {
+        "item_id": "upgrade_containment",
+        "name": "Slowing Hex",
+        "category": "Spirit",
+        "tier": "2",
+        "total_cost": "1600",
+        "active_type": "Press",
+        "active_cooldown": "27",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_boundless_spirit",
+        "name": "Boundless Spirit",
+        "category": "Spirit",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "name": "Vortex Web",
+        "category": "Spirit",
+        "tier": "4",
+        "total_cost": "6400",
+        "active_type": "Press",
+        "active_cooldown": "42",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healing_booster",
+        "name": "Healing Booster",
+        "category": "Vitality",
+        "tier": "2",
+        "total_cost": "1600",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "name": "Fury Trance",
+        "category": "Vitality",
+        "tier": "3",
+        "total_cost": "3200",
+        "active_type": "InstantCast",
+        "active_cooldown": "18",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "name": "Healing Tempo",
+        "category": "Vitality",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "name": "Leech",
+        "category": "Vitality",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_clip_size",
+        "name": "Extended Magazine",
+        "category": "Weapon",
+        "tier": "1",
+        "total_cost": "800",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headshot_booster",
+        "name": "Headshot Booster",
+        "category": "Weapon",
+        "tier": "1",
+        "total_cost": "800",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_high_velocity_mag",
+        "name": "High-Velocity Rounds",
+        "category": "Weapon",
+        "tier": "1",
+        "total_cost": "800",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_medic_bullets",
+        "name": "Restorative Shot",
+        "category": "Weapon",
+        "tier": "1",
+        "total_cost": "800",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_blitz_bullets",
+        "name": "Swift Striker",
+        "category": "Weapon",
+        "tier": "2",
+        "total_cost": "1600",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "name": "Escalating Resilience",
+        "category": "Weapon",
+        "tier": "3",
+        "total_cost": "3200",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "name": "Headhunter",
+        "category": "Weapon",
+        "tier": "3",
+        "total_cost": "3200",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aprounds",
+        "name": "Armor Piercing Rounds",
+        "category": "Weapon",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "name": "Frenzy",
+        "category": "Weapon",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_ricochet",
+        "name": "Ricochet",
+        "category": "Weapon",
+        "tier": "4",
+        "total_cost": "6400",
+        "confidence": "high"
+      }
+    ],
+    "candidate_item_mechanics": [
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "27",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_ability_duration",
+        "mechanic": "ability_duration",
+        "value": "3.5",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_ability_cast_range",
+        "mechanic": "ability_cast_range",
+        "value": "25",
+        "unit": "m",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_ability_cast_delay",
+        "mechanic": "ability_cast_delay",
+        "value": "0.1",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_slow_percent",
+        "mechanic": "slow_percent",
+        "value": "20",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_ground_dash_reduction_percent",
+        "mechanic": "ground_dash_reduction_percent",
+        "value": "-30",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Slows movement of enemy target. Also Silences their movement-based items and abilities.Increases the target's gravity.Does not affect target's stamina usage.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_containment",
+        "effect_id": "eff_bonus_sprint_speed",
+        "mechanic": "bonus_sprint_speed",
+        "value": "0.5",
+        "unit": "m/s",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_boundless_spirit",
+        "effect_id": "eff_tech_power",
+        "mechanic": "tech_power",
+        "value": "30",
+        "unit": "spirit_power",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_boundless_spirit",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "75",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_boundless_spirit",
+        "effect_id": "eff_out_of_combat_health_regen",
+        "mechanic": "out_of_combat_health_regen",
+        "value": "4",
+        "unit": "hp_per_second",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_boundless_spirit",
+        "effect_id": "eff_tech_power_percent",
+        "mechanic": "tech_power_percent",
+        "value": "15",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "42",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_ability_duration",
+        "mechanic": "ability_duration",
+        "value": "4",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_ability_cast_range",
+        "mechanic": "ability_cast_range",
+        "value": "30",
+        "unit": "m",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_ability_cast_delay",
+        "mechanic": "ability_cast_delay",
+        "value": "0.2",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_capture_radius",
+        "mechanic": "capture_radius",
+        "value": "12",
+        "unit": "m",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_slow_percent",
+        "mechanic": "slow_percent",
+        "value": "35",
+        "unit": "percent",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_ground_dash_reduction_percent",
+        "mechanic": "ground_dash_reduction_percent",
+        "value": "-40",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Throw a vacuum grenade, pulling all enemies into a small area and applying Slowing Hex. Alt Cast to Target Unit Directly.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_tech_range_multiplier",
+        "mechanic": "tech_range_multiplier",
+        "value": "8",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_tech_radius_multiplier",
+        "mechanic": "tech_radius_multiplier",
+        "value": "8",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aoe_root",
+        "effect_id": "eff_bonus_sprint_speed",
+        "mechanic": "bonus_sprint_speed",
+        "value": "0.75",
+        "unit": "m/s",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healing_booster",
+        "effect_id": "eff_heal_amp_cast_percent",
+        "mechanic": "heal_amp_cast_percent",
+        "value": "20",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Increases the effectiveness of your healing.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healing_booster",
+        "effect_id": "eff_bonus_health_regen",
+        "mechanic": "bonus_health_regen",
+        "value": "3",
+        "unit": "hp_per_second",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healing_booster",
+        "effect_id": "eff_out_of_combat_health_regen",
+        "mechanic": "out_of_combat_health_regen",
+        "value": "1",
+        "unit": "hp_per_second",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "18",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_ability_duration",
+        "mechanic": "ability_duration",
+        "value": "6.5",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_bullet_lifesteal_percent",
+        "mechanic": "bullet_lifesteal_percent",
+        "value": "14",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_active_bonus_fire_rate",
+        "mechanic": "active_bonus_fire_rate",
+        "value": "32",
+        "unit": "percent",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_tech_resist",
+        "mechanic": "tech_resist",
+        "value": "40",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Grants Fire Rate, Spirit Resistance and Move Speed, and removes the Move Speed penalty while shooting, but Silences you and disables stamina usage and regeneration.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "100",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "6",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fury_trance",
+        "effect_id": "eff_active_bonus_move_speed",
+        "mechanic": "active_bonus_move_speed",
+        "value": "1",
+        "unit": "m/s",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "item_activation",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "1",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Applying {g:citadel_inline_attribute:'Heal'} to yourself or an ally grants the target {g:citadel_inline_attribute:'BonusFireRate'} and {g:citadel_inline_attribute:'BonusMoveSpeed'}.Does not apply on i...",
+        "trigger": "passive_proc_cooldown",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_bonus_fire_rate",
+        "mechanic": "bonus_fire_rate",
+        "value": "35",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Applying heal to yourself or an ally grants the target bonus fire rate and bonus move speed.Does not apply on innate Regen or passive Bullet/Spirit Lifesteals.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_buff_duration",
+        "mechanic": "buff_duration",
+        "value": "7",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Applying {g:citadel_inline_attribute:'Heal'} to yourself or an ally grants the target {g:citadel_inline_attribute:'BonusFireRate'} and {g:citadel_inline_attribute:'BonusMoveSpeed'}.Does not apply on i...",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_bonus_move_speed",
+        "mechanic": "bonus_move_speed",
+        "value": "1.25",
+        "unit": "m/s",
+        "condition": "Quellbedingung (englischer Tooltip): Applying heal to yourself or an ally grants the target bonus fire rate and bonus move speed.Does not apply on innate Regen or passive Bullet/Spirit Lifesteals.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_tech_resist",
+        "mechanic": "tech_resist",
+        "value": "10",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_bonus_health_regen",
+        "mechanic": "bonus_health_regen",
+        "value": "6",
+        "unit": "hp_per_second",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_heal_amp_cast_percent",
+        "mechanic": "heal_amp_cast_percent",
+        "value": "25",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_healbuff",
+        "effect_id": "eff_out_of_combat_health_regen",
+        "mechanic": "out_of_combat_health_regen",
+        "value": "4",
+        "unit": "hp_per_second",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "effect_id": "eff_tech_power",
+        "mechanic": "tech_power",
+        "value": "12",
+        "unit": "spirit_power",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "effect_id": "eff_ability_lifesteal_percent_hero",
+        "mechanic": "ability_lifesteal_percent_hero",
+        "value": "25",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "effect_id": "eff_bullet_lifesteal_percent",
+        "mechanic": "bullet_lifesteal_percent",
+        "value": "25",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "12",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_damage_recycler",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "180",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_clip_size",
+        "effect_id": "eff_bonus_clip_size_percent",
+        "mechanic": "bonus_clip_size_percent",
+        "value": "30",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_clip_size",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "8",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headshot_booster",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "9",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}.",
+        "trigger": "passive_proc_cooldown",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_headshot_booster",
+        "effect_id": "eff_head_shot_bonus_damage",
+        "mechanic": "head_shot_bonus_damage",
+        "value": "45",
+        "unit": "damage",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}.",
+        "trigger": "headshot",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headshot_booster",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "30",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_high_velocity_mag",
+        "effect_id": "eff_bonus_bullet_speed_percent",
+        "mechanic": "bonus_bullet_speed_percent",
+        "value": "60",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_high_velocity_mag",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "8",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_medic_bullets",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "6",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Your next bullet will heal you based on what target you hit.",
+        "trigger": "passive_proc_cooldown",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_medic_bullets",
+        "effect_id": "eff_heal_from_hero",
+        "mechanic": "heal_from_hero",
+        "value": "50",
+        "unit": "hp",
+        "condition": "Quellbedingung (englischer Tooltip): Your next bullet will heal you based on what target you hit.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_medic_bullets",
+        "effect_id": "eff_heal_from_npc",
+        "mechanic": "heal_from_npc",
+        "value": "20",
+        "unit": "hp",
+        "condition": "Quellbedingung (englischer Tooltip): Your next bullet will heal you based on what target you hit.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_medic_bullets",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "6",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_blitz_bullets",
+        "effect_id": "eff_bonus_fire_rate",
+        "mechanic": "bonus_fire_rate",
+        "value": "20",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_blitz_bullets",
+        "effect_id": "eff_bonus_sprint_speed",
+        "mechanic": "bonus_sprint_speed",
+        "value": "0.75",
+        "unit": "m/s",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_max_armor_stacks",
+        "mechanic": "max_armor_stacks",
+        "value": "30",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Grants Bullet Resist when your bullets hit an enemy hero. Each shot can only grant one stack.",
+        "trigger": "stack_change",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_bullet_resist_per_stack",
+        "mechanic": "bullet_resist_per_stack",
+        "value": "2",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Grants Bullet Resist when your bullets hit an enemy hero. Each shot can only grant one stack.",
+        "trigger": "stack_change",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_bullet_resist_duration",
+        "mechanic": "bullet_resist_duration",
+        "value": "24",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Grants Bullet Resist when your bullets hit an enemy hero. Each shot can only grant one stack.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "18",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "75",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_reinforcing_casings",
+        "effect_id": "eff_bonus_clip_size_percent",
+        "mechanic": "bonus_clip_size_percent",
+        "value": "35",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "8",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "passive_proc_cooldown",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_head_shot_bonus_damage",
+        "mechanic": "head_shot_bonus_damage",
+        "value": "75",
+        "unit": "damage",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "headshot",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_head_shot_bonus_damage_scaling",
+        "mechanic": "head_shot_bonus_damage_scaling",
+        "value": "4",
+        "unit": "power_increase_scaling_coefficient",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "headshot",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "5",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "50",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_heal_percent_per_headshot",
+        "mechanic": "heal_percent_per_headshot",
+        "value": "4",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "headshot",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_heal_percent_per_headshot_scaling",
+        "mechanic": "heal_percent_per_headshot_scaling",
+        "value": "0.06",
+        "unit": "power_increase_scaling_coefficient",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "headshot",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_bonus_move_speed",
+        "mechanic": "bonus_move_speed",
+        "value": "1.75",
+        "unit": "m/s",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals bonus weapon damage, heal you, and briefly grants bonus move speed.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_headhunter",
+        "effect_id": "eff_movement_speed_bonus_duration",
+        "mechanic": "movement_speed_bonus_duration",
+        "value": "3",
+        "unit": "seconds",
+        "condition": "Quellbedingung (englischer Tooltip): Your next headshot against an enemy Hero deals {g:citadel_inline_attribute:'BonusWeaponDamage'}, {g:citadel_inline_attribute:'Heal'} you, and briefly grants {g:citadel_inline_attribute:'BonusMoveSpeed'}.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aprounds",
+        "effect_id": "eff_bonus_bullet_speed_percent",
+        "mechanic": "bonus_bullet_speed_percent",
+        "value": "60",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aprounds",
+        "effect_id": "eff_proc_chance",
+        "mechanic": "proc_chance",
+        "value": "55",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Your Bullets have a chance to become unavoidable, piercing through enemies and ignoring their Bullet Resistance.",
+        "trigger": "proc",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_aprounds",
+        "effect_id": "eff_base_attack_damage_percent",
+        "mechanic": "base_attack_damage_percent",
+        "value": "8",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_ability_cooldown",
+        "mechanic": "ability_cooldown",
+        "value": "16",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "passive_proc_cooldown",
+        "confidence": "medium"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_ability_duration",
+        "mechanic": "ability_duration",
+        "value": "10",
+        "unit": "seconds",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_bonus_health",
+        "mechanic": "bonus_health",
+        "value": "160",
+        "unit": "hp",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_bonus_fire_rate",
+        "mechanic": "bonus_fire_rate",
+        "value": "15",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_bullet_lifesteal_percent",
+        "mechanic": "bullet_lifesteal_percent",
+        "value": "10",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_fervor_movespeed",
+        "mechanic": "fervor_movespeed",
+        "value": "4",
+        "unit": "m/s",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_fervor_fire_rate",
+        "mechanic": "fervor_fire_rate",
+        "value": "40",
+        "unit": "percent",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_fervor",
+        "effect_id": "eff_fervor_status_resistance_percent",
+        "mechanic": "fervor_status_resistance_percent",
+        "value": "40",
+        "unit": "percent",
+        "condition": "Item-spezifische Bedingung ist im strukturierten Datensatz nicht als eigenes Feld dokumentiert.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_ricochet",
+        "effect_id": "eff_ricochet_damage_percent",
+        "mechanic": "ricochet_damage_percent",
+        "value": "65",
+        "unit": "percent",
+        "condition": "Quellbedingung (englischer Tooltip): Your bullets will ricochet on enemies near your target, applying any bullet procs and dealing a percentage of the original damage.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_ricochet",
+        "effect_id": "eff_ricochet_radius",
+        "mechanic": "ricochet_radius",
+        "value": "13",
+        "unit": "m",
+        "condition": "Quellbedingung (englischer Tooltip): Your bullets will ricochet on enemies near your target, applying any bullet procs and dealing a percentage of the original damage.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_ricochet",
+        "effect_id": "eff_ricochet_targets_tooltip_only",
+        "mechanic": "ricochet_targets_tooltip_only",
+        "value": "2",
+        "unit": "count",
+        "condition": "Quellbedingung (englischer Tooltip): Your bullets will ricochet on enemies near your target, applying any bullet procs and dealing a percentage of the original damage.",
+        "trigger": "passive_item_rule",
+        "confidence": "high"
+      },
+      {
+        "item_id": "upgrade_ricochet",
+        "effect_id": "eff_bonus_fire_rate",
+        "mechanic": "bonus_fire_rate",
+        "value": "18",
+        "unit": "percent",
+        "condition": "Immer, solange das Item ausgerüstet ist.",
+        "trigger": "equipped",
+        "confidence": "high"
+      }
+    ],
+    "candidate_upgrades": [
+      {
+        "from_item_id": "upgrade_containment",
+        "to_item_id": "upgrade_aoe_root",
+        "additional_cost": "4800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_high_velocity_mag",
+        "to_item_id": "upgrade_aprounds",
+        "additional_cost": "5600",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_rapid_rounds",
+        "to_item_id": "upgrade_blitz_bullets",
+        "additional_cost": "800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_soaring_spirit",
+        "to_item_id": "upgrade_boundless_spirit",
+        "additional_cost": "4800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_health_stealing_magic",
+        "to_item_id": "upgrade_damage_recycler",
+        "additional_cost": "4800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_vampire",
+        "to_item_id": "upgrade_damage_recycler",
+        "additional_cost": "4800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_high_velocity_mag",
+        "to_item_id": "upgrade_express_shot",
+        "additional_cost": "2400",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_vampire",
+        "to_item_id": "upgrade_fury_trance",
+        "additional_cost": "1600",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_headshot_booster",
+        "to_item_id": "upgrade_headhunter",
+        "additional_cost": "2400",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_healing_booster",
+        "to_item_id": "upgrade_healbuff",
+        "additional_cost": "4800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_endurance",
+        "to_item_id": "upgrade_healing_booster",
+        "additional_cost": "800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_high_velocity_mag",
+        "to_item_id": "upgrade_pristine_emblem",
+        "additional_cost": "800",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_clip_size",
+        "to_item_id": "upgrade_reinforcing_casings",
+        "additional_cost": "2400",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_high_velocity_mag",
+        "to_item_id": "upgrade_sharpshooter",
+        "additional_cost": "2400",
+        "confidence": "medium"
+      },
+      {
+        "from_item_id": "upgrade_clip_size",
+        "to_item_id": "upgrade_titan_round",
+        "additional_cost": "800",
+        "confidence": "medium"
+      }
+    ],
+    "warden_interactions": [],
+    "limitations": [
+      "UNC-0004: Temporärer Slotbedarf beim Upgrade ist nicht verifiziert.",
+      "Kein Endbudget angegeben; 60'000 Souls werden als offengelegte Analyseannahme verwendet.",
+      "Die Skill-Reihenfolge wird in diesem Slice noch nicht gemeinsam mit den Käufen optimiert."
+    ]
+  },
+  "candidateBuild": {
+    "summary": "Ausgewogener Warden Weapon Carry bis 60'000 Souls: 12 Slots nach drei Walker-Freischaltungen. Die begrenzte Vorwärtssuche vergleicht die frühen Zustände bei 3'200 und 4'800 Souls einschließlich Sparphasen sowie spätere Pfade für Schaden, tatsächliche permanente Schutzwerte, getrennte Sustain- und Mobilitätsarten, Weapon-/Vitality-Schwellen, Upgrade-Kohärenz und belegte Heldenskalierungen. Final: mindestens 5 Weapon- und 3 Vitality-Slots, direkte Zugangsunterstützung sowie eine verlässliche Sustain-Quelle. Bedingte Effekte werden erfasst, aber nicht mit angenommener Uptime in den DPS eingerechnet.",
+    "validation": {
+      "manifests": "PASS",
+      "costs_and_upgrades": "PASS",
+      "investments_and_thresholds": "PASS",
+      "slots_and_active_limit": "PASS",
+      "profile_rules": "PASS: geprüftes Warden-Profil; mindestens 5 Weapon, 3 Vitality und 1 verifizierte Sustain-Quelle; Sustain- und Mobilitätsarten bleiben getrennt.",
+      "path_rules": "PASS: begrenzte Vorwärtssuche, Pareto-Vergleich bei identischen Soul-Ausgaben, keine Upgrade-Anzahl als Qualitätsbonus und keine parallelen Vor- und Endstufen derselben Upgrade-Linie.",
+      "warnings": [
+        "UNC-0004: Temporärer Slotbedarf beim Upgrade ist nicht verifiziert.",
+        "Kein Endbudget angegeben; 60'000 Souls werden als offengelegte Analyseannahme verwendet.",
+        "Die Skill-Reihenfolge wird in diesem Slice noch nicht gemeinsam mit den Käufen optimiert."
+      ]
+    },
+    "purchaseOrder": [
+      {
+        "step": 1,
+        "item_id": "upgrade_medic_bullets",
+        "item_name": "Restorative Shot",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 800,
+        "total_spent": 800,
+        "weapon_investment": 800,
+        "vitality_investment": 0,
+        "spirit_investment": 0,
+        "normal_slots_used": 1,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 2,
+        "item_id": "upgrade_headshot_booster",
+        "item_name": "Headshot Booster",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 800,
+        "total_spent": 1600,
+        "weapon_investment": 1600,
+        "vitality_investment": 0,
+        "spirit_investment": 0,
+        "normal_slots_used": 2,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 3,
+        "item_id": "upgrade_blitz_bullets",
+        "item_name": "Swift Striker",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 1600,
+        "total_spent": 3200,
+        "weapon_investment": 3200,
+        "vitality_investment": 0,
+        "spirit_investment": 0,
+        "normal_slots_used": 3,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 4,
+        "item_id": "upgrade_clip_size",
+        "item_name": "Extended Magazine",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 800,
+        "total_spent": 4000,
+        "weapon_investment": 4000,
+        "vitality_investment": 0,
+        "spirit_investment": 0,
+        "normal_slots_used": 4,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 5,
+        "item_id": "upgrade_high_velocity_mag",
+        "item_name": "High-Velocity Rounds",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 800,
+        "total_spent": 4800,
+        "weapon_investment": 4800,
+        "vitality_investment": 0,
+        "spirit_investment": 0,
+        "normal_slots_used": 5,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 6,
+        "item_id": "upgrade_healing_booster",
+        "item_name": "Healing Booster",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 1600,
+        "total_spent": 6400,
+        "weapon_investment": 4800,
+        "vitality_investment": 1600,
+        "spirit_investment": 0,
+        "normal_slots_used": 6,
+        "active_slots_used": 0,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 7,
+        "item_id": "upgrade_fury_trance",
+        "item_name": "Fury Trance",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 3200,
+        "total_spent": 9600,
+        "weapon_investment": 4800,
+        "vitality_investment": 4800,
+        "spirit_investment": 0,
+        "normal_slots_used": 7,
+        "active_slots_used": 1,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 8,
+        "item_id": "upgrade_containment",
+        "item_name": "Slowing Hex",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 1600,
+        "total_spent": 11200,
+        "weapon_investment": 4800,
+        "vitality_investment": 4800,
+        "spirit_investment": 1600,
+        "normal_slots_used": 8,
+        "active_slots_used": 2,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 9,
+        "item_id": "upgrade_reinforcing_casings",
+        "item_name": "Escalating Resilience",
+        "purchase_type": "upgrade",
+        "component_used": "upgrade_clip_size",
+        "cash_cost": 2400,
+        "total_spent": 13600,
+        "weapon_investment": 7200,
+        "vitality_investment": 4800,
+        "spirit_investment": 1600,
+        "normal_slots_used": 8,
+        "active_slots_used": 2,
+        "replaces_item_id": "upgrade_clip_size"
+      },
+      {
+        "step": 10,
+        "item_id": "upgrade_ricochet",
+        "item_name": "Ricochet",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 6400,
+        "total_spent": 20000,
+        "weapon_investment": 13600,
+        "vitality_investment": 4800,
+        "spirit_investment": 1600,
+        "normal_slots_used": 9,
+        "active_slots_used": 2,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 11,
+        "item_id": "upgrade_boundless_spirit",
+        "item_name": "Boundless Spirit",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 6400,
+        "total_spent": 26400,
+        "weapon_investment": 13600,
+        "vitality_investment": 4800,
+        "spirit_investment": 8000,
+        "normal_slots_used": 10,
+        "active_slots_used": 2,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 12,
+        "item_id": "upgrade_fervor",
+        "item_name": "Frenzy",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 6400,
+        "total_spent": 32800,
+        "weapon_investment": 20000,
+        "vitality_investment": 4800,
+        "spirit_investment": 8000,
+        "normal_slots_used": 11,
+        "active_slots_used": 2,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 13,
+        "item_id": "upgrade_aprounds",
+        "item_name": "Armor Piercing Rounds",
+        "purchase_type": "upgrade",
+        "component_used": "upgrade_high_velocity_mag",
+        "cash_cost": 5600,
+        "total_spent": 38400,
+        "weapon_investment": 25600,
+        "vitality_investment": 4800,
+        "spirit_investment": 8000,
+        "normal_slots_used": 11,
+        "active_slots_used": 2,
+        "replaces_item_id": "upgrade_high_velocity_mag"
+      },
+      {
+        "step": 14,
+        "item_id": "upgrade_damage_recycler",
+        "item_name": "Leech",
+        "purchase_type": "purchase",
+        "component_used": "",
+        "cash_cost": 6400,
+        "total_spent": 44800,
+        "weapon_investment": 25600,
+        "vitality_investment": 11200,
+        "spirit_investment": 8000,
+        "normal_slots_used": 12,
+        "active_slots_used": 2,
+        "replaces_item_id": ""
+      },
+      {
+        "step": 15,
+        "item_id": "upgrade_headhunter",
+        "item_name": "Headhunter",
+        "purchase_type": "upgrade",
+        "component_used": "upgrade_headshot_booster",
+        "cash_cost": 2400,
+        "total_spent": 47200,
+        "weapon_investment": 28000,
+        "vitality_investment": 11200,
+        "spirit_investment": 8000,
+        "normal_slots_used": 12,
+        "active_slots_used": 2,
+        "replaces_item_id": "upgrade_headshot_booster"
+      },
+      {
+        "step": 16,
+        "item_id": "upgrade_aoe_root",
+        "item_name": "Vortex Web",
+        "purchase_type": "upgrade",
+        "component_used": "upgrade_containment",
+        "cash_cost": 4800,
+        "total_spent": 52000,
+        "weapon_investment": 28000,
+        "vitality_investment": 11200,
+        "spirit_investment": 12800,
+        "normal_slots_used": 12,
+        "active_slots_used": 2,
+        "replaces_item_id": "upgrade_containment"
+      },
+      {
+        "step": 17,
+        "item_id": "upgrade_healbuff",
+        "item_name": "Healing Tempo",
+        "purchase_type": "upgrade",
+        "component_used": "upgrade_healing_booster",
+        "cash_cost": 4800,
+        "total_spent": 56800,
+        "weapon_investment": 28000,
+        "vitality_investment": 16000,
+        "spirit_investment": 12800,
+        "normal_slots_used": 12,
+        "active_slots_used": 2,
+        "replaces_item_id": "upgrade_healing_booster"
+      }
+    ],
+    "alternatives": [
+      {
+        "final_items": [
+          "upgrade_medic_bullets",
+          "upgrade_headhunter",
+          "upgrade_blitz_bullets",
+          "upgrade_reinforcing_casings",
+          "upgrade_aprounds",
+          "upgrade_healing_booster",
+          "upgrade_fury_trance",
+          "upgrade_aoe_root",
+          "upgrade_ricochet",
+          "upgrade_boundless_spirit",
+          "upgrade_fervor",
+          "upgrade_damage_recycler"
+        ],
+        "total_spent": 52000,
+        "weapon_investment": 28000,
+        "vitality_investment": 11200,
+        "spirit_investment": 12800
+      },
+      {
+        "final_items": [
+          "upgrade_medic_bullets",
+          "upgrade_headhunter",
+          "upgrade_blitz_bullets",
+          "upgrade_reinforcing_casings",
+          "upgrade_aprounds",
+          "upgrade_healing_booster",
+          "upgrade_fury_trance",
+          "upgrade_containment",
+          "upgrade_ricochet",
+          "upgrade_boundless_spirit",
+          "upgrade_fervor",
+          "upgrade_damage_recycler"
+        ],
+        "total_spent": 47200,
+        "weapon_investment": 28000,
+        "vitality_investment": 11200,
+        "spirit_investment": 8000
+      }
+    ]
+  }
+}

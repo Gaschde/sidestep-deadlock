@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "debatte": "node debatte/run.mjs",
+    "debatte:warden": "node debatte/prepare_warden_weapon_carry.mjs"
   }
 }

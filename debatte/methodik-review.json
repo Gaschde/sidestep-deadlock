@@ -1,0 +1,52 @@
+{
+  "buildRequest": {
+    "type": "methodik_review",
+    "title": "Prüfung der aktuellen Optimizer-Architektur",
+    "goal": "Finde die wichtigsten fachlichen oder methodischen Lücken in der aktuellen Build-Optimierung und nenne den kleinsten sinnvollen nächsten Schritt. Es soll keine neue Build-Empfehlung erzeugt werden.",
+    "constraints": [
+      "Keine Spielwerte, Item-Effekte oder Interaktionen aus Modellwissen ergänzen.",
+      "Kanonische Daten werden nicht verändert.",
+      "Ein Ergebnis heißt nur dann optimal, wenn Ziel und Suchraum klar definiert und tatsächlich abgedeckt sind; sonst bester geprüfter Build.",
+      "Unbelegte Spielpraxis als Heuristik markieren, nicht als Fakt darstellen.",
+      "Den bestehenden Warden-Weapon-Carry-Slice nicht fälschlich als universellen Optimizer darstellen."
+    ]
+  },
+  "verifiedData": {
+    "scope": "Sidestep Deadlock nutzt verifizierte, patchgebundene lokale Daten als verbindliche Quellen: data/core für Items, Kosten, Upgrades, Investments, Slots und Objectives; data/heroes für Heldenwerte, Fähigkeiten und Skalierungen; data/interactions für belegte Sonderinteraktionen.",
+    "dataRules": [
+      "Fehlende oder widersprüchliche Werte bleiben unsicher.",
+      "Bedingte Effekte und Proc-Uptime werden nicht als dauerhaft vorausgesetzt.",
+      "Upgrades ersetzen Komponenten; Zahlung nach Komponentenrabatt und Kategorie-Investment des Ziel-Items sind getrennte Größen.",
+      "Aktueller Datenstand: Standard Match 6v6, Patch Minor Update 08-22-2026; Core- und Heroes-Manifeste sind kompatibel."
+    ],
+    "currentCapabilities": [
+      "Erster echter Optimizer-Slice für Warden / Weapon Carry.",
+      "Vorwärtssuche durch legale Kaufzustände; direkte dauerhaft verifizierte Wirkung und registrierte Upgrade-Bausteine werden berücksichtigt.",
+      "Slots, Active-Limit, Kosten, Upgrades, Kategorie-Investments und Schwellen werden geprüft.",
+      "Mehrere nicht-dominierte Zustände werden begrenzt bewahrt und frühe Grundlagen nach ausgegebenen Souls verglichen.",
+      "Die Bewertungsdimensionen Schaden, Schutz, Sustain, Zugang, Mobilität, Risiken, Schwellen und Upgrade-Kohärenz bleiben getrennt; es gibt keinen addierten Geheimscore.",
+      "Feste Schutzregel im ersten Slice: mindestens fünf Weapon-, drei Vitality-Slots und eine dauerhaft verifizierte Sustain-Quelle.",
+      "Warden-spezifisch ist eine verifizierte Spirit-zu-Weapon-DPS-Skalierung enthalten; Proc-Uptime bleibt unbewertet.",
+      "Das erste Weapon-Item und die Weapon-4'800-Schwelle werden als eigene Pfadkriterien verfolgt, aber kein erster Kauf, Item oder Preis ist vorgeschrieben.",
+      "Gezielte Regressionstests bestehen; der vollständige aktuelle Lauf liefert einen geprüften Beispielpfad, nicht universelle Optimalität."
+    ],
+    "knownLimits": [
+      "Nur Warden besitzt bisher ein fachlich geprüftes Heldenprofil.",
+      "Kein Live-Match-Zustand: aktuelles Inventar, Souls, Verkäufe und Ersatzkäufe fehlen.",
+      "Gegnerprofile und konkrete Todesursachen sind keine echten Entscheidungskriterien.",
+      "Skill-Reihenfolge, Fähigkeitsschaden, Procs, realistische Uptime, Summons, langfristiger DPS mit Nachladen/Headshots/Falloff sowie komplexe Defensive sind noch nicht vollständig modelliert.",
+      "Die Oberfläche zeigt derzeit nur den gewählten Pfad, keine intern bewahrten Alternativen oder vollständige Marginalnutzen-Ausgabe.",
+      "Ingame-Feedback zum aktuellen Warden-Pfad steht noch aus."
+    ]
+  },
+  "candidateBuild": {
+    "summary": "Das zu prüfende Artefakt ist die Optimierungsarchitektur, kein neuer Item-Build. Der nächste Produktfokus soll klein, deterministisch und testbar bleiben.",
+    "purchaseOrder": []
+  },
+  "questions": [
+    "Welche der vorhandenen Regeln oder Bewertungsdimensionen erzeugen wahrscheinlich systematische Fehlentscheidungen?",
+    "Welche fehlende Information ist für die Spielbarkeit eines Pfads am kritischsten, ohne dass wir dafür ungesicherte Werte erfinden?",
+    "Was ist der kleinste nächste technische oder fachliche Schritt mit dem größten Erkenntnisgewinn?",
+    "Welche vorgeschlagene Erweiterung sollte ausdrücklich noch nicht umgesetzt werden, weil sie den verifizierten Scope zu stark aufweichen würde?"
+  ]
+}

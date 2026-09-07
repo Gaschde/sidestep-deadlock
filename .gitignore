@@ -24,3 +24,11 @@ Thumbs.db
 *.log
 ~$*
 .superdesign/tmp/
+
+# Temporäre Codex-Übertragungsordner, keine Projektartefakte
+.codex-readme-upload/
+.codex-remote-attachments/
+
+# Lokale OpenRouter-Zugangsdaten und erzeugte Debattenprotokolle
+debatte/*.env
+debatte/outputs/
