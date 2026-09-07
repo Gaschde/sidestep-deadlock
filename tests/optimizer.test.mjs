@@ -10,10 +10,13 @@ import {
   buildOptimizerData,
   createInitialBuildState,
   createCarryScenarioPlan,
+  evaluateCarryDecision,
   evaluateCarryScenarios,
   evaluateWeaponState,
   optimizeWeaponCarry,
-  optimizeWeaponCarryFullBuild
+  optimizeWeaponCarryFullBuild,
+  rankedCarryStates,
+  retainDistinctPurchaseHistories
 } from "../app/optimizer.mjs";
 import { buildHeroCapabilityProfile, evaluateItemCapabilities } from "../app/capabilities.mjs";
 import { parseCsv } from "../app/lib.mjs";
@@ -143,6 +146,57 @@ test("Wirkungsmodell stapelt permanente Resistenzen multiplikativ", () => {
   assert.equal(scenarios.common.resistance_sources.bullet.stacking_rule.rule_id, "RES-002");
 });
 
+test("Gleiches Inventar behält unterschiedliche Kaufgeschichten", () => {
+  const data = fixture();
+  const direct = {
+    state: {
+      inventory: [data.itemsById.get("damage")], spent: 1600, activeItems: 0,
+      events: [{ purchase_type: "purchase", item_id: "damage", item: data.itemsById.get("damage"), total_spent: 1600 }]
+    }
+  };
+  const viaComponent = {
+    state: {
+      inventory: [data.itemsById.get("damage")], spent: 1600, activeItems: 0,
+      events: [
+        { purchase_type: "purchase", item_id: "component", item: data.itemsById.get("component"), total_spent: 800 },
+        { purchase_type: "upgrade", item_id: "damage", item: data.itemsById.get("damage"), total_spent: 1600 }
+      ]
+    }
+  };
+  const retained = retainDistinctPurchaseHistories([direct, viaComponent]);
+  assert.equal(retained.length, 2);
+  assert.deepEqual(retained.map((candidate) => candidate.state.inventory.map((item) => item.item_id)), [["damage"], ["damage"]]);
+  assert.notEqual(retained[0].state.events.length, retained[1].state.events.length);
+});
+
+test("Fehlende Frühbasis verwirft einen sonst legalen Suchzustand nicht automatisch", () => {
+  const data = fixture();
+  const weakState = {
+    inventory: [data.itemsById.get("damage")], spent: 7200, activeItems: 0,
+    events: [{ purchase_type: "purchase", item_id: "damage", item: data.itemsById.get("damage"), total_spent: 7200, thresholds_crossed: [] }]
+  };
+  const retained = rankedCarryStates([weakState], { ...request, budget: 7200, robustStandard: true }, data, 3);
+  assert.equal(retained.length, 1);
+  assert.equal(retained[0].evaluation.foundations.passed, false);
+});
+
+test("Carry-Auswahl lässt marginalen Schaden nicht automatisch über deutlich höhere EHP gewinnen", () => {
+  const data = fixture();
+  const damageState = { inventory: [data.itemsById.get("damage")], spent: 1600, activeItems: 0, events: [] };
+  const saferState = {
+    inventory: [data.itemsById.get("bullet_resist_a"), data.itemsById.get("bullet_resist_b")],
+    spent: 1600, activeItems: 0, events: []
+  };
+  const damageScenario = evaluateCarryScenarios(damageState, request, data);
+  const saferScenario = evaluateCarryScenarios(saferState, request, data);
+  const damageDecision = evaluateCarryDecision({ state: damageState, evaluation: { scenarios: damageScenario, foundations: { checkpoints: [] } } }, request, data);
+  const saferDecision = evaluateCarryDecision({ state: saferState, evaluation: { scenarios: saferScenario, foundations: { checkpoints: [] } } }, request, data);
+  assert.ok(damageScenario.common.sustained_weapon_dps > saferScenario.common.sustained_weapon_dps);
+  assert.ok(saferScenario.common.effective_health_bullet > damageScenario.common.effective_health_bullet);
+  assert.ok(saferDecision.robust_score > damageDecision.robust_score);
+  assert.equal(damageDecision.profiles.length, 3);
+});
+
 test("Eignungsfilter verwirft irrelevante Items und respektiert die Active-Vorgabe", () => {
   const data = fixture();
   assert.deepEqual(assessWeaponItem(data.itemsById.get("irrelevant"), data, request), { eligible: false, reason: "NO_SUPPORTED_WEAPON_CONTRIBUTION" });
@@ -203,7 +257,8 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.equal(result.winner.evaluation.scenarios.plan.conditional_effect_policy.value, "excluded_from_baseline");
   assert.deepEqual(result.winner.evaluation.trajectory.checkpoints.slice(0, 5).map((entry) => entry.budget), [3200, 4800, 7200, 12000, 20000]);
   assert.ok(result.winner.evaluation.trajectory.checkpoints.every((entry) => entry.budget <= result.winner.state.spent));
-  assert.equal(result.winner.evaluation.foundations.passed, true);
+  assert.equal(typeof result.winner.evaluation.foundations.passed, "boolean");
+  assert.equal(result.winner.evaluation.carryDecision.method, "dimensionsloser_gewichteter_geometrischer_vergleich");
   assert.equal(
     assessWeaponCarryItem(data.itemsById.get("upgrade_rechargingbullets"), data, { heroId: "warden", objective: "weapon_magazine_dps" }).reason,
     "HERO_HAS_NO_CHARGED_ABILITY"

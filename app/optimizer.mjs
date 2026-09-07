@@ -712,8 +712,18 @@ function trajectoryPareto(candidates, request, data) {
   );
 }
 
-function stateKey(state) {
+function inventoryKey(state) {
   return state.inventory.map((item) => item.item_id).sort().join("|");
+}
+
+export function purchaseHistoryKey(state) {
+  return state.events.map((event) =>
+    `${event.purchase_type}:${event.item_id}@${event.total_spent}`
+  ).join(">");
+}
+
+function searchStateKey(state) {
+  return `${inventoryKey(state)}::${purchaseHistoryKey(state)}`;
 }
 
 function rankedStates(states, request, data, limit) {
@@ -721,13 +731,13 @@ function rankedStates(states, request, data, limit) {
   for (const state of states) {
     const evaluation = evaluateWeaponState(state, request, data);
     if (!evaluation.valid) continue;
-    const current = unique.get(stateKey(state));
+    const current = unique.get(searchStateKey(state));
     if (!current || evaluation.finalDps > current.evaluation.finalDps || (evaluation.finalDps === current.evaluation.finalDps && state.spent < current.state.spent)) {
-      unique.set(stateKey(state), { state, evaluation });
+      unique.set(searchStateKey(state), { state, evaluation });
     }
   }
   return [...unique.values()].sort((left, right) =>
-    right.evaluation.finalDps - left.evaluation.finalDps || left.state.spent - right.state.spent || stateKey(left.state).localeCompare(stateKey(right.state))
+    right.evaluation.finalDps - left.evaluation.finalDps || left.state.spent - right.state.spent || searchStateKey(left.state).localeCompare(searchStateKey(right.state))
   ).slice(0, limit);
 }
 
@@ -792,8 +802,7 @@ function carryPortfolioIsComplete(state, evaluation, request, data) {
   return state.inventory.length === slotCapacity(request, data.slots) &&
     evaluation.scenarios?.valid &&
     evaluation.upgradeFamilyOverlapCount === 0 &&
-    evaluation.capabilities.riskCount === 0 &&
-    evaluation.foundations.passed;
+    evaluation.capabilities.riskCount === 0;
 }
 
 function upgradeAncestors(itemId, data) {
@@ -855,20 +864,109 @@ function dominates(left, right) {
     (left.state.spent < right.state.spent || keys.some((key) => leftMetrics[key] > rightMetrics[key]));
 }
 
+const CARRY_SELECTION_PROFILES = [
+  {
+    id: "balanced_standard",
+    label: "Ausgeglichener Carry-Standard",
+    damage_weight: 0.45,
+    bullet_survival_weight: 0.2,
+    spirit_survival_weight: 0.2,
+    path_foundation_weight: 0.15
+  },
+  {
+    id: "offensive_variant",
+    label: "Offensivere plausible Präferenz",
+    damage_weight: 0.55,
+    bullet_survival_weight: 0.15,
+    spirit_survival_weight: 0.15,
+    path_foundation_weight: 0.15
+  },
+  {
+    id: "safer_variant",
+    label: "Sicherere plausible Präferenz",
+    damage_weight: 0.35,
+    bullet_survival_weight: 0.25,
+    spirit_survival_weight: 0.25,
+    path_foundation_weight: 0.15
+  }
+];
+
+function positiveRatio(value, baseline) {
+  if (!Number.isFinite(value) || !Number.isFinite(baseline) || baseline <= 0) return 1;
+  return Math.max(value / baseline, Number.EPSILON);
+}
+
+function weightedGeometricMean(parts) {
+  return Math.exp(parts.reduce((sum, part) => sum + Math.log(part.value) * part.weight, 0));
+}
+
+/**
+ * Offene Modellentscheidung für den Standardpfad. Sie ersetzt die Pareto-Prüfung
+ * nicht: Sustain, Zugang, Mobilität und Pfadverlauf bleiben eigene Dimensionen.
+ */
+export function evaluateCarryDecision(candidate, request, data) {
+  const baseline = evaluateCarryScenarios(createInitialBuildState(), request, data);
+  const scenarios = candidate.evaluation.scenarios;
+  if (!baseline.valid || !scenarios?.valid) return null;
+  const short = scenarios.scenarios.find((scenario) => scenario.id === "skirmish");
+  const long = scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
+  const baselineShort = baseline.scenarios.find((scenario) => scenario.id === "skirmish");
+  const baselineLong = baseline.scenarios.find((scenario) => scenario.id === "teamfight");
+  const foundationCheckpoints = candidate.evaluation.foundations.checkpoints;
+  const metrics = {
+    short_fight_damage_ratio: positiveRatio(short?.window_damage, baselineShort?.window_damage),
+    long_fight_damage_ratio: positiveRatio(long?.window_damage, baselineLong?.window_damage),
+    bullet_effective_health_ratio: positiveRatio(scenarios.common.effective_health_bullet, baseline.common.effective_health_bullet),
+    spirit_effective_health_ratio: positiveRatio(scenarios.common.effective_health_spirit, baseline.common.effective_health_spirit),
+    path_foundation_ratio: foundationCheckpoints.length
+      ? foundationCheckpoints.filter((checkpoint) => checkpoint.fulfilled).length / foundationCheckpoints.length
+      : 1
+  };
+  const profiles = CARRY_SELECTION_PROFILES.map((profile) => ({
+    ...profile,
+    score: weightedGeometricMean([
+      { value: metrics.short_fight_damage_ratio, weight: profile.damage_weight / 2 },
+      { value: metrics.long_fight_damage_ratio, weight: profile.damage_weight / 2 },
+      { value: metrics.bullet_effective_health_ratio, weight: profile.bullet_survival_weight },
+      { value: metrics.spirit_effective_health_ratio, weight: profile.spirit_survival_weight },
+      { value: Math.max(metrics.path_foundation_ratio, Number.EPSILON), weight: profile.path_foundation_weight }
+    ])
+  }));
+  return {
+    method: "dimensionsloser_gewichteter_geometrischer_vergleich",
+    origin: "model_assumption",
+    rationale: "Der Standardpfad vergleicht anbringbaren Schaden im kurzen und längeren Kampf, getrennte Bullet-/Spirit-Überlebensfähigkeit und den Grad erfüllter, bereits erreichter Frühbasis-Checkpoints. Fehlende Frühbasis wird weich abgewertet, nicht ausgeschlossen. Gewichte und plausible Varianten sind sichtbar statt in einer Reihenfolge versteckt.",
+    baseline: "Gleicher Held ohne Items, gleiche Basiswerte und Szenarioannahmen.",
+    metrics,
+    profiles,
+    robust_score: Math.min(...profiles.map((profile) => profile.score)),
+    balanced_score: profiles.find((profile) => profile.id === "balanced_standard").score,
+    limits: [
+      "Trefferquote, Gegnerresistenzen, Bedrohung und bedingte Uptime sind unbekannt und nicht im Score gerechnet.",
+      "Sustain, Zugang und Mobilität bleiben ohne erfundene Umrechnung in Schaden eigene Pareto-/Pfaddimensionen. Die Frühbasis nutzt nur den Anteil erfüllter bereits erreichter Struktur-Checkpoints; sie ist kein harter Ausschluss."
+    ]
+  };
+}
+
 function representativeOrder(left, right) {
   const leftMetrics = paretoMetrics(left);
   const rightMetrics = paretoMetrics(right);
-  return rightMetrics.sustainedWeaponDps - leftMetrics.sustainedWeaponDps ||
+  const leftDecision = left.evaluation.carryDecision;
+  const rightDecision = right.evaluation.carryDecision;
+  return (rightDecision?.robust_score ?? -Infinity) - (leftDecision?.robust_score ?? -Infinity) ||
+    (rightDecision?.balanced_score ?? -Infinity) - (leftDecision?.balanced_score ?? -Infinity) ||
+    rightMetrics.sustainedWeaponDps - leftMetrics.sustainedWeaponDps ||
     rightMetrics.bulletEffectiveHealth - leftMetrics.bulletEffectiveHealth ||
     rightMetrics.spiritEffectiveHealth - leftMetrics.spiritEffectiveHealth ||
     left.state.spent - right.state.spent ||
-    stateKey(left.state).localeCompare(stateKey(right.state));
+    searchStateKey(left.state).localeCompare(searchStateKey(right.state));
 }
 
 function capabilitySignature(candidate) {
   const { evaluation, state } = candidate;
   return [
     state.spent,
+    inventoryKey(state),
     ...Object.values(evaluation.capabilities.coverage).map(Number),
     evaluation.foundations.checkpoints.map((entry) => Number(entry.fulfilled)).join(""),
     Math.min(evaluation.capabilities.riskCount, 1),
@@ -876,6 +974,19 @@ function capabilitySignature(candidate) {
     Number(evaluation.pathMilestones.majorThresholds.vitality !== null),
     Number(evaluation.pathMilestones.majorThresholds.spirit !== null)
   ].join(":");
+}
+
+export function retainDistinctPurchaseHistories(candidates, perInventory = 3) {
+  const groups = new Map();
+  for (const candidate of candidates) {
+    const key = inventoryKey(candidate.state);
+    const byHistory = groups.get(key) || new Map();
+    byHistory.set(purchaseHistoryKey(candidate.state), candidate);
+    groups.set(key, byHistory);
+  }
+  return [...groups.values()].flatMap((byHistory) =>
+    [...byHistory.values()].slice(0, perInventory)
+  );
 }
 
 function budgetBalancedSlice(candidates, limit) {
@@ -913,22 +1024,22 @@ function paretoPool(candidates, perSignature = 4) {
   return [...groups.values()].flatMap((group) => group.sort(representativeOrder).slice(0, perSignature));
 }
 
-function rankedCarryStates(states, request, data, limit, requireCompletePortfolio = false) {
+export function rankedCarryStates(states, request, data, limit, requireCompletePortfolio = false) {
   const unique = new Map();
   for (const state of states) {
-    const key = stateKey(state);
+    const key = searchStateKey(state);
     const evaluation = evaluateWeaponCarryProfile(state, request, data);
     if (!evaluation.valid) continue;
-    if (request.robustStandard && !evaluation.foundations.passed) continue;
     evaluation.scenarios = evaluateCarryScenarios(state, request, data);
     if (!evaluation.scenarios.valid) continue;
     evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(state, data);
+    evaluation.carryDecision = evaluateCarryDecision({ state, evaluation }, request, data);
     if (requireCompletePortfolio && !carryPortfolioIsComplete(state, evaluation, request, data)) continue;
     const candidate = { state, evaluation };
     const current = unique.get(key);
     if (!current || representativeOrder(candidate, current) < 0) unique.set(key, candidate);
   }
-  const candidates = paretoPool([...unique.values()]);
+  const candidates = paretoPool(retainDistinctPurchaseHistories([...unique.values()]));
   const pareto = candidates.filter((candidate, index) =>
     !candidates.some((other, otherIndex) => otherIndex !== index && dominates(other, candidate))
   );
@@ -1006,6 +1117,7 @@ export function optimizeWeaponCarryFullBuild(request, data) {
     const evaluation = evaluateWeaponCarryProfile(candidate.state, normalizedRequest, data, { includeCheckpoints: true });
     evaluation.scenarios = evaluateCarryScenarios(candidate.state, normalizedRequest, data);
     evaluation.upgradeFamilyOverlapCount = upgradeFamilyOverlapCount(candidate.state, data);
+    evaluation.carryDecision = evaluateCarryDecision({ state: candidate.state, evaluation }, normalizedRequest, data);
     evaluation.trajectory = candidate.trajectory;
     return { ...candidate, evaluation };
   }).sort(representativeOrder).slice(0, 3);
@@ -1014,11 +1126,22 @@ export function optimizeWeaponCarryFullBuild(request, data) {
   return {
     status: "PASS_WITH_WARNINGS",
     resultLabel: "best_evaluated",
-    scope: `Warden Weapon Carry bis ${assumedEndBudget.toLocaleString("de-CH")} Souls: begrenzte Vorwärtssuche mit legalen Käufen, Upgrades und Ersetzungen. Kandidaten bleiben bei gleicher Soul-Ausgabe nur dann erhalten, wenn sie nicht über die offen ausgewiesenen Dauer-DPS-, Bullet-/Spirit-EHP-, Sustain-, Zugang-, Mobilitäts- und Risikodimensionen dominiert sind. Vollständige Pfade werden zusätzlich an 3'200, 4'800, 7'200, 12'000, 20'000, 30'000 und 40'000 Souls verglichen; ein Endbuild darf keinen in allen gemeinsamen Wirkungsdimensionen klar besseren Kaufpfad verdecken. Für den robusten Standardpfad werden verifizierte Selbst-Risiken ausgeschlossen; sie bleiben ein späterer, separat auszuweisender Risiko-Modus. Die repräsentative Auswahl priorisiert danach den expliziten Primärfokus Sustained Weapon DPS; nicht dominierte Alternativen bleiben sichtbar. Bedingte Effekte werden mit Trigger, Dauer und Cooldown dokumentiert, aber ohne erfundene Uptime nicht als Dauerbonus gerechnet. Die drei Walker-Slots sind für die 60'000-Souls-Planung als Modellannahme freigeschaltet; die Daten enthalten keine Zuordnung von Walker-Fortschritt zu Souls.`,
+    scope: `Warden Weapon Carry bis ${assumedEndBudget.toLocaleString("de-CH")} Souls: begrenzte Vorwärtssuche mit legalen Käufen, Upgrades und Ersetzungen. Zustände mit gleichem Inventar behalten bis zu drei unterschiedliche Kaufgeschichten; erst danach begrenzt die Suche sie über die offen ausgewiesenen Wirkungs- und Pfaddimensionen. Die Frühbasis bei 4'800/7'200 Souls ist eine sichtbare Bewertungsdimension, kein Ausschlussfilter. Vollständige Pfade werden zusätzlich an 3'200, 4'800, 7'200, 12'000, 20'000, 30'000 und 40'000 Souls verglichen. Für den robusten Standardpfad werden verifizierte Selbst-Risiken ausgeschlossen; sie bleiben ein späterer, separat auszuweisender Risiko-Modus. Die repräsentative Auswahl nutzt einen offen ausgewiesenen Carry-Vergleich aus kurzem/längerem anbringbarem Waffenschaden sowie Bullet-/Spirit-EHP relativ zum gleichen Helden ohne Items und maximiert den schlechtesten Wert aus ausgeglichener, offensiver und sicherer Präferenz. Bedingte Effekte werden mit Trigger, Dauer und Cooldown dokumentiert, aber ohne erfundene Uptime nicht als Dauerbonus gerechnet. Die drei Walker-Slots sind für die 60'000-Souls-Planung als Modellannahme freigeschaltet; die Daten enthalten keine Zuordnung von Walker-Fortschritt zu Souls.`,
     request: normalizedRequest,
     candidateCount: allStates.length,
     eligibleItemCount: eligibleItems.length,
     budgetSensitivity: buildBudgetSensitivity(winner.state, normalizedRequest, data),
+    selectionModel: {
+      ...winner.evaluation.carryDecision,
+      standard_preference: "Maximiere den schlechtesten Score über die drei offengelegten Präferenzprofile; bei Gleichstand zählt die ausgeglichene Präferenz.",
+      sensitivity: CARRY_SELECTION_PROFILES.map((profile) => {
+        const ordered = [...candidates].sort((left, right) =>
+          right.evaluation.carryDecision.profiles.find((entry) => entry.id === profile.id).score -
+          left.evaluation.carryDecision.profiles.find((entry) => entry.id === profile.id).score
+        );
+        return { profile_id: profile.id, preferred_path: searchStateKey(ordered[0].state) };
+      })
+    },
     searchLimits: {
       beam_width: beamWidth,
       max_transactions: normalizedRequest.maxTransactions,
@@ -1034,10 +1157,11 @@ export function optimizeWeaponCarryFullBuild(request, data) {
       investments_and_thresholds: "PASS",
       slots_and_active_limit: "PASS",
       profile_rules: "PASS: geprüfter Warden-Slice; Sustain-, Schutz-, Bewegungs- und Zugangsarten bleiben getrennt. Es gibt keine starre 5-Weapon-/3-Vitality-Endbedingung.",
-      path_rules: "PASS: begrenzte Vorwärtssuche, Pareto-Vergleich bei identischen Soul-Ausgaben und an gemeinsamen Soul-Planungspunkten, Ersetzungen zum verifizierten Sellback-Satz, keine Upgrade-Anzahl als Qualitätsbonus und keine parallelen Vor- und Endstufen derselben Upgrade-Linie.",
+      path_rules: "PASS: begrenzte Vorwärtssuche, bis zu drei unterschiedliche Kaufgeschichten je Inventar, Pareto-Vergleich bei identischen Soul-Ausgaben und an gemeinsamen Soul-Planungspunkten, Ersetzungen zum verifizierten Sellback-Satz, keine Upgrade-Anzahl als Qualitätsbonus und keine parallelen Vor- und Endstufen derselben Upgrade-Linie.",
       warnings: [
         "UNC-0004: Temporärer Slotbedarf beim Upgrade ist nicht verifiziert.",
         "Die Walker-Slot-Freischaltungen sind als 60'000-Souls-Planungsannahme modelliert; ihre tatsächliche zeitliche Zuordnung ist in den Daten unbekannt.",
+        "Die Kaufhistorien-Erhaltung ist technisch auf drei nicht identische Verläufe pro aktuellem Inventar begrenzt; darüber hinaus gilt die Suchbegrenzung, nicht eine Spielregel.",
         "Skill-Reihenfolge und Item×Ability-Uptimes sind noch keine gemeinsam durchsuchte, verifizierte Ebene.",
         "Ersetzungen werden als ein einzelner letzter Schritt über die drei besten vollständigen Vorwärtspfade geprüft; Ketten aus mehreren Verkäufen sind noch nicht Teil der schnellen Suche.",
         ...(request.budget ? [] : [`Kein Endbudget angegeben; ${assumedEndBudget.toLocaleString("de-CH")} Souls werden als offengelegte Analyseannahme verwendet.`]),

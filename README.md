@@ -33,21 +33,21 @@ The repository already contains:
 - a versioned Deadlock Assets API import and review workflow;
 - automated tests for the calculator, path generation, current Warden slice, and API importer.
 
-The optimizer is intentionally described as **best evaluated**, not globally optimal. The current Warden slice has technical search bounds and still needs a separately reviewed selection model; it does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for the current project status, decisions, and open points, and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the technical handover summary.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. The Warden slice now retains a bounded number of different purchase histories per inventory and uses a disclosed, sensitivity-tested Carry selection model. It does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for the current project status, decisions, and open points, and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the technical handover summary.
 
 ## Current review roadmap
 
 The current Warden review is deliberately being implemented in small, testable steps:
 
 1. **Effect calculation — complete.** Spirit-DPS double counting was removed; permanent resistance stacking is multiplicative; conditional healing and movement remain separate from baseline values; lane healing, regeneration, and lifesteal are distinct; unknown level and skill states are explicit.
-2. **Selection decision — next.** A marginal DPS gain must not automatically defeat a meaningfully more robust path.
-3. Preserve non-dominated purchase histories during the search.
+2. **Selection decision — complete.** Short/long weapon damage, Bullet-EHP, Spirit-EHP, and the achieved early-path foundation are compared as visible ratios. Balanced, offensive, and safer profiles are sensitivity-tested; the standard maximizes the weakest profile score.
+3. **Purchase-history preservation — complete.** Up to three different purchase histories per current inventory remain in the bounded search. Early-foundation checkpoints are measured and softly devalued when missed, not used as an exclusion filter.
 4. Make a small set of distinct combat comparisons affect decisions.
 5. Continue upgrades and replacements beyond arbitrary budget or full-slot boundaries.
 6. Correct result presentation for upgrades, replacements, costs, and path labels.
 7. Prove quality and runtime with targeted regressions and like-for-like path comparisons.
 
-Steps 2–7 are not implemented yet. The existing selection/search behavior remains in place until each step is reviewed separately.
+Steps 4–7 are not implemented yet. The history bound of three is a technical search limit, not a gameplay rule.
 
 ## Local web app
 

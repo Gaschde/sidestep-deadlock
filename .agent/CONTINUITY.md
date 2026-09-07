@@ -92,3 +92,11 @@ Kurzes, gemeinsames Arbeitslog für alle Sidestep-Tasks. Nur Entscheidungen, For
 2026-09-07T02:00:00+02:00 [TOOL] 12 Node-Tests bestehen, darunter gezielte Regressionen für Spirit-Doppelzählung, multiplikatives Resistenz-Stacking und bedingte Detailwerte. Beim gleichen zuvor gewählten Warden-Inventar sank Sustained Weapon DPS rechnerisch von 174.2 auf 168.1. Die neue Berechnung kann daher Pfade anders bewerten, obwohl die Auswahlstrategie unverändert blieb.
 
 2026-09-07T02:00:00+02:00 [CODE] README, CURRENT_STATUS, PROJECT_CONTEXT, PROJECT_STRUCTURE und die Python-Engine-Referenz wurden auf den aktuellen Doppelstand (lokaler JavaScript-Slice plus separate Python-Referenz) korrigiert.
+
+2026-09-07T02:45:00+02:00 [CODE] Review-Punkte 2 und 3 auf dem gepushten Stand `5f95ce7` umgesetzt: Suchzustände werden nicht mehr nur über das Inventar, sondern über Inventar plus Kaufgeschichte unterschieden; technisch bleiben bis zu drei unterschiedliche Verläufe je Inventar erhalten. Die 4'800/7'200-Frühbasis ist kein Filter mehr, sondern ein sichtbarer, weicher Anteil der Carry-Auswahl.
+
+2026-09-07T02:45:00+02:00 [CODE] Die repräsentative Auswahl ersetzt die DPS-lexikographische Reihenfolge durch einen offenen, dimensionslosen Carry-Vergleich: kurzer/längerer Weapon-Schaden, Bullet-EHP, Spirit-EHP und Anteil erfüllter bereits erreichter Frühbasis-Checkpoints. Drei deklarierte Präferenzen (ausgeglichen, offensiver, sicherer) werden geprüft; der Standard maximiert den niedrigsten Profilwert. Trefferquote, Gegnerresistenzen, Bedrohung und bedingte Uptime bleiben ausdrücklich unbekannt.
+
+2026-09-07T02:45:00+02:00 [TOOL] `npm.cmd test` besteht mit 15 Tests. Neue Regressionen prüfen erhaltene Kaufgeschichten bei gleichem Inventar, das Nicht-Verwerfen eines Zustands ohne Frühbasis und die robuste Auswahl gegen einen DPS-stärkeren, aber deutlich fragileren Kandidaten. Vollständiger Warden-Test ca. 16 Sekunden auf diesem Rechner.
+
+2026-09-07T02:45:00+02:00 [OPEN] Nächster Review-Schritt ist Punkt 4: unterschiedliche Kampfvergleichsszenarien müssen die Auswahl stärker und ohne fiktive Farm-/Gegnerannahmen beeinflussen.
