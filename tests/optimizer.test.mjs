@@ -188,6 +188,34 @@ function oneItemState(item) {
   return { inventory: [item], spent: 1600, grossSpent: 1600, activeItems: 0, events: [] };
 }
 
+function crossInventoryUpgradeFixture() {
+  return buildOptimizerData({
+    coreManifest: { patch: "p", mode: "m" },
+    heroManifest: { patch: "p", mode: "m" },
+    items: [
+      { item_id: "a", name: "A", category: "Weapon", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
+      { item_id: "b", name: "B", category: "Weapon", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
+      { item_id: "c", name: "C", category: "Weapon", tier: "2", total_cost: "2400", is_public_shop_item: "true", active_type: "", confidence: "high" }
+    ],
+    itemMechanics: [
+      { item_id: "a", effect_id: "a_damage", mechanic: "base_attack_damage_percent", value: "20", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "b", effect_id: "b_damage", mechanic: "base_attack_damage_percent", value: "10", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "c", effect_id: "c_damage", mechanic: "base_attack_damage_percent", value: "200", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" }
+    ],
+    upgrades: [{ from_item_id: "b", to_item_id: "c", additional_cost: "800", notes: "", confidence: "high" }],
+    heroStats: [
+      { hero_id: "hero", stat_group: "weapon", mechanic: "dps", base_value: "100", confidence: "high" },
+      { hero_id: "hero", stat_group: "weapon", mechanic: "bullet_damage", base_value: "20", confidence: "high" },
+      { hero_id: "hero", stat_group: "weapon", mechanic: "rounds_per_second", base_value: "4", confidence: "high" },
+      { hero_id: "hero", stat_group: "ammo", mechanic: "clip_size", base_value: "8", confidence: "high" },
+      { hero_id: "hero", stat_group: "reload", mechanic: "reload_time", base_value: "2", confidence: "high" },
+      { hero_id: "hero", stat_group: "health", mechanic: "max_health", base_value: "800", confidence: "high" }
+    ],
+    economy: { investment_thresholds: [], sellback: { rate: 0.5 } },
+    slots: { starting_slots: { universal: 1 }, unlocks: [], active_item_limit: 1 }
+  });
+}
+
 test("Weapon-Frontier behält kurzfristig stärkeren und nachhaltig stärkeren Pfad", () => {
   const data = fixture();
   const burst = oneItemState(data.itemsById.get("burst"));
@@ -239,6 +267,33 @@ test("Nicht dominierte vollständige Pfade erhalten Replacement-Suche unabhängi
   assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("sustained")));
   assert.ok(result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("superior")));
   assert.ok(!result.searchLimits.replacement_seed_path_keys.some((key) => key.includes("burst")));
+});
+
+test("Cross-Inventory-Pareto entfernt den einzigen späteren Upgrade-Pfad in der vollständigen Weapon-Carry-Suche", () => {
+  const data = crossInventoryUpgradeFixture();
+  const searchRequest = { heroId: "hero", objective: "weapon_magazine_dps", budget: 1600 };
+  const initial = createInitialBuildState();
+  const a = applyPurchase(initial, data.itemsById.get("a"), searchRequest, data).state;
+  const b = applyPurchase(initial, data.itemsById.get("b"), searchRequest, data).state;
+
+  const c = applyUpgrade(b, data.upgrades[0], searchRequest, data);
+  assert.equal(c.ok, true, "B besitzt die einzige legale Fortsetzung zu C");
+  assert.equal(c.state.spent, 1600);
+  assert.ok(
+    evaluateCarryScenarios(c.state, searchRequest, data).common.sustained_weapon_dps >
+      evaluateCarryScenarios(a, searchRequest, data).common.sustained_weapon_dps,
+    "C ist bei dem späteren Budget besser als A"
+  );
+
+  const firstFrontier = rankedCarryStates([a, b], searchRequest, data, 30);
+  assert.deepEqual(firstFrontier.map((candidate) => candidate.state.inventory[0].item_id), ["a"]);
+
+  const result = optimizeWeaponCarryFullBuild(searchRequest, data);
+  const returnedPaths = [result.winner, ...result.alternatives]
+    .map((candidate) => candidate.state.inventory.map((item) => item.item_id).join("|"));
+  assert.equal(result.status, "PASS_WITH_WARNINGS");
+  assert.ok(!returnedPaths.includes("c"));
+  assert.equal(result.winner.state.inventory[0].item_id, "a");
 });
 
 test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen DPS", () => {
