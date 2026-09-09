@@ -278,7 +278,7 @@ function availabilitySummary(profile) {
 }
 
 export function evaluateWeaponMechanics(state, request, data) {
-  const cached = WEAPON_MECHANICS_CACHE.get(data) || new Map();
+  const cached = (request.cacheProfiles === false ? null : WEAPON_MECHANICS_CACHE.get(data)) || new Map();
   const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const baseBulletDamage = heroStat(data.heroStats, request.heroId, "bullet_damage");
@@ -288,7 +288,7 @@ export function evaluateWeaponMechanics(state, request, data) {
   if ([baseBulletDamage, baseRoundsPerSecond, baseClip, reloadTime].some((value) => value === null)) {
     const missing = { valid: false, reason: "HERO_WEAPON_STAT_MISSING" };
     cached.set(cacheKey, missing);
-    WEAPON_MECHANICS_CACHE.set(data, cached);
+    if (request.cacheProfiles !== false) WEAPON_MECHANICS_CACHE.set(data, cached);
     return missing;
   }
   const effects = permanentWeaponEffects(state, data);
@@ -332,7 +332,7 @@ export function evaluateWeaponMechanics(state, request, data) {
     effects
   };
   cached.set(cacheKey, profile);
-  WEAPON_MECHANICS_CACHE.set(data, cached);
+  if (request.cacheProfiles !== false) WEAPON_MECHANICS_CACHE.set(data, cached);
   return profile;
 }
 
@@ -366,7 +366,7 @@ export function createCarryScenarioPlan() {
 }
 
 export function evaluateCarryScenarios(state, request, data) {
-  const cached = SCENARIO_PROFILE_CACHE.get(data) || new Map();
+  const cached = (request.cacheProfiles === false ? null : SCENARIO_PROFILE_CACHE.get(data)) || new Map();
   const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const plan = createCarryScenarioPlan();
@@ -376,7 +376,7 @@ export function evaluateCarryScenarios(state, request, data) {
   if (!weapon.valid || baseHealth === null) {
     const missing = { valid: false, reason: "HERO_COMBAT_STAT_MISSING", plan };
     cached.set(cacheKey, missing);
-    SCENARIO_PROFILE_CACHE.set(data, cached);
+    if (request.cacheProfiles !== false) SCENARIO_PROFILE_CACHE.set(data, cached);
     return missing;
   }
   const thresholds = thresholdSnapshot(state.inventory, data.economy);
@@ -441,7 +441,7 @@ export function evaluateCarryScenarios(state, request, data) {
     })
   };
   cached.set(cacheKey, profile);
-  SCENARIO_PROFILE_CACHE.set(data, cached);
+  if (request.cacheProfiles !== false) SCENARIO_PROFILE_CACHE.set(data, cached);
   return profile;
 }
 

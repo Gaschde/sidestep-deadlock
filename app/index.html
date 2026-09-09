@@ -34,41 +34,33 @@
           </section>
 
           <section class="setup-step">
-            <label for="playstyle"><span class="step-seal">2</span> Spielstil wählen</label>
-            <select id="playstyle" class="selection-card select-control">
-              <option value="weapon">Weapon Carry</option>
-              <option value="spirit">Spirit Burst</option>
-              <option value="tank">Tank / Bruiser</option>
-              <option value="hybrid">Hybrid / Balanced</option>
-              <option value="support">Support / Utility</option>
-              <option value="mobility">Mobility / Roamer</option>
+            <label for="role"><span class="step-seal">2</span> Rolle wählen</label>
+            <select id="role" class="selection-card select-control">
+              <option value="carry">Carry</option>
+              <option value="tank">Tank</option>
+              <option value="support">Support</option>
             </select>
           </section>
 
-          <section class="setup-step opponents-step">
-            <h2><span class="step-seal">3</span> Lane-Gegner</h2>
-            <div class="opponent-grid">
-              <button class="selection-card opponent-trigger" data-opponent-slot="0" type="button"><span class="avatar"></span><span class="selection-copy"><small>Gegner 1</small><strong>Vyper</strong></span><span>⌄</span></button>
-              <button class="selection-card opponent-trigger" data-opponent-slot="1" type="button"><span class="avatar"></span><span class="selection-copy"><small>Gegner 2</small><strong>Abrams</strong></span><span>⌄</span></button>
-            </div>
-            <p class="hint">Optional · wird nur im Lane-Kontext ausgewertet</p>
+          <section class="setup-step">
+            <label for="damage-focus"><span class="step-seal">3</span> Schadensfokus wählen</label>
+            <select id="damage-focus" class="selection-card select-control">
+              <option value="weapon">Weapon</option>
+              <option value="spirit">Spirit</option>
+              <option value="hybrid">Hybrid</option>
+            </select>
           </section>
 
           <section class="setup-step build-step">
             <h2><span class="step-seal">4</span> Vorschau</h2>
-            <button id="build-button" class="primary-button" type="button"><span aria-hidden="true">✦</span> Build prüfen</button>
+            <button id="fast-build-button" class="primary-button" type="button">Build erstellen · 40k</button>
+            <small>70 % Endstärke · 30 % Verlauf. Rechenbudget 25 s, Abbruch jederzeit.</small>
+            <button id="build-button" class="primary-button" type="button"><span aria-hidden="true">✦</span> Bisherigen Optimizer prüfen</button>
+            <button id="new-build-button" class="secondary-button" type="button"><span aria-hidden="true">⟳</span> Neuen vollständigen Suchlauf starten</button>
+            <button id="new-build-40k-button" class="secondary-button" type="button"><span aria-hidden="true">◌</span> Neuer 40k-Testlauf (Diagnose)</button>
           </section>
         </div>
 
-        <div class="options-row">
-          <span class="eyebrow">Schnellwahl</span>
-          <div class="quick-picks" aria-label="Spielstil-Schnellwahl">
-            <button type="button" data-style="weapon">Weapon Carry</button>
-            <button type="button" data-style="spirit">Spirit Burst</button>
-            <button type="button" data-style="hybrid">Hybrid</button>
-            <button type="button" data-style="tank">Tank / Bruiser</button>
-          </div>
-        </div>
       </header>
 
       <main id="results" class="results" data-focus="weapon">
@@ -77,13 +69,14 @@
             <p class="eyebrow"><span class="focus-dot"></span> Geführter Kaufpfad</p>
             <h1><span id="result-hero">Warden</span> Build-Vorschau</h1>
             <p id="result-summary">Noch keine Build-Prüfung gestartet</p>
+            <p id="search-progress" aria-live="polite"></p>
           </div>
           <div class="test-label"><strong>OPTIMIZER-SLICE</strong><span>Weapon Carry · begrenzter Geltungsbereich</span></div>
         </div>
 
         <div class="truth-banner" role="note">
           <span class="truth-icon">i</span>
-          <div><strong>Transparenzhinweis</strong><p>Der aktuelle Slice prüft Warden Weapon Carry als legalen 12-Slot-Kaufpfad vorwärts. Das erste Weapon-Item und die 4'800er-Weapon-Schwelle werden ausdrücklich verfolgt, ohne den ersten Kauf, ein Item oder einen Preis vorzuschreiben. Schaden, Schutz, Sustain, Zugang, Mobilität und Upgrade-Pfade bleiben getrennte Kriterien – ohne addierten Geheimscore. Bedingte Effekte werden ohne belegte Uptime nicht in den DPS eingerechnet. Skills folgen später.</p></div>
+          <div><strong>Transparenzhinweis</strong><p>„Build erstellen“ liefert einen besten geprüften Kaufpfad mit approximativer Suche: 70 % Endstärke, 15 % schlimmster und 15 % durchschnittlicher Rückstand gegenüber einer Stichprobenreferenz. Alle sieben Kennzahlen zählen gleich; Endwerte werden mit x/(x+Referenz) normiert. Keine Optimalitätsgarantie. Neun Slots, keine Walker-Freischaltung. Aktive Effekte und Combos fehlen in der Leistungsbewertung; vier Upgrade-Kanten bleiben nicht unterstützt. Die bisherigen Suchmodi bleiben zum Vergleich verfügbar.</p></div>
         </div>
 
         <section id="phase-panel" class="phase-panel panel" aria-live="polite"></section>
@@ -112,7 +105,6 @@
         <div class="picker-heading"><div><p class="eyebrow" id="picker-eyebrow">Auswahl</p><h2 id="picker-title">Held wählen</h2></div><button class="icon-button" value="cancel" aria-label="Schließen">×</button></div>
         <label class="search-field"><span>⌕</span><input id="picker-search" autocomplete="off" placeholder="Helden suchen …" /></label>
         <div id="picker-list" class="picker-list"></div>
-        <button id="clear-opponent" class="secondary-button" type="button" hidden>Gegner entfernen</button>
       </form>
     </dialog>
 
