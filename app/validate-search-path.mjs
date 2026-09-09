@@ -1,8 +1,8 @@
 import { createDeadlockDomain } from "./deadlock-domain.mjs";
 
 // Replays through the legal domain, independently of candidate ranking.
-export function validateSearchPath({ data, itemIds, budget, soulAxis, state }) {
-  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis, recordHistory: true, metrics: () => ({ value: 0 }) });
+export function validateSearchPath({ data, itemIds, budget, soulAxis, state, slotUnlocks = [] }) {
+  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis, slotUnlocks, recordHistory: true, metrics: () => ({ value: 0 }) });
   let current = domain.initial;
   for (const event of state.events) {
     const next = domain.transitions(current).find((candidate) => JSON.stringify(candidate.events.at(-1)) === JSON.stringify(event));

@@ -188,17 +188,18 @@ function canonicalWardenData() {
 test("Anytime output is legal, improves monotonically and compares with an exact small oracle", () => {
   const data = canonicalWardenData();
   const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
-  for (const budget of [800, 1600]) {
-    const ref = computeWardenReference({ data, itemIds, budget });
+  for (const budget of [800, 1600]) for (const slotUnlocks of [[], [{ earnedSouls: 0, slots: 3 }]]) {
+    const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
     const axis = ref.byMetric.sustainedWeaponDps.map((p) => p.earnedSouls);
     const names = Object.keys(ref.byMetric);
     const reference = { axis, values: axis.map((_, i) => Object.fromEntries(names.map((m) => [m, ref.byMetric[m][i].metrics[m]]))) };
-    const options = { data, itemIds, budget, soulAxis: axis, metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics };
+    const options = { data, itemIds, budget, slotUnlocks, soulAxis: axis, metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics };
     const oracle = createDeadlockDomain(options).enumerate().states.filter((e) => e.state.earnedSouls === budget);
     const exact = Math.max(...oracle.map((e) => scoreAnytimePath(e.state.snapshots, reference, budget).score));
     const outputs = [];
-    const result = runAnytimeWarden({ data, itemIds, budget, reference, timeMs: 2000, maxRollouts: 5, onResult: (r) => outputs.push(r) });
+    const result = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 2000, maxRollouts: 5, onResult: (r) => outputs.push(r) });
     assert.ok(result.validation.valid);
+    assert.equal(result.slotLimit, 9 + (slotUnlocks[0]?.slots || 0));
     assert.ok(Math.abs(exact - result.quality.score) < 1e-12, `small-case score gap: ${exact - result.quality.score}`);
     for (let i = 1; i < outputs.length; i++) assert.ok(outputs[i].quality.score > outputs[i - 1].quality.score);
     assert.equal(result.policy.end, 0.7);

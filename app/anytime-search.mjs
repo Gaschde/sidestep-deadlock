@@ -33,11 +33,11 @@ export function scoreAnytimePath(points, reference, budget) {
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
 // Deadline is an explicit approximation budget, not an optimality certificate.
 export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_id), budget = 40000,
-  timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference }) {
+  timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [] }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
   const resource = wardenResourceAxis(data, itemIds, budget);
-  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
+  const domain = createDeadlockDomain({ data, itemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
   const clean = (s) => ({ ...s, events: [], snapshots: [] });
   const cache = new Map();
   let evaluations = 0;
@@ -92,8 +92,8 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     const quality = scoreAnytimePath(points, reference, budget);
     if (winner && quality.score <= winner.quality.score) return;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
-    const validation = validateSearchPath({ data, itemIds, budget, soulAxis: resource.axis, state });
-    winner = { state, quality, validation, reference, policy: ANYTIME_POLICY, resource,
+    const validation = validateSearchPath({ data, itemIds, budget, soulAxis: resource.axis, slotUnlocks, state });
+    winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts }, approximate: true };
     winningNode = node;
