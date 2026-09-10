@@ -18,9 +18,26 @@ const objectives = (points, references, horizon, extra = {}) => calculateTraject
 test("Anytime-Normalisierung hält Schaden und Überleben als gleich gewichtete Gruppen getrennt", () => {
   assert.equal(ANYTIME_METRIC_GROUPS.damage.weight, 0.5);
   assert.equal(ANYTIME_METRIC_GROUPS.survival.weight, 0.5);
-  assert.equal(ANYTIME_METRIC_GROUPS.damage.metrics.length, 5);
+  assert.equal(ANYTIME_METRIC_GROUPS.damage.metrics.length, 6);
   assert.equal(ANYTIME_METRIC_GROUPS.survival.metrics.length, 2);
   assert.equal(ANYTIME_POLICY.end + ANYTIME_POLICY.worst + ANYTIME_POLICY.integrated, 1);
+});
+
+test("Slowing Hex und Binding Word bilden nur im expliziten Erfolgszweig ein Kontrollfenster", () => {
+  const data = canonicalWardenData();
+  const withHex = evaluateWardenCarryPerformance({ inventory: ["upgrade_containment"] }, { heroId: "warden", budget: 60000 }, data);
+  const withoutHex = evaluateWardenCarryPerformance({ inventory: [] }, { heroId: "warden", budget: 60000 }, data);
+  const combo = withHex.scenarios.scenarios.find((scenario) => scenario.id === "skirmish").active_combo;
+  assert.equal(combo.available, true);
+  assert.equal(combo.outcome, "success_branch");
+  assert.equal(combo.required_initial_range_meters, 15);
+  assert.equal(combo.sequence_delay_seconds, 0.25);
+  assert.equal(combo.locked_seconds, 1.75);
+  assert.equal(combo.cooldown_limited_uses, 1);
+  assert.ok(combo.value > 0);
+  assert.equal(withHex.metrics.slowingHexBindingWordComboDps, combo.value);
+  assert.equal(withoutHex.metrics.slowingHexBindingWordComboDps, 0);
+  assert.equal(withHex.scenarios.scenarios.find((scenario) => scenario.id === "skirmish").combo_failure.value, 0);
 });
 
 function fixture() {
@@ -332,11 +349,11 @@ test("Warden Carry-Slice hält Szenarien und EHP als getrennte Pareto-/Regret-Di
   });
   assert.deepEqual(result.metrics, [
     "sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps",
-    "teamfightWindowDps", "bulletEhp", "spiritEhp"
+    "teamfightWindowDps", "slowingHexBindingWordComboDps", "bulletEhp", "spiritEhp"
   ]);
   assert.ok(result.reference.byMetric.teamfightWindowDps);
   assert.ok(result.pareto.length > 0);
-  assert.ok(result.pareto.every((entry) => Object.keys(entry.paretoLabel).length === 21));
+  assert.ok(result.pareto.every((entry) => Object.keys(entry.paretoLabel).length === 24));
   assert.ok(result.pareto.every((entry) => entry.objectivesByMetric.bulletEhp.worstRegret >= 0));
   assert.equal(result.pareto[0].state.inventory[0], "upgrade_rapid_rounds");
 
@@ -359,10 +376,10 @@ test("Warden Carry-Slice hält Szenarien und EHP als getrennte Pareto-/Regret-Di
 
 test("Warden Carry optimiert den gemeinsamen Zielvektor ohne versteckten Gesamtscore", () => {
   const result = runWardenCarryPareto({ data: canonicalWardenData(), itemIds: ["upgrade_rapid_rounds", "upgrade_headshot_booster"], budget: 800, slotUnlocks: [] });
-  assert.deepEqual(result.metrics, ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps", "bulletEhp", "spiritEhp"]);
+  assert.deepEqual(result.metrics, ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps", "slowingHexBindingWordComboDps", "bulletEhp", "spiritEhp"]);
   for (const metric of result.metrics) {
     assert.ok(result.byMetric[metric].reference.points.length > 0);
-    assert.ok(result.byMetric[metric].pareto.every((entry) => Object.keys(entry.paretoLabel).length === 21));
+    assert.ok(result.byMetric[metric].pareto.every((entry) => Object.keys(entry.paretoLabel).length === 24));
   }
 });
 
@@ -398,7 +415,7 @@ test("Public Carry search preserves a compromise lost by separate scalar searche
     onProgress: (p) => messages.push(p) });
   assert.deepEqual(new Set(result.pareto.map((entry) => entry.state.inventory[0])), new Set(["attack", "defense", "compromise"]));
   assert.equal(messages.filter((p) => p.phase === "metric-start").length, 1);
-  assert.ok(result.pareto.every((entry) => Object.keys(entry.paretoLabel).length === 21));
+  assert.ok(result.pareto.every((entry) => Object.keys(entry.paretoLabel).length === 24));
   assert.ok(result.metrics.every((metric) => result.byMetric[metric].pareto === result.pareto));
 });
 

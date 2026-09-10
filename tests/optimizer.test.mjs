@@ -34,7 +34,9 @@ function fixture() {
     { item_id: "irrelevant", name: "Ohne Weapon-Wert", category: "Vitality", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
     { item_id: "spirit", name: "Spirit", category: "Spirit", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
     { item_id: "bullet_resist_a", name: "Bullet Resist A", category: "Vitality", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
-    { item_id: "bullet_resist_b", name: "Bullet Resist B", category: "Vitality", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" }
+    { item_id: "bullet_resist_b", name: "Bullet Resist B", category: "Vitality", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
+    { item_id: "regen", name: "Regeneration", category: "Other", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" },
+    { item_id: "lifesteal", name: "Lifesteal", category: "Other", tier: "1", total_cost: "800", is_public_shop_item: "true", active_type: "", confidence: "high" }
   ];
   return buildOptimizerData({
     coreManifest: { patch: "p", mode: "m" },
@@ -54,7 +56,9 @@ function fixture() {
       { item_id: "irrelevant", effect_id: "health", mechanic: "bonus_health", value: "300", unit: "hp", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "spirit", effect_id: "spirit_power", mechanic: "tech_power", value: "10", unit: "spirit_power", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
       { item_id: "bullet_resist_a", effect_id: "resist_a", mechanic: "bullet_resist", value: "20", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
-      { item_id: "bullet_resist_b", effect_id: "resist_b", mechanic: "bullet_resist", value: "30", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" }
+      { item_id: "bullet_resist_b", effect_id: "resist_b", mechanic: "bullet_resist", value: "30", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "regen", effect_id: "regen_per_second", mechanic: "bonus_health_regen", value: "10", unit: "hp/s", condition: "Immer, solange das Item gehalten wird.", confidence: "high" },
+      { item_id: "lifesteal", effect_id: "bullet_lifesteal", mechanic: "bullet_lifesteal_percent", value: "10", unit: "percent", condition: "Immer, solange das Item gehalten wird.", confidence: "high" }
     ],
     upgrades: [{ from_item_id: "component", to_item_id: "damage", additional_cost: "800", notes: "", confidence: "high" }],
     heroStats: [
@@ -64,6 +68,7 @@ function fixture() {
       { hero_id: "hero", stat_group: "ammo", mechanic: "clip_size", base_value: "8", confidence: "high" },
       { hero_id: "hero", stat_group: "reload", mechanic: "reload_time", base_value: "2", confidence: "high" },
       { hero_id: "hero", stat_group: "health", mechanic: "max_health", base_value: "800", confidence: "high" },
+      { hero_id: "hero", stat_group: "health", mechanic: "base_health_regen", base_value: "0", confidence: "high" },
       { hero_id: "hero", stat_group: "weapon", mechanic: "rounds_per_second_spirit_scaling", base_value: "0.1", confidence: "high" },
       { hero_id: "hero", stat_group: "weapon", mechanic: "sustained_dps_spirit_scaling", base_value: "20", confidence: "high" }
     ],
@@ -136,6 +141,31 @@ test("Szenariomodell dokumentiert Annahmen und trennt Reload-DPS von bedingten E
   assert.equal(scenarios.common.recovery_model.long_fight_seconds, 10);
   assert.equal(scenarios.common.recovery_model.ability_lifesteal_percent_excluded, 0);
   assert.ok(createCarryScenarioPlan().planning_budgets.some((entry) => entry.souls === 40000));
+});
+
+test("Schutz, Regeneration und Bullet-Lifesteal folgen dem offenen Kampfszenario ohne Doppelzählung", () => {
+  const data = fixture();
+  const evaluate = (ids) => evaluateCarryScenarios({ inventory: ids.map((id) => data.itemsById.get(id)) }, request, data);
+  const baseline = evaluate([]).scenarios.find((scenario) => scenario.id === "skirmish");
+  const oneResist = evaluate(["bullet_resist_a"]).scenarios.find((scenario) => scenario.id === "skirmish");
+  const twoResists = evaluate(["bullet_resist_a", "bullet_resist_b"]).scenarios.find((scenario) => scenario.id === "skirmish");
+  assert.equal(baseline.incoming_damage.raw, 400);
+  assert.equal(oneResist.incoming_damage.bullet_after_resist, 320);
+  assert.ok(Math.abs(twoResists.incoming_damage.bullet_after_resist - 224) < 1e-9);
+  assert.equal(oneResist.resistance_sources.bullet.damageMultiplier, 0.8);
+  assert.ok(Math.abs(twoResists.resistance_sources.bullet.damageMultiplier - 0.56) < 1e-12);
+
+  const regen = evaluate(["regen"]);
+  const regenShort = regen.scenarios.find((scenario) => scenario.id === "skirmish");
+  const regenLong = regen.scenarios.find((scenario) => scenario.id === "teamfight");
+  assert.equal(regenShort.recovery_health, 40);
+  assert.equal(regenLong.recovery_health, 100);
+
+  const lifesteal = evaluate(["lifesteal"]);
+  const lifeShort = lifesteal.scenarios.find((scenario) => scenario.id === "skirmish");
+  assert.equal(lifeShort.window_damage, 160);
+  assert.equal(lifeShort.recovery_health, 16);
+  assert.equal(lifeShort.survival_capacity_bullet, 816);
 });
 
 test("Einheitliche Weapon-Mechanik bildet Feuern und Reload über weaponDamage(t) ab", () => {

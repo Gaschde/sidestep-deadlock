@@ -20,7 +20,7 @@ export function evaluateWardenWeaponPerformance(state, request, data) {
 
 export const WARDEN_METRICS = [
   "sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps",
-  "teamfightWindowDps", "bulletEhp", "spiritEhp"
+  "teamfightWindowDps", "slowingHexBindingWordComboDps", "bulletEhp", "spiritEhp"
 ];
 
 export function evaluateWardenCarryPerformance(state, request, data) {
@@ -33,6 +33,7 @@ export function evaluateWardenCarryPerformance(state, request, data) {
     farmWindowDps: byId.get("farm")?.window_dps,
     skirmishWindowDps: byId.get("skirmish")?.window_dps,
     teamfightWindowDps: byId.get("teamfight")?.window_dps,
+    slowingHexBindingWordComboDps: byId.get("skirmish")?.active_combo?.value ?? 0,
     // The two survival dimensions include only verified, permanent recovery
     // over the shared 10-second teamfight window. Raw EHP remains exposed in
     // scenarios.common for audit and is not counted a second time.
@@ -49,7 +50,7 @@ export function evaluateWardenCarryPerformance(state, request, data) {
     availability: {
       active: scenarios.common.conditional_effects_excluded.filter((effect) => effect.trigger === "item_activation"),
       conditional: scenarios.common.conditional_effects_excluded.filter((effect) => effect.trigger !== "item_activation"),
-      treatment: "Aktive und bedingte Effekte bleiben ohne verifizierte Uptime aus der Dauerleistung ausgeschlossen."
+      treatment: "Aktive und bedingte Effekte bleiben ohne verifizierte Uptime aus der Dauerleistung ausgeschlossen; die explizite Slowing-Hex→Binding-Word-Erfolgsbranche wird als eigene, nicht probabilistische Kontrollmetrik bewertet."
     }
   };
 }

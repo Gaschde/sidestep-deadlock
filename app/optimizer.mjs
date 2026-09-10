@@ -346,6 +346,12 @@ export function createCarryScenarioPlan() {
     reason: "Offen ausgewiesenes Vergleichsfenster; Gegnerresistenzen, Trefferquote und Ablauf werden nicht erfunden."
   });
   return {
+    incoming_damage_model: {
+      raw_damage_per_second: 100,
+      unit: "normalisierter Rohschaden/s",
+      origin: "model_assumption",
+      reason: "Fester Vergleichsmaßstab für Schutz und Heilung, keine Behauptung über gegnerischen Schaden."
+    },
     conditional_effect_policy: {
       value: "excluded_from_baseline",
       origin: "model_assumption",
@@ -457,6 +463,10 @@ export function evaluateCarryScenarios(state, request, data) {
     common,
     scenarios: plan.scenarios.map((scenario) => {
       const damage = weapon.weaponDamageAt(scenario.duration_seconds);
+      const combo = request.heroId === "warden" ? wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) : null;
+      const incomingRawDamage = plan.incoming_damage_model.raw_damage_per_second * scenario.duration_seconds;
+      const bulletRecovery = permanentRegen * scenario.duration_seconds + damage * permanentBulletLifesteal;
+      const spiritRecovery = permanentRegen * scenario.duration_seconds;
       return {
         ...scenario,
         ...common,
@@ -464,7 +474,18 @@ export function evaluateCarryScenarios(state, request, data) {
         window_dps: damage / scenario.duration_seconds,
         survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, damage, true),
         survival_capacity_spirit: survivalCapacity(spiritResistance.percent, scenario.duration_seconds, damage, false),
-        recovery_health: permanentRegen * scenario.duration_seconds + damage * permanentBulletLifesteal
+        recovery_health: bulletRecovery,
+        incoming_damage: {
+          raw: incomingRawDamage,
+          bullet_after_resist: incomingRawDamage * bulletResistance.damageMultiplier,
+          spirit_after_resist: incomingRawDamage * spiritResistance.damageMultiplier,
+          bullet_remaining_health: health + bulletRecovery - incomingRawDamage * bulletResistance.damageMultiplier,
+          spirit_remaining_health: health + spiritRecovery - incomingRawDamage * spiritResistance.damageMultiplier,
+          origin: "model_assumption",
+          treatment: "Vergleich gegen den offen ausgewiesenen normalisierten Rohschadenstrom; kein Gegnerprofil."
+        },
+        active_combo: combo,
+        combo_failure: combo?.available ? { value: 0, outcome: "failure_branch", treatment: "Bei verfehlter oder nicht ausführbarer Combo wird kein aktiver Bonus angerechnet." } : null
       };
     })
   };
@@ -721,6 +742,52 @@ function trajectoryMetrics(scenarios) {
     directAccess: Number(common.access.direct),
     combatMobility: common.mobility.combatMoveSpeed + common.mobility.activeMoveSpeed,
     firingUptime: common.firing_uptime
+  };
+}
+
+function knownEffect(data, itemId, mechanic) {
+  const effect = (data.mechanicsByItem.get(itemId) || []).find((entry) => entry.mechanic === mechanic && entry.confidence !== "low");
+  return effect ? number(effect.value) : null;
+}
+
+function knownAbilityEffect(data, abilityId, mechanic) {
+  const effect = (data.abilityMechanics || []).find((entry) => entry.ability_id === abilityId && entry.mechanic === mechanic && entry.confidence !== "low");
+  return effect ? number(effect.value) : null;
+}
+
+function wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) {
+  const itemId = "upgrade_containment";
+  if (!state.inventory.some((item) => item.item_id === itemId)) {
+    return { available: false, outcome: "not_available", value: 0, reason: "Slowing Hex ist nicht im Inventar." };
+  }
+  const hex = {
+    cooldown: knownEffect(data, itemId, "ability_cooldown"), duration: knownEffect(data, itemId, "ability_duration"),
+    range: knownEffect(data, itemId, "ability_cast_range"), castDelay: knownEffect(data, itemId, "ability_cast_delay")
+  };
+  const binding = {
+    cooldown: knownAbilityEffect(data, "warden_binding_word", "ability_cooldown"), range: knownAbilityEffect(data, "warden_binding_word", "ability_cast_range"),
+    castDelay: knownAbilityEffect(data, "warden_binding_word", "ability_cast_delay"), immobilizeDuration: knownAbilityEffect(data, "warden_binding_word", "immobilize_duration")
+  };
+  if (Object.values(hex).some((value) => !Number.isFinite(value)) || Object.values(binding).some((value) => !Number.isFinite(value))) {
+    return { available: false, outcome: "missing_data", value: 0, hex, binding, reason: "Für die Combo fehlen belegte Timing- oder Reichweitenwerte." };
+  }
+  const sequenceDelay = hex.castDelay + binding.castDelay;
+  const range = Math.min(hex.range, binding.range);
+  const possible = scenario.duration_seconds >= sequenceDelay && hex.duration >= sequenceDelay && range > 0 && binding.immobilizeDuration > 0;
+  const lockedSeconds = possible ? Math.min(binding.immobilizeDuration, Math.max(0, scenario.duration_seconds - sequenceDelay)) : 0;
+  return {
+    available: possible,
+    outcome: possible ? "success_branch" : "not_available_in_window",
+    value: possible ? weapon.weaponDamageAt(lockedSeconds) / scenario.duration_seconds : 0,
+    locked_weapon_damage: possible ? weapon.weaponDamageAt(lockedSeconds) : 0,
+    locked_seconds: lockedSeconds,
+    hex, binding, sequence_delay_seconds: sequenceDelay, required_initial_range_meters: range,
+    cooldown_limited_uses: Math.min(1, Math.floor(scenario.duration_seconds / Math.max(hex.cooldown, binding.cooldown)) + 1),
+    assumptions: [
+      "Erfolgszweig: Ziel startet innerhalb der kleineren Reichweite und beide gezielten Aktivierungen treffen.",
+      "Kein Trefferanteil, kein automatisches Heranziehen und keine garantierte Combo-Erfolgsquote werden angenommen.",
+      "Der Wert ist ein separates Kontrollfenster; er wird nicht zusätzlich zum vollständigen Kampffenster addiert."
+    ]
   };
 }
 

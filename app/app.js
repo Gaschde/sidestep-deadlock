@@ -193,11 +193,16 @@ function renderPhase() {
   const combat = state.build.winner.evaluation.scenarios.common;
   const combatInputs = state.build.winner.evaluation.scenarios.inputs;
   const teamfight = state.build.winner.evaluation.scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
-  const scenarioSummary = `<p><strong>Baseline (offene Modellannahmen):</strong> ${combat.sustained_weapon_dps.toFixed(1)} Sustained Weapon DPS · ${combat.effective_health_bullet?.toFixed(0) || "?"} Bullet-EHP · ${combat.effective_health_spirit?.toFixed(0) || "?"} Spirit-EHP · 10s-Überlebenskapazität ${teamfight?.survival_capacity_bullet?.toFixed(0) || "?"}/${teamfight?.survival_capacity_spirit?.toFixed(0) || "?"}. ${combat.item_kit_synergies.length} belegte Item×Kit-/Range-Bezüge dokumentiert; bedingte Effekte sind nicht als Dauerbonus eingerechnet.</p>`;
+  const skirmish = state.build.winner.evaluation.scenarios.scenarios.find((scenario) => scenario.id === "skirmish");
+  const combo = skirmish?.active_combo;
+  const comboSummary = combo?.available
+    ? ` Slowing Hex → Binding Word: Erfolgszweig mit ${combo.locked_seconds.toFixed(2)}s Kontrollfenster bei höchstens ${combo.cooldown_limited_uses} Nutzung; kein Trefferanteil angenommen.`
+    : " Slowing Hex → Binding Word: nicht verfügbar; kein Combo-Bonus angerechnet.";
+  const scenarioSummary = `<p><strong>Baseline (offene Modellannahmen):</strong> ${combat.sustained_weapon_dps.toFixed(1)} Sustained Weapon DPS · ${combat.effective_health_bullet?.toFixed(0) || "?"} Bullet-EHP · ${combat.effective_health_spirit?.toFixed(0) || "?"} Spirit-EHP · 10s-Überlebenskapazität ${teamfight?.survival_capacity_bullet?.toFixed(0) || "?"}/${teamfight?.survival_capacity_spirit?.toFixed(0) || "?"}. ${combat.item_kit_synergies.length} belegte Item×Kit-/Range-Bezüge dokumentiert; bedingte Effekte sind nicht als Dauerbonus eingerechnet.${comboSummary}</p>`;
   const combatStateSummary = `<p><strong>Vergleichszustand:</strong> ${combatInputs.hero_level.value === null ? "Heldenlevel unbekannt – es gelten nur die kanonischen Basiswerte." : `Heldenlevel ${combatInputs.hero_level.value} ist angegeben, aber ohne verifizierte Level→Boon-Zuordnung nicht in Werte übersetzt.`} ${combatInputs.ability_levels.value === null ? "Skillzustand unbekannt – Fähigkeiten liefern keine stillschweigenden Kampfboni." : "Skillzustand ist angegeben, aber noch nicht in der gemeinsamen Item-/Skill-Suche berechnet."}</p>`;
   const foundations = state.build.winner.evaluation.foundations;
   const foundationSummary = state.build.search?.approximate
-    ? `<p><strong>Approximative Auswahl:</strong> 70 % Endstärke · 15 % schlimmster · 15 % durchschnittlicher Rückstand. Stichprobenreferenz, keine Optimalitätsgarantie. Schaden und Überleben werden als getrennte Gruppen gleich gewichtet; Endwerte x/(x+Referenz). Permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal sind eingerechnet. Aktive/bedingte Effekte und Item×Held-Interaktionen bleiben mit Trigger, Cooldown und Dauer sichtbar, ohne unbelegte Uptime oder Trefferwirkung.</p>`
+    ? `<p><strong>Approximative Auswahl:</strong> 70 % Endstärke · 15 % schlimmster · 15 % durchschnittlicher Rückstand. Stichprobenreferenz, keine Optimalitätsgarantie. Schaden und Überleben werden als getrennte Gruppen gleich gewichtet; Endwerte x/(x+Referenz). Permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal sind eingerechnet. Slowing Hex → Binding Word zählt ausschließlich als eigener Erfolgszweig mit belegten Reichweiten, Dauer und Cooldowns; alle übrigen aktiven/bedingten Effekte bleiben ohne unbelegte Uptime oder Trefferwirkung ausgeschlossen.</p>`
     : isNewSearch
     ? `<p><strong>Neue Suchauswertung:</strong> ${state.build.search.metrics.length} getrennte Szenario-/Leistungsziele; die vollständige Itemmenge wurde im Worker untersucht. Der ausgewählte Pfad ist nur ein repräsentativer Pareto-Pfad, kein Gesamtsieger.</p>`
     : `<p><strong>Robuste Frühbasis:</strong> ${foundations.checkpoints.map((entry) => `${entry.budget.toLocaleString("de-CH")} Souls: ${entry.fulfilled ? "erfüllt" : "nicht erfüllt"}`).join(" · ")}. Schutz zählt nur als Vitality-Schutzitem oder dauerhafte Bullet-/Spirit-Resistenz; Heldenfähigkeiten ersetzen ohne Skill-Reihenfolge kein gekauftes Sustain-Item.</p>`;
@@ -236,7 +241,7 @@ function cancelNewBuild() {
 }
 
 function setFastControls(running) {
-  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 40k";
+  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 60k";
   for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus"]) $("#" + id).disabled = running;
 }
 
@@ -264,10 +269,10 @@ function startFastBuild() {
         .filter((event) => event.type !== "save").map((event, i) => ({ step: i + 1, item: itemMap.get(event.type === "sell" ? event.from : event.item),
           upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls }));
       const inventory = result.state.inventory.map((id) => itemMap.get(id));
-      const evaluation = evaluateWardenCarryPerformance(result.state, { heroId: "warden", budget: 40000 }, state.data);
+      const evaluation = evaluateWardenCarryPerformance(result.state, { heroId: "warden", budget: 60000 }, state.data);
       state.build = { events, inventory, spent: result.state.earnedSouls, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: "Legaler Kaufpfad von 0 bis 40.000 verdienten Souls. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum." } };
+          scope: "Legaler Kaufpfad von 0 bis 60.000 verdienten Souls. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum." } };
       $("#result-summary").textContent = `${events.length} legale Transaktionen · ${inventory.length}/${result.slotLimit} Slots · ${result.state.cash} Souls übrig · erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s`;
       $("#search-progress").textContent = `Build verfügbar; Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();
@@ -276,7 +281,7 @@ function startFastBuild() {
     } else if (message.type === "error") finish(`Suche fehlgeschlagen: ${message.message}`);
   };
   worker.onerror = (error) => finish(`Suche fehlgeschlagen: ${error.message}`);
-  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: 40000 });
+  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: 60000 });
 }
 
 function startNewBuild(budget = 60000) {
