@@ -1,6 +1,6 @@
 import { formatSouls, manifestsAreCompatible, parseCsv } from "./lib.mjs";
 import { buildOptimizerData, optimizeWeaponCarryFullBuild } from "./optimizer.mjs";
-import { evaluateWardenCarryPerformance } from "./warden-search.mjs";
+import { evaluateCarryPerformance } from "./warden-search.mjs";
 
 const paths = {
   coreManifest: "../data/core/manifest.json",
@@ -14,6 +14,7 @@ const paths = {
   interactions: "../data/interactions/hero_interactions.csv",
   progression: "../data/heroes/progression.json",
   heroStats: "../data/heroes/hero_stats.csv",
+  heroResources: "../data/heroes/hero_resources.csv",
   economy: "../data/core/economy.json",
   slots: "../data/core/slots.json"
 };
@@ -55,10 +56,11 @@ async function loadData() {
     loadText(paths.interactions).then(parseCsv),
     fetch(paths.progression).then((response) => response.json()),
     loadText(paths.heroStats).then(parseCsv),
+    loadText(paths.heroResources).then(parseCsv),
     fetch(paths.economy).then((response) => response.json()),
     fetch(paths.slots).then((response) => response.json())
   ]);
-  const [coreManifest, heroManifest, items, itemMechanics, upgrades, heroes, abilities, abilityMechanics, interactions, progression, heroStats, economy, slots] = entries;
+  const [coreManifest, heroManifest, items, itemMechanics, upgrades, heroes, abilities, abilityMechanics, interactions, progression, heroStats, heroResources, economy, slots] = entries;
   return buildOptimizerData({
     coreManifest,
     heroManifest,
@@ -70,7 +72,7 @@ async function loadData() {
     abilityMechanics,
     interactions,
     progression,
-    heroStats,
+    heroStats, heroResources,
     economy,
     slots
   });
@@ -183,7 +185,7 @@ function buildPhaseGroups(events) {
 function renderPhase() {
   const panel = $("#phase-panel");
   if (!state.build) {
-    panel.innerHTML = `<div class="empty-state"><span>✦</span><h2>Bereit für die Build-Prüfung</h2><p>Wähle Held, Rolle und Schadensfokus. Der aktuelle Slice unterstützt Carry mit Weapon-Fokus und prüft dafür legale Kaufpfade sowie verifizierte, dauerhaft verfügbare Weapon-Effekte.</p></div>`;
+    panel.innerHTML = `<div class="empty-state"><span>✦</span><h2>Bereit für die Build-Prüfung</h2><p>Wähle Warden oder Infernus, Carry und Weapon, Spirit oder Hybrid. Der Slice prüft dafür legale Kaufpfade und weist nicht berechenbare Mechaniken aus.</p></div>`;
     return;
   }
 
@@ -198,7 +200,10 @@ function renderPhase() {
   const comboSummary = combo?.available
     ? ` Slowing Hex → Binding Word: Erfolgszweig mit ${combo.locked_seconds.toFixed(2)}s Kontrollfenster bei höchstens ${combo.cooldown_limited_uses} Nutzung. Binding Word wird getrennt verglichen; ohne Treffer- oder Fluchtdaten zählt Hex mit 0 Zusatzschaden.`
     : " Slowing Hex → Binding Word: nicht verfügbar; kein unbestätigter Combo-Zusatzwert angerechnet.";
-  const scenarioSummary = `<p><strong>Baseline (offene Modellannahmen):</strong> ${combat.sustained_weapon_dps.toFixed(1)} Sustained Weapon DPS · ${combat.effective_health_bullet?.toFixed(0) || "?"} Bullet-EHP · ${combat.effective_health_spirit?.toFixed(0) || "?"} Spirit-EHP · 10s-Überlebenskapazität ${teamfight?.survival_capacity_bullet?.toFixed(0) || "?"}/${teamfight?.survival_capacity_spirit?.toFixed(0) || "?"}. ${combat.item_kit_synergies.length} belegte Item×Kit-/Range-Bezüge dokumentiert; bedingte Effekte sind nicht als Dauerbonus eingerechnet.${comboSummary}</p>`;
+  const focusLabel = { weapon: "Weapon", spirit: "Spirit", hybrid: "Hybrid" }[$("#damage-focus").value] || "Schaden";
+  const scenarioSummary = `<p><strong>Baseline (offene Modellannahmen):</strong> ${combat.sustained_weapon_dps.toFixed(1)} Sustained ${focusLabel} DPS · ${combat.effective_health_bullet?.toFixed(0) || "?"} Bullet-EHP · ${combat.effective_health_spirit?.toFixed(0) || "?"} Spirit-EHP · 10s-Überlebenskapazität ${teamfight?.survival_capacity_bullet?.toFixed(0) || "?"}/${teamfight?.survival_capacity_spirit?.toFixed(0) || "?"}. ${combat.item_kit_synergies.length} belegte Item×Kit-/Range-Bezüge dokumentiert; bedingte Effekte sind nicht als Dauerbonus eingerechnet.${comboSummary}</p>`;
+  const spiritRows = combat.spirit_mechanics?.abilities || [];
+  const spiritSummary = `<p><strong>${focusLabel}-Mechaniken:</strong> ${spiritRows.filter((row) => row.included).map((row) => row.abilityId).join(" · ") || "keine vollständig berechenbare aktive Fähigkeit"}. ${spiritRows.filter((row) => row.excluded).map((row) => `${row.abilityId}: ${row.excluded}`).join(" · ") || "Unklare Trigger, Treffer-, Tick- und Skillzustände zählen nicht als Schaden."}</p>`;
   const combatStateSummary = `<p><strong>Vergleichszustand:</strong> ${combatInputs.hero_level.value === null ? "Heldenlevel unbekannt – es gelten nur die kanonischen Basiswerte." : `Heldenlevel ${combatInputs.hero_level.value} ist angegeben, aber ohne verifizierte Level→Boon-Zuordnung nicht in Werte übersetzt.`} ${combatInputs.ability_levels.value === null ? "Skillzustand unbekannt – Fähigkeiten liefern keine stillschweigenden Kampfboni." : "Skillzustand ist angegeben, aber noch nicht in der gemeinsamen Item-/Skill-Suche berechnet."}</p>`;
   const foundations = state.build.winner.evaluation.foundations;
   const foundationSummary = state.build.search?.approximate
@@ -206,18 +211,22 @@ function renderPhase() {
     : isNewSearch
     ? `<p><strong>Neue Suchauswertung:</strong> ${state.build.search.metrics.length} getrennte Szenario-/Leistungsziele; die vollständige Itemmenge wurde im Worker untersucht. Der ausgewählte Pfad ist nur ein repräsentativer Pareto-Pfad, kein Gesamtsieger.</p>`
     : `<p><strong>Robuste Frühbasis:</strong> ${foundations.checkpoints.map((entry) => `${entry.budget.toLocaleString("de-CH")} Souls: ${entry.fulfilled ? "erfüllt" : "nicht erfüllt"}`).join(" · ")}. Schutz zählt nur als Vitality-Schutzitem oder dauerhafte Bullet-/Spirit-Resistenz; Heldenfähigkeiten ersetzen ohne Skill-Reihenfolge kein gekauftes Sustain-Item.</p>`;
-  const title = isNewSearch ? "Warden-Suchlauf im ausgewiesenen Modell" : "Warden Weapon Carry";
+  const title = isNewSearch ? `${getHero(state.selectedHeroId).display_name}-Suchlauf im ausgewiesenen Modell` : "Bisheriger Warden-Weapon-Optimizer";
   const eyebrow = state.build.search?.approximate ? "Bester geprüfter Build · approximative Suche" : isNewSearch ? "Gemeinsame Pareto-Suche · repräsentativer Pfad" : "Bisheriger Optimizer · bester geprüfter Pfad";
-  panel.innerHTML = `<div class="section-heading"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div><span class="meta-chip">${state.build.inventory.length} / ${isNewSearch ? (state.build.search.slotLimit ?? state.data.slots.starting_slots.universal) : state.data.slots.item_limit} finale Slots</span></div><section aria-label="Finales Inventar"><h3>Finales Inventar</h3><p>${state.build.inventory.map((item) => item.name).join(" · ")}</p></section><div class="build-board">${Object.entries(labels).map(([phase, label]) => `<section class="build-phase build-phase-${phase}"><div class="build-phase-heading"><h3>${label}</h3><span>${groups[phase].length} Schritte</span></div><div class="build-card-row">${groups[phase].map(renderBuildCard).join("") || `<p class="empty-phase">Keine Käufe in dieser Phase.</p>`}</div></section>`).join("")}</div><div class="build-board-footer">${scenarioSummary}${combatStateSummary}${foundationSummary}<p>${state.build.scope || state.build.search.scope}</p></div>`;
+  panel.innerHTML = `<div class="section-heading"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div><span class="meta-chip">${state.build.inventory.length} / ${isNewSearch ? (state.build.search.slotLimit ?? state.data.slots.starting_slots.universal) : state.data.slots.item_limit} finale Slots</span></div><section aria-label="Finales Inventar"><h3>Finales Inventar</h3><p>${state.build.inventory.map((item) => item.name).join(" · ")}</p></section><div class="build-board">${Object.entries(labels).map(([phase, label]) => `<section class="build-phase build-phase-${phase}"><div class="build-phase-heading"><h3>${label}</h3><span>${groups[phase].length} Schritte</span></div><div class="build-card-row">${groups[phase].map(renderBuildCard).join("") || `<p class="empty-phase">Keine Käufe in dieser Phase.</p>`}</div></section>`).join("")}</div><div class="build-board-footer">${scenarioSummary}${spiritSummary}${combatStateSummary}${foundationSummary}<p>${state.build.scope || state.build.search.scope}</p></div>`;
 }
 
 async function createBuild() {
   const role = $("#role").value;
   const damageFocus = $("#damage-focus").value;
-  if (role !== "carry" || damageFocus !== "weapon") {
+  if (role !== "carry" || !["weapon", "spirit", "hybrid"].includes(damageFocus) || !["warden", "infernus"].includes(state.selectedHeroId)) {
     state.build = null;
-    $("#result-summary").textContent = "Diese Kombination ist als Eingabe vorbereitet; der bestehende Optimizer-Slice unterstützt derzeit nur Carry · Weapon.";
+    $("#result-summary").textContent = "Unterstützt sind Warden und Infernus als Carry mit Weapon, Spirit oder Hybrid.";
     renderPhase();
+    return;
+  }
+  if (state.selectedHeroId !== "warden" || damageFocus !== "weapon") {
+    $("#result-summary").textContent = "Der bisherige Optimizer bleibt nur für Warden · Weapon verfügbar. Bitte „Build erstellen · 60k“ verwenden.";
     return;
   }
   state.build = optimizeWeaponCarryFullBuild({ heroId: state.selectedHeroId, objective: "weapon_magazine_dps", maxTransactions: 28 }, state.data);
@@ -259,8 +268,8 @@ function fastBuildSummary(result, inventory, telemetry) {
 
 function startFastBuild() {
   if (activeOptimizerWorker) { cancelNewBuild(); return; }
-  if (state.selectedHeroId !== "warden" || $("#role").value !== "carry" || $("#damage-focus").value !== "weapon") {
-    $("#search-progress").textContent = "Dieser Build-Lauf unterstützt Warden · Carry · Weapon.";
+  if (! ["warden", "infernus"].includes(state.selectedHeroId) || $("#role").value !== "carry") {
+    $("#search-progress").textContent = "Dieser Build-Lauf unterstützt Warden oder Infernus · Carry · Weapon/Spirit/Hybrid.";
     return;
   }
   const started = performance.now();
@@ -281,13 +290,14 @@ function startFastBuild() {
         .filter((event) => event.type !== "save").map((event, i) => ({ step: i + 1, item: itemMap.get(event.type === "sell" ? event.from : event.item),
           upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls }));
       const inventory = result.state.inventory.map((id) => itemMap.get(id));
-      const evaluation = evaluateWardenCarryPerformance(result.state, { heroId: "warden", budget: 60000 }, state.data);
+      const damageFocus = $("#damage-focus").value;
+      const evaluation = evaluateCarryPerformance(result.state, { heroId: state.selectedHeroId, damageFocus, budget: 60000 }, state.data);
       const unavailableChargeItems = result.unavailableItemIds
         .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
         .join(", ");
       state.build = { events, inventory, spent: result.state.earnedSouls, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: `Legaler Kaufpfad von 0 bis 60.000 verdienten Souls. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Für Warden nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
+          scope: `Legaler Kaufpfad von 0 bis 60.000 verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
       $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
       $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();
@@ -302,14 +312,14 @@ function startFastBuild() {
     } else if (message.type === "error") finish(`Suche fehlgeschlagen: ${message.message}`);
   };
   worker.onerror = (error) => finish(`Suche fehlgeschlagen: ${error.message}`);
-  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: 60000 });
+  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: 60000, heroId: state.selectedHeroId, damageFocus: $("#damage-focus").value });
 }
 
 function startNewBuild(budget = 60000) {
   const role = $("#role").value;
   const damageFocus = $("#damage-focus").value;
-  if (state.selectedHeroId !== "warden" || role !== "carry" || damageFocus !== "weapon") {
-    $("#search-progress").textContent = "Der neue Suchkern unterstützt derzeit Warden · Carry · Weapon.";
+  if (! ["warden", "infernus"].includes(state.selectedHeroId) || role !== "carry") {
+    $("#search-progress").textContent = "Der neue Suchkern unterstützt Warden oder Infernus · Carry · Weapon/Spirit/Hybrid.";
     return;
   }
   if (activeOptimizerWorker) {
@@ -379,13 +389,13 @@ function startNewBuild(budget = 60000) {
     $("#new-build-40k-button").disabled = false;
     $("#build-button").disabled = false;
   };
-  activeOptimizerWorker.postMessage({ data: state.data, itemIds, budget });
+  activeOptimizerWorker.postMessage({ data: state.data, itemIds, budget, heroId: state.selectedHeroId, damageFocus });
 }
 
 function renderPicker(filter = "") {
   const list = $("#picker-list");
   const normalized = filter.trim().toLocaleLowerCase("de");
-  const candidates = state.data.heroes.filter((hero) => hero.display_name.toLocaleLowerCase("de").includes(normalized));
+  const candidates = state.data.heroes.filter((hero) => ["warden", "infernus"].includes(hero.hero_id) && hero.display_name.toLocaleLowerCase("de").includes(normalized));
   list.innerHTML = candidates.map((hero) => `<button type="button" data-hero-id="${hero.hero_id}">${avatarMarkup(hero)}<span><strong>${hero.display_name}</strong><small>${hero.availability.replaceAll("_", " ")}</small></span>${hero.hero_id === state.selectedHeroId ? `<em>Aktiver Held</em>` : ""}</button>`).join("") || `<div class="empty-state compact"><p>Kein passender Held gefunden.</p></div>`;
   $$('[data-hero-id]', list).forEach((button) => button.addEventListener("click", () => chooseHero(button.dataset.heroId)));
 }

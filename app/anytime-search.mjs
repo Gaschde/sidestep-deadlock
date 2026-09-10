@@ -1,5 +1,5 @@
 import { createDeadlockDomain } from "./deadlock-domain.mjs";
-import { evaluateWardenCarryPerformance, WARDEN_METRICS, wardenResourceAxis } from "./warden-search.mjs";
+import { evaluateCarryPerformance, CARRY_METRICS, carryResourceAxis } from "./warden-search.mjs";
 import { validateSearchPath } from "./validate-search-path.mjs";
 import { heroCanPurchaseItem } from "./optimizer.mjs";
 
@@ -15,7 +15,7 @@ export const ANYTIME_POLICY = { end: 0.7, worst: 0.15, integrated: 0.15,
 export function scoreAnytimePath(points, reference, budget) {
   const byMetric = new Map();
   const committed = new Map(points.map((p) => [p.earnedSouls, p.metrics]));
-  const rows = WARDEN_METRICS.map((metric) => ({ metric, values: points[0].metrics, worst: 0, area: 0 }));
+  const rows = CARRY_METRICS.map((metric) => ({ metric, values: points[0].metrics, worst: 0, area: 0 }));
   // All seven metrics share the same path and Soul axis. Advancing them in
   // one pass preserves the per-metric arithmetic while avoiding seven full
   // Map traversals for every ranked successor.
@@ -58,14 +58,14 @@ export function scoreAnytimePath(points, reference, budget) {
 
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
 // Deadline is an explicit approximation budget, not an optimality certificate.
-export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_id), budget = 60000,
+export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon", itemIds = data.items.map((i) => i.item_id), budget = 60000,
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
   localRefinement = true, profile = false, compactMetrics = true }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
-  const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, "warden"));
+  const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, heroId));
   const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
-  const resource = wardenResourceAxis(data, legalItemIds, budget);
+  const resource = carryResourceAxis(data, legalItemIds, budget);
   const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
   const profileData = { referencePreparationMs: 0, inventoryEvaluationMs: 0, actionGenerationMs: 0, scoringMs: 0,
     upgradeCounterprobeMs: 0, pathContinuationMs: 0, outputValidationMs: 0,
@@ -90,7 +90,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   const metrics = (s) => {
     const key = [...s.inventory].sort().join("|");
     if (!cache.has(key)) {
-      const result = timed("inventoryEvaluationMs", () => evaluateWardenCarryPerformance(s, { heroId: "warden", budget, cacheProfiles: false, metricsOnly: compactMetrics }, data));
+      const result = timed("inventoryEvaluationMs", () => evaluateCarryPerformance(s, { heroId, damageFocus, budget, cacheProfiles: false, metricsOnly: compactMetrics }, data));
       if (!result.valid) throw new Error(result.reason);
       cache.set(key, result.metrics); evaluations++;
     }
@@ -103,7 +103,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     exclusive("referencePreparationMs", () => {
     const until = Math.min(deadline, started + referenceTimeMs);
     // Sampling does not remove candidates from the actual trajectory search.
-    for (const m of WARDEN_METRICS) {
+    for (const m of CARRY_METRICS) {
       let state = { ...initial, cash: budget, earnedSouls: budget };
       while (performance.now() < until) {
         let best;
@@ -112,7 +112,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
           const values = metrics(next);
           const cost = budget - next.cash;
           const first = resource.axis.findIndex((s) => s >= cost);
-          for (let i = first; i < reference.values.length; i++) for (const k of WARDEN_METRICS) reference.values[i][k] = Math.max(reference.values[i][k], values[k]);
+          for (let i = first; i < reference.values.length; i++) for (const k of CARRY_METRICS) reference.values[i][k] = Math.max(reference.values[i][k], values[k]);
           if (!best || values[m] > metrics(best)[m]) best = next;
           if (performance.now() >= until) break;
         }
@@ -143,16 +143,16 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     const index = referenceIndex.get(node.state.earnedSouls);
     if (index === undefined) throw new Error("State außerhalb der eingefrorenen Soul-Achse.");
     const prior = node.parent ? trajectory(node.parent) : null;
-    const area = prior ? [...prior.area] : Array(WARDEN_METRICS.length).fill(0);
-    const worstBefore = prior ? [...prior.worstBefore] : Array(WARDEN_METRICS.length).fill(0);
+    const area = prior ? [...prior.area] : Array(CARRY_METRICS.length).fill(0);
+    const worstBefore = prior ? [...prior.worstBefore] : Array(CARRY_METRICS.length).fill(0);
     if (prior && node.state.earnedSouls > prior.souls) {
       const width = node.state.earnedSouls - prior.souls;
-      for (let metricIndex = 0; metricIndex < WARDEN_METRICS.length; metricIndex++) {
+      for (let metricIndex = 0; metricIndex < CARRY_METRICS.length; metricIndex++) {
         area[metricIndex] += width * prior.currentRegret[metricIndex];
         worstBefore[metricIndex] = Math.max(worstBefore[metricIndex], prior.currentRegret[metricIndex]);
       }
     }
-    const currentRegret = WARDEN_METRICS.map((metric) => {
+    const currentRegret = CARRY_METRICS.map((metric) => {
       const referenceValue = reference.values[index][metric];
       return referenceValue > 0 ? Math.max(0, 1 - values[metric] / referenceValue) : 0;
     });
@@ -163,8 +163,8 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   const projectedQuality = (node) => {
     const state = trajectory(node);
     const byMetric = new Map();
-    for (let metricIndex = 0; metricIndex < WARDEN_METRICS.length; metricIndex++) {
-      const metric = WARDEN_METRICS[metricIndex];
+    for (let metricIndex = 0; metricIndex < CARRY_METRICS.length; metricIndex++) {
+      const metric = CARRY_METRICS[metricIndex];
       const scale = reference.values.at(-1)[metric];
       const end = state.values[metric] + scale > 0 ? state.values[metric] / (state.values[metric] + scale) : 0;
       const worst = Math.max(state.worstBefore[metricIndex], state.currentRegret[metricIndex]);
@@ -418,3 +418,5 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
     localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore, profile: profile ? profileData : undefined } } : null;
 }
+
+export const runAnytimeWarden = runAnytimeCarry;

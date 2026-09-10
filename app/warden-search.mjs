@@ -22,8 +22,9 @@ export const WARDEN_METRICS = [
   "sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps",
   "teamfightWindowDps", "bulletEhp", "spiritEhp"
 ];
+export const CARRY_METRICS = WARDEN_METRICS;
 
-export function evaluateWardenCarryPerformance(state, request, data) {
+export function evaluateCarryPerformance(state, request, data) {
   if (request.metricsOnly === true) return evaluateCarrySearchMetrics(toOptimizerState(state, data), request, data);
   const scenarios = evaluateCarryScenarios(toOptimizerState(state, data), request, data);
   if (!scenarios.valid) return { valid: false, reason: scenarios.reason || "ungültige Warden-Bewertung", scenarios };
@@ -54,6 +55,9 @@ export function evaluateWardenCarryPerformance(state, request, data) {
     }
   };
 }
+
+// Kept for existing exact Warden regressions and the legacy diagnostic API.
+export const evaluateWardenCarryPerformance = evaluateCarryPerformance;
 
 function referencePoints(labels, budget, metric) {
   const bestAt = new Map();
@@ -99,6 +103,7 @@ export function wardenResourceAxis(data, itemIds, budget) {
   if (axis.at(-1) !== budget) axis.push(budget);
   return { axis, step };
 }
+export const carryResourceAxis = wardenResourceAxis;
 
 /**
  * Fully specified Warden/Carry/Weapon model for an explicitly supplied item

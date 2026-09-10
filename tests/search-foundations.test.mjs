@@ -4,7 +4,7 @@ import { calculateTrajectoryObjectives } from "../app/trajectory-objectives.mjs"
 import { createDeadlockDomain } from "../app/deadlock-domain.mjs";
 import { searchLabels } from "../app/search-core.mjs";
 import { paretoFilter } from "../app/reference-search.mjs";
-import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto, evaluateWardenWeaponPerformance, evaluateWardenCarryPerformance, computeWardenReference } from "../app/warden-search.mjs";
+import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto, evaluateWardenWeaponPerformance, evaluateWardenCarryPerformance, evaluateCarryPerformance, computeWardenReference } from "../app/warden-search.mjs";
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS } from "../app/anytime-search.mjs";
@@ -224,6 +224,20 @@ test("Kompakte Suchmetriken entsprechen dem vollständigen Warden-Szenarioprofil
     assert.equal(full.valid, true);
     assert.equal(compact.valid, true);
     assert.deepEqual(compact.metrics, full.metrics);
+  }
+});
+
+test("Weapon, Spirit und Hybrid verwenden für Warden und Infernus eigene belegte Kampfwerte", () => {
+  const data = canonicalWardenData();
+  for (const heroId of ["warden", "infernus"]) {
+    const weapon = evaluateCarryPerformance({ inventory: ["upgrade_extra_spirit"] }, { heroId, damageFocus: "weapon", budget: 60000 }, data);
+    const spirit = evaluateCarryPerformance({ inventory: ["upgrade_extra_spirit"] }, { heroId, damageFocus: "spirit", budget: 60000 }, data);
+    const hybrid = evaluateCarryPerformance({ inventory: ["upgrade_extra_spirit"] }, { heroId, damageFocus: "hybrid", budget: 60000 }, data);
+    for (const result of [weapon, spirit, hybrid]) assert.equal(result.valid, true);
+    assert.equal(spirit.scenarios.common.damage_focus, "spirit");
+    assert.ok(spirit.scenarios.common.spirit_mechanics.abilities.some((ability) => ability.included));
+    assert.ok(hybrid.metrics.teamfightWindowDps >= spirit.metrics.teamfightWindowDps);
+    assert.notEqual(weapon.metrics.teamfightWindowDps, spirit.metrics.teamfightWindowDps);
   }
 });
 

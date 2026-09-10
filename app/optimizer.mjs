@@ -286,7 +286,7 @@ export function heroCanPurchaseItem(item, data, heroId) {
 
 export function evaluateWeaponMechanics(state, request, data) {
   const cached = (request.cacheProfiles === false ? null : WEAPON_MECHANICS_CACHE.get(data)) || new Map();
-  const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
+  const cacheKey = `${request.heroId}:${request.damageFocus || "weapon"}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const baseBulletDamage = heroStat(data.heroStats, request.heroId, "bullet_damage");
   const baseRoundsPerSecond = heroStat(data.heroStats, request.heroId, "rounds_per_second");
@@ -343,6 +343,52 @@ export function evaluateWeaponMechanics(state, request, data) {
   return profile;
 }
 
+// Ability damage is intentionally conservative: a `damage` row is one
+// source-backed hit per cast; a `dps` row contributes only for an explicitly
+// recorded duration. Unknown trigger, tick semantics and skill upgrades stay
+// outside the baseline instead of becoming assumed damage.
+export function evaluateSpiritMechanics(state, request, data) {
+  const spiritPower = permanentSpiritPower(state, data) + thresholdSnapshot(state.inventory, data.economy).bonuses.spiritPower;
+  const abilities = data.abilities.filter((ability) => ability.hero_id === request.heroId && ability.is_active === "true");
+  const rows = abilities.map((ability) => {
+    const effects = data.abilityMechanics.filter((effect) => effect.ability_id === ability.ability_id && effect.confidence !== "low");
+    const cooldown = number(effects.find((effect) => effect.mechanic === "ability_cooldown")?.value || ability.base_cooldown);
+    const castDelay = number(effects.find((effect) => effect.mechanic === "ability_cast_delay")?.value);
+    const duration = number(effects.find((effect) => ["ability_duration", "debuff_duration", "burn_duration"].includes(effect.mechanic))?.value);
+    let perCast = 0;
+    for (const effect of effects) {
+      const scaled = number(effect.value) + (effect.scaling_attribute === "spirit" ? number(effect.scaling_coefficient) * spiritPower : 0);
+      if (effect.effect_type === "damage" && effect.unit === "damage") perCast += scaled;
+      if (effect.mechanic === "dps" && effect.unit === "damage_per_second" && duration > 0) perCast += scaled * duration;
+    }
+    return { abilityId: ability.ability_id, cooldown, castDelay, duration, perCast,
+      included: perCast > 0 && cooldown > 0,
+      excluded: perCast === 0 ? "Kein eindeutig berechenbarer Schaden mit Dauer/Cooldown." : null };
+  });
+  const damageAt = (seconds) => rows.reduce((total, row) => {
+    if (!row.included || seconds <= 0) return total;
+    return total + (1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / row.cooldown)) * row.perCast;
+  }, 0);
+  const castTimeAt = (seconds) => rows.reduce((total, row) => row.included
+    ? total + (1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / row.cooldown)) * row.castDelay : total, 0);
+  return { spiritPower, abilities: rows, damageAt, castTimeAt,
+    sustainedDps: damageAt(60) / 60,
+    treatment: "Nur belegter Basisschaden, Spirit-Skalierung, Cooldown und Cast-Delay aktiver Fähigkeiten; unbekannte Treffer-, Tick- und Skillzustände bleiben ausgeschlossen." };
+}
+
+function focusDamageModel(weapon, spirit, focus) {
+  const weaponDamageAt = (seconds) => weapon.weaponDamageAt(seconds);
+  const abilityDamageAt = (seconds) => spirit.damageAt(seconds);
+  if (focus === "spirit") return { damageAt: abilityDamageAt, weaponDamageAt: () => 0, abilityDamageAt, label: "Spirit" };
+  if (focus === "hybrid") return {
+    // Cast delays are source-backed and remove the same time from weapon fire;
+    // this prevents counting concurrent weapon fire during a cast.
+    damageAt: (seconds) => abilityDamageAt(seconds) + weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))),
+    weaponDamageAt: (seconds) => weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))), abilityDamageAt, label: "Hybrid"
+  };
+  return { damageAt: weaponDamageAt, weaponDamageAt, abilityDamageAt: () => 0, label: "Weapon" };
+}
+
 export function createCarryScenarioPlan() {
   const model = (id, label, seconds, range) => ({
     id,
@@ -387,10 +433,14 @@ export function createCarryScenarioPlan() {
 
 export function evaluateCarryScenarios(state, request, data) {
   const cached = (request.cacheProfiles === false ? null : SCENARIO_PROFILE_CACHE.get(data)) || new Map();
-  const cacheKey = `${request.heroId}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
+  const cacheKey = `${request.heroId}:${request.damageFocus || "weapon"}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const plan = createCarryScenarioPlan();
   const weapon = evaluateWeaponMechanics(state, request, data);
+  const spirit = evaluateSpiritMechanics(state, request, data);
+  const focus = request.damageFocus || "weapon";
+  if (!["weapon", "spirit", "hybrid"].includes(focus)) return { valid: false, reason: "UNSUPPORTED_DAMAGE_FOCUS", plan };
+  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, focus) : null;
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
   if (!weapon.valid || baseHealth === null) {
@@ -414,7 +464,7 @@ export function evaluateCarryScenarios(state, request, data) {
     return resist >= 100 ? null : rawCapacity / (1 - resist / 100);
   };
   const common = {
-    sustained_weapon_dps: weapon.sustained_cycle_dps,
+    sustained_weapon_dps: focus === "weapon" ? weapon.sustained_cycle_dps : focus === "spirit" ? spirit.sustainedDps : damageModel.damageAt(60) / 60,
     damage_per_bullet: weapon.damage_per_bullet,
     rounds_per_second: weapon.rounds_per_second,
     clip_size: weapon.clip_size,
@@ -446,6 +496,8 @@ export function evaluateCarryScenarios(state, request, data) {
     weapon_geometry: heroProfile.weaponGeometry,
     kit_coverage: heroProfile.kitCoverage,
     item_kit_synergies: capabilities.synergies,
+    damage_focus: focus,
+    spirit_mechanics: spirit,
     active_effects: capabilities.sources.filter((source) => source.availability === "active")
       .map((source) => ({ ...source, treatment: "sichtbar, aber ohne angenommene Uptime oder Trefferwirkung" })),
     hero_active_effects: heroProfile.sources.filter((source) => source.availability !== "permanent")
@@ -476,17 +528,18 @@ export function evaluateCarryScenarios(state, request, data) {
     },
     common,
     scenarios: plan.scenarios.map((scenario) => {
-      const damage = weapon.weaponDamageAt(scenario.duration_seconds);
+      const damage = damageModel.damageAt(scenario.duration_seconds);
+      const weaponDamage = damageModel.weaponDamageAt(scenario.duration_seconds);
       const combo = request.heroId === "warden" ? wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) : null;
       const incomingRawDamage = plan.incoming_damage_model.raw_damage_per_second * scenario.duration_seconds;
-      const bulletRecovery = permanentRegen * scenario.duration_seconds + damage * permanentBulletLifesteal;
+      const bulletRecovery = permanentRegen * scenario.duration_seconds + weaponDamage * permanentBulletLifesteal;
       const spiritRecovery = permanentRegen * scenario.duration_seconds;
       return {
         ...scenario,
         ...common,
         window_damage: damage,
         window_dps: damage / scenario.duration_seconds,
-        survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, damage, true),
+        survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, weaponDamage, true),
         survival_capacity_spirit: survivalCapacity(spiritResistance.percent, scenario.duration_seconds, damage, false),
         recovery_health: bulletRecovery,
         incoming_damage: {
@@ -519,6 +572,10 @@ export function evaluateCarryScenarios(state, request, data) {
 // interaction display rows for every transient inventory the search visits.
 export function evaluateCarrySearchMetrics(state, request, data) {
   const weapon = evaluateWeaponMechanics(state, request, data);
+  const spirit = evaluateSpiritMechanics(state, request, data);
+  const focus = request.damageFocus || "weapon";
+  if (!["weapon", "spirit", "hybrid"].includes(focus)) return { valid: false, reason: "UNSUPPORTED_DAMAGE_FOCUS" };
+  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, focus) : null;
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
   if (!weapon.valid || baseHealth === null) return { valid: false, reason: "HERO_COMBAT_STAT_MISSING" };
@@ -544,17 +601,18 @@ export function evaluateCarrySearchMetrics(state, request, data) {
   const spiritMultiplier = resistance(new Set(["spirit_resist", "tech_resist"]));
   if (bulletMultiplier <= 0 || spiritMultiplier <= 0) return { valid: false, reason: "UNBOUNDED_SURVIVAL_CAPACITY" };
   const health = (baseHealth + bonusHealth) * (1 + thresholds.bonuses.vitalityHealthPercent / 100);
-  const damageAt = (seconds) => weapon.weaponDamageAt(seconds);
+  const damageAt = (seconds) => damageModel.damageAt(seconds);
+  const weaponDamageAt = (seconds) => damageModel.weaponDamageAt(seconds);
   const teamfightDamage = damageAt(10);
   const metrics = {
     valid: true,
     metrics: {
-      sustainedWeaponDps: weapon.sustained_cycle_dps,
+      sustainedWeaponDps: focus === "weapon" ? weapon.sustained_cycle_dps : focus === "spirit" ? spirit.sustainedDps : damageAt(60) / 60,
       laneTradeWindowDps: damageAt(10) / 10,
       farmWindowDps: damageAt(10) / 10,
       skirmishWindowDps: damageAt(4) / 4,
       teamfightWindowDps: teamfightDamage / 10,
-      bulletEhp: (health + regen * 10 + teamfightDamage * (bulletLifestealPercent / 100)) / bulletMultiplier,
+      bulletEhp: (health + regen * 10 + weaponDamageAt(10) * (bulletLifestealPercent / 100)) / bulletMultiplier,
       spiritEhp: (health + regen * 10) / spiritMultiplier
     }
   };
