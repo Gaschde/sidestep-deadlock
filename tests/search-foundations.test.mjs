@@ -258,6 +258,35 @@ test("Schnelle Warden-Suche übergibt nicht kaufbare Charge-Items nicht an die D
   assert.ok(!result.state.inventory.includes("upgrade_rechargingbullets"));
 });
 
+test("Lokale Gegenprobe behält einen besseren realen Komponentenpfad bis zum Upgrade", () => {
+  const data = canonicalWardenData();
+  // Real item data, deliberately one slot: a component competes with an
+  // early defensive purchase and makes sell/replacement actions legal.
+  data.slots = { ...data.slots, starting_slots: { ...data.slots.starting_slots, universal: 1 } };
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health", "upgrade_clip_size", "upgrade_titan_round"];
+  const budget = 1600, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const oracle = createDeadlockDomain({ data, itemIds, budget, soulAxis: axis, slotUnlocks,
+    metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics }).enumerate()
+    .states.filter((entry) => entry.state.earnedSouls === budget);
+  const exact = Math.max(...oracle.map((entry) => scoreAnytimePath(entry.state.snapshots, reference, budget).score));
+  const before = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1, localRefinement: false });
+  const after = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1 });
+
+  assert.ok(exact > before.quality.score, "der frühere Suchlauf verpasst den Komponentenpfad");
+  assert.ok(Math.abs(after.quality.score - exact) < 1e-12);
+  assert.deepEqual(after.state.events.filter((event) => event.type !== "save").map((event) => [event.type, event.item, event.from || null]), [
+    ["purchase", "upgrade_clip_size", null],
+    ["upgrade", "upgrade_titan_round", "upgrade_clip_size"]
+  ]);
+  assert.equal(after.validation.valid, true);
+  assert.ok(after.searchTelemetry.localImprovements > 0);
+});
+
 test("Direct reference matches every maximum of complete small transition graphs", () => {
   for (const slots of [0, 1, 2]) for (const rate of [0, 0.5]) for (const unlock of [false, true]) {
     const data = fixture();

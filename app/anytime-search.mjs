@@ -54,7 +54,8 @@ export function scoreAnytimePath(points, reference, budget) {
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
 // Deadline is an explicit approximation budget, not an optimality certificate.
 export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_id), budget = 60000,
-  timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [] }) {
+  timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
+  localRefinement = true }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
   const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, "warden"));
@@ -119,12 +120,13 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     let best = null;
     for (const edge of edges) {
       let projected = node;
-      while (projected.state.earnedSouls < budget) {
+      while (performance.now() < deadline) {
         const upgrade = domain.transitions(projected.state).find((state) => state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
         if (upgrade) {
           best = Math.max(best ?? -Infinity, rank({ state: clean(upgrade), event: upgrade.events[0], parent: projected }));
           break;
         }
+        if (projected.state.earnedSouls === budget) break;
         const save = domain.transitions(projected.state).find((state) => state.events[0]?.type === "save");
         if (!save) break;
         projected = { state: clean(save), event: save.events[0], parent: projected };
@@ -157,7 +159,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   // This explicitly covers alternate items, order, components and replacements
   // without treating a single random rollout as evidence of improvement.
   const refineCurrentWinner = () => {
-    if (localRefinementRan || !winningNode || performance.now() >= deadline) return;
+    if (!localRefinement || localRefinementRan || !winningNode || performance.now() >= deadline) return;
     localRefinementRan = true;
     localBaselineScore = winner.quality.score;
     const baseline = [];
@@ -189,13 +191,42 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
         if ((winner?.quality.score ?? -Infinity) > before) localImprovements++;
       }
     };
+    const completePlannedUpgrades = (start) => {
+      if (start.event?.type !== "purchase") return;
+      for (const edge of domain.supportedUpgradesByFrom.get(start.event.item) || []) {
+        let planned = start;
+        while (performance.now() < deadline) {
+          const upgrade = domain.transitions(planned.state).find((state) =>
+            state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
+          if (upgrade) {
+            localAlternativesTried++;
+            completeGreedily({ state: clean(upgrade), event: upgrade.events[0], parent: planned });
+            break;
+          }
+          if (planned.state.earnedSouls === budget) break;
+          const save = domain.transitions(planned.state).find((state) => state.events[0]?.type === "save");
+          if (!save) break;
+          planned = { state: clean(save), event: save.events[0], parent: planned };
+        }
+      }
+    };
     for (let index = 0; index + 1 < baseline.length && performance.now() < deadline; index++) {
       const prefix = baseline[index];
+      // The baseline itself may already hold a component whose greedy suffix
+      // sold or replaced it. Preserve that component's concrete upgrade path
+      // as an independently completed alternative as well.
+      completePlannedUpgrades(prefix);
       const originalNext = baseline[index + 1].event;
       for (const state of domain.transitions(prefix.state)) {
         if (eventKey(state.events[0]) === eventKey(originalNext)) continue;
         localAlternativesTried++;
-        completeGreedily({ state: clean(state), event: state.events[0], parent: prefix });
+        const alternative = { state: clean(state), event: state.events[0], parent: prefix };
+        completeGreedily(alternative);
+        // A projected upgrade must also be completed as a real candidate. A
+        // greedy suffix alone may abandon the component before its upgrade is
+        // affordable, even though the full component path has the better
+        // 70/30 trajectory score.
+        completePlannedUpgrades(alternative);
         if (performance.now() >= deadline) break;
       }
     }
@@ -285,7 +316,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     rollouts++;
     // The first non-seed rollout establishes the baseline purchase path before
     // variants are compared. Later rollouts retain the existing exploration.
-    if (rollouts === 1) refineCurrentWinner();
+    if (rollouts === 1 && localRefinement) refineCurrentWinner();
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
