@@ -201,7 +201,7 @@ export function assessWeaponCarryItem(item, data, request) {
   if (item.is_public_shop_item !== "true") return { eligible: false, reason: "NOT_PUBLIC_SHOP_ITEM" };
   if (request.activeItemPreference === "none" && isActive(item)) return { eligible: false, reason: "ACTIVE_ITEMS_DISABLED" };
   const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
-  if (itemRequiresChargedAbility(item, data) && !heroProfile.hasChargedAbility) {
+  if (!heroCanPurchaseItem(item, data, request.heroId)) {
     return { eligible: false, reason: "HERO_HAS_NO_CHARGED_ABILITY" };
   }
   const capabilityProfile = evaluateItemCapabilities(item, data, heroProfile);
@@ -217,7 +217,7 @@ export function assessWeaponCarryItem(item, data, request) {
     : { eligible: false, reason: "NO_VERIFIED_CARRY_CONTRIBUTION" };
 }
 
-function itemRequiresChargedAbility(item, data) {
+export function itemRequiresChargedAbility(item, data) {
   return (data.mechanicsByItem.get(item.item_id) || []).some((effect) =>
     /charged abilities/i.test(effect.condition || "") ||
     ["bonus_ability_charges", "cooldown_between_charge_reduction"].includes(effect.mechanic)
@@ -275,6 +275,13 @@ function availabilitySummary(profile) {
     treatment: "Werte bleiben nach Verfügbarkeit getrennt; ohne Trigger- und Uptime-Annahme werden sie nicht summiert.",
     origin: "game_data"
   };
+}
+
+// In-game purchase legality: charge-only items are unavailable to heroes
+// without an ability that uses charges. This is distinct from merely giving a
+// zero score to an otherwise purchasable conditional effect.
+export function heroCanPurchaseItem(item, data, heroId) {
+  return !itemRequiresChargedAbility(item, data) || buildHeroCapabilityProfile(heroId, data).hasChargedAbility;
 }
 
 export function evaluateWeaponMechanics(state, request, data) {

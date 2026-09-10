@@ -282,9 +282,12 @@ function startFastBuild() {
           upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls }));
       const inventory = result.state.inventory.map((id) => itemMap.get(id));
       const evaluation = evaluateWardenCarryPerformance(result.state, { heroId: "warden", budget: 60000 }, state.data);
+      const unavailableChargeItems = result.unavailableItemIds
+        .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
+        .join(", ");
       state.build = { events, inventory, spent: result.state.earnedSouls, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: "Legaler Kaufpfad von 0 bis 60.000 verdienten Souls. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum." } };
+          scope: `Legaler Kaufpfad von 0 bis 60.000 verdienten Souls. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Für Warden nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
       $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
       $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();

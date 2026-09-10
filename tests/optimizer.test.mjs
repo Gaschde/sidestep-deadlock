@@ -7,6 +7,7 @@ import {
   applyUpgrade,
   assessWeaponItem,
   assessWeaponCarryItem,
+  heroCanPurchaseItem,
   buildOptimizerData,
   buildPathTrajectory,
   createInitialBuildState,
@@ -493,6 +494,9 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.equal(result.winner.evaluation.heroProfile.reviewStatus, "reviewed_first_slice");
   assert.equal(buildHeroCapabilityProfile("warden", data).hasSpiritWeaponScaling, true);
   assert.equal(buildHeroCapabilityProfile("warden", data).hasChargedAbility, false);
+  for (const itemId of ["upgrade_extra_charge", "upgrade_rapid_recharge", "upgrade_rechargingbullets"]) {
+    assert.equal(heroCanPurchaseItem(data.itemsById.get(itemId), data, "warden"), false, itemId);
+  }
   assert.equal(buildHeroCapabilityProfile("warden", data).weaponGeometry.projectileSpeed, 290);
   assert.ok(buildHeroCapabilityProfile("warden", data).kitCoverage.control.some((entry) => entry.ability_id === "warden_binding_word"));
   assert.ok(result.winner.evaluation.capabilities.coverageCount >= 3);

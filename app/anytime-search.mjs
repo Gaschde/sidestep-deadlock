@@ -1,6 +1,7 @@
 import { createDeadlockDomain } from "./deadlock-domain.mjs";
 import { evaluateWardenCarryPerformance, WARDEN_METRICS, wardenResourceAxis } from "./warden-search.mjs";
 import { validateSearchPath } from "./validate-search-path.mjs";
+import { heroCanPurchaseItem } from "./optimizer.mjs";
 
 export const ANYTIME_METRIC_GROUPS = {
   damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
@@ -56,8 +57,10 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [] }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
-  const resource = wardenResourceAxis(data, itemIds, budget);
-  const domain = createDeadlockDomain({ data, itemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
+  const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, "warden"));
+  const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
+  const resource = wardenResourceAxis(data, legalItemIds, budget);
+  const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
   const clean = (s) => ({ ...s, events: [], snapshots: [] });
   const cache = new Map();
   let evaluations = 0;
@@ -138,9 +141,10 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     completedPaths++;
     if (winner && quality.score <= winner.quality.score) return;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
-    const validation = validateSearchPath({ data, itemIds, budget, soulAxis: resource.axis, slotUnlocks, state });
+    const validation = validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state });
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
+      unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1 }, approximate: true };
     winningNode = node;
     publishedImprovements++;

@@ -247,6 +247,14 @@ test("Endinventar-Seed berücksichtigt Komponenten und erhält ihren früheren N
   ]);
 });
 
+test("Schnelle Warden-Suche übergibt nicht kaufbare Charge-Items nicht an die Domäne", () => {
+  const result = runAnytimeWarden({ data: canonicalWardenData(), itemIds: ["upgrade_rapid_rounds", "upgrade_rechargingbullets"],
+    budget: 800, timeMs: 1000, maxRollouts: 2, slotUnlocks: [{ earnedSouls: 0, slots: 3 }] });
+  assert.ok(result.validation.valid);
+  assert.deepEqual(result.unavailableItemIds, ["upgrade_rechargingbullets"]);
+  assert.ok(!result.state.inventory.includes("upgrade_rechargingbullets"));
+});
+
 test("Direct reference matches every maximum of complete small transition graphs", () => {
   for (const slots of [0, 1, 2]) for (const rate of [0, 0.5]) for (const unlock of [false, true]) {
     const data = fixture();
