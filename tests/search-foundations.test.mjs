@@ -211,6 +211,22 @@ function canonicalWardenData() {
   });
 }
 
+test("Kompakte Suchmetriken entsprechen dem vollständigen Warden-Szenarioprofil", () => {
+  const data = canonicalWardenData();
+  const request = { heroId: "warden", budget: 60000 };
+  for (const inventory of [
+    ["upgrade_rapid_rounds"],
+    ["upgrade_health", "upgrade_titan_round", "upgrade_bullet_lifesteal"],
+    ["upgrade_titan_round", "upgrade_weighted_shots", "upgrade_improved_bullet_armor", "upgrade_soaring_spirit"]
+  ]) {
+    const full = evaluateWardenCarryPerformance({ inventory }, request, data);
+    const compact = evaluateWardenCarryPerformance({ inventory }, { ...request, metricsOnly: true }, data);
+    assert.equal(full.valid, true);
+    assert.equal(compact.valid, true);
+    assert.deepEqual(compact.metrics, full.metrics);
+  }
+});
+
 test("Anytime output is legal, improves monotonically and compares with an exact small oracle", () => {
   const data = canonicalWardenData();
   const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];

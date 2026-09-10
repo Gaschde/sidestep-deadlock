@@ -2,7 +2,7 @@ import { directReference } from "./direct-reference.mjs";
 import { cachedReference } from "./reference-cache.mjs";
 import { createDeadlockDomain } from "./deadlock-domain.mjs";
 import { paretoFilter } from "./reference-search.mjs";
-import { evaluateCarryScenarios } from "./optimizer.mjs";
+import { evaluateCarryScenarios, evaluateCarrySearchMetrics } from "./optimizer.mjs";
 import { calculateTrajectoryObjectives } from "./trajectory-objectives.mjs";
 
 // This bridge deliberately only exposes an already supported, source-backed
@@ -24,6 +24,7 @@ export const WARDEN_METRICS = [
 ];
 
 export function evaluateWardenCarryPerformance(state, request, data) {
+  if (request.metricsOnly === true) return evaluateCarrySearchMetrics(toOptimizerState(state, data), request, data);
   const scenarios = evaluateCarryScenarios(toOptimizerState(state, data), request, data);
   if (!scenarios.valid) return { valid: false, reason: scenarios.reason || "ungültige Warden-Bewertung", scenarios };
   const byId = new Map(scenarios.scenarios.map((scenario) => [scenario.id, scenario]));

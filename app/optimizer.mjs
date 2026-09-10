@@ -514,6 +514,56 @@ export function evaluateCarryScenarios(state, request, data) {
   return profile;
 }
 
+// Search ranking needs only the seven numeric metrics.  Keeping this separate
+// from the audit-rich scenario profile avoids recreating sources, plans and
+// interaction display rows for every transient inventory the search visits.
+export function evaluateCarrySearchMetrics(state, request, data) {
+  const weapon = evaluateWeaponMechanics(state, request, data);
+  const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
+  const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
+  if (!weapon.valid || baseHealth === null) return { valid: false, reason: "HERO_COMBAT_STAT_MISSING" };
+  const thresholds = thresholdSnapshot(state.inventory, data.economy);
+  const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
+  let bonusHealth = 0, bulletLifestealPercent = 0, regen = baseRegen || 0;
+  for (const item of state.inventory) {
+    const profile = evaluateItemCapabilities(item, data, heroProfile);
+    bonusHealth += profile.permanent.bonusHealth;
+    bulletLifestealPercent += profile.sustainByAvailability.permanent.combatHealing.bulletLifestealPercent;
+    regen += profile.sustainByAvailability.permanent.regeneration.alwaysHealthPerSecond;
+  }
+  const resistance = (mechanics) => {
+    let multiplier = 1;
+    for (const item of state.inventory) for (const effect of data.mechanicsByItem.get(item.item_id) || []) {
+      if (mechanics.has(effect.mechanic) && itemEffectAvailability(item, effect) === "permanent" && effect.confidence !== "low") {
+        multiplier *= 1 - number(effect.value) / 100;
+      }
+    }
+    return multiplier;
+  };
+  const bulletMultiplier = resistance(new Set(["bullet_resist"]));
+  const spiritMultiplier = resistance(new Set(["spirit_resist", "tech_resist"]));
+  if (bulletMultiplier <= 0 || spiritMultiplier <= 0) return { valid: false, reason: "UNBOUNDED_SURVIVAL_CAPACITY" };
+  const health = (baseHealth + bonusHealth) * (1 + thresholds.bonuses.vitalityHealthPercent / 100);
+  const damageAt = (seconds) => weapon.weaponDamageAt(seconds);
+  const teamfightDamage = damageAt(10);
+  const metrics = {
+    valid: true,
+    metrics: {
+      sustainedWeaponDps: weapon.sustained_cycle_dps,
+      laneTradeWindowDps: damageAt(10) / 10,
+      farmWindowDps: damageAt(10) / 10,
+      skirmishWindowDps: damageAt(4) / 4,
+      teamfightWindowDps: teamfightDamage / 10,
+      bulletEhp: (health + regen * 10 + teamfightDamage * (bulletLifestealPercent / 100)) / bulletMultiplier,
+      spiritEhp: (health + regen * 10) / spiritMultiplier
+    }
+  };
+  if (Object.values(metrics.metrics).some((value) => !Number.isFinite(value) || value < 0)) {
+    return { valid: false, reason: "INVALID_SEARCH_METRICS" };
+  }
+  return metrics;
+}
+
 function permanentSpiritPower(state, data) {
   let total = 0;
   for (const item of state.inventory) {

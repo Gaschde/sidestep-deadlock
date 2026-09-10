@@ -13,7 +13,7 @@ if (isMainThread) {
   const started = performance.now();
   let latest = null;
   let peakSampledHeapBytes = 0;
-  const worker = new Worker(new URL(import.meta.url), { workerData: { budget: Number(budget), mode, itemIds } });
+  const worker = new Worker(new URL(import.meta.url), { workerData: { budget: Number(budget), seconds: Number(seconds), mode, itemIds } });
   const timer = setTimeout(async () => {
     await worker.terminate();
     console.log(JSON.stringify({ status: 'INCOMPLETE_WATCHDOG', elapsedMs: performance.now() - started, peakSampledHeapBytes, latest }));
@@ -38,10 +38,12 @@ if (isMainThread) {
   });
   try {
     const run = workerData.mode === 'anytime' ? runAnytimeWarden : workerData.mode.startsWith('reference') ? computeWardenReference : workerData.mode === 'vector' ? runWardenCarryVectorPareto : runWardenCarryPareto;
-    const result = run({ data, budget: workerData.budget, profile: workerData.mode === 'reference-profile',
-      itemIds: workerData.itemIds.length ? workerData.itemIds : data.items.map((i) => i.item_id),
+    const itemIds = workerData.itemIds.length ? workerData.itemIds : data.items.map((i) => i.item_id);
+    const result = run({ data, budget: workerData.budget, profile: workerData.mode === 'reference-profile' || workerData.mode === 'anytime', itemIds,
+      timeMs: workerData.mode === 'anytime' ? Math.min(25000, workerData.seconds * 1000) : undefined,
+      slotUnlocks: workerData.mode === 'anytime' ? [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }] : undefined,
       onResult: (result) => parentPort.postMessage({ status: "BUILD", quality: result.quality, telemetry: result.telemetry, inventory: result.state.inventory, validation: result.validation }),
       onProgress: (progress) => parentPort.postMessage(progress) });
-    parentPort.postMessage({ status: 'COMPLETE', paretoCount: result.pareto?.length, referencePoints: result.byMetric?.sustainedWeaponDps?.length, telemetry: result.telemetry });
+    parentPort.postMessage({ status: 'COMPLETE', paretoCount: result.pareto?.length, referencePoints: result.byMetric?.sustainedWeaponDps?.length, telemetry: result.searchTelemetry || result.telemetry });
   } catch (error) { parentPort.postMessage({ status: 'ERROR', message: error.stack }); }
 }

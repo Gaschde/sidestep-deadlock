@@ -15,21 +15,26 @@ export const ANYTIME_POLICY = { end: 0.7, worst: 0.15, integrated: 0.15,
 export function scoreAnytimePath(points, reference, budget) {
   const byMetric = new Map();
   const committed = new Map(points.map((p) => [p.earnedSouls, p.metrics]));
-  let values = points[0].metrics;
-  for (const m of WARDEN_METRICS) {
-    let w = 0, area = 0;
-    values = points[0].metrics;
-    for (let i = 0; i < reference.axis.length; i++) {
-      const s = reference.axis[i];
-      if (committed.has(s)) values = committed.get(s);
-      const r = reference.values[i][m];
-      const regret = r > 0 ? Math.max(0, 1 - values[m] / r) : 0;
-      w = Math.max(w, regret);
-      if (i + 1 < reference.axis.length) area += (reference.axis[i + 1] - s) * regret;
+  const rows = WARDEN_METRICS.map((metric) => ({ metric, values: points[0].metrics, worst: 0, area: 0 }));
+  // All seven metrics share the same path and Soul axis. Advancing them in
+  // one pass preserves the per-metric arithmetic while avoiding seven full
+  // Map traversals for every ranked successor.
+  for (let index = 0; index < reference.axis.length; index++) {
+    const souls = reference.axis[index];
+    const values = committed.get(souls);
+    if (values) for (const row of rows) row.values = values;
+    const width = index + 1 < reference.axis.length ? reference.axis[index + 1] - souls : 0;
+    for (const row of rows) {
+      const referenceValue = reference.values[index][row.metric];
+      const regret = referenceValue > 0 ? Math.max(0, 1 - row.values[row.metric] / referenceValue) : 0;
+      row.worst = Math.max(row.worst, regret);
+      row.area += width * regret;
     }
-    const scale = reference.values.at(-1)[m];
-    byMetric.set(m, { end: values[m] + scale > 0 ? values[m] / (values[m] + scale) : 0,
-      worst: w, integrated: budget ? area / budget : 0 });
+  }
+  for (const row of rows) {
+    const scale = reference.values.at(-1)[row.metric];
+    byMetric.set(row.metric, { end: row.values[row.metric] + scale > 0 ? row.values[row.metric] / (row.values[row.metric] + scale) : 0,
+      worst: row.worst, integrated: budget ? row.area / budget : 0 });
   }
   const group = (key) => {
     const definition = ANYTIME_METRIC_GROUPS[key];
@@ -55,20 +60,37 @@ export function scoreAnytimePath(points, reference, budget) {
 // Deadline is an explicit approximation budget, not an optimality certificate.
 export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_id), budget = 60000,
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
-  localRefinement = true }) {
+  localRefinement = true, profile = false, compactMetrics = true }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
   const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, "warden"));
   const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
   const resource = wardenResourceAxis(data, legalItemIds, budget);
   const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
+  const profileData = { referencePreparationMs: 0, inventoryEvaluationMs: 0, actionGenerationMs: 0, scoringMs: 0,
+    upgradeCounterprobeMs: 0, pathContinuationMs: 0, outputValidationMs: 0,
+    variants: { seedsStarted: 0, seedsCompleted: 0, seedsInterrupted: 0, rolloutsStarted: 0, rolloutsCompleted: 0,
+      rolloutsInterrupted: 0, localStarted: 0, localCompleted: 0, localInterrupted: 0 } };
+  const accounted = () => profileData.referencePreparationMs + profileData.inventoryEvaluationMs + profileData.actionGenerationMs +
+    profileData.scoringMs + profileData.upgradeCounterprobeMs + profileData.pathContinuationMs + profileData.outputValidationMs;
+  const timed = (key, work) => {
+    if (!profile) return work();
+    const began = performance.now();
+    try { return work(); } finally { profileData[key] += performance.now() - began; }
+  };
+  const exclusive = (key, work) => {
+    if (!profile) return work();
+    const began = performance.now(), before = accounted();
+    try { return work(); } finally { profileData[key] += Math.max(0, performance.now() - began - (accounted() - before)); }
+  };
+  const transitions = (state) => timed("actionGenerationMs", () => domain.transitions(state));
   const clean = (s) => ({ ...s, events: [], snapshots: [] });
   const cache = new Map();
   let evaluations = 0;
   const metrics = (s) => {
     const key = [...s.inventory].sort().join("|");
     if (!cache.has(key)) {
-      const result = evaluateWardenCarryPerformance(s, { heroId: "warden", budget, cacheProfiles: false }, data);
+      const result = timed("inventoryEvaluationMs", () => evaluateWardenCarryPerformance(s, { heroId: "warden", budget, cacheProfiles: false, metricsOnly: compactMetrics }, data));
       if (!result.valid) throw new Error(result.reason);
       cache.set(key, result.metrics); evaluations++;
     }
@@ -78,13 +100,14 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   const seedInventories = [];
   const reference = suppliedReference || { axis: resource.axis, values: resource.axis.map(() => ({ ...baseline })) };
   if (!suppliedReference) {
+    exclusive("referencePreparationMs", () => {
     const until = Math.min(deadline, started + referenceTimeMs);
     // Sampling does not remove candidates from the actual trajectory search.
     for (const m of WARDEN_METRICS) {
       let state = { ...initial, cash: budget, earnedSouls: budget };
       while (performance.now() < until) {
         let best;
-        for (const next of domain.transitions(state)) {
+        for (const next of transitions(state)) {
           if (next.events[0]?.type !== "purchase") continue;
           const values = metrics(next);
           const cost = budget - next.cash;
@@ -98,43 +121,105 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       }
       if (state.inventory.length) seedInventories.push(state.inventory);
     }
+    });
   }
   if (JSON.stringify(reference.axis) !== JSON.stringify(resource.axis)) throw new Error("Reference axis mismatch");
   let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
   let localRefinementRan = false, localAlternativesTried = 0, localImprovements = 0, localBaselineScore = null;
+  const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
+  const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap(), trajectoryCache = new WeakMap();
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
   const buildPoints = (node) => {
+    if (pointsCache.has(node)) return pointsCache.get(node);
     const chain = [];
     for (let n = node; n; n = n.parent) chain.push(n);
-    return chain.reverse().map((n) => ({ earnedSouls: n.state.earnedSouls, metrics: metrics(n.state) }));
+    const points = chain.reverse().map((n) => ({ earnedSouls: n.state.earnedSouls, metrics: metrics(n.state) }));
+    pointsCache.set(node, points);
+    return points;
   };
-  const rank = (node) => scoreAnytimePath([...buildPoints(node), { earnedSouls: budget, metrics: metrics(node.state) }], reference, budget).score;
+  const trajectory = (node) => {
+    if (trajectoryCache.has(node)) return trajectoryCache.get(node);
+    const values = metrics(node.state);
+    const index = referenceIndex.get(node.state.earnedSouls);
+    if (index === undefined) throw new Error("State außerhalb der eingefrorenen Soul-Achse.");
+    const prior = node.parent ? trajectory(node.parent) : null;
+    const area = prior ? [...prior.area] : Array(WARDEN_METRICS.length).fill(0);
+    const worstBefore = prior ? [...prior.worstBefore] : Array(WARDEN_METRICS.length).fill(0);
+    if (prior && node.state.earnedSouls > prior.souls) {
+      const width = node.state.earnedSouls - prior.souls;
+      for (let metricIndex = 0; metricIndex < WARDEN_METRICS.length; metricIndex++) {
+        area[metricIndex] += width * prior.currentRegret[metricIndex];
+        worstBefore[metricIndex] = Math.max(worstBefore[metricIndex], prior.currentRegret[metricIndex]);
+      }
+    }
+    const currentRegret = WARDEN_METRICS.map((metric) => {
+      const referenceValue = reference.values[index][metric];
+      return referenceValue > 0 ? Math.max(0, 1 - values[metric] / referenceValue) : 0;
+    });
+    const result = { souls: node.state.earnedSouls, values, area, worstBefore, currentRegret };
+    trajectoryCache.set(node, result);
+    return result;
+  };
+  const projectedQuality = (node) => {
+    const state = trajectory(node);
+    const byMetric = new Map();
+    for (let metricIndex = 0; metricIndex < WARDEN_METRICS.length; metricIndex++) {
+      const metric = WARDEN_METRICS[metricIndex];
+      const scale = reference.values.at(-1)[metric];
+      const end = state.values[metric] + scale > 0 ? state.values[metric] / (state.values[metric] + scale) : 0;
+      const worst = Math.max(state.worstBefore[metricIndex], state.currentRegret[metricIndex]);
+      const integrated = budget ? (state.area[metricIndex] + (budget - state.souls) * state.currentRegret[metricIndex]) / budget : 0;
+      byMetric.set(metric, { end, worst, integrated });
+    }
+    const group = (key) => {
+      const rows = ANYTIME_METRIC_GROUPS[key].metrics.map((metric) => byMetric.get(metric));
+      return Object.fromEntries(["end", "worst", "integrated"].map((field) => [field, rows.reduce((sum, row) => sum + row[field], 0) / rows.length]));
+    };
+    const damage = group("damage"), survival = group("survival");
+    const weighted = (field) => ANYTIME_METRIC_GROUPS.damage.weight * damage[field] + ANYTIME_METRIC_GROUPS.survival.weight * survival[field];
+    const endUtility = weighted("end"), worstRegret = weighted("worst"), integratedRegret = weighted("integrated");
+    return { score: 0.7 * endUtility + 0.15 * (1 - worstRegret) + 0.15 * (1 - integratedRegret), endUtility, worstRegret, integratedRegret,
+      metricGroups: { damage, survival } };
+  };
+  const rank = (node) => {
+    if (rankCache.has(node)) return rankCache.get(node);
+    const value = timed("scoringMs", () => projectedQuality(node).score);
+    rankCache.set(node, value);
+    return value;
+  };
   // A component can be weaker than a direct end item at the instant it is
   // bought, although both cost the same once its legal upgrade completes.
   // Look one supported upgrade ahead, preserving every save and component
   // snapshot in the trajectory. This is a ranking aid only: all normal shop
   // transitions, including sales and replacements, remain available.
   const upgradeContinuationRank = (node) => {
+    return exclusive("upgradeCounterprobeMs", () => {
     if (node.event?.type !== "purchase") return null;
     const edges = domain.supportedUpgradesByFrom.get(node.event.item) || [];
     let best = null;
     for (const edge of edges) {
       let projected = node;
       while (performance.now() < deadline) {
-        const upgrade = domain.transitions(projected.state).find((state) => state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
+        const upgrade = transitions(projected.state).find((state) => state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
         if (upgrade) {
           best = Math.max(best ?? -Infinity, rank({ state: clean(upgrade), event: upgrade.events[0], parent: projected }));
           break;
         }
         if (projected.state.earnedSouls === budget) break;
-        const save = domain.transitions(projected.state).find((state) => state.events[0]?.type === "save");
+        const save = transitions(projected.state).find((state) => state.events[0]?.type === "save");
         if (!save) break;
         projected = { state: clean(save), event: save.events[0], parent: projected };
       }
     }
     return best;
+    });
   };
-  const preferenceFor = (node) => Math.max(rank(node), upgradeContinuationRank(node) ?? -Infinity);
+  const preferenceFor = (node) => {
+    if (preferenceCache.has(node)) return preferenceCache.get(node);
+    const value = Math.max(rank(node), upgradeContinuationRank(node) ?? -Infinity);
+    preferenceCache.set(node, value);
+    return value;
+  };
   const publish = (node) => {
     const chain = [];
     for (let n = node; n.parent; n = n.parent) chain.push(n);
@@ -144,12 +229,12 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     completedPaths++;
     if (winner && quality.score <= winner.quality.score) return;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
-    const validation = validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state });
+    const validation = timed("outputValidationMs", () => validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state }));
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
-        localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore }, approximate: true };
+        localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore, profile: profile ? profileData : undefined }, approximate: true };
     winningNode = node;
     publishedImprovements++;
     onResult?.(winner);
@@ -166,10 +251,11 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     for (let node = winningNode; node; node = node.parent) baseline.push(node);
     baseline.reverse();
     const eventKey = (event) => JSON.stringify(event);
-    const completeGreedily = (start) => {
+    const completeGreedily = (start) => exclusive("pathContinuationMs", () => {
+      if (profile) profileData.variants.localStarted++;
       let node = start;
       while (node.state.earnedSouls < budget && performance.now() < deadline) {
-        const successors = domain.transitions(node.state);
+        const successors = transitions(node.state);
         const currentScore = rank(node);
         let best = null, bestScore = -Infinity;
         for (const state of successors) {
@@ -189,14 +275,17 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
         const before = winner?.quality.score ?? -Infinity;
         publish(node);
         if ((winner?.quality.score ?? -Infinity) > before) localImprovements++;
+        if (profile) profileData.variants.localCompleted++;
+      } else if (profile) {
+        profileData.variants.localInterrupted++;
       }
-    };
+    });
     const completePlannedUpgrades = (start) => {
       if (start.event?.type !== "purchase") return;
       for (const edge of domain.supportedUpgradesByFrom.get(start.event.item) || []) {
         let planned = start;
         while (performance.now() < deadline) {
-          const upgrade = domain.transitions(planned.state).find((state) =>
+          const upgrade = transitions(planned.state).find((state) =>
             state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
           if (upgrade) {
             localAlternativesTried++;
@@ -204,7 +293,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
             break;
           }
           if (planned.state.earnedSouls === budget) break;
-          const save = domain.transitions(planned.state).find((state) => state.events[0]?.type === "save");
+          const save = transitions(planned.state).find((state) => state.events[0]?.type === "save");
           if (!save) break;
           planned = { state: clean(save), event: save.events[0], parent: planned };
         }
@@ -217,7 +306,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       // as an independently completed alternative as well.
       completePlannedUpgrades(prefix);
       const originalNext = baseline[index + 1].event;
-      for (const state of domain.transitions(prefix.state)) {
+      for (const state of transitions(prefix.state)) {
         if (eventKey(state.events[0]) === eventKey(originalNext)) continue;
         localAlternativesTried++;
         const alternative = { state: clean(state), event: state.events[0], parent: prefix };
@@ -234,6 +323,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   // End-oriented seeds complement the greedy rollout's early-spending bias.
   // They restrict only their own construction, never the subsequent action set.
   for (const target of seedInventories) {
+    if (profile) profileData.variants.seedsStarted++;
     const targetOrComponentIds = new Set(target);
     for (let changed = true; changed;) {
       changed = false;
@@ -246,7 +336,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     }
     let node = { state: initial, parent: null };
     while (performance.now() < deadline) {
-      const successors = domain.transitions(node.state);
+      const successors = transitions(node.state);
       let best = null, value = -Infinity;
       for (const s of successors) {
         const event = s.events[0];
@@ -266,9 +356,13 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     }
     if (node.state.earnedSouls === budget) {
       publish(node);
+      if (profile) profileData.variants.seedsCompleted++;
+    } else if (profile) {
+      profileData.variants.seedsInterrupted++;
     }
   }
   while (performance.now() < deadline && rollouts < maxRollouts) {
+    if (profile) profileData.variants.rolloutsStarted++;
     let node = { state: initial, parent: null };
     if (winningNode && rollouts) {
       const prefixes = [];
@@ -276,7 +370,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       node = prefixes[Math.floor(random() * prefixes.length)] || node;
     }
     while (true) {
-      const successors = domain.transitions(node.state);
+      const successors = transitions(node.state);
       let best = null, bestScore = -Infinity;
       const currentScore = rank(node);
       for (const state of successors) {
@@ -295,6 +389,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       }
       if (node.state.earnedSouls === budget) {
         publish(node);
+        if (profile) profileData.variants.rolloutsCompleted++;
         if (!best || bestScore <= currentScore || performance.now() >= deadline) break;
       }
       if (!best) break;
@@ -307,12 +402,13 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       if (performance.now() >= deadline) {
         // Finish the candidate by legally holding its inventory to the horizon.
         while (node.state.earnedSouls < budget) {
-          const save = domain.transitions(node.state).find((s) => s.events[0]?.type === "save");
+          const save = transitions(node.state).find((s) => s.events[0]?.type === "save");
           node = { state: clean(save), event: save.events[0], parent: node };
         }
         publish(node); break;
       }
     }
+    if (profile && node.state.earnedSouls !== budget) profileData.variants.rolloutsInterrupted++;
     rollouts++;
     // The first non-seed rollout establishes the baseline purchase path before
     // variants are compared. Later rollouts retain the existing exploration.
@@ -320,5 +416,5 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
-    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore } } : null;
+    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore, profile: profile ? profileData : undefined } } : null;
 }
