@@ -7,13 +7,21 @@ import { paretoFilter } from "../app/reference-search.mjs";
 import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto, evaluateWardenWeaponPerformance, evaluateWardenCarryPerformance, computeWardenReference } from "../app/warden-search.mjs";
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
-import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY } from "../app/anytime-search.mjs";
+import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS } from "../app/anytime-search.mjs";
 import { buildOptimizerData } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
 
 const point = (earnedSouls, power, kind = "transaction") => ({ earnedSouls, kind, metrics: { power } });
 const objectives = (points, references, horizon, extra = {}) => calculateTrajectoryObjectives({ points, references, horizon, metric: "power", ...extra });
+
+test("Anytime-Normalisierung hält Schaden und Überleben als gleich gewichtete Gruppen getrennt", () => {
+  assert.equal(ANYTIME_METRIC_GROUPS.damage.weight, 0.5);
+  assert.equal(ANYTIME_METRIC_GROUPS.survival.weight, 0.5);
+  assert.equal(ANYTIME_METRIC_GROUPS.damage.metrics.length, 5);
+  assert.equal(ANYTIME_METRIC_GROUPS.survival.metrics.length, 2);
+  assert.equal(ANYTIME_POLICY.end + ANYTIME_POLICY.worst + ANYTIME_POLICY.integrated, 1);
+});
 
 function fixture() {
   const items = [

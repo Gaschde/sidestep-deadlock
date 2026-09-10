@@ -2,12 +2,17 @@ import { createDeadlockDomain } from "./deadlock-domain.mjs";
 import { evaluateWardenCarryPerformance, WARDEN_METRICS, wardenResourceAxis } from "./warden-search.mjs";
 import { validateSearchPath } from "./validate-search-path.mjs";
 
+export const ANYTIME_METRIC_GROUPS = {
+  damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
+  survival: { metrics: ["bulletEhp", "spiritEhp"], weight: 0.5 }
+};
+
 export const ANYTIME_POLICY = { end: 0.7, worst: 0.15, integrated: 0.15,
-  metricWeights: "Alle sieben Kennzahlen gleich gewichtet", endNormalization: "x / (x + Referenz am Horizont)",
+  metricWeights: "Damage-Gruppe und Überlebens-Gruppe je 50%; innerhalb der Gruppe gleich gewichtet", endNormalization: "x / (x + Referenz am Horizont)",
   reference: "Eingefrorene erreichbare Stichprobenreferenz; keine exakten Regret-Werte" };
 
 export function scoreAnytimePath(points, reference, budget) {
-  let end = 0, worst = 0, integrated = 0;
+  const byMetric = new Map();
   const committed = new Map(points.map((p) => [p.earnedSouls, p.metrics]));
   let values = points[0].metrics;
   for (const m of WARDEN_METRICS) {
@@ -22,12 +27,27 @@ export function scoreAnytimePath(points, reference, budget) {
       if (i + 1 < reference.axis.length) area += (reference.axis[i + 1] - s) * regret;
     }
     const scale = reference.values.at(-1)[m];
-    end += values[m] + scale > 0 ? values[m] / (values[m] + scale) : 0;
-    worst += w; integrated += budget ? area / budget : 0;
+    byMetric.set(m, { end: values[m] + scale > 0 ? values[m] / (values[m] + scale) : 0,
+      worst: w, integrated: budget ? area / budget : 0 });
   }
-  const n = WARDEN_METRICS.length;
-  return { score: (0.7 * end + 0.15 * (n - worst) + 0.15 * (n - integrated)) / n,
-    endUtility: end / n, worstRegret: worst / n, integratedRegret: integrated / n };
+  const group = (key) => {
+    const definition = ANYTIME_METRIC_GROUPS[key];
+    const rows = definition.metrics.map((m) => byMetric.get(m));
+    return {
+      end: rows.reduce((sum, row) => sum + row.end, 0) / rows.length,
+      worst: rows.reduce((sum, row) => sum + row.worst, 0) / rows.length,
+      integrated: rows.reduce((sum, row) => sum + row.integrated, 0) / rows.length
+    };
+  };
+  const damage = group("damage");
+  const survival = group("survival");
+  const weighted = (field) => ANYTIME_METRIC_GROUPS.damage.weight * damage[field] + ANYTIME_METRIC_GROUPS.survival.weight * survival[field];
+  const endUtility = weighted("end");
+  const worstRegret = weighted("worst");
+  const integratedRegret = weighted("integrated");
+  return { score: 0.7 * endUtility + 0.15 * (1 - worstRegret) + 0.15 * (1 - integratedRegret),
+    endUtility, worstRegret, integratedRegret,
+    metricGroups: { damage, survival } };
 }
 
 // Repeated legal rollouts, first greedy, later with reproducible exploration.

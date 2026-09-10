@@ -33,8 +33,11 @@ export function evaluateWardenCarryPerformance(state, request, data) {
     farmWindowDps: byId.get("farm")?.window_dps,
     skirmishWindowDps: byId.get("skirmish")?.window_dps,
     teamfightWindowDps: byId.get("teamfight")?.window_dps,
-    bulletEhp: scenarios.common.effective_health_bullet,
-    spiritEhp: scenarios.common.effective_health_spirit
+    // The two survival dimensions include only verified, permanent recovery
+    // over the shared 10-second teamfight window. Raw EHP remains exposed in
+    // scenarios.common for audit and is not counted a second time.
+    bulletEhp: byId.get("teamfight")?.survival_capacity_bullet ?? scenarios.common.effective_health_bullet,
+    spiritEhp: byId.get("teamfight")?.survival_capacity_spirit ?? scenarios.common.effective_health_spirit
   };
   if (WARDEN_METRICS.some((metric) => !Number.isFinite(metrics[metric]) || metrics[metric] < 0)) {
     return { valid: false, reason: "Eine Warden-Metrik ist nicht endlich oder negativ.", scenarios };

@@ -386,6 +386,13 @@ export function evaluateCarryScenarios(state, request, data) {
   const effectiveHealth = (resist) => resist >= 100 ? null : health / (1 - resist / 100);
   const bulletResistance = combinedResistance(state, data, new Set(["bullet_resist"]));
   const spiritResistance = combinedResistance(state, data, new Set(["spirit_resist", "tech_resist"]));
+  const permanentBulletLifesteal = capabilities.sustain.combatHealing.bulletLifestealPercent / 100;
+  const permanentRegen = (baseRegen || 0) + capabilities.sustain.regeneration.alwaysHealthPerSecond;
+  const survivalCapacity = (resist, duration, weaponDamage, includeBulletLifesteal) => {
+    const recovery = permanentRegen * duration + (includeBulletLifesteal ? weaponDamage * permanentBulletLifesteal : 0);
+    const rawCapacity = health + recovery;
+    return resist >= 100 ? null : rawCapacity / (1 - resist / 100);
+  };
   const common = {
     sustained_weapon_dps: weapon.sustained_cycle_dps,
     damage_per_bullet: weapon.damage_per_bullet,
@@ -405,12 +412,25 @@ export function evaluateCarryScenarios(state, request, data) {
     sustain_by_availability: availabilitySummary(capabilities.sustainByAvailability),
     mobility_by_availability: availabilitySummary(capabilities.mobilityByAvailability),
     out_of_combat_regen: (baseRegen || 0) + capabilities.sustain.regeneration.outOfCombatHealthPerSecond,
-    permanent_regen: (baseRegen || 0) + capabilities.sustain.regeneration.alwaysHealthPerSecond,
+    permanent_regen: permanentRegen,
+    recovery_model: {
+      short_fight_seconds: 4,
+      long_fight_seconds: 10,
+      bullet_lifesteal_percent: capabilities.sustain.combatHealing.bulletLifestealPercent,
+      ability_lifesteal_percent_excluded: capabilities.sustain.combatHealing.abilityLifestealPercent,
+      on_kill_heal_excluded: capabilities.sustain.combatHealing.onKillHeal,
+      treatment: "Nur permanente Regeneration und permanenter Bullet-Lifesteal werden gegen belegte Weapon-Damage verrechnet; Treffer, Kills und Ability-Schaden werden nicht erfunden."
+    },
     access: { direct: capabilities.directAccess, conditional: capabilities.conditionalAccess },
     mobility: capabilities.mobility,
     weapon_geometry: heroProfile.weaponGeometry,
     kit_coverage: heroProfile.kitCoverage,
     item_kit_synergies: capabilities.synergies,
+    active_effects: capabilities.sources.filter((source) => source.availability === "active")
+      .map((source) => ({ ...source, treatment: "sichtbar, aber ohne angenommene Uptime oder Trefferwirkung" })),
+    hero_active_effects: heroProfile.sources.filter((source) => source.availability !== "permanent")
+      .map((source) => ({ ...source, treatment: "Heldenmechanik belegt; ohne Ability-Level-, Treffer- oder Uptime-Annahme nicht in DPS/EHP eingerechnet" })),
+    item_hero_interactions: capabilities.synergies,
     conditional_effects_excluded: capabilities.sources.filter((source) => source.availability !== "permanent")
       .map((source) => ({ effect_id: source.effect_id, item_id: source.item_id, trigger: source.trigger, cooldown: source.cooldown, duration: source.duration, origin: "game_data" }))
   };
@@ -437,7 +457,15 @@ export function evaluateCarryScenarios(state, request, data) {
     common,
     scenarios: plan.scenarios.map((scenario) => {
       const damage = weapon.weaponDamageAt(scenario.duration_seconds);
-      return { ...scenario, ...common, window_damage: damage, window_dps: damage / scenario.duration_seconds };
+      return {
+        ...scenario,
+        ...common,
+        window_damage: damage,
+        window_dps: damage / scenario.duration_seconds,
+        survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, damage, true),
+        survival_capacity_spirit: survivalCapacity(spiritResistance.percent, scenario.duration_seconds, damage, false),
+        recovery_health: permanentRegen * scenario.duration_seconds + damage * permanentBulletLifesteal
+      };
     })
   };
   cached.set(cacheKey, profile);

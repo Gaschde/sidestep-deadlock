@@ -129,6 +129,12 @@ test("Szenariomodell dokumentiert Annahmen und trennt Reload-DPS von bedingten E
   assert.equal(scenarios.plan.scenarios[0].origin, "model_assumption");
   assert.ok(scenarios.common.sustained_weapon_dps < scenarios.common.damage_per_bullet * scenarios.common.rounds_per_second);
   assert.notEqual(scenarios.scenarios.find((scenario) => scenario.id === "skirmish").window_dps, scenarios.scenarios.find((scenario) => scenario.id === "teamfight").window_dps);
+  const teamfight = scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
+  assert.ok(Number.isFinite(teamfight.survival_capacity_bullet));
+  assert.ok(Number.isFinite(teamfight.survival_capacity_spirit));
+  assert.equal(scenarios.common.recovery_model.short_fight_seconds, 4);
+  assert.equal(scenarios.common.recovery_model.long_fight_seconds, 10);
+  assert.equal(scenarios.common.recovery_model.ability_lifesteal_percent_excluded, 0);
   assert.ok(createCarryScenarioPlan().planning_budgets.some((entry) => entry.souls === 40000));
 });
 
@@ -462,6 +468,8 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.ok(Number.isFinite(result.winner.evaluation.combatCheckpoints[0].finalDps));
   assert.equal(result.winner.evaluation.scenarios.valid, true);
   assert.equal(result.winner.evaluation.scenarios.plan.conditional_effect_policy.value, "excluded_from_baseline");
+  assert.ok(result.winner.evaluation.scenarios.common.hero_active_effects.some((effect) => effect.ability_id === "warden_binding_word"));
+  assert.ok(result.winner.evaluation.scenarios.common.recovery_model.treatment.includes("permanente"));
   assert.deepEqual(result.winner.evaluation.trajectory.checkpoints.slice(0, 5).map((entry) => entry.budget), [3200, 4800, 7200, 12000, 20000]);
   assert.ok(result.winner.evaluation.trajectory.checkpoints.every((entry) => entry.budget <= result.winner.state.spent));
   assert.equal(typeof result.winner.evaluation.foundations.passed, "boolean");
