@@ -281,7 +281,10 @@ function availabilitySummary(profile) {
 // without an ability that uses charges. This is distinct from merely giving a
 // zero score to an otherwise purchasable conditional effect.
 export function heroCanPurchaseItem(item, data, heroId) {
-  return !itemRequiresChargedAbility(item, data) || buildHeroCapabilityProfile(heroId, data).hasChargedAbility;
+  if (!itemRequiresChargedAbility(item, data)) return true;
+  const profile = buildHeroCapabilityProfile(heroId, data);
+  // An absent ability record is not evidence that this hero lacks charges.
+  return profile.hasChargedAbility || profile.abilityIds.length === 0;
 }
 
 export function evaluateWeaponMechanics(state, request, data) {
@@ -292,8 +295,10 @@ export function evaluateWeaponMechanics(state, request, data) {
   const baseRoundsPerSecond = heroStat(data.heroStats, request.heroId, "rounds_per_second");
   const baseClip = heroStat(data.heroStats, request.heroId, "clip_size");
   const reloadTime = heroStat(data.heroStats, request.heroId, "reload_time");
-  if ([baseBulletDamage, baseRoundsPerSecond, baseClip, reloadTime].some((value) => value === null)) {
-    const missing = { valid: false, reason: "HERO_WEAPON_STAT_MISSING" };
+  const requiredWeaponStats = { bullet_damage: baseBulletDamage, rounds_per_second: baseRoundsPerSecond, clip_size: baseClip, reload_time: reloadTime };
+  const missingWeaponStats = Object.entries(requiredWeaponStats).filter(([, value]) => value === null).map(([name]) => name);
+  if (missingWeaponStats.length) {
+    const missing = { valid: false, reason: `HERO_WEAPON_STAT_MISSING: ${missingWeaponStats.join(", ")}` };
     cached.set(cacheKey, missing);
     if (request.cacheProfiles !== false) WEAPON_MECHANICS_CACHE.set(data, cached);
     return missing;
@@ -444,7 +449,7 @@ export function evaluateCarryScenarios(state, request, data) {
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
   if (!weapon.valid || baseHealth === null) {
-    const missing = { valid: false, reason: "HERO_COMBAT_STAT_MISSING", plan };
+    const missing = { valid: false, reason: !weapon.valid ? weapon.reason : "HERO_COMBAT_STAT_MISSING: max_health", plan };
     cached.set(cacheKey, missing);
     if (request.cacheProfiles !== false) SCENARIO_PROFILE_CACHE.set(data, cached);
     return missing;
@@ -578,7 +583,7 @@ export function evaluateCarrySearchMetrics(state, request, data) {
   const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, focus) : null;
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
-  if (!weapon.valid || baseHealth === null) return { valid: false, reason: "HERO_COMBAT_STAT_MISSING" };
+  if (!weapon.valid || baseHealth === null) return { valid: false, reason: !weapon.valid ? weapon.reason : "HERO_COMBAT_STAT_MISSING: max_health" };
   const thresholds = thresholdSnapshot(state.inventory, data.economy);
   const heroProfile = buildHeroCapabilityProfile(request.heroId, data);
   let bonusHealth = 0, bulletLifestealPercent = 0, regen = baseRegen || 0;

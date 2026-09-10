@@ -8,7 +8,7 @@ import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS } from "../app/anytime-search.mjs";
-import { buildOptimizerData } from "../app/optimizer.mjs";
+import { buildOptimizerData, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
 
@@ -204,7 +204,7 @@ function canonicalWardenData() {
   const csv = (path) => parseCsv(readFileSync(path, "utf8"));
   return buildOptimizerData({
     coreManifest: json("data/core/manifest.json"), heroManifest: json("data/heroes/manifest.json"),
-    items: csv("data/core/items.csv"), itemMechanics: csv("data/core/item_mechanics.csv"),
+    items: csv("data/core/items.csv"), itemMechanics: csv("data/core/item_mechanics.csv"), heroes: csv("data/heroes/heroes.csv"),
     upgrades: csv("data/core/item_upgrades.csv"), economy: json("data/core/economy.json"), slots: json("data/core/slots.json"),
     heroStats: csv("data/heroes/hero_stats.csv"), abilities: csv("data/heroes/abilities.csv"),
     abilityMechanics: csv("data/heroes/ability_mechanics.csv"), heroResources: csv("data/heroes/hero_resources.csv")
@@ -239,6 +239,29 @@ test("Weapon, Spirit und Hybrid verwenden für Warden und Infernus eigene belegt
     assert.ok(hybrid.metrics.teamfightWindowDps >= spirit.metrics.teamfightWindowDps);
     assert.notEqual(weapon.metrics.teamfightWindowDps, spirit.metrics.teamfightWindowDps);
   }
+});
+
+test("Jeder kanonische Held liefert pro Carry-Fokus endliche Werte oder eine konkrete Basisdatenlücke", () => {
+  const data = canonicalWardenData();
+  const missing = new Set();
+  for (const hero of data.heroes) for (const damageFocus of ["weapon", "spirit", "hybrid"]) {
+    const result = evaluateCarryPerformance({ inventory: [] }, { heroId: hero.hero_id, damageFocus, budget: 60000 }, data);
+    if (result.valid) {
+      assert.ok(Object.values(result.metrics).every(Number.isFinite), `${hero.hero_id}/${damageFocus}`);
+    } else {
+      assert.match(result.reason, /^HERO_(WEAPON_STAT_MISSING|COMBAT_STAT_MISSING): /);
+      missing.add(hero.hero_id);
+    }
+  }
+  assert.equal(data.heroes.length, 60);
+  assert.deepEqual([...missing].sort(), ["boho", "bomber", "cadence", "fathom", "fortuna", "generic_person", "graf", "gunslinger", "kali", "raven", "rutger", "shield_guy", "silver_transformed", "skyrunner", "swan", "targetdummy", "the_boss", "thumper", "tokamak", "trapper", "vandal", "wrecker"]);
+});
+
+test("Unvollständige Fähigkeitsdaten behaupten keine Charge-Kaufunfähigkeit", () => {
+  const data = canonicalWardenData();
+  const extraCharge = data.itemsById.get("upgrade_extra_charge");
+  assert.equal(heroCanPurchaseItem(extraCharge, data, "warden"), false);
+  assert.equal(heroCanPurchaseItem(extraCharge, data, "boho"), true);
 });
 
 test("Anytime output is legal, improves monotonically and compares with an exact small oracle", () => {
