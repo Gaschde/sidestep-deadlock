@@ -100,6 +100,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   }
   if (JSON.stringify(reference.axis) !== JSON.stringify(resource.axis)) throw new Error("Reference axis mismatch");
   let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
+  let localRefinementRan = false, localAlternativesTried = 0, localImprovements = 0, localBaselineScore = null;
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
   const buildPoints = (node) => {
     const chain = [];
@@ -145,10 +146,59 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       unavailableItemIds,
-      telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1 }, approximate: true };
+      telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
+        localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore }, approximate: true };
     winningNode = node;
     publishedImprovements++;
     onResult?.(winner);
+  };
+  // Keep the sampled reference fixed and try every legal first deviation from
+  // the current best path. Each suffix is then completed with the same score.
+  // This explicitly covers alternate items, order, components and replacements
+  // without treating a single random rollout as evidence of improvement.
+  const refineCurrentWinner = () => {
+    if (localRefinementRan || !winningNode || performance.now() >= deadline) return;
+    localRefinementRan = true;
+    localBaselineScore = winner.quality.score;
+    const baseline = [];
+    for (let node = winningNode; node; node = node.parent) baseline.push(node);
+    baseline.reverse();
+    const eventKey = (event) => JSON.stringify(event);
+    const completeGreedily = (start) => {
+      let node = start;
+      while (node.state.earnedSouls < budget && performance.now() < deadline) {
+        const successors = domain.transitions(node.state);
+        const currentScore = rank(node);
+        let best = null, bestScore = -Infinity;
+        for (const state of successors) {
+          const candidate = { state: clean(state), event: state.events[0], parent: node };
+          const score = preferenceFor(candidate);
+          if (score > bestScore) { best = candidate; bestScore = score; }
+        }
+        if (!best) return;
+        if (best.event.type !== "save" && bestScore <= currentScore) {
+          const save = successors.find((state) => state.events[0]?.type === "save");
+          if (!save) return;
+          best = { state: clean(save), event: save.events[0], parent: node };
+        }
+        node = best;
+      }
+      if (node.state.earnedSouls === budget) {
+        const before = winner?.quality.score ?? -Infinity;
+        publish(node);
+        if ((winner?.quality.score ?? -Infinity) > before) localImprovements++;
+      }
+    };
+    for (let index = 0; index + 1 < baseline.length && performance.now() < deadline; index++) {
+      const prefix = baseline[index];
+      const originalNext = baseline[index + 1].event;
+      for (const state of domain.transitions(prefix.state)) {
+        if (eventKey(state.events[0]) === eventKey(originalNext)) continue;
+        localAlternativesTried++;
+        completeGreedily({ state: clean(state), event: state.events[0], parent: prefix });
+        if (performance.now() >= deadline) break;
+      }
+    }
   };
   // End-oriented seeds complement the greedy rollout's early-spending bias.
   // They restrict only their own construction, never the subsequent action set.
@@ -233,7 +283,11 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       }
     }
     rollouts++;
+    // The first non-seed rollout establishes the baseline purchase path before
+    // variants are compared. Later rollouts retain the existing exploration.
+    if (rollouts === 1) refineCurrentWinner();
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
-  return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements } } : null;
+  return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
+    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore } } : null;
 }

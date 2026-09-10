@@ -226,6 +226,9 @@ test("Anytime output is legal, improves monotonically and compares with an exact
     const result = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 2000, maxRollouts: 5, onResult: (r) => outputs.push(r) });
     assert.ok(result.validation.valid);
     assert.ok(result.searchTelemetry.completedPaths >= 1);
+    assert.equal(result.searchTelemetry.localRefinementRan, true);
+    assert.ok(result.searchTelemetry.localAlternativesTried > 0);
+    assert.equal(result.searchTelemetry.localBaselineScore <= result.quality.score, true);
     assert.ok(result.searchTelemetry.evaluations >= result.telemetry.evaluations);
     assert.equal(result.slotLimit, 9 + (slotUnlocks[0]?.slots || 0));
     assert.ok(Math.abs(exact - result.quality.score) < 1e-12, `small-case score gap: ${exact - result.quality.score}`);
