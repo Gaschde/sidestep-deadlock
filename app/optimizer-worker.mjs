@@ -11,7 +11,7 @@ self.onmessage = async (event) => {
         onResult: (result) => self.postMessage({ type: "incumbent", result }),
         onProgress: (progress) => self.postMessage({ type: "progress", ...progress }) });
       if (!result) throw new Error("Kein vollständiger Pfad im Rechenbudget gefunden.");
-      self.postMessage({ type: "anytime-complete", telemetry: result.telemetry });
+      self.postMessage({ type: "anytime-complete", telemetry: result.searchTelemetry });
       return;
     }
     const onProgress = (progress) => self.postMessage({ type: "progress", ...progress });

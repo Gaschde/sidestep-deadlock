@@ -359,6 +359,17 @@ test("Wirkungsmodell stapelt permanente Resistenzen multiplikativ", () => {
   assert.equal(scenarios.common.resistance_sources.bullet.stacking_rule.rule_id, "RES-002");
 });
 
+test("Überlebensvergleich zeigt denselben Build unter dokumentierten Schadenssensitivitäten", () => {
+  const data = fixture();
+  const state = { inventory: [data.itemsById.get("bullet_resist_a")], spent: 800, activeItems: 0, events: [] };
+  const scenario = evaluateCarryScenarios(state, request, data).scenarios.find((entry) => entry.id === "teamfight");
+  const sensitivity = scenario.incoming_damage_sensitivity;
+  assert.deepEqual(sensitivity.map((entry) => entry.raw_damage_per_second), [50, 100, 200]);
+  assert.ok(sensitivity[0].bullet_remaining_health > sensitivity[1].bullet_remaining_health);
+  assert.ok(sensitivity[1].bullet_remaining_health > sensitivity[2].bullet_remaining_health);
+  assert.equal(sensitivity[0].origin, "model_assumption");
+});
+
 test("Gleiches Inventar behält unterschiedliche Kaufgeschichten", () => {
   const data = fixture();
   const direct = {

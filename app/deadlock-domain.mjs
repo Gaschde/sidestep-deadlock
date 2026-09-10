@@ -125,6 +125,12 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
   return {
     initial,
     transitions,
+    supportedUpgradesByFrom: new Map(upgrades.reduce((groups, edge) => {
+      const entries = groups.get(edge.from_item_id) || [];
+      entries.push(edge);
+      groups.set(edge.from_item_id, entries);
+      return groups;
+    }, new Map())),
     stateKey,
     futureKey,
     resourceEvents,

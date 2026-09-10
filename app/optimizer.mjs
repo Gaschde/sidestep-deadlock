@@ -352,6 +352,13 @@ export function createCarryScenarioPlan() {
       origin: "model_assumption",
       reason: "Fester Vergleichsmaßstab für Schutz und Heilung, keine Behauptung über gegnerischen Schaden."
     },
+    incoming_damage_sensitivity: [0.5, 1, 2].map((multiplier) => ({
+      id: `relative_${multiplier}x`,
+      raw_damage_per_second: 100 * multiplier,
+      unit: "normalisierter Rohschaden/s",
+      origin: "model_assumption",
+      reason: "Sensitivität um denselben Vergleichsmaßstab; keine Aussage über ein konkretes Gegnerprofil."
+    })),
     conditional_effect_policy: {
       value: "excluded_from_baseline",
       origin: "model_assumption",
@@ -484,6 +491,12 @@ export function evaluateCarryScenarios(state, request, data) {
           origin: "model_assumption",
           treatment: "Vergleich gegen den offen ausgewiesenen normalisierten Rohschadenstrom; kein Gegnerprofil."
         },
+        incoming_damage_sensitivity: plan.incoming_damage_sensitivity.map((assumption) => {
+          const raw = assumption.raw_damage_per_second * scenario.duration_seconds;
+          return { ...assumption,
+            bullet_remaining_health: health + bulletRecovery - raw * bulletResistance.damageMultiplier,
+            spirit_remaining_health: health + spiritRecovery - raw * spiritResistance.damageMultiplier };
+        }),
         active_combo: combo,
         combo_failure: combo?.available ? { value: 0, outcome: "failure_branch", treatment: "Bei verfehlter oder nicht ausführbarer Combo wird kein aktiver Bonus angerechnet." } : null
       };
@@ -756,20 +769,29 @@ function knownAbilityEffect(data, abilityId, mechanic) {
 }
 
 function wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) {
+  const binding = {
+    cooldown: knownAbilityEffect(data, "warden_binding_word", "ability_cooldown"), range: knownAbilityEffect(data, "warden_binding_word", "ability_cast_range"),
+    castDelay: knownAbilityEffect(data, "warden_binding_word", "ability_cast_delay"), immobilizeDuration: knownAbilityEffect(data, "warden_binding_word", "immobilize_duration")
+  };
+  const bindingPossible = Object.values(binding).every(Number.isFinite) && scenario.duration_seconds >= binding.castDelay && binding.range > 0 && binding.immobilizeDuration > 0;
+  const bindingLockedSeconds = bindingPossible ? Math.min(binding.immobilizeDuration, scenario.duration_seconds - binding.castDelay) : 0;
+  const bindingWordAlone = {
+    available: bindingPossible,
+    locked_seconds: bindingLockedSeconds,
+    locked_weapon_damage: bindingPossible ? weapon.weaponDamageAt(bindingLockedSeconds) : 0,
+    value: bindingPossible ? weapon.weaponDamageAt(bindingLockedSeconds) / scenario.duration_seconds : 0,
+    binding
+  };
   const itemId = "upgrade_containment";
   if (!state.inventory.some((item) => item.item_id === itemId)) {
-    return { available: false, outcome: "not_available", value: 0, reason: "Slowing Hex ist nicht im Inventar." };
+    return { available: false, outcome: "not_available", value: 0, binding_word_alone: bindingWordAlone, reason: "Slowing Hex ist nicht im Inventar." };
   }
   const hex = {
     cooldown: knownEffect(data, itemId, "ability_cooldown"), duration: knownEffect(data, itemId, "ability_duration"),
     range: knownEffect(data, itemId, "ability_cast_range"), castDelay: knownEffect(data, itemId, "ability_cast_delay")
   };
-  const binding = {
-    cooldown: knownAbilityEffect(data, "warden_binding_word", "ability_cooldown"), range: knownAbilityEffect(data, "warden_binding_word", "ability_cast_range"),
-    castDelay: knownAbilityEffect(data, "warden_binding_word", "ability_cast_delay"), immobilizeDuration: knownAbilityEffect(data, "warden_binding_word", "immobilize_duration")
-  };
   if (Object.values(hex).some((value) => !Number.isFinite(value)) || Object.values(binding).some((value) => !Number.isFinite(value))) {
-    return { available: false, outcome: "missing_data", value: 0, hex, binding, reason: "Für die Combo fehlen belegte Timing- oder Reichweitenwerte." };
+    return { available: false, outcome: "missing_data", value: 0, hex, binding, binding_word_alone: bindingWordAlone, reason: "Für die Combo fehlen belegte Timing- oder Reichweitenwerte." };
   }
   const sequenceDelay = hex.castDelay + binding.castDelay;
   const range = Math.min(hex.range, binding.range);
@@ -778,7 +800,9 @@ function wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) {
   return {
     available: possible,
     outcome: possible ? "success_branch" : "not_available_in_window",
-    value: possible ? weapon.weaponDamageAt(lockedSeconds) / scenario.duration_seconds : 0,
+    value: 0,
+    binding_word_alone: bindingWordAlone,
+    hex_incremental_value: 0,
     locked_weapon_damage: possible ? weapon.weaponDamageAt(lockedSeconds) : 0,
     locked_seconds: lockedSeconds,
     hex, binding, sequence_delay_seconds: sequenceDelay, required_initial_range_meters: range,
@@ -786,7 +810,7 @@ function wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) {
     assumptions: [
       "Erfolgszweig: Ziel startet innerhalb der kleineren Reichweite und beide gezielten Aktivierungen treffen.",
       "Kein Trefferanteil, kein automatisches Heranziehen und keine garantierte Combo-Erfolgsquote werden angenommen.",
-      "Der Wert ist ein separates Kontrollfenster; er wird nicht zusätzlich zum vollständigen Kampffenster addiert."
+      "Binding Words belegbarer Kontrollschaden wird getrennt ausgewiesen. Ohne Treffer-, Flucht- oder Skillzustandsdaten ist kein zusätzlicher Hex-Schaden berechenbar; daher 0 Zusatzwert und keine Suchwertung."
     ]
   };
 }

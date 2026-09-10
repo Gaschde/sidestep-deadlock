@@ -3,7 +3,7 @@ import { evaluateWardenCarryPerformance, WARDEN_METRICS, wardenResourceAxis } fr
 import { validateSearchPath } from "./validate-search-path.mjs";
 
 export const ANYTIME_METRIC_GROUPS = {
-  damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps", "slowingHexBindingWordComboDps"], weight: 0.5 },
+  damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
   survival: { metrics: ["bulletEhp", "spiritEhp"], weight: 0.5 }
 };
 
@@ -96,7 +96,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     }
   }
   if (JSON.stringify(reference.axis) !== JSON.stringify(resource.axis)) throw new Error("Reference axis mismatch");
-  let winner = null, winningNode = null, rollouts = 0, rng = 123456789;
+  let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
   const buildPoints = (node) => {
     const chain = [];
@@ -104,19 +104,46 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
     return chain.reverse().map((n) => ({ earnedSouls: n.state.earnedSouls, metrics: metrics(n.state) }));
   };
   const rank = (node) => scoreAnytimePath([...buildPoints(node), { earnedSouls: budget, metrics: metrics(node.state) }], reference, budget).score;
+  // A component can be weaker than a direct end item at the instant it is
+  // bought, although both cost the same once its legal upgrade completes.
+  // Look one supported upgrade ahead, preserving every save and component
+  // snapshot in the trajectory. This is a ranking aid only: all normal shop
+  // transitions, including sales and replacements, remain available.
+  const upgradeContinuationRank = (node) => {
+    if (node.event?.type !== "purchase") return null;
+    const edges = domain.supportedUpgradesByFrom.get(node.event.item) || [];
+    let best = null;
+    for (const edge of edges) {
+      let projected = node;
+      while (projected.state.earnedSouls < budget) {
+        const upgrade = domain.transitions(projected.state).find((state) => state.events[0]?.type === "upgrade" && state.events[0].from === edge.from_item_id && state.events[0].item === edge.to_item_id);
+        if (upgrade) {
+          best = Math.max(best ?? -Infinity, rank({ state: clean(upgrade), event: upgrade.events[0], parent: projected }));
+          break;
+        }
+        const save = domain.transitions(projected.state).find((state) => state.events[0]?.type === "save");
+        if (!save) break;
+        projected = { state: clean(save), event: save.events[0], parent: projected };
+      }
+    }
+    return best;
+  };
+  const preferenceFor = (node) => Math.max(rank(node), upgradeContinuationRank(node) ?? -Infinity);
   const publish = (node) => {
     const chain = [];
     for (let n = node; n.parent; n = n.parent) chain.push(n);
     chain.reverse();
     const points = buildPoints(node);
     const quality = scoreAnytimePath(points, reference, budget);
+    completedPaths++;
     if (winner && quality.score <= winner.quality.score) return;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
     const validation = validateSearchPath({ data, itemIds, budget, soulAxis: resource.axis, slotUnlocks, state });
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
-      telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts }, approximate: true };
+      telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1 }, approximate: true };
     winningNode = node;
+    publishedImprovements++;
     onResult?.(winner);
   };
   // End-oriented seeds complement the greedy rollout's early-spending bias.
@@ -129,7 +156,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       for (const s of successors) {
         if (s.events[0]?.type !== "purchase" || !target.includes(s.events[0].item)) continue;
         const candidate = { state: clean(s), event: s.events[0], parent: node };
-        const score = rank(candidate);
+        const score = preferenceFor(candidate);
         if (score > value) { best = candidate; value = score; }
       }
       if (!best) {
@@ -156,7 +183,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       const currentScore = rank(node);
       for (const state of successors) {
         const candidate = { state: clean(state), event: state.events[0], parent: node };
-        const score = rank(candidate);
+        const score = preferenceFor(candidate);
         // Local perturbations diversify subsequent suffix rollouts.
         const exploration = rollouts ? -0.002 * Math.log(-Math.log(Math.max(1e-12, random()))) : 0;
         const preference = score + exploration;
@@ -166,7 +193,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       if (rollouts && successors.length && random() < 0.1) {
         const state = successors[Math.floor(random() * successors.length)];
         best = { state: clean(state), event: state.events[0], parent: node };
-        bestScore = rank(best);
+        bestScore = preferenceFor(best);
       }
       if (node.state.earnedSouls === budget) {
         publish(node);
@@ -189,7 +216,7 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
       }
     }
     rollouts++;
-    onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, bestScore: winner?.quality.score });
+    onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
-  return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts } } : null;
+  return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements } } : null;
 }

@@ -20,7 +20,7 @@ export function evaluateWardenWeaponPerformance(state, request, data) {
 
 export const WARDEN_METRICS = [
   "sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps",
-  "teamfightWindowDps", "slowingHexBindingWordComboDps", "bulletEhp", "spiritEhp"
+  "teamfightWindowDps", "bulletEhp", "spiritEhp"
 ];
 
 export function evaluateWardenCarryPerformance(state, request, data) {
@@ -33,7 +33,6 @@ export function evaluateWardenCarryPerformance(state, request, data) {
     farmWindowDps: byId.get("farm")?.window_dps,
     skirmishWindowDps: byId.get("skirmish")?.window_dps,
     teamfightWindowDps: byId.get("teamfight")?.window_dps,
-    slowingHexBindingWordComboDps: byId.get("skirmish")?.active_combo?.value ?? 0,
     // The two survival dimensions include only verified, permanent recovery
     // over the shared 10-second teamfight window. Raw EHP remains exposed in
     // scenarios.common for audit and is not counted a second time.
