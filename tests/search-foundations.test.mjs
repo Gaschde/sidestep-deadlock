@@ -236,6 +236,17 @@ test("Anytime output is legal, improves monotonically and compares with an exact
   }
 });
 
+test("Endinventar-Seed berücksichtigt Komponenten und erhält ihren früheren Nutzen", () => {
+  const data = canonicalWardenData();
+  const result = runAnytimeWarden({ data, itemIds: ["upgrade_clip_size", "upgrade_titan_round"], budget: 1600,
+    timeMs: 1000, maxRollouts: 2, slotUnlocks: [{ earnedSouls: 0, slots: 3 }] });
+  assert.ok(result.validation.valid);
+  assert.deepEqual(result.state.events.filter((event) => event.type !== "save").map((event) => [event.type, event.item, event.from || null]), [
+    ["purchase", "upgrade_clip_size", null],
+    ["upgrade", "upgrade_titan_round", "upgrade_clip_size"]
+  ]);
+});
+
 test("Direct reference matches every maximum of complete small transition graphs", () => {
   for (const slots of [0, 1, 2]) for (const rate of [0, 0.5]) for (const unlock of [false, true]) {
     const data = fixture();

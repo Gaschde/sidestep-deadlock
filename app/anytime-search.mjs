@@ -149,12 +149,25 @@ export function runAnytimeWarden({ data, itemIds = data.items.map((i) => i.item_
   // End-oriented seeds complement the greedy rollout's early-spending bias.
   // They restrict only their own construction, never the subsequent action set.
   for (const target of seedInventories) {
+    const targetOrComponentIds = new Set(target);
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const edge of data.upgrades) {
+        if (targetOrComponentIds.has(edge.to_item_id) && domain.supportedUpgradesByFrom.has(edge.from_item_id) && !targetOrComponentIds.has(edge.from_item_id)) {
+          targetOrComponentIds.add(edge.from_item_id);
+          changed = true;
+        }
+      }
+    }
     let node = { state: initial, parent: null };
     while (performance.now() < deadline) {
       const successors = domain.transitions(node.state);
       let best = null, value = -Infinity;
       for (const s of successors) {
-        if (s.events[0]?.type !== "purchase" || !target.includes(s.events[0].item)) continue;
+        const event = s.events[0];
+        const isSeedPurchase = event?.type === "purchase" && targetOrComponentIds.has(event.item);
+        const isSeedUpgrade = event?.type === "upgrade" && targetOrComponentIds.has(event.from) && targetOrComponentIds.has(event.item);
+        if (!isSeedPurchase && !isSeedUpgrade) continue;
         const candidate = { state: clean(s), event: s.events[0], parent: node };
         const score = preferenceFor(candidate);
         if (score > value) { best = candidate; value = score; }
