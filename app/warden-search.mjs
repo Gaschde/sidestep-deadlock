@@ -31,10 +31,20 @@ export function evaluateCarryPerformance(state, request, data) {
   const byId = new Map(scenarios.scenarios.map((scenario) => [scenario.id, scenario]));
   const metrics = {
     sustainedWeaponDps: scenarios.common.sustained_weapon_dps,
+    sustainedBulletDps: scenarios.common.sustained_bullet_dps,
+    sustainedSpiritDps: scenarios.common.sustained_spirit_dps,
     laneTradeWindowDps: byId.get("lane_trade")?.window_dps,
+    laneTradeBulletDps: byId.get("lane_trade")?.bullet_dps,
+    laneTradeSpiritDps: byId.get("lane_trade")?.spirit_dps,
     farmWindowDps: byId.get("farm")?.window_dps,
+    farmBulletDps: byId.get("farm")?.bullet_dps,
+    farmSpiritDps: byId.get("farm")?.spirit_dps,
     skirmishWindowDps: byId.get("skirmish")?.window_dps,
+    skirmishBulletDps: byId.get("skirmish")?.bullet_dps,
+    skirmishSpiritDps: byId.get("skirmish")?.spirit_dps,
     teamfightWindowDps: byId.get("teamfight")?.window_dps,
+    teamfightBulletDps: byId.get("teamfight")?.bullet_dps,
+    teamfightSpiritDps: byId.get("teamfight")?.spirit_dps,
     // The two survival dimensions include only verified, permanent recovery
     // over the shared 10-second teamfight window. Raw EHP remains exposed in
     // scenarios.common for audit and is not counted a second time.

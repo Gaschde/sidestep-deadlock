@@ -8,16 +8,47 @@ export const ANYTIME_METRIC_GROUPS = {
   survival: { metrics: ["bulletEhp", "spiritEhp"], weight: 0.5 }
 };
 
+// Focus only changes the mixture inside the existing 50%-weighted damage
+// group. It neither makes an action unavailable nor changes its raw damage.
+export const DAMAGE_FOCUS_WEIGHTS = Object.freeze({
+  weapon: Object.freeze({ bullet: 0.7, spirit: 0.3 }),
+  spirit: Object.freeze({ bullet: 0.3, spirit: 0.7 }),
+  hybrid: Object.freeze({ bullet: 0.5, spirit: 0.5 })
+});
+
+const DAMAGE_COMPONENTS = Object.freeze({
+  sustainedWeaponDps: Object.freeze({ bullet: "sustainedBulletDps", spirit: "sustainedSpiritDps" }),
+  laneTradeWindowDps: Object.freeze({ bullet: "laneTradeBulletDps", spirit: "laneTradeSpiritDps" }),
+  farmWindowDps: Object.freeze({ bullet: "farmBulletDps", spirit: "farmSpiritDps" }),
+  skirmishWindowDps: Object.freeze({ bullet: "skirmishBulletDps", spirit: "skirmishSpiritDps" }),
+  teamfightWindowDps: Object.freeze({ bullet: "teamfightBulletDps", spirit: "teamfightSpiritDps" })
+});
+
+const COMPONENT_METRICS = Object.freeze(Object.values(DAMAGE_COMPONENTS).flatMap((entry) => [entry.bullet, entry.spirit]));
+const SCORING_METRICS = Object.freeze([...CARRY_METRICS, ...COMPONENT_METRICS]);
+const COMPONENT_PARENT = new Map(Object.entries(DAMAGE_COMPONENTS).flatMap(([metric, components]) => [
+  [components.bullet, metric], [components.spirit, metric]
+]));
+
+const focusWeights = (damageFocus) => DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid;
+const metricValue = (values, metric) => {
+  if (Number.isFinite(values[metric])) return values[metric];
+  const parent = COMPONENT_PARENT.get(metric);
+  // Compatibility for explicit small references that predate component rows:
+  // preserving the aggregate value makes their focus-neutral assertions exact.
+  return parent && Number.isFinite(values[parent]) ? values[parent] : 0;
+};
+
 export const ANYTIME_POLICY = { end: 0.7, worst: 0.15, integrated: 0.15,
-  metricWeights: "Damage-Gruppe und Überlebens-Gruppe je 50%; innerhalb der Gruppe gleich gewichtet", endNormalization: "x / (x + Referenz am Horizont)",
+  metricWeights: "Damage-Gruppe und Überlebens-Gruppe je 50%; Weapon 70/30, Spirit 30/70, Hybrid 50/50 für vergleichbar normalisierte Bullet-/Spirit-Schadensbeiträge", endNormalization: "x / (x + Referenz am Horizont)",
   reference: "Eingefrorene erreichbare Stichprobenreferenz; keine exakten Regret-Werte" };
 
-export function scoreAnytimePath(points, reference, budget) {
+export function scoreAnytimePath(points, reference, budget, damageFocus = "hybrid") {
   const byMetric = new Map();
   const committed = new Map(points.map((p) => [p.earnedSouls, p.metrics]));
-  const rows = CARRY_METRICS.map((metric) => ({ metric, values: points[0].metrics, worst: 0, area: 0 }));
-  // All seven metrics share the same path and Soul axis. Advancing them in
-  // one pass preserves the per-metric arithmetic while avoiding seven full
+  const rows = SCORING_METRICS.map((metric) => ({ metric, values: points[0].metrics, worst: 0, area: 0 }));
+  // All metrics share the same path and Soul axis. Advancing them in one pass
+  // preserves the per-metric arithmetic while avoiding separate full
   // Map traversals for every ranked successor.
   for (let index = 0; index < reference.axis.length; index++) {
     const souls = reference.axis[index];
@@ -25,15 +56,17 @@ export function scoreAnytimePath(points, reference, budget) {
     if (values) for (const row of rows) row.values = values;
     const width = index + 1 < reference.axis.length ? reference.axis[index + 1] - souls : 0;
     for (const row of rows) {
-      const referenceValue = reference.values[index][row.metric];
-      const regret = referenceValue > 0 ? Math.max(0, 1 - row.values[row.metric] / referenceValue) : 0;
+      const referenceValue = metricValue(reference.values[index], row.metric);
+      const currentValue = metricValue(row.values, row.metric);
+      const regret = referenceValue > 0 ? Math.max(0, 1 - currentValue / referenceValue) : 0;
       row.worst = Math.max(row.worst, regret);
       row.area += width * regret;
     }
   }
   for (const row of rows) {
-    const scale = reference.values.at(-1)[row.metric];
-    byMetric.set(row.metric, { end: row.values[row.metric] + scale > 0 ? row.values[row.metric] / (row.values[row.metric] + scale) : 0,
+    const scale = metricValue(reference.values.at(-1), row.metric);
+    const value = metricValue(row.values, row.metric);
+    byMetric.set(row.metric, { end: value + scale > 0 ? value / (value + scale) : 0,
       worst: row.worst, integrated: budget ? row.area / budget : 0 });
   }
   const group = (key) => {
@@ -45,7 +78,12 @@ export function scoreAnytimePath(points, reference, budget) {
       integrated: rows.reduce((sum, row) => sum + row.integrated, 0) / rows.length
     };
   };
-  const damage = group("damage");
+  const weights = focusWeights(damageFocus);
+  const damage = Object.fromEntries(["end", "worst", "integrated"].map((field) => [field,
+    ANYTIME_METRIC_GROUPS.damage.metrics.reduce((sum, metric) => {
+      const components = DAMAGE_COMPONENTS[metric];
+      return sum + weights.bullet * byMetric.get(components.bullet)[field] + weights.spirit * byMetric.get(components.spirit)[field];
+    }, 0) / ANYTIME_METRIC_GROUPS.damage.metrics.length]));
   const survival = group("survival");
   const weighted = (field) => ANYTIME_METRIC_GROUPS.damage.weight * damage[field] + ANYTIME_METRIC_GROUPS.survival.weight * survival[field];
   const endUtility = weighted("end");
@@ -53,7 +91,7 @@ export function scoreAnytimePath(points, reference, budget) {
   const integratedRegret = weighted("integrated");
   return { score: 0.7 * endUtility + 0.15 * (1 - worstRegret) + 0.15 * (1 - integratedRegret),
     endUtility, worstRegret, integratedRegret,
-    metricGroups: { damage, survival } };
+    metricGroups: { damage: { ...damage, focus: damageFocus, weights }, survival } };
 }
 
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
@@ -112,7 +150,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
           const values = metrics(next);
           const cost = budget - next.cash;
           const first = resource.axis.findIndex((s) => s >= cost);
-          for (let i = first; i < reference.values.length; i++) for (const k of CARRY_METRICS) reference.values[i][k] = Math.max(reference.values[i][k], values[k]);
+          for (let i = first; i < reference.values.length; i++) for (const k of SCORING_METRICS) reference.values[i][k] = Math.max(reference.values[i][k] ?? 0, values[k] ?? 0);
           if (!best || values[m] > metrics(best)[m]) best = next;
           if (performance.now() >= until) break;
         }
@@ -143,18 +181,19 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     const index = referenceIndex.get(node.state.earnedSouls);
     if (index === undefined) throw new Error("State außerhalb der eingefrorenen Soul-Achse.");
     const prior = node.parent ? trajectory(node.parent) : null;
-    const area = prior ? [...prior.area] : Array(CARRY_METRICS.length).fill(0);
-    const worstBefore = prior ? [...prior.worstBefore] : Array(CARRY_METRICS.length).fill(0);
+    const area = prior ? [...prior.area] : Array(SCORING_METRICS.length).fill(0);
+    const worstBefore = prior ? [...prior.worstBefore] : Array(SCORING_METRICS.length).fill(0);
     if (prior && node.state.earnedSouls > prior.souls) {
       const width = node.state.earnedSouls - prior.souls;
-      for (let metricIndex = 0; metricIndex < CARRY_METRICS.length; metricIndex++) {
+      for (let metricIndex = 0; metricIndex < SCORING_METRICS.length; metricIndex++) {
         area[metricIndex] += width * prior.currentRegret[metricIndex];
         worstBefore[metricIndex] = Math.max(worstBefore[metricIndex], prior.currentRegret[metricIndex]);
       }
     }
-    const currentRegret = CARRY_METRICS.map((metric) => {
-      const referenceValue = reference.values[index][metric];
-      return referenceValue > 0 ? Math.max(0, 1 - values[metric] / referenceValue) : 0;
+    const currentRegret = SCORING_METRICS.map((metric) => {
+      const referenceValue = metricValue(reference.values[index], metric);
+      const value = metricValue(values, metric);
+      return referenceValue > 0 ? Math.max(0, 1 - value / referenceValue) : 0;
     });
     const result = { souls: node.state.earnedSouls, values, area, worstBefore, currentRegret };
     trajectoryCache.set(node, result);
@@ -163,10 +202,11 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   const projectedQuality = (node) => {
     const state = trajectory(node);
     const byMetric = new Map();
-    for (let metricIndex = 0; metricIndex < CARRY_METRICS.length; metricIndex++) {
-      const metric = CARRY_METRICS[metricIndex];
-      const scale = reference.values.at(-1)[metric];
-      const end = state.values[metric] + scale > 0 ? state.values[metric] / (state.values[metric] + scale) : 0;
+    for (let metricIndex = 0; metricIndex < SCORING_METRICS.length; metricIndex++) {
+      const metric = SCORING_METRICS[metricIndex];
+      const scale = metricValue(reference.values.at(-1), metric);
+      const value = metricValue(state.values, metric);
+      const end = value + scale > 0 ? value / (value + scale) : 0;
       const worst = Math.max(state.worstBefore[metricIndex], state.currentRegret[metricIndex]);
       const integrated = budget ? (state.area[metricIndex] + (budget - state.souls) * state.currentRegret[metricIndex]) / budget : 0;
       byMetric.set(metric, { end, worst, integrated });
@@ -175,11 +215,17 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
       const rows = ANYTIME_METRIC_GROUPS[key].metrics.map((metric) => byMetric.get(metric));
       return Object.fromEntries(["end", "worst", "integrated"].map((field) => [field, rows.reduce((sum, row) => sum + row[field], 0) / rows.length]));
     };
-    const damage = group("damage"), survival = group("survival");
+    const weights = focusWeights(damageFocus);
+    const damage = Object.fromEntries(["end", "worst", "integrated"].map((field) => [field,
+      ANYTIME_METRIC_GROUPS.damage.metrics.reduce((sum, metric) => {
+        const components = DAMAGE_COMPONENTS[metric];
+        return sum + weights.bullet * byMetric.get(components.bullet)[field] + weights.spirit * byMetric.get(components.spirit)[field];
+      }, 0) / ANYTIME_METRIC_GROUPS.damage.metrics.length]));
+    const survival = group("survival");
     const weighted = (field) => ANYTIME_METRIC_GROUPS.damage.weight * damage[field] + ANYTIME_METRIC_GROUPS.survival.weight * survival[field];
     const endUtility = weighted("end"), worstRegret = weighted("worst"), integratedRegret = weighted("integrated");
     return { score: 0.7 * endUtility + 0.15 * (1 - worstRegret) + 0.15 * (1 - integratedRegret), endUtility, worstRegret, integratedRegret,
-      metricGroups: { damage, survival } };
+      metricGroups: { damage: { ...damage, focus: damageFocus, weights }, survival } };
   };
   const rank = (node) => {
     if (rankCache.has(node)) return rankCache.get(node);
@@ -225,7 +271,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     for (let n = node; n.parent; n = n.parent) chain.push(n);
     chain.reverse();
     const points = buildPoints(node);
-    const quality = scoreAnytimePath(points, reference, budget);
+    const quality = scoreAnytimePath(points, reference, budget, damageFocus);
     completedPaths++;
     if (winner && quality.score <= winner.quality.score) return;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };

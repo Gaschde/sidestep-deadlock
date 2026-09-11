@@ -341,9 +341,11 @@ test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen
   const expectedRoundsPerSecond = 4 + (10 + 7) * 0.1;
   const expectedDps = (8 * 20) / (8 / expectedRoundsPerSecond + 2);
   assert.equal(scenarios.common.rounds_per_second, expectedRoundsPerSecond);
-  assert.equal(scenarios.common.sustained_weapon_dps, expectedDps);
+  assert.equal(evaluateWeaponMechanics(state, request, data).sustained_cycle_dps, expectedDps);
+  assert.ok(scenarios.common.sustained_weapon_dps >= expectedDps,
+    "der gemeinsame Kampfschaden darf zusätzlich modellierte aktive Fähigkeiten enthalten");
   assert.ok(!JSON.stringify(scenarios.common).includes("sustained_dps_spirit_scaling"));
-  assert.equal(evaluateWeaponState(state, request, data).finalDps, expectedDps);
+  assert.equal(evaluateWeaponState(state, request, data).finalDps, scenarios.common.sustained_weapon_dps);
 });
 
 test("Wirkungsmodell stapelt permanente Resistenzen multiplikativ", () => {
