@@ -332,6 +332,12 @@ export function evaluateWeaponMechanics(state, request, data) {
     sustained_cycle_dps: magazineDamage / cycleTime,
     firing_uptime: timeToEmptyClip / cycleTime,
     weaponDamageAt,
+    weaponHitTime: (hitNumber) => {
+      const hit = Math.max(1, Math.ceil(number(hitNumber)));
+      const completedClips = Math.floor((hit - 1) / clipSize);
+      const hitInClip = hit - completedClips * clipSize;
+      return completedClips * cycleTime + hitInClip / roundsPerSecond;
+    },
     formula: "weaponDamage(t)=(vollständige Zyklen×Magazinschaden+min(Magazingröße, Restzeit×Schüsse/s)×Schaden/Schuss); während Reload bleibt der Schaden konstant.",
     inputs: {
       base_bullet_damage: { value: baseBulletDamage, origin: "game_data" },
@@ -364,6 +370,77 @@ function globalAbilityCooldownReduction(state, data) {
     }
   }
   return { multiplier, reduction_percent: (1 - multiplier) * 100, sources, excluded };
+}
+
+function valueFor(effects, mechanic) {
+  return number(effects.find((effect) => effect.mechanic === mechanic)?.value);
+}
+
+// Afterburn is a passive Spirit effect, but its only source-backed trigger is
+// weapon buildup. The focused-fire scenario is deliberately explicit: every
+// modeled weapon hit lands on the same hero. It never grants damage to a pure
+// Spirit profile, whose damage model contains no weapon hits.
+export function evaluateAfterburnMechanics(state, request, data, weapon) {
+  const ability = (data.abilities || []).find((entry) => entry.hero_id === request.heroId && entry.ability_id === "infernus_afterburn");
+  if (!ability || !weapon?.valid) return { applicable: false, damageAt: () => 0, treatment: "Afterburn ist für diesen Helden oder ohne valide Weapon-Basis nicht anwendbar." };
+  const effects = (data.abilityMechanics || []).filter((effect) => effect.ability_id === ability.ability_id && effect.confidence !== "low");
+  const buildupPerHit = valueFor(effects, "build_up_bullet_percent_per_hit");
+  const buildupDuration = valueFor(effects, "build_up_duration");
+  const baseDuration = valueFor(effects, "burn_duration_base") || valueFor(effects, "burn_duration");
+  const maxDuration = valueFor(effects, "burn_duration");
+  const refillDuration = valueFor(effects, "refill_duration");
+  const tickInterval = valueFor(effects, "tick_rate");
+  const dps = effects.find((effect) => effect.mechanic === "dps" && effect.unit === "damage_per_second");
+  const spiritPower = permanentSpiritPower(state, data) + thresholdSnapshot(state.inventory, data.economy).bonuses.spiritPower;
+  const tickDamage = dps ? (number(dps.value) + (dps.scaling_attribute === "spirit" ? number(dps.scaling_coefficient) * spiritPower : 0)) * tickInterval : 0;
+  const supported = buildupPerHit > 0 && buildupDuration > 0 && baseDuration > 0 && maxDuration > 0 && refillDuration > 0 && tickInterval > 0 && tickDamage > 0;
+  if (!supported) return {
+    applicable: true, included: false, damageAt: () => 0,
+    treatment: "Afterburn-Daten sind vorhanden, aber Build-up, Dauer, Refill, Tick oder skalierter Schaden ist nicht vollständig belegbar."
+  };
+  const triggerHits = Math.ceil(100 / buildupPerHit);
+  const absoluteTimeForWeaponTime = (weaponTimeAt, target, horizon) => {
+    if (weaponTimeAt(horizon) + Number.EPSILON < target) return null;
+    let low = 0, high = horizon;
+    for (let iteration = 0; iteration < 48; iteration++) {
+      const middle = (low + high) / 2;
+      if (weaponTimeAt(middle) + Number.EPSILON >= target) high = middle;
+      else low = middle;
+    }
+    return high;
+  };
+  const damageAt = (seconds, weaponTimeAt = (time) => time) => {
+    const horizon = Math.max(0, number(seconds));
+    const fireTime = Math.max(0, weaponTimeAt(horizon));
+    let hit = 1, firstHitAt = null, ignitionAt = null, expiresAt = null;
+    while (weapon.weaponHitTime(hit) <= fireTime + Number.EPSILON) {
+      const hitAt = absoluteTimeForWeaponTime(weaponTimeAt, weapon.weaponHitTime(hit), horizon);
+      if (hitAt === null) break;
+      if (firstHitAt === null) firstHitAt = hitAt;
+      if (ignitionAt === null) {
+        if (hitAt - firstHitAt > buildupDuration + Number.EPSILON) break;
+        if (hit === triggerHits) {
+          ignitionAt = hitAt;
+          expiresAt = hitAt + baseDuration;
+        }
+      } else if (hitAt <= expiresAt + Number.EPSILON) {
+        // Weapon hits extend the active burn, capped by the documented max duration.
+        expiresAt = Math.min(expiresAt + refillDuration, hitAt + maxDuration);
+      } else break;
+      hit++;
+    }
+    if (ignitionAt === null) return 0;
+    // The data provide an interval but no separate first-tick phase. The common
+    // time-window convention therefore counts the first complete interval after ignition.
+    const lastTickAt = Math.min(horizon, expiresAt);
+    const ticks = Math.max(0, Math.floor((lastTickAt - ignitionAt) / tickInterval + 1e-9));
+    return ticks * tickDamage;
+  };
+  return {
+    applicable: true, included: true, spiritPower, triggerHits, buildupPerHit, buildupDuration,
+    baseDuration, maxDuration, refillDuration, tickInterval, tickDamage, damageAt,
+    treatment: "Gezähltes Szenario: ununterbrochenes, belegtes Weapon-Feuern auf dasselbe Heldenziel bis zum 100%-Build-up. Weapon-Hits verlängern den aktiven Brand, der erste Tick folgt nach einem vollständigen Tickintervall. Fähigkeits-Treffer, Crits, Melee, Zielwechsel, Build-up-Verfall und Ability-Refresh ohne belegte Trefferfolge bleiben ausgeschlossen."
+  };
 }
 
 // Ability damage is intentionally conservative: a `damage` row is one
@@ -430,17 +507,19 @@ export function evaluateSpiritMechanics(state, request, data) {
     treatment: "Nur belegter Basisschaden, Pulse mit Dauer/Intervall/Cast-Delay, globale Ability-Cooldown-Reduktion und Cast-Delay aktiver Fähigkeiten. Channeled-Fähigkeiten sperren zusätzlich ihre belegte Dauer für Weapon-Zeit; unbekannte Treffer-, Tick- und Skillzustände bleiben ausgeschlossen." };
 }
 
-function focusDamageModel(weapon, spirit, focus) {
+function focusDamageModel(weapon, spirit, afterburn, focus) {
   const weaponDamageAt = (seconds) => weapon.weaponDamageAt(seconds);
   const abilityDamageAt = (seconds) => spirit.damageAt(seconds);
-  if (focus === "spirit") return { damageAt: abilityDamageAt, weaponDamageAt: () => 0, abilityDamageAt, label: "Spirit" };
+  const noAfterburn = () => 0;
+  if (focus === "spirit") return { damageAt: abilityDamageAt, weaponDamageAt: () => 0, abilityDamageAt, afterburnDamageAt: noAfterburn, label: "Spirit" };
   if (focus === "hybrid") return {
     // Cast delays are source-backed and remove the same time from weapon fire;
     // this prevents counting concurrent weapon fire during a cast.
-    damageAt: (seconds) => abilityDamageAt(seconds) + weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))),
-    weaponDamageAt: (seconds) => weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))), abilityDamageAt, label: "Hybrid"
+    damageAt: (seconds) => abilityDamageAt(seconds) + weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))) + afterburn.damageAt(seconds, (time) => Math.max(0, time - spirit.castTimeAt(time))),
+    weaponDamageAt: (seconds) => weaponDamageAt(Math.max(0, seconds - spirit.castTimeAt(seconds))), abilityDamageAt,
+    afterburnDamageAt: (seconds) => afterburn.damageAt(seconds, (time) => Math.max(0, time - spirit.castTimeAt(time))), label: "Hybrid"
   };
-  return { damageAt: weaponDamageAt, weaponDamageAt, abilityDamageAt: () => 0, label: "Weapon" };
+  return { damageAt: (seconds) => weaponDamageAt(seconds) + afterburn.damageAt(seconds), weaponDamageAt, abilityDamageAt: () => 0, afterburnDamageAt: (seconds) => afterburn.damageAt(seconds), label: "Weapon" };
 }
 
 export function createCarryScenarioPlan() {
@@ -492,9 +571,10 @@ export function evaluateCarryScenarios(state, request, data) {
   const plan = createCarryScenarioPlan();
   const weapon = evaluateWeaponMechanics(state, request, data);
   const spirit = evaluateSpiritMechanics(state, request, data);
+  const afterburn = evaluateAfterburnMechanics(state, request, data, weapon);
   const focus = request.damageFocus || "weapon";
   if (!["weapon", "spirit", "hybrid"].includes(focus)) return { valid: false, reason: "UNSUPPORTED_DAMAGE_FOCUS", plan };
-  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, focus) : null;
+  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, afterburn, focus) : null;
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
   if (!weapon.valid || baseHealth === null) {
@@ -552,6 +632,7 @@ export function evaluateCarryScenarios(state, request, data) {
     item_kit_synergies: capabilities.synergies,
     damage_focus: focus,
     spirit_mechanics: spirit,
+    afterburn_mechanics: afterburn,
     active_effects: capabilities.sources.filter((source) => source.availability === "active")
       .map((source) => ({ ...source, treatment: "sichtbar, aber ohne angenommene Uptime oder Trefferwirkung" })),
     hero_active_effects: heroProfile.sources.filter((source) => source.availability !== "permanent")
@@ -593,6 +674,8 @@ export function evaluateCarryScenarios(state, request, data) {
         ...common,
         window_damage: damage,
         window_dps: damage / scenario.duration_seconds,
+        direct_ability_damage: damageModel.abilityDamageAt(scenario.duration_seconds),
+        afterburn_damage: damageModel.afterburnDamageAt(scenario.duration_seconds),
         survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, weaponDamage, true),
         survival_capacity_spirit: survivalCapacity(spiritResistance.percent, scenario.duration_seconds, damage, false),
         recovery_health: bulletRecovery,
@@ -627,9 +710,10 @@ export function evaluateCarryScenarios(state, request, data) {
 export function evaluateCarrySearchMetrics(state, request, data) {
   const weapon = evaluateWeaponMechanics(state, request, data);
   const spirit = evaluateSpiritMechanics(state, request, data);
+  const afterburn = evaluateAfterburnMechanics(state, request, data, weapon);
   const focus = request.damageFocus || "weapon";
   if (!["weapon", "spirit", "hybrid"].includes(focus)) return { valid: false, reason: "UNSUPPORTED_DAMAGE_FOCUS" };
-  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, focus) : null;
+  const damageModel = weapon.valid ? focusDamageModel(weapon, spirit, afterburn, focus) : null;
   const baseHealth = heroStat(data.heroStats, request.heroId, "max_health");
   const baseRegen = heroStat(data.heroStats, request.heroId, "base_health_regen");
   if (!weapon.valid || baseHealth === null) return { valid: false, reason: !weapon.valid ? weapon.reason : "HERO_COMBAT_STAT_MISSING: max_health" };

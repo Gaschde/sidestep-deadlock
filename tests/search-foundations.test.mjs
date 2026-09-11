@@ -8,7 +8,7 @@ import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS } from "../app/anytime-search.mjs";
-import { buildOptimizerData, evaluateSpiritMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
+import { buildOptimizerData, evaluateAfterburnMechanics, evaluateSpiritMechanics, evaluateWeaponMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
 
@@ -284,6 +284,44 @@ test("Globale Ability-Cooldown-Reduktion und Wardens Last Stand folgen den beleg
     310 + fullHybrid.scenarios.weaponMechanics.weaponDamageAt(4 - base.castTimeAt(4)));
   assert.deepEqual(compactSpirit.metrics, fullSpirit.metrics);
   assert.deepEqual(compactHybrid.metrics, fullHybrid.metrics);
+});
+
+test("Infernus Afterburn benötigt Weapon-Hits, tickt nach Build-up und bleibt in Suchmetriken gleich", () => {
+  const data = canonicalWardenData();
+  const request = { heroId: "infernus", damageFocus: "weapon", budget: 60000 };
+  const weapon = evaluateWeaponMechanics({ inventory: [] }, request, data);
+  const afterburn = evaluateAfterburnMechanics({ inventory: [] }, request, data, weapon);
+  const scaledState = { inventory: [data.itemsById.get("upgrade_improved_spirit")] };
+  const scaled = evaluateAfterburnMechanics(scaledState, request, data, evaluateWeaponMechanics(scaledState, request, data));
+  const triggerAt = weapon.weaponHitTime(13);
+  const noFurtherHits = (time) => Math.min(time, triggerAt);
+  assert.equal(afterburn.applicable, true);
+  assert.equal(afterburn.included, true);
+  assert.equal(afterburn.triggerHits, 13);
+  assert.equal(afterburn.buildupPerHit, 8.1);
+  assert.equal(afterburn.tickDamage, 7);
+  assert.equal(afterburn.damageAt(triggerAt + afterburn.tickInterval - 0.001), 0);
+  assert.equal(afterburn.damageAt(triggerAt + afterburn.tickInterval), 7);
+  assert.equal(afterburn.damageAt(4), 35);
+  assert.equal(afterburn.damageAt(10), 119);
+  assert.equal(afterburn.damageAt(triggerAt + afterburn.baseDuration, noFurtherHits), 42);
+  assert.equal(afterburn.damageAt(triggerAt + afterburn.baseDuration + 2, noFurtherHits), 42);
+  assert.equal(scaled.tickDamage, (14 + 0.66 * scaled.spiritPower) * 0.5);
+  assert.ok(scaled.tickDamage > afterburn.tickDamage);
+
+  const weaponProfile = evaluateCarryPerformance({ inventory: [] }, request, data);
+  const spiritProfile = evaluateCarryPerformance({ inventory: [] }, { ...request, damageFocus: "spirit" }, data);
+  const hybridProfile = evaluateCarryPerformance({ inventory: [] }, { ...request, damageFocus: "hybrid" }, data);
+  const compactWeapon = evaluateCarryPerformance({ inventory: [] }, { ...request, metricsOnly: true }, data);
+  const compactHybrid = evaluateCarryPerformance({ inventory: [] }, { ...request, damageFocus: "hybrid", metricsOnly: true }, data);
+  const weaponTeamfight = weaponProfile.scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
+  const spiritTeamfight = spiritProfile.scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
+  const hybridTeamfight = hybridProfile.scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
+  assert.equal(weaponTeamfight.afterburn_damage, 119);
+  assert.equal(spiritTeamfight.afterburn_damage, 0);
+  assert.ok(hybridTeamfight.afterburn_damage > 0);
+  assert.deepEqual(compactWeapon.metrics, weaponProfile.metrics);
+  assert.deepEqual(compactHybrid.metrics, hybridProfile.metrics);
 });
 
 test("Jeder kanonische Held liefert pro Carry-Fokus endliche Werte oder eine konkrete Basisdatenlücke", () => {
