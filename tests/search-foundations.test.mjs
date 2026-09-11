@@ -8,7 +8,7 @@ import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS } from "../app/anytime-search.mjs";
-import { buildOptimizerData, heroCanPurchaseItem } from "../app/optimizer.mjs";
+import { buildOptimizerData, evaluateSpiritMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
 
@@ -239,6 +239,51 @@ test("Weapon, Spirit und Hybrid verwenden für Warden und Infernus eigene belegt
     assert.ok(hybrid.metrics.teamfightWindowDps >= spirit.metrics.teamfightWindowDps);
     assert.notEqual(weapon.metrics.teamfightWindowDps, spirit.metrics.teamfightWindowDps);
   }
+});
+
+test("Globale Ability-Cooldown-Reduktion und Wardens Last Stand folgen den belegten Zeitgrenzen", () => {
+  const data = canonicalWardenData();
+  const spirit = (inventory = []) => evaluateSpiritMechanics({ inventory: inventory.map((id) => data.itemsById.get(id)) }, { heroId: "warden" }, data);
+  const base = spirit();
+  const superior = spirit(["upgrade_cooldown_reduction"]);
+  const transcendent = spirit(["upgrade_cooldown_reduction", "upgrade_transcendent_cooldown"]);
+  const imbued = spirit(["upgrade_magic_tempo"]);
+  const baseBinding = base.abilities.find((ability) => ability.abilityId === "warden_binding_word");
+  const superiorBinding = superior.abilities.find((ability) => ability.abilityId === "warden_binding_word");
+  const lastStand = base.abilities.find((ability) => ability.abilityId === "warden_last_stand");
+  assert.equal(superior.cooldownReduction.multiplier, 0.8);
+  assert.ok(Math.abs(transcendent.cooldownReduction.multiplier - 0.6) < 1e-12);
+  assert.equal(imbued.cooldownReduction.multiplier, 1);
+  assert.equal(imbued.cooldownReduction.excluded.length, 1);
+  assert.equal(baseBinding.cooldown, 34);
+  assert.ok(Math.abs(superiorBinding.cooldown - 27.2) < 1e-12);
+  const bindingCastDamage = baseBinding.damageAt(1);
+  const superiorBindingCastDamage = superiorBinding.damageAt(1);
+  assert.equal(baseBinding.damageAt(33.999), bindingCastDamage);
+  assert.equal(baseBinding.damageAt(34), 2 * bindingCastDamage);
+  assert.equal(superiorBinding.damageAt(superiorBinding.cooldown - 0.001), superiorBindingCastDamage);
+  assert.equal(superiorBinding.damageAt(superiorBinding.cooldown), 2 * superiorBindingCastDamage);
+  assert.equal(lastStand.baseCooldown, 180);
+  assert.equal(lastStand.cooldown, 180);
+  assert.equal(lastStand.pulseDamage, 35);
+  assert.equal(lastStand.pulseCount, 12);
+  assert.equal(lastStand.damageAt(2.49), 0);
+  assert.equal(lastStand.damageAt(2.5), 35);
+  assert.equal(lastStand.damageAt(4), 140);
+  assert.equal(lastStand.damageAt(8), 420);
+  assert.equal(lastStand.damageAt(8.01), 420);
+  assert.equal(base.castTimeAt(4), 2.25);
+
+  const fullSpirit = evaluateCarryPerformance({ inventory: [] }, { heroId: "warden", damageFocus: "spirit", budget: 60000 }, data);
+  const fullHybrid = evaluateCarryPerformance({ inventory: [] }, { heroId: "warden", damageFocus: "hybrid", budget: 60000 }, data);
+  const compactSpirit = evaluateCarryPerformance({ inventory: [] }, { heroId: "warden", damageFocus: "spirit", budget: 60000, metricsOnly: true }, data);
+  const compactHybrid = evaluateCarryPerformance({ inventory: [] }, { heroId: "warden", damageFocus: "hybrid", budget: 60000, metricsOnly: true }, data);
+  assert.equal(fullSpirit.scenarios.scenarios.find((entry) => entry.id === "skirmish").window_damage, 310);
+  assert.equal(fullSpirit.scenarios.scenarios.find((entry) => entry.id === "teamfight").window_damage, 590);
+  assert.equal(fullHybrid.scenarios.scenarios.find((entry) => entry.id === "skirmish").window_damage,
+    310 + fullHybrid.scenarios.weaponMechanics.weaponDamageAt(4 - base.castTimeAt(4)));
+  assert.deepEqual(compactSpirit.metrics, fullSpirit.metrics);
+  assert.deepEqual(compactHybrid.metrics, fullHybrid.metrics);
 });
 
 test("Jeder kanonische Held liefert pro Carry-Fokus endliche Werte oder eine konkrete Basisdatenlücke", () => {

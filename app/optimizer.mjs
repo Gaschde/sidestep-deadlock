@@ -348,37 +348,86 @@ export function evaluateWeaponMechanics(state, request, data) {
   return profile;
 }
 
+function globalAbilityCooldownReduction(state, data) {
+  let multiplier = 1;
+  const sources = [], excluded = [];
+  for (const item of state.inventory) for (const effect of data.mechanicsByItem.get(item.item_id) || []) {
+    if (effect.mechanic !== "cooldown_reduction" || effect.confidence === "low") continue;
+    // "Imbue an ability" has no selected target in the shared profile. It
+    // must not silently turn into universal cooldown reduction.
+    if (/reduces the cooldown of your abilities/i.test(effect.condition || "")) {
+      const reduction = Math.max(0, Math.min(1, number(effect.value) / 100));
+      multiplier *= 1 - reduction;
+      sources.push({ item_id: item.item_id, effect_id: effect.effect_id, reduction_percent: reduction * 100 });
+    } else {
+      excluded.push({ item_id: item.item_id, effect_id: effect.effect_id, reason: "Cooldown gilt nur für eine nicht ausgewählte Imbue-Fähigkeit." });
+    }
+  }
+  return { multiplier, reduction_percent: (1 - multiplier) * 100, sources, excluded };
+}
+
 // Ability damage is intentionally conservative: a `damage` row is one
 // source-backed hit per cast; a `dps` row contributes only for an explicitly
-// recorded duration. Unknown trigger, tick semantics and skill upgrades stay
-// outside the baseline instead of becoming assumed damage.
+// recorded duration. Pulse damage additionally requires a source-backed
+// duration, interval and cast delay. Unknown trigger, tick semantics and
+// skill upgrades stay outside the baseline instead of becoming assumed damage.
 export function evaluateSpiritMechanics(state, request, data) {
   const spiritPower = permanentSpiritPower(state, data) + thresholdSnapshot(state.inventory, data.economy).bonuses.spiritPower;
-  const abilities = data.abilities.filter((ability) => ability.hero_id === request.heroId && ability.is_active === "true");
+  const cooldownReduction = globalAbilityCooldownReduction(state, data);
+  const abilities = (data.abilities || []).filter((ability) => ability.hero_id === request.heroId && ability.is_active === "true");
   const rows = abilities.map((ability) => {
-    const effects = data.abilityMechanics.filter((effect) => effect.ability_id === ability.ability_id && effect.confidence !== "low");
-    const cooldown = number(effects.find((effect) => effect.mechanic === "ability_cooldown")?.value || ability.base_cooldown);
+    const effects = (data.abilityMechanics || []).filter((effect) => effect.ability_id === ability.ability_id && effect.confidence !== "low");
+    const baseCooldown = number(effects.find((effect) => effect.mechanic === "ability_cooldown")?.value || ability.base_cooldown);
+    // Avoid turning a documented decimal boundary (for example 34 × 0.8)
+    // into a later cast solely through binary floating-point representation.
+    const cooldown = Math.round(baseCooldown * cooldownReduction.multiplier * 1e12) / 1e12;
     const castDelay = number(effects.find((effect) => effect.mechanic === "ability_cast_delay")?.value);
     const duration = number(effects.find((effect) => ["ability_duration", "debuff_duration", "burn_duration"].includes(effect.mechanic))?.value);
+    const pulseDps = effects.find((effect) => effect.mechanic === "pulse_dps" && effect.unit === "damage_per_second");
+    const pulseInterval = number(effects.find((effect) => effect.mechanic === "pulse_interval")?.value);
     let perCast = 0;
     for (const effect of effects) {
       const scaled = number(effect.value) + (effect.scaling_attribute === "spirit" ? number(effect.scaling_coefficient) * spiritPower : 0);
       if (effect.effect_type === "damage" && effect.unit === "damage") perCast += scaled;
       if (effect.mechanic === "dps" && effect.unit === "damage_per_second" && duration > 0) perCast += scaled * duration;
     }
-    return { abilityId: ability.ability_id, cooldown, castDelay, duration, perCast,
-      included: perCast > 0 && cooldown > 0,
-      excluded: perCast === 0 ? "Kein eindeutig berechenbarer Schaden mit Dauer/Cooldown." : null };
+    const pulseDamage = pulseDps ? (number(pulseDps.value) + (pulseDps.scaling_attribute === "spirit" ? number(pulseDps.scaling_coefficient) * spiritPower : 0)) * pulseInterval : 0;
+    const pulseCount = pulseDps && duration > 0 && pulseInterval > 0 ? Math.floor(duration / pulseInterval + Number.EPSILON) : 0;
+    const pulseSupported = pulseDps && duration > 0 && pulseInterval > 0 && castDelay >= 0;
+    const channelSeconds = ability.ability_type === "channeled" ? duration : 0;
+    const fullPulseDamage = pulseSupported ? pulseDamage * pulseCount : 0;
+    const included = (perCast > 0 || fullPulseDamage > 0) && cooldown > 0;
+    const damageAt = (seconds) => {
+      if (!included || seconds <= 0) return 0;
+      let total = 0;
+      const casts = 1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / cooldown);
+      if (perCast > 0) total += casts * perCast;
+      if (pulseSupported) for (let cast = 0; cast < casts; cast++) {
+        const elapsed = seconds - cast * cooldown - castDelay;
+        const completedPulses = Math.max(0, Math.min(pulseCount, Math.floor(Math.min(duration, elapsed) / pulseInterval + Number.EPSILON)));
+        total += completedPulses * pulseDamage;
+      }
+      return total;
+    };
+    return { abilityId: ability.ability_id, abilityType: ability.ability_type, baseCooldown, cooldown, castDelay, duration, perCast: perCast + fullPulseDamage,
+      pulseDamage, pulseInterval, pulseCount, channelSeconds, damageAt,
+      included, excluded: included ? null : "Kein eindeutig berechenbarer Schaden mit Dauer/Cooldown." };
   });
   const damageAt = (seconds) => rows.reduce((total, row) => {
     if (!row.included || seconds <= 0) return total;
-    return total + (1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / row.cooldown)) * row.perCast;
+    return total + row.damageAt(seconds);
   }, 0);
-  const castTimeAt = (seconds) => rows.reduce((total, row) => row.included
-    ? total + (1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / row.cooldown)) * row.castDelay : total, 0);
-  return { spiritPower, abilities: rows, damageAt, castTimeAt,
+  const castTimeAt = (seconds) => rows.reduce((total, row) => {
+    if (!row.included || seconds <= 0) return total;
+    const casts = 1 + Math.floor(Math.max(0, seconds - Number.EPSILON) / row.cooldown);
+    for (let cast = 0; cast < casts; cast++) {
+      total += Math.max(0, Math.min(row.castDelay + row.channelSeconds, seconds - cast * row.cooldown));
+    }
+    return total;
+  }, 0);
+  return { spiritPower, cooldownReduction, abilities: rows, damageAt, castTimeAt,
     sustainedDps: damageAt(60) / 60,
-    treatment: "Nur belegter Basisschaden, Spirit-Skalierung, Cooldown und Cast-Delay aktiver Fähigkeiten; unbekannte Treffer-, Tick- und Skillzustände bleiben ausgeschlossen." };
+    treatment: "Nur belegter Basisschaden, Pulse mit Dauer/Intervall/Cast-Delay, globale Ability-Cooldown-Reduktion und Cast-Delay aktiver Fähigkeiten. Channeled-Fähigkeiten sperren zusätzlich ihre belegte Dauer für Weapon-Zeit; unbekannte Treffer-, Tick- und Skillzustände bleiben ausgeschlossen." };
 }
 
 function focusDamageModel(weapon, spirit, focus) {
