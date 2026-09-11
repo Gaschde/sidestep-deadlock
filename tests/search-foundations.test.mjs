@@ -7,7 +7,7 @@ import { paretoFilter } from "../app/reference-search.mjs";
 import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto, evaluateWardenWeaponPerformance, evaluateWardenCarryPerformance, evaluateCarryPerformance, computeWardenReference } from "../app/warden-search.mjs";
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
-import { runAnytimeWarden, scoreAnytimePath, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS, DAMAGE_FOCUS_WEIGHTS } from "../app/anytime-search.mjs";
+import { runAnytimeWarden, scoreAnytimePath, preferPublishedCandidate, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS, DAMAGE_FOCUS_WEIGHTS } from "../app/anytime-search.mjs";
 import { buildOptimizerData, evaluateAfterburnMechanics, evaluateSpiritMechanics, evaluateWeaponMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
@@ -42,6 +42,13 @@ test("Schadensfokus gewichtet normalisierte Bullet- und Spirit-Beiträge ohne Ka
   const hybrid = scoreAnytimePath(points, reference, 100, "hybrid");
   assert.ok(weapon.score > hybrid.score && hybrid.score > spirit.score);
   assert.equal(weapon.metricGroups.survival.end, spirit.metricGroups.survival.end);
+});
+
+test("Veröffentlichung verwendet Transaktionen nur als exakten Gleichstandsentscheid", () => {
+  assert.equal(preferPublishedCandidate({ score: 0.5, transactions: 8 }, { score: 0.5, transactions: 9 }), true);
+  assert.equal(preferPublishedCandidate({ score: 0.5, transactions: 9 }, { score: 0.5, transactions: 8 }), false);
+  assert.equal(preferPublishedCandidate({ score: 0.500000000001, transactions: 99 }, { score: 0.5, transactions: 1 }), true);
+  assert.equal(preferPublishedCandidate({ score: 0.499999999999, transactions: 1 }, { score: 0.5, transactions: 99 }), false);
 });
 
 test("Slowing Hex erhält nur seinen belegbaren Zusatznutzen gegenüber Binding Word", () => {

@@ -94,11 +94,19 @@ export function scoreAnytimePath(points, reference, budget, damageFocus = "hybri
     metricGroups: { damage: { ...damage, focus: damageFocus, weights }, survival } };
 }
 
+// Transaction count is a publication tie-breaker only. Keeping it separate
+// from score protects a genuinely stronger, more involved legal path.
+export function preferPublishedCandidate(candidate, incumbent) {
+  if (!incumbent) return true;
+  return candidate.score > incumbent.score ||
+    (candidate.score === incumbent.score && candidate.transactions < incumbent.transactions);
+}
+
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
 // Deadline is an explicit approximation budget, not an optimality certificate.
 export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon", itemIds = data.items.map((i) => i.item_id), budget = 60000,
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
-  localRefinement = true, profile = false, compactMetrics = true }) {
+  localRefinement = true, pathSimplification = true, profile = false, compactMetrics = true }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   const started = performance.now(), deadline = started + timeMs;
   const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, heroId));
@@ -164,6 +172,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   if (JSON.stringify(reference.axis) !== JSON.stringify(resource.axis)) throw new Error("Reference axis mismatch");
   let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
   let localRefinementRan = false, localAlternativesTried = 0, localImprovements = 0, localBaselineScore = null;
+  let pathSimplificationsTried = 0, pathSimplificationsAccepted = 0;
   const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
   const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap(), trajectoryCache = new WeakMap();
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
@@ -266,6 +275,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     preferenceCache.set(node, value);
     return value;
   };
+  const transactionCount = (events) => events.reduce((count, event) => count + Number(event.type !== "save"), 0);
   const publish = (node) => {
     const chain = [];
     for (let n = node; n.parent; n = n.parent) chain.push(n);
@@ -273,17 +283,25 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     const points = buildPoints(node);
     const quality = scoreAnytimePath(points, reference, budget, damageFocus);
     completedPaths++;
-    if (winner && quality.score <= winner.quality.score) return;
+    const candidateTransactions = transactionCount(chain.map((n) => n.event));
+    // A shorter path is only preferable when every scored value is exactly
+    // unchanged. It is deliberately not a score term: a longer legal path
+    // with even a marginally higher path score remains the winner.
+    if (!preferPublishedCandidate({ score: quality.score, transactions: candidateTransactions }, winner && {
+      score: winner.quality.score, transactions: transactionCount(winner.state.events)
+    })) return false;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
     const validation = timed("outputValidationMs", () => validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state }));
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
-        localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore, profile: profile ? profileData : undefined }, approximate: true };
+        localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
+        pathSimplificationsTried, pathSimplificationsAccepted, profile: profile ? profileData : undefined }, approximate: true };
     winningNode = node;
     publishedImprovements++;
     onResult?.(winner);
+    return true;
   };
   // Keep the sampled reference fixed and try every legal first deviation from
   // the current best path. Each suffix is then completed with the same score.
@@ -297,6 +315,82 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     for (let node = winningNode; node; node = node.parent) baseline.push(node);
     baseline.reverse();
     const eventKey = (event) => JSON.stringify(event);
+    // General counterpath for a sell/rebuy episode: keep an item instead of
+    // replacing or selling it, then omit its later ordinary repurchase. The
+    // original actions between both points are replayed through the domain;
+    // therefore the candidate is discarded if a slot, item source, cash or
+    // any later action would cease to be legal. This is not an item rule and
+    // does not prohibit legitimate replacements or rebuys.
+    const replayWithout = (skip, replacements = new Map()) => {
+      let replayed = { state: initial, parent: null };
+      for (let index = 0; index < baseline.length - 1; index++) {
+        if (skip.has(index)) continue;
+        const original = baseline[index + 1].event;
+        const replacement = replacements.get(index);
+        const next = transitions(replayed.state).find((state) => replacement
+          ? replacement(state.events[0])
+          : eventKey(state.events[0]) === eventKey(original));
+        if (!next) return null;
+        replayed = { state: clean(next), event: next.events[0], parent: replayed };
+      }
+      return replayed.state.earnedSouls === budget ? replayed : null;
+    };
+    const simplifySellRebuys = () => {
+      for (let soldAt = 0; soldAt + 1 < baseline.length && performance.now() < deadline; soldAt++) {
+        const sold = baseline[soldAt + 1].event;
+        if (!sold || (sold.type !== "sell" && sold.type !== "replacement")) continue;
+        const itemId = sold.from;
+        for (let reboughtAt = soldAt + 1; reboughtAt + 1 < baseline.length && performance.now() < deadline; reboughtAt++) {
+          const rebought = baseline[reboughtAt + 1].event;
+          // An ordinary purchase is the unambiguous inverse: keeping the old
+          // item and omitting both actions restores the same item afterwards.
+          if (rebought?.type !== "purchase" || rebought.item !== itemId) continue;
+          pathSimplificationsTried++;
+          const candidate = replayWithout(new Set([soldAt, reboughtAt]));
+          if (!candidate) continue;
+          const before = winner?.quality.score;
+          const beforeTransactions = winner ? transactionCount(winner.state.events) : Infinity;
+          if (publish(candidate) && (winner.quality.score > before || transactionCount(winner.state.events) < beforeTransactions)) {
+            pathSimplificationsAccepted++;
+          }
+        }
+      }
+    };
+    const simplifyTemporaryPurchases = () => {
+      for (let boughtAt = 0; boughtAt + 1 < baseline.length && performance.now() < deadline; boughtAt++) {
+        const bought = baseline[boughtAt + 1].event;
+        if (bought?.type !== "purchase") continue;
+        for (let removedAt = boughtAt + 1; removedAt + 1 < baseline.length && performance.now() < deadline; removedAt++) {
+          const removed = baseline[removedAt + 1].event;
+          if (!removed || (removed.type !== "sell" && removed.type !== "replacement") || removed.from !== bought.item) continue;
+          pathSimplificationsTried++;
+          const replacements = new Map();
+          // Purchasing the replacement target directly is the legal inverse
+          // of purchase X followed by replacement X→Y. The extra cash from
+          // omitting X makes this no less affordable; replay still verifies
+          // every subsequent action and its concrete slot state.
+          if (removed.type === "replacement") {
+            replacements.set(removedAt, (event) => event?.type === "purchase" && event.item === removed.item);
+          }
+          const candidate = replayWithout(new Set([boughtAt, ...(removed.type === "sell" ? [removedAt] : [])]), replacements);
+          if (!candidate) continue;
+          const before = winner?.quality.score;
+          const beforeTransactions = winner ? transactionCount(winner.state.events) : Infinity;
+          if (publish(candidate) && (winner.quality.score > before || transactionCount(winner.state.events) < beforeTransactions)) {
+            pathSimplificationsAccepted++;
+          }
+        }
+      }
+    };
+    if (pathSimplification) simplifySellRebuys();
+    if (pathSimplification) simplifyTemporaryPurchases();
+    // A successful simplification becomes the new baseline for all further
+    // first-deviation checks in this refinement pass.
+    if (winningNode) {
+      baseline.length = 0;
+      for (let node = winningNode; node; node = node.parent) baseline.push(node);
+      baseline.reverse();
+    }
     const completeGreedily = (start) => exclusive("pathContinuationMs", () => {
       if (profile) profileData.variants.localStarted++;
       let node = start;
@@ -462,7 +556,8 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
-    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore, profile: profile ? profileData : undefined } } : null;
+    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
+    pathSimplificationsTried, pathSimplificationsAccepted, profile: profile ? profileData : undefined } } : null;
 }
 
 export const runAnytimeWarden = runAnytimeCarry;
