@@ -5,9 +5,10 @@ import { runAnytimeCarry } from "./anytime-search.mjs";
 self.onmessage = async (event) => {
   const { data, itemIds, budget } = event.data;
   try {
-    self.postMessage({ type: "started", itemCount: itemIds.length, budget });
+    const effectiveBudget = event.data.mode === "anytime" ? 40000 : budget;
+    self.postMessage({ type: "started", itemCount: itemIds.length, budget: effectiveBudget });
     if (event.data.mode === "anytime") {
-      const result = runAnytimeCarry({ data, itemIds, budget, heroId: event.data.heroId, damageFocus: event.data.damageFocus, timeMs: 25000, slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
+      const result = runAnytimeCarry({ data, itemIds, budget: effectiveBudget, heroId: event.data.heroId, damageFocus: event.data.damageFocus, timeMs: 25000, slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
         onResult: (result) => self.postMessage({ type: "incumbent", result }),
         onProgress: (progress) => self.postMessage({ type: "progress", ...progress }) });
       if (!result) throw new Error("Kein vollständiger Pfad im Rechenbudget gefunden.");
