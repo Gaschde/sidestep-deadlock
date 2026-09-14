@@ -1,11 +1,12 @@
 import { runWardenCarryPareto, cachedWardenReference } from "./warden-search.mjs";
 import { indexedReferenceStorage } from "./reference-cache.mjs";
 import { runAnytimeCarry } from "./anytime-search.mjs";
+import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
 
 self.onmessage = async (event) => {
   const { data, itemIds, budget } = event.data;
   try {
-    const effectiveBudget = event.data.mode === "anytime" ? 40000 : budget;
+    const effectiveBudget = event.data.mode === "anytime" ? FAST_SEARCH_BUDGET : budget;
     self.postMessage({ type: "started", itemCount: itemIds.length, budget: effectiveBudget });
     if (event.data.mode === "anytime") {
       const result = runAnytimeCarry({ data, itemIds, budget: effectiveBudget, heroId: event.data.heroId, damageFocus: event.data.damageFocus, timeMs: 25000, slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],

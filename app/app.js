@@ -1,6 +1,7 @@
 import { formatSouls, manifestsAreCompatible, parseCsv } from "./lib.mjs";
 import { buildOptimizerData, optimizeWeaponCarryFullBuild } from "./optimizer.mjs";
 import { evaluateCarryPerformance } from "./warden-search.mjs";
+import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
 
 const paths = {
   coreManifest: "../data/core/manifest.json",
@@ -166,6 +167,7 @@ function renderBuildCard(event) {
     ${itemTile(event.item)}
     <strong>${event.item.name}</strong>
     <small>${event.purchase_type === "sell" ? "Verkaufen" : event.purchase_type === "replacement" ? `Ersetzt ${upgrade.name}` : upgrade ? `↑ ${upgrade.name}` : `${event.item.category} · T${event.item.tier}`}</small>
+    ${event.cashCost === undefined ? "" : `<small>${event.cashCost >= 0 ? `Zahlung ${formatSouls(event.cashCost)}` : `Verkauf ${formatSouls(-event.cashCost)}`}${event.saleProceeds ? ` · Erlös ${formatSouls(event.saleProceeds)}` : ""}</small>`}
     ${event.earnedSouls === undefined ? "" : `<small>Bei ${event.earnedSouls.toLocaleString("de-CH")} verdienten Souls</small>`}
   </article>`;
 }
@@ -230,12 +232,12 @@ async function createBuild() {
   const damageFocus = $("#damage-focus").value;
   if (role !== "carry" || !["weapon", "spirit", "hybrid"].includes(damageFocus) || !["warden", "infernus"].includes(state.selectedHeroId)) {
     state.build = null;
-    $("#result-summary").textContent = "Der bisherige Optimizer bleibt auf Warden oder Infernus · Carry · Weapon/Spirit/Hybrid begrenzt. Für alle kanonischen Helden bitte „Build erstellen · 60k“ verwenden.";
+    $("#result-summary").textContent = "Der bisherige Optimizer bleibt auf Warden oder Infernus · Carry · Weapon/Spirit/Hybrid begrenzt. Für alle kanonischen Helden bitte „Build erstellen · 40k“ verwenden.";
     renderPhase();
     return;
   }
   if (state.selectedHeroId !== "warden" || damageFocus !== "weapon") {
-    $("#result-summary").textContent = "Der bisherige Optimizer bleibt nur für Warden · Weapon verfügbar. Bitte „Build erstellen · 60k“ verwenden.";
+    $("#result-summary").textContent = "Der bisherige Optimizer bleibt nur für Warden · Weapon verfügbar. Bitte „Build erstellen · 40k“ verwenden.";
     return;
   }
   state.build = optimizeWeaponCarryFullBuild({ heroId: state.selectedHeroId, objective: "weapon_magazine_dps", maxTransactions: 28 }, state.data);
@@ -259,7 +261,7 @@ function cancelNewBuild() {
 }
 
 function setFastControls(running) {
-  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 60k";
+  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 40k";
   for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus"]) $("#" + id).disabled = running;
 }
 
@@ -272,7 +274,9 @@ function fastBuildSummary(result, inventory, telemetry) {
   const evaluations = telemetry?.evaluations ?? result.searchTelemetry?.evaluations ?? result.telemetry?.evaluations ?? 0;
   const completedPaths = telemetry?.completedPaths ?? result.searchTelemetry?.completedPaths ?? result.telemetry?.completedPaths ?? 0;
   const runtimeMs = telemetry?.runtimeMs ?? result.searchTelemetry?.runtimeMs ?? result.telemetry?.runtimeMs ?? 0;
-  return `${inventory.length}/${slots} Slots · davon ${active}/${activeLimit} aktiv · ${categoryCount("Weapon")} Weapon · ${categoryCount("Vitality")} Vitality · ${categoryCount("Spirit")} Spirit · Total ${formatSouls(totalSouls)} · ${evaluations.toLocaleString("de-CH")} Inventare bewertet · ${completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade · ${(runtimeMs / 1000).toFixed(1)} s`;
+  const audit = telemetry?.terminalAudit ?? result.searchTelemetry?.terminalAudit ?? result.telemetry?.terminalAudit;
+  const auditText = audit ? ` · Endgegenprobe ${audit.complete ? "vollständig" : "unterbrochen"} (${audit.checkedActions}/${audit.legalActions})` : "";
+  return `${inventory.length}/${slots} Slots · davon ${active}/${activeLimit} aktiv · ${categoryCount("Weapon")} Weapon · ${categoryCount("Vitality")} Vitality · ${categoryCount("Spirit")} Spirit · Ausgaben ${formatSouls(totalSouls)} · Rest ${formatSouls(result.state.cash)} · ${evaluations.toLocaleString("de-CH")} Inventare bewertet · ${completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade · ${(runtimeMs / 1000).toFixed(1)} s${auditText}`;
 }
 
 function startFastBuild() {
@@ -297,16 +301,17 @@ function startFastBuild() {
       const itemMap = state.data.itemsById;
       const events = result.state.events.map((event, i) => ({ ...event, earnedSouls: result.state.snapshots[i + 1].earnedSouls }))
         .filter((event) => event.type !== "save").map((event, i) => ({ step: i + 1, item: itemMap.get(event.type === "sell" ? event.from : event.item),
-          upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls }));
+          upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls,
+          cashCost: event.payment, saleProceeds: event.saleProceeds || 0 }));
       const inventory = result.state.inventory.map((id) => itemMap.get(id));
       const damageFocus = $("#damage-focus").value;
-      const evaluation = evaluateCarryPerformance(result.state, { heroId: state.selectedHeroId, damageFocus, budget: 60000 }, state.data);
+      const evaluation = evaluateCarryPerformance(result.state, { heroId: state.selectedHeroId, damageFocus, budget: FAST_SEARCH_BUDGET }, state.data);
       const unavailableChargeItems = result.unavailableItemIds
         .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
         .join(", ");
-      state.build = { events, inventory, spent: result.state.earnedSouls, winner: { evaluation },
+      state.build = { events, inventory, spent: result.state.earnedSouls - result.state.cash, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: `Legaler Kaufpfad von 0 bis 60.000 verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
+          scope: `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
       $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
       $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();
@@ -321,14 +326,14 @@ function startFastBuild() {
     } else if (message.type === "error") finish(`Suche fehlgeschlagen: ${message.message}`);
   };
   worker.onerror = (error) => finish(`Suche fehlgeschlagen: ${error.message}`);
-  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: 60000, heroId: state.selectedHeroId, damageFocus: $("#damage-focus").value });
+  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: FAST_SEARCH_BUDGET, heroId: state.selectedHeroId, damageFocus: $("#damage-focus").value });
 }
 
-function startNewBuild(budget = 60000) {
+function startNewBuild(budget = FAST_SEARCH_BUDGET) {
   const role = $("#role").value;
   const damageFocus = $("#damage-focus").value;
   if (state.selectedHeroId !== "warden" || role !== "carry" || damageFocus !== "weapon") {
-    $("#search-progress").textContent = "Die vollständige Diagnose bleibt Warden · Carry · Weapon vorbehalten. Für alle Helden bitte „Build erstellen · 60k“ verwenden.";
+    $("#search-progress").textContent = "Die vollständige Diagnose bleibt Warden · Carry · Weapon vorbehalten. Für alle Helden bitte „Build erstellen · 40k“ verwenden.";
     return;
   }
   if (activeOptimizerWorker) {
@@ -443,8 +448,8 @@ function bindEvents() {
   $("#damage-focus").addEventListener("change", () => $("#role").dispatchEvent(new Event("change")));
   $("#build-button").addEventListener("click", createBuild);
   $("#fast-build-button").addEventListener("click", startFastBuild);
-  $("#new-build-button").addEventListener("click", () => startNewBuild(60000));
-  $("#new-build-40k-button").addEventListener("click", () => startNewBuild(40000));
+  $("#new-build-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
+  $("#new-build-40k-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
 }
 
 async function init() {

@@ -2,6 +2,7 @@ import { createDeadlockDomain } from "./deadlock-domain.mjs";
 import { evaluateCarryPerformance, CARRY_METRICS, carryResourceAxis } from "./warden-search.mjs";
 import { validateSearchPath } from "./validate-search-path.mjs";
 import { heroCanPurchaseItem } from "./optimizer.mjs";
+import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
 
 export const ANYTIME_METRIC_GROUPS = {
   damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
@@ -104,11 +105,14 @@ export function preferPublishedCandidate(candidate, incumbent) {
 
 // Repeated legal rollouts, first greedy, later with reproducible exploration.
 // Deadline is an explicit approximation budget, not an optimality certificate.
-export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon", itemIds = data.items.map((i) => i.item_id), budget = 60000,
+export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon", itemIds = data.items.map((i) => i.item_id), budget = FAST_SEARCH_BUDGET,
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
   localRefinement = true, pathSimplification = true, profile = false, compactMetrics = true }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
-  const started = performance.now(), deadline = started + timeMs;
+  // Reserve an explicit part of the visible budget for the terminal shop
+  // audit. It is a verification phase, not an item or search-space limit.
+  const terminalAuditReserveMs = Math.min(2000, Math.max(0, timeMs * 0.2));
+  const started = performance.now(), deadline = started + timeMs - terminalAuditReserveMs, terminalAuditDeadline = started + timeMs;
   const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, heroId));
   const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
   const resource = carryResourceAxis(data, legalItemIds, budget);
@@ -173,6 +177,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
   let localRefinementRan = false, localAlternativesTried = 0, localImprovements = 0, localBaselineScore = null;
   let pathSimplificationsTried = 0, pathSimplificationsAccepted = 0;
+  let terminalAudit = { reserveMs: terminalAuditReserveMs, complete: false, rounds: 0, legalActions: 0, checkedActions: 0, improvements: 0 };
   const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
   const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap(), trajectoryCache = new WeakMap();
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
@@ -297,7 +302,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
       unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
         localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
-        pathSimplificationsTried, pathSimplificationsAccepted, profile: profile ? profileData : undefined }, approximate: true };
+        pathSimplificationsTried, pathSimplificationsAccepted, terminalAudit, profile: profile ? profileData : undefined }, approximate: true };
     winningNode = node;
     publishedImprovements++;
     onResult?.(winner);
@@ -555,9 +560,33 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     if (rollouts === 1 && localRefinement) refineCurrentWinner();
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
+  // Exhaustively inspect the direct shop neighbourhood of the published 60k
+  // state as long as the reserved visible budget permits. Every candidate is
+  // produced by the domain, so payments, sellback, slots and upgrade rules
+  // are the same as in the real path. Strict score improvements are adopted
+  // and the new end state is checked again; equal-score actions cannot cycle.
+  if (winner && winningNode) {
+    while (performance.now() < terminalAuditDeadline) {
+      terminalAudit.rounds++;
+      const actions = transitions(winningNode.state).filter((state) => ["purchase", "upgrade", "replacement"].includes(state.events[0]?.type));
+      terminalAudit.legalActions += actions.length;
+      let best = null, bestQuality = winner.quality;
+      let interrupted = false;
+      for (const state of actions) {
+        if (performance.now() >= terminalAuditDeadline) { interrupted = true; break; }
+        terminalAudit.checkedActions++;
+        const candidate = { state: clean(state), event: state.events[0], parent: winningNode };
+        const quality = scoreAnytimePath(buildPoints(candidate), reference, budget, damageFocus);
+        if (quality.score > bestQuality.score) { best = candidate; bestQuality = quality; }
+      }
+      if (interrupted) break;
+      if (!best || !publish(best)) { terminalAudit.complete = true; break; }
+      terminalAudit.improvements++;
+    }
+  }
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
     localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
-    pathSimplificationsTried, pathSimplificationsAccepted, profile: profile ? profileData : undefined } } : null;
+    pathSimplificationsTried, pathSimplificationsAccepted, terminalAudit, profile: profile ? profileData : undefined } } : null;
 }
 
 export const runAnytimeWarden = runAnytimeCarry;

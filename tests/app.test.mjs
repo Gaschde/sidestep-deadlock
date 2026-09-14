@@ -8,6 +8,16 @@ import { createSmallDomain } from "../app/small-domain.mjs";
 import { calculateTrajectoryObjectives } from "../app/trajectory-objectives.mjs";
 import { createDeadlockDomain } from "../app/deadlock-domain.mjs";
 import { buildOptimizerData } from "../app/optimizer.mjs";
+import { FAST_SEARCH_BUDGET } from "../app/search-config.mjs";
+
+test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
+  assert.equal(FAST_SEARCH_BUDGET, 40000);
+  const app = readFileSync("app/app.js", "utf8");
+  const worker = readFileSync("app/optimizer-worker.mjs", "utf8");
+  assert.match(app, /budget: FAST_SEARCH_BUDGET/);
+  assert.match(worker, /effectiveBudget = event\.data\.mode === "anytime" \? FAST_SEARCH_BUDGET/);
+  assert.doesNotMatch(app, /budget: 60000/);
+});
 
 test("parseCsv verarbeitet Kommas und Zeilenumbrüche in Anführungszeichen", () => {
   const rows = parseCsv('id,name,notes\n1,"Alpha, Beta","Zeile 1\nZeile 2"\n');
