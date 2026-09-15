@@ -21,37 +21,32 @@ Sidestep does not claim to know what the data cannot prove. A missing interactio
 
 ## Current status
 
-The repository already contains:
+The repository currently contains:
 
 - a verified, patch-specific dataset for items, heroes, abilities, progression, global mechanics, and documented special interactions;
 - a deterministic calculator for evaluating a specified build;
-- a local JavaScript Warden Weapon-Carry slice with bounded forward search, legal purchases, upgrades, one-step replacements, costs, investments, slots, active-item limits, path checkpoints, and a documented robust-foundation check;
-- a shared sustained-weapon-DPS calculation for the slice's result, path checkpoints, and legacy preselection. It derives Warden's Spirit contribution through verified fire-rate scaling without additionally adding an already-derived Spirit-DPS value;
+- a local JavaScript browser search for Carry builds with Weapon, Spirit, and Hybrid focus; it uses one shared search core for every canonical hero whose required base weapon data are present;
+- a 0–40,000-Souls test scenario with twelve slots from the start, all legally purchasable canonical items, a visible 25-second budget, early results, cancellation, and legal path replay before publication;
+- a documented approximate selection rule: 70% end strength / 30% path, with damage and survival weighted 50/50; Weapon, Spirit, and Hybrid only change the Bullet/Spirit preference inside the damage group;
+- common combat windows that combine weapon damage, directly modelled ability damage, and verified procs without treating the focus as an action ban. Warden and Infernus are the more closely checked hero profiles; other selectable profiles are explicitly experimental;
 - multiplicative stacking of permanent Bullet and Spirit Resistance according to `RES-002` in `data/core/mechanics.json`;
 - separate permanent, active, and conditional healing/mobility profiles. Conditional values are documented but not silently added as simultaneous baseline effects;
 - explicit unknown-state handling: without a supplied and modeled level/skill state, the comparison uses only canonical base stats and does not invent ability bonuses;
 - a versioned Deadlock Assets API import and review workflow;
 - automated tests for the calculator, path generation, current Warden slice, and API importer.
 
-The optimizer is intentionally described as **best evaluated**, not globally optimal. The Warden slice now retains a bounded number of different purchase histories per inventory and uses a disclosed, sensitivity-tested Carry selection model. It does not yet jointly optimize skills, level growth, hit/headshot rates, positional falloff, proc uptime, objectives, or multi-step sale chains. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for the current project status, decisions, and open points, and [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the technical handover summary.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. It does not yet jointly optimize skill levels, hit/headshot rates, positional falloff, proc uptime, objectives, or arbitrary multi-step sale chains. The terminal shop check is time-bounded and reports whether it completed. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for dated measurements and decisions, [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the current handover, and [docs/search_specification.md](docs/search_specification.md) for the precise browser model and its limits.
 
-## Current review roadmap
+## Browser scope and limits
 
-The current Warden review is deliberately being implemented in small, testable steps:
-
-1. **Effect calculation — complete.** Spirit-DPS double counting was removed; permanent resistance stacking is multiplicative; conditional healing and movement remain separate from baseline values; lane healing, regeneration, and lifesteal are distinct; unknown level and skill states are explicit.
-2. **Selection decision — complete.** Short/long weapon damage, Bullet-EHP, Spirit-EHP, and the achieved early-path foundation are compared as visible ratios. Balanced, offensive, and safer profiles are sensitivity-tested; the standard maximizes the weakest profile score.
-3. **Purchase-history preservation — complete.** Up to three different purchase histories per current inventory remain in the bounded search. Early-foundation checkpoints are measured and softly devalued when missed, not used as an exclusion filter.
-4. Make a small set of distinct combat comparisons affect decisions.
-5. Continue upgrades and replacements beyond arbitrary budget or full-slot boundaries.
-6. Correct result presentation for upgrades, replacements, costs, and path labels.
-7. Prove quality and runtime with targeted regressions and like-for-like path comparisons.
-
-Steps 4–7 are not implemented yet. The history bound of three is a technical search limit, not a gameplay rule.
+- **Supported UI scope:** Carry with Weapon, Spirit, or Hybrid focus. The selector contains all canonical heroes; heroes without Bullet Damage, fire rate, magazine, or reload data explain the missing fields instead of creating a zero-value build.
+- **Modelled combat:** permanent item stats, reload/magazine operation, documented cast and channel time, directly specified ability damage and duration-DPS, permanent cooldown reduction, Warden's Last Stand timing, and Infernus Afterburn after its documented weapon-hit trigger.
+- **Not modelled as score:** unknown skill levels, hit/headshot probability, unspecified tick timing, target changes, most active-item effects, unproven proc uptime, and mechanics without sufficient canonical timing or trigger data. They remain visible as gaps rather than being treated as confirmed zero value.
+- **Search scope:** all legal candidates remain available; the 25-second heuristic and sampled reference do not prove global optimality. A path may save Souls before the 40k horizon.
 
 ## Local web app
 
-The current desktop project also includes a JavaScript web app for interactively inspecting the Warden build path and the underlying verified item effects. Start it with:
+The current desktop project includes a JavaScript web app for interactively examining an approximate Carry build and its legal purchase path. Start it with:
 
 ```text
 npm start
