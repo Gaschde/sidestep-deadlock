@@ -177,7 +177,8 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   let winner = null, winningNode = null, rollouts = 0, completedPaths = 0, publishedImprovements = 0, rng = 123456789;
   let localRefinementRan = false, localAlternativesTried = 0, localImprovements = 0, localBaselineScore = null;
   let pathSimplificationsTried = 0, pathSimplificationsAccepted = 0;
-  let terminalAudit = { reserveMs: terminalAuditReserveMs, complete: false, rounds: 0, legalActions: 0, checkedActions: 0, improvements: 0 };
+  let terminalAudit = { reserveMs: terminalAuditReserveMs, complete: false, rounds: 0, legalActions: 0, checkedActions: 0, improvements: 0,
+    incumbentScore: null, bestCheckedScore: null, bestCheckedAction: null };
   const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
   const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap(), trajectoryCache = new WeakMap();
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
@@ -281,7 +282,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     return value;
   };
   const transactionCount = (events) => events.reduce((count, event) => count + Number(event.type !== "save"), 0);
-  const publish = (node) => {
+  const publish = (node, incumbentQuality = winner?.quality) => {
     const chain = [];
     for (let n = node; n.parent; n = n.parent) chain.push(n);
     chain.reverse();
@@ -292,8 +293,8 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     // A shorter path is only preferable when every scored value is exactly
     // unchanged. It is deliberately not a score term: a longer legal path
     // with even a marginally higher path score remains the winner.
-    if (!preferPublishedCandidate({ score: quality.score, transactions: candidateTransactions }, winner && {
-      score: winner.quality.score, transactions: transactionCount(winner.state.events)
+    if (!preferPublishedCandidate({ score: quality.score, transactions: candidateTransactions }, incumbentQuality && {
+      score: incumbentQuality.score, transactions: transactionCount(winner.state.events)
     })) return false;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
     const validation = timed("outputValidationMs", () => validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state }));
@@ -560,7 +561,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     if (rollouts === 1 && localRefinement) refineCurrentWinner();
     onProgress?.({ phase: "anytime", runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements, bestScore: winner?.quality.score });
   }
-  // Exhaustively inspect the direct shop neighbourhood of the published 60k
+  // Inspect the direct shop neighbourhood of the published terminal state
   // state as long as the reserved visible budget permits. Every candidate is
   // produced by the domain, so payments, sellback, slots and upgrade rules
   // are the same as in the real path. Strict score improvements are adopted
@@ -568,20 +569,41 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   if (winner && winningNode) {
     while (performance.now() < terminalAuditDeadline) {
       terminalAudit.rounds++;
-      const actions = transitions(winningNode.state).filter((state) => ["purchase", "upgrade", "replacement"].includes(state.events[0]?.type));
+      // Recompute the incumbent from the actual node being expanded. A stored
+      // publication score may describe an earlier representative; the audit
+      // must compare every successor to the exact path it extends.
+      const incumbentQuality = scoreAnytimePath(buildPoints(winningNode), reference, budget, damageFocus);
+      terminalAudit.incumbentScore = incumbentQuality.score;
+      const actions = transitions(winningNode.state).filter((state) => ["purchase", "upgrade", "replacement"].includes(state.events.at(-1)?.type));
       terminalAudit.legalActions += actions.length;
-      let best = null, bestQuality = winner.quality;
+      let best = null, bestQuality = incumbentQuality;
       let interrupted = false;
       for (const state of actions) {
         if (performance.now() >= terminalAuditDeadline) { interrupted = true; break; }
         terminalAudit.checkedActions++;
-        const candidate = { state: clean(state), event: state.events[0], parent: winningNode };
+        const candidate = { state: clean(state), event: state.events.at(-1), parent: winningNode };
         const quality = scoreAnytimePath(buildPoints(candidate), reference, budget, damageFocus);
-        if (quality.score > bestQuality.score) { best = candidate; bestQuality = quality; }
+        if (quality.score > bestQuality.score) {
+          best = candidate;
+          bestQuality = quality;
+          terminalAudit.bestCheckedScore = quality.score;
+          terminalAudit.bestCheckedAction = candidate.event;
+        }
+      }
+      // A deadline may interrupt the scan after a strictly better, fully
+      // evaluated legal successor was found. Publish that successor first:
+      // cancellation may stop further auditing, never discard a completed
+      // improvement. The following iteration starts from that new state only
+      // while time remains; otherwise telemetry truthfully stays incomplete.
+      if (best) {
+        if (!publish(best, incumbentQuality)) {
+          if (!interrupted) terminalAudit.complete = true;
+          break;
+        }
+        terminalAudit.improvements++;
       }
       if (interrupted) break;
-      if (!best || !publish(best)) { terminalAudit.complete = true; break; }
-      terminalAudit.improvements++;
+      if (!best) { terminalAudit.complete = true; break; }
     }
   }
   return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,

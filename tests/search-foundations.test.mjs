@@ -433,6 +433,39 @@ test("Endinventar-Seed berücksichtigt Komponenten und erhält ihren früheren N
   ]);
 });
 
+test("Endgegenprobe bewertet und bevorzugt den legalen Infernus-Magazin-Upgrade-Schritt", () => {
+  const data = canonicalWardenData();
+  const budget = 40000;
+  const inventory = [
+    "upgrade_health", "upgrade_clip_size", "upgrade_withering_whip", "upgrade_melee_rebuttal",
+    "upgrade_improved_spirit", "upgrade_mystic_regeneration", "upgrade_high_velocity_mag",
+    "upgrade_improved_stamina", "upgrade_endurance", "upgrade_sprint_booster",
+    "upgrade_lifestrike_gauntlets", "upgrade_headshot_booster"
+  ];
+  const itemIds = data.items.filter((item) => heroCanPurchaseItem(item, data, "infernus")).map((item) => item.item_id);
+  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis: [0, budget], slotUnlocks: [{ earnedSouls: 0, slots: 3 }] });
+  const base = { earnedSouls: budget, cash: 27200, inventory, unlockedSlots: 3, events: [], snapshots: [] };
+  const upgraded = domain.transitions(base).find((state) => state.events.at(-1)?.type === "upgrade" &&
+    state.events.at(-1)?.from === "upgrade_clip_size" && state.events.at(-1)?.item === "upgrade_titan_round");
+  assert.ok(upgraded, "der kanonische Upgrade-Schritt ist legal");
+  assert.equal(upgraded.cash, 26400);
+  assert.ok(!upgraded.inventory.includes("upgrade_clip_size"));
+  assert.ok(upgraded.inventory.includes("upgrade_titan_round"));
+  assert.ok(upgraded.inventory.includes("upgrade_sprint_booster"));
+  const request = { heroId: "infernus", damageFocus: "weapon", budget };
+  const before = evaluateCarryPerformance(base, request, data).metrics;
+  const after = evaluateCarryPerformance(upgraded, request, data).metrics;
+  const reference = { axis: [0, budget], values: [before, after] };
+  const beforeScore = scoreAnytimePath([{ earnedSouls: 0, metrics: before }, { earnedSouls: budget, metrics: before }], reference, budget, "weapon");
+  const afterScore = scoreAnytimePath([{ earnedSouls: 0, metrics: before }, { earnedSouls: budget, metrics: after }], reference, budget, "weapon");
+  assert.ok(afterScore.score > beforeScore.score, "der Kandidat ist unter derselben eingefrorenen Referenz strikt besser");
+  assert.equal(preferPublishedCandidate({ score: afterScore.score, transactions: 13 }, { score: beforeScore.score, transactions: 12 }), true);
+  assert.equal(after.sustainedBulletDps > before.sustainedBulletDps, true);
+  assert.equal(after.sustainedSpiritDps, before.sustainedSpiritDps);
+  assert.equal(after.bulletEhp, before.bulletEhp);
+  assert.equal(after.spiritEhp, before.spiritEhp);
+});
+
 test("Schnelle Warden-Suche übergibt nicht kaufbare Charge-Items nicht an die Domäne", () => {
   const result = runAnytimeWarden({ data: canonicalWardenData(), itemIds: ["upgrade_rapid_rounds", "upgrade_rechargingbullets"],
     budget: 800, timeMs: 1000, maxRollouts: 2, slotUnlocks: [{ earnedSouls: 0, slots: 3 }] });
