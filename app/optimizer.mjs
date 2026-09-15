@@ -820,7 +820,10 @@ export function evaluateWeaponState(state, request, data) {
     damageBonus: effects.damageBonus + thresholds.bonuses.weaponDamagePercent,
     fireRateBonus: effects.fireRateBonus,
     spiritPower: permanentSpiritPower(state, data) + thresholds.bonuses.spiritPower,
-    finalDps: scenarios.common.sustained_weapon_dps,
+    // This legacy Weapon-specific evaluation remains a pure Bullet metric.
+    // The shared Carry scenarios deliberately expose the combined combat
+    // total separately as sustained_weapon_dps.
+    finalDps: scenarios.common.sustained_bullet_dps,
     evidence: effects.evidence,
     thresholds,
     scenarios,

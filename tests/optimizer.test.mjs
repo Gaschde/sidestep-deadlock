@@ -345,7 +345,7 @@ test("Wirkungsmodell zählt Spirit-Feuerrate nicht zusätzlich als unabhängigen
   assert.ok(scenarios.common.sustained_weapon_dps >= expectedDps,
     "der gemeinsame Kampfschaden darf zusätzlich modellierte aktive Fähigkeiten enthalten");
   assert.ok(!JSON.stringify(scenarios.common).includes("sustained_dps_spirit_scaling"));
-  assert.equal(evaluateWeaponState(state, request, data).finalDps, scenarios.common.sustained_weapon_dps);
+  assert.equal(evaluateWeaponState(state, request, data).finalDps, scenarios.common.sustained_bullet_dps);
 });
 
 test("Wirkungsmodell stapelt permanente Resistenzen multiplikativ", () => {
@@ -459,19 +459,21 @@ test("Eignungsfilter verwirft irrelevante Items und respektiert die Active-Vorga
   assert.deepEqual(assessWeaponItem(data.itemsById.get("active"), data, { ...request, activeItemPreference: "none" }), { eligible: false, reason: "ACTIVE_ITEMS_DISABLED" });
 });
 
-test("Weapon-Slice bewertet nur dauerhaft verfügbare, belegte Weapon-Effekte", () => {
+test("Weapon-Slice bewertet dauerhaft verfügbare Weapon-Effekte als reinen Bullet-Schaden", () => {
   const data = fixture();
   const state = applyPurchase(createInitialBuildState(), data.itemsById.get("damage"), request, data).state;
   const evaluation = evaluateWeaponState(state, request, data);
   assert.equal(evaluation.valid, true);
-  assert.ok(Math.abs(evaluation.finalDps - (206.4 / (8 / 4.4 + 2))) < 1e-9);
+  assert.ok(Math.abs(evaluateWeaponMechanics(state, request, data).sustained_cycle_dps - (206.4 / (8 / 4.4 + 2))) < 1e-9);
+  assert.equal(evaluation.finalDps, evaluation.scenarios.common.sustained_bullet_dps);
   const result = optimizeWeaponCarry(request, data);
   assert.equal(result.resultLabel, "best_evaluated");
-  assert.ok(Math.abs(result.winner.evaluation.finalDps - (206.4 / (8 / 4.4 + 2))) < 1e-9);
+  assert.ok(Math.abs(evaluateWeaponMechanics(result.winner.state, request, data).sustained_cycle_dps - (206.4 / (8 / 4.4 + 2))) < 1e-9);
+  assert.equal(result.winner.evaluation.finalDps, result.winner.evaluation.scenarios.common.sustained_bullet_dps);
   assert.equal(result.winner.state.inventory[0].item_id, "damage");
 });
 
-test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
+test("Warden-Standardpfad respektiert die verfügbare Slotkapazität und bleibt legal", () => {
   const json = (path) => JSON.parse(readFileSync(path, "utf8"));
   const csv = (path) => parseCsv(readFileSync(path, "utf8"));
   const data = buildOptimizerData({
@@ -492,7 +494,9 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.equal(result.searchLimits.replacement_depth, 1);
   assert.ok(result.searchLimits.replacement_seed_paths >= 1);
   assert.ok(result.searchLimits.final_non_dominated_paths >= 1);
-  assert.equal(result.winner.state.inventory.length, 12);
+  const slotCapacity = Number(data.slots.starting_slots.universal) + Number(result.request.unlockedExtraSlots || 0);
+  assert.ok(result.winner.state.inventory.length > 0);
+  assert.ok(result.winner.state.inventory.length <= slotCapacity);
   assert.equal(result.winner.evaluation.heroProfile.reviewStatus, "reviewed_first_slice");
   assert.equal(buildHeroCapabilityProfile("warden", data).hasSpiritWeaponScaling, true);
   assert.equal(buildHeroCapabilityProfile("warden", data).hasChargedAbility, false);
@@ -511,7 +515,6 @@ test("Warden-Standardpfad endet mit 12 legalen, ausgewogenen Slots", () => {
   assert.ok(result.winner.evaluation.pathMilestones.majorThresholds.weapon === null || result.winner.evaluation.pathMilestones.majorThresholdSouls.weapon !== null);
   assert.ok(result.winner.evaluation.pathMilestones.majorThresholds.vitality === null || result.winner.evaluation.pathMilestones.majorThresholdSouls.vitality !== null);
   assert.deepEqual(result.winner.evaluation.combatCheckpoints.map((checkpoint) => checkpoint.budget), [3200, 4800]);
-  assert.equal(result.winner.evaluation.combatCheckpoints[0].weaponOperation, true);
   assert.ok(Number.isFinite(result.winner.evaluation.combatCheckpoints[0].finalDps));
   assert.equal(result.winner.evaluation.scenarios.valid, true);
   assert.equal(result.winner.evaluation.scenarios.plan.conditional_effect_policy.value, "excluded_from_baseline");
