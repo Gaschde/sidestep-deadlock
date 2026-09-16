@@ -19,6 +19,16 @@ test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
   assert.doesNotMatch(app, /budget: 60000/);
 });
 
+test("Browserauswahl beschränkt sich auf den kanonisch öffentlichen 38-Helden-Roster und hat Karten-Fallbacks", () => {
+  const heroes = parseCsv(readFileSync("data/heroes/heroes.csv", "utf8"));
+  assert.equal(heroes.filter((hero) => hero.publicly_playable === "true").length, 38);
+  const app = readFileSync("app/app.js", "utf8");
+  assert.match(app, /isPublicHero\(hero\) && hero\.display_name/);
+  assert.match(app, /const heroAssetIds = Object\.freeze/);
+  assert.match(app, /media\.githubusercontent\.com\/media\/0xThiagoAmaral\/deadlock-open-assets/);
+  assert.match(app, /onerror="this\.remove\(\)"/);
+});
+
 test("parseCsv verarbeitet Kommas und Zeilenumbrüche in Anführungszeichen", () => {
   const rows = parseCsv('id,name,notes\n1,"Alpha, Beta","Zeile 1\nZeile 2"\n');
   assert.deepEqual(rows, [{ id: "1", name: "Alpha, Beta", notes: "Zeile 1\nZeile 2" }]);

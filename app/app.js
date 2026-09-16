@@ -29,10 +29,21 @@ const state = {
 };
 let activeOptimizerWorker = null;
 
-const heroArt = {
-  warden: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/1abd1b51-ad97-49a1-98b9-46fa901fde74/content-assets/warden-hero-portrait/warden_card.webp",
-  vyper: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/1abd1b51-ad97-49a1-98b9-46fa901fde74/content-assets/hero-vyper-lane-portrait/vyper_sm.webp",
-  abrams: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/1abd1b51-ad97-49a1-98b9-46fa901fde74/content-assets/hero-abrams-lane-portrait/abrams_sm.webp"
+// Public hero icons from the open, game-extracted asset catalogue. They are
+// visual UI assets only; canonical game values still come from data/heroes.
+const heroAssetIds = Object.freeze({
+  celeste: "unicorn",
+  graves: "necro",
+  mina: "vampirebat",
+  the_doorman: "doorman"
+});
+const heroAssetUrls = Object.freeze({
+  vyper: "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/1abd1b51-ad97-49a1-98b9-46fa901fde74/content-assets/hero-vyper-lane-portrait/vyper_sm.webp"
+});
+const heroArt = (heroId) => {
+  if (heroAssetUrls[heroId]) return heroAssetUrls[heroId];
+  const assetId = heroAssetIds[heroId] || heroId;
+  return `https://media.githubusercontent.com/media/0xThiagoAmaral/deadlock-open-assets/main/images/deadlock/heroes_circle/${assetId}.png`;
 };
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -84,13 +95,17 @@ function initials(name) {
 }
 
 function avatarMarkup(hero, size = "") {
-  const art = heroArt[hero?.hero_id];
+  const art = hero ? heroArt(hero.hero_id) : null;
   const name = hero?.display_name || "Nicht gewählt";
   return `<span class="avatar ${size} ${art ? "has-art" : ""}" aria-hidden="true">${art ? `<img src="${art}" alt="" onerror="this.remove()">` : ""}<span>${hero ? initials(name) : "—"}</span></span>`;
 }
 
 function getHero(id) {
   return state.data.heroes.find((hero) => hero.hero_id === id);
+}
+
+function isPublicHero(hero) {
+  return hero.publicly_playable === "true";
 }
 
 function categoryClass(category) {
@@ -103,16 +118,17 @@ function itemTile(item, compact = false) {
 
 function renderDatasetStatus() {
   const { coreManifest, heroManifest, items, upgrades, heroes, abilities, interactions } = state.data;
+  const publicHeroes = heroes.filter(isPublicHero);
   const compatible = manifestsAreCompatible(coreManifest, heroManifest);
   const badge = $("#patch-badge");
   badge.textContent = compatible ? coreManifest.patch : "Patch-Konflikt";
   badge.className = `badge ${compatible ? "badge-good" : "badge-warning"}`;
-  $("#dataset-status").innerHTML = `<span class="status-dot"></span>${heroes.length} Helden · ${items.length} Items · ${interactions.length} Interaktionen`;
+  $("#dataset-status").innerHTML = `<span class="status-dot"></span>${publicHeroes.length} aktive Helden · ${items.length} Items · ${interactions.length} Interaktionen`;
   $("#source-patch").textContent = `${coreManifest.data_as_of} · ${coreManifest.mode}`;
   $("#source-stats").innerHTML = [
     [items.length, "Shop-Items", "data/core/items.csv"],
     [upgrades.length, "Upgrade-Kanten", "data/core/item_upgrades.csv"],
-    [heroes.length, "kanonische Helden", "data/heroes/heroes.csv"],
+    [`${publicHeroes.length}/${heroes.length}`, "aktive / kanonische Helden", "data/heroes/heroes.csv"],
     [abilities.length, "Fähigkeiten", "data/heroes/abilities.csv"],
     [interactions.length, "Interaktionen", "data/interactions/hero_interactions.csv"]
   ].map(([value, label, source]) => `<article><strong>${value}</strong><span>${label}</span><small>${source}</small></article>`).join("");
@@ -409,8 +425,8 @@ function startNewBuild(budget = FAST_SEARCH_BUDGET) {
 function renderPicker(filter = "") {
   const list = $("#picker-list");
   const normalized = filter.trim().toLocaleLowerCase("de");
-  const candidates = state.data.heroes.filter((hero) => hero.display_name.toLocaleLowerCase("de").includes(normalized));
-  list.innerHTML = candidates.map((hero) => `<button type="button" data-hero-id="${hero.hero_id}">${avatarMarkup(hero)}<span><strong>${hero.display_name}</strong><small>${hero.availability.replaceAll("_", " ")}</small></span>${hero.hero_id === state.selectedHeroId ? `<em>Aktiver Held</em>` : ""}</button>`).join("") || `<div class="empty-state compact"><p>Kein passender Held gefunden.</p></div>`;
+  const candidates = state.data.heroes.filter((hero) => isPublicHero(hero) && hero.display_name.toLocaleLowerCase("de").includes(normalized));
+  list.innerHTML = candidates.map((hero) => `<button type="button" data-hero-id="${hero.hero_id}">${avatarMarkup(hero)}<span><strong>${hero.display_name}</strong><small>öffentlich spielbar</small></span>${hero.hero_id === state.selectedHeroId ? `<em>Aktiver Held</em>` : ""}</button>`).join("") || `<div class="empty-state compact"><p>Kein aktiver Held gefunden.</p></div>`;
   $$('[data-hero-id]', list).forEach((button) => button.addEventListener("click", () => chooseHero(button.dataset.heroId)));
 }
 
