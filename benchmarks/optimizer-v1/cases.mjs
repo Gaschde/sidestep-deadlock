@@ -1,3 +1,5 @@
+import { PRODUCT_SEARCH_TIME_MS } from "../../app/search-config.mjs";
+
 const CONTROLLED_ITEMS = Object.freeze([
   "upgrade_rapid_rounds",
   "upgrade_headshot_booster",
@@ -19,7 +21,7 @@ const productionCases = ["warden", "infernus"].flatMap((hero) =>
     focus,
     backend: "beam",
     budget: 40000,
-    timeBudgetMs: 25000,
+    timeBudgetMs: PRODUCT_SEARCH_TIME_MS,
     referenceTimeMs: 1500,
     referenceCaptureTimeMs: 7500,
     initialBeamWidth: 4,
