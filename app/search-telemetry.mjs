@@ -1,14 +1,15 @@
 const TIMER_KEYS = Object.freeze([
   "referenceMs", "beamSearchMs", "terminalAuditMs", "validationMs",
-  "transitionMs", "purchaseGenerationMs", "upgradeGenerationMs", "replacementGenerationMs",
-  "evaluationMs", "trajectoryScoreMs", "pathReconstructionMs", "continuationLookaheadMs",
-  "dedupeMs", "paretoMs", "diversityMs", "sortingMs"
+  "transitionMs", "saveGenerationMs", "purchaseGenerationMs", "upgradeGenerationMs", "replacementGenerationMs",
+  "evaluationMs", "trajectoryScoreMs", "pathAucScoreMs", "endbuildScoreMs", "pathReconstructionMs", "continuationLookaheadMs",
+  "terminalCompletionMs", "dedupeMs", "paretoMs", "frontierMaintenanceMs", "diversityMs", "sortingMs"
 ]);
 
 const COUNTER_KEYS = Object.freeze([
   "transitionCalls", "generatedStates", "uniqueStates", "duplicateStates", "evaluatedInventories",
-  "metricCacheHits", "metricCacheMisses", "purchaseChecks", "upgradeChecks", "replacementChecks",
-  "familyConflictChecks", "continuationLookaheadCalls"
+  "metricCacheHits", "metricCacheMisses", "vectorCacheHits", "vectorCacheMisses", "pointsCacheHits", "pointsCacheMisses",
+  "saveTransitions", "purchaseChecks", "upgradeChecks", "replacementChecks",
+  "familyConflictChecks", "continuationLookaheadCalls", "paretoCandidates", "terminalNodes"
 ]);
 
 export function createBeamProfiler(enabled = false) {
@@ -16,6 +17,7 @@ export function createBeamProfiler(enabled = false) {
   const counters = Object.fromEntries(COUNTER_KEYS.map((key) => [key, 0]));
   const candidatePoolSizes = [];
   const perWidth = [];
+  const progressTrace = [];
   const add = (key, value) => {
     if (!enabled) return;
     if (!Object.hasOwn(timers, key)) throw new Error(`Unknown profiler timer: ${key}`);
@@ -35,6 +37,7 @@ export function createBeamProfiler(enabled = false) {
     enabled, add, count, time,
     pushCandidatePool(entry) { if (enabled) candidatePoolSizes.push(entry); },
     pushWidth(entry) { if (enabled) perWidth.push(entry); },
+    pushProgress(entry) { if (enabled) progressTrace.push(entry); },
     snapshot(extra = {}) {
       if (!enabled) return undefined;
       return {
@@ -42,11 +45,12 @@ export function createBeamProfiler(enabled = false) {
         counters: { ...counters },
         candidatePoolSizes: [...candidatePoolSizes],
         perWidth: [...perWidth],
+        progressTrace: [...progressTrace],
         ...extra,
         timerSemantics: {
           phases: "referenceMs, beamSearchMs and terminalAuditMs describe top-level execution regions. validationMs is nested where publication validates a candidate.",
-          operations: "Operation timers are diagnostic and may be nested inside phase timers and inside diversityMs. Do not sum phase and operation timers to infer total runtime.",
-          generation: "purchaseGenerationMs, upgradeGenerationMs and replacementGenerationMs are nested inside transitionMs.",
+          operations: "Operation timers are diagnostic and may be nested inside phase timers and inside diversityMs/frontierMaintenanceMs. trajectoryScoreMs may contain pathAucScoreMs/endbuildScoreMs. Do not sum phase and operation timers to infer total runtime.",
+          generation: "saveGenerationMs, purchaseGenerationMs, upgradeGenerationMs and replacementGenerationMs are nested inside transitionMs.",
           observerEffect: "Profiling does not change ranking, legality or objective code. Under a strict wall-clock deadline its measurement overhead can reduce completed work; compare work counters as well as time."
         }
       };
