@@ -1,10 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { parseCsv } from "../app/lib.mjs";
+import { buildOptimizerData } from "../app/optimizer.mjs";
 import {
   completeNodeBySaving,
   dedupeFuturePathHistory,
   pathEndLazyNonDominatedLayers,
   pathEndNonDominatedLayers,
+  runControlledMultiobjectiveBeamCarry,
   selectPathEndParetoBeam,
   selectPathEndParetoBeamFullReferenceForTest
 } from "../benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs";
@@ -254,4 +258,51 @@ test("save-to-horizon completion is a no-op for an already terminal retained nod
   });
   assert.equal(completed, terminal);
   assert.equal(transitionCalls, 0);
+});
+
+
+function canonicalData() {
+  const json = (path) => JSON.parse(readFileSync(path, "utf8"));
+  const csv = (path) => parseCsv(readFileSync(path, "utf8"));
+  return buildOptimizerData({
+    coreManifest: json("data/core/manifest.json"),
+    heroManifest: json("data/heroes/manifest.json"),
+    items: csv("data/core/items.csv"),
+    itemMechanics: csv("data/core/item_mechanics.csv"),
+    upgrades: csv("data/core/item_upgrades.csv"),
+    heroes: csv("data/heroes/heroes.csv"),
+    abilities: csv("data/heroes/abilities.csv"),
+    abilityMechanics: csv("data/heroes/ability_mechanics.csv"),
+    interactions: csv("data/interactions/hero_interactions.csv"),
+    progression: json("data/heroes/progression.json"),
+    heroStats: csv("data/heroes/hero_stats.csv"),
+    heroResources: csv("data/heroes/hero_resources.csv"),
+    economy: json("data/core/economy.json"),
+    slots: json("data/core/slots.json")
+  });
+}
+
+test("shared browser-safe Multiobjective kernel runs Warden and Venator with per-hero sampled reference", () => {
+  const data = canonicalData();
+  const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
+  for (const heroId of ["warden", "venator"]) {
+    const result = runControlledMultiobjectiveBeamCarry({
+      data,
+      heroId,
+      damageFocus: "weapon",
+      itemIds: ["upgrade_rapid_rounds"],
+      budget: 800,
+      milestones: [],
+      slotUnlocks,
+      beamWidth: 4,
+      timeMs: 1000,
+      auditReserveMs: 100,
+      referenceTimeMs: 100
+    });
+    assert.ok(result.front.length >= 1, heroId);
+    assert.ok(result.front.every((entry) => entry.validation.valid === true), heroId);
+    assert.equal(result.telemetry.scalarizationUsed, false, heroId);
+    assert.equal(result.telemetry.referenceSource, "sampled", heroId);
+    assert.equal(result.telemetry.timeBudgetMs, 1000, heroId);
+  }
 });
