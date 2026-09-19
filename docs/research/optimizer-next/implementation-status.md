@@ -27,7 +27,7 @@ The exact `search-core.mjs` path remains a diagnostic/reference solver for bound
 
 - **Domain:** `deadlock-domain.mjs` owns legal purchases, upgrades, replacements, sells, slots and resource transitions.
 - **Evaluation:** `optimizer.mjs` evaluates deterministic build performance. Opponent resistance is passed as scenario input; search does not encode resistance formulas.
-- **Trajectory:** `search-milestones.mjs` maps a legal path to committed snapshots at configured Soul checkpoints.
+- **Trajectory:** `search-milestones.mjs` maps a legal path to committed snapshots at configured Soul checkpoints; `search-objective.mjs` owns the shared milestone scoring contract used by Beam and Anytime.
 - **Scenarios:** `search-scenarios.mjs` normalizes explicit `opponentBulletResist` and `opponentSpiritResist`.
 - **Search:** `beam-search.mjs` is the production heuristic; `anytime-search.mjs` remains available as a fallback.
 - **Certification:** path replay is active; mathematical bounding is not.
@@ -38,7 +38,7 @@ Milestones are configurable integers in `[0, budget]`.
 
 There are no invented Early/Mid/Late defaults. If no milestone is supplied, the only checkpoint is the configured horizon itself. The horizon is always included even when omitted from the supplied list.
 
-The Beam objective evaluates the committed path state at every configured checkpoint. Checkpoints are equally weighted as a neutral product default; this is an optimizer preference, not a Deadlock game fact.
+The Beam objective and the Anytime fallback both evaluate the committed path state at every configured checkpoint. Checkpoints are equally weighted as a neutral product default; this is an optimizer preference, not a Deadlock game fact.
 
 ## Opponent scenarios
 
@@ -53,7 +53,7 @@ The minimum scenario is:
 
 Zero/zero is the neutral default. Explicit numeric values alter outgoing Bullet/Spirit damage independently. Negative resistance remains representable as damage amplification. Values above 100% are rejected to avoid negative outgoing damage.
 
-Target resistance does **not** alter the optimizer's own EHP or lifesteal recovery calculations.
+Target resistance does **not** alter the optimizer's native defensive EHP. Bullet resistance does reduce dealt Weapon damage, and permanent Bullet Lifesteal recovery is calculated from that post-resistance Weapon damage.
 
 ## Internal Pareto layer
 
@@ -92,11 +92,11 @@ The sampled reference is an attainable comparison envelope. It is **not** an adm
 
 ## Existing Anytime backend
 
-`anytime-search.mjs` is not deleted. It keeps its existing sampled-reference objective, seed builds, deterministic RNG, Gumbel/random exploration, prefix/suffix variation, local refinement, path simplification and terminal audit.
+`anytime-search.mjs` is not deleted. It keeps its seed builds, deterministic RNG, Gumbel/random exploration, prefix/suffix variation, local refinement, path simplification and terminal audit.
 
-It now accepts the same explicit opponent scenario and reports the same milestone/result-semantics envelope.
+It now accepts the same explicit opponent scenario and uses the same equally weighted milestone objective for ranking and publication. The previous 70/15/15 continuous-trajectory score remains available as diagnostic code/metadata, not as the fallback selection objective.
 
-These components were not copied wholesale into Beam Search because their old scalar trajectory objective is different from the new milestone/Pareto retention contract. Beam reuses the useful concepts of bounded runtime, early incumbents, upgrade counter-probing, terminal audit and replay validation.
+Beam and Anytime still differ in search strategy and retention: Beam uses iterative widening, Pareto/diversity retention and future-safe duplicate handling; Anytime keeps rollout/local-refinement behavior.
 
 ## Result semantics
 
@@ -153,7 +153,7 @@ The JavaScript suite covers, among other existing regressions:
 - compact/full evaluator agreement;
 - existing Anytime legality and small exact comparisons;
 - milestone normalization/snapshots;
-- explicit opponent resistance behavior;
+- explicit opponent resistance behavior, including post-resistance Bullet Lifesteal recovery and Bullet-vs-Spirit routing for typed ability damage;
 - Damage/EHP Pareto behavior;
 - Beam legal path replay;
 - Beam vs. exact `search-core` oracle in a small canonical Warden space;
