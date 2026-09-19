@@ -374,3 +374,26 @@ Workflow `35467808600` and optimizer-next tests `35467808611` succeeded. Python 
 Exactly one next step: add **Multiobjective Save-to-40k terminal materialization parity** as a separate change, without modifying Objective or Pareto retention, so wall-clock-limited Multiobjective runs can expose legal terminal Pareto candidates comparable to Production.
 
 Full evidence: `docs/research/optimizer-next/lazy-multiobjective-pareto-retention.md` and `benchmarks/optimizer-v1/experiments/40k-multiobjective-width4-profile/`.
+
+## Multiobjective Save-to-40k Terminal Completion
+
+The terminal-parity phase is complete.
+
+Workflow `35469715009` ran the final 60 s 40k Shadow from source commit `ce30bc2c0b74c406af578fd529054c13db7e2f55` and succeeded through JavaScript tests, experiment execution, artifact upload and result storage. The resulting data commit is `03dd2e6faa03040bb908baa97a59db758871102f`.
+
+Measured result:
+
+- the former zero-terminal deadline failure is fixed: all 12 Shadow repeats (6 cases x 2) expose a non-empty legal terminal 40k front;
+- scalarization remains disabled and Production is unchanged;
+- Warden reaches about 36.8k-38.4k naturally, while Infernus reaches about 12.0k-14.0k;
+- the fully stored repeat-1 Shadow front dominates Production in both Path-AUC and Endbuild in 5/6 cases;
+- Infernus Hybrid repeat 1 falls back to the early legal terminal candidate and only matches Production;
+- exact final-front hashes reproduce in only 2/6 cases;
+- Infernus final retained-node save completion remains wall-clock-sensitive, ranging from no final refresh to full 4/4 completion depending on the repeat.
+
+Decision: **B — terminalization works, but 40k search/terminal-front quality is not sufficiently stable yet.**
+
+Exactly one next step: investigate the remaining Infernus wall-clock bottleneck with measurement only before changing any search, evaluator or terminal-completion behavior.
+
+Full evidence: `docs/research/optimizer-next/multiobjective-save-to-40k-terminal-completion.md` and `benchmarks/optimizer-v1/experiments/40k-multiobjective-shadow/`.
+
