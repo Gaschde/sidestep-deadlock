@@ -820,6 +820,32 @@ test("Beam profiling is opt-in, preserves a completed small-space result and exp
   assert.ok(p.candidatePoolSizes.length >= 1);
 });
 
+test("Passive terminal observer leaves completed Beam search and audit decisions unchanged", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const options = { data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 5000, initialBeamWidth: 64, maxBeamWidth: 64 };
+  const normal = runIterativeDiverseBeamCarry(options);
+  const terminals = [];
+  const observed = runIterativeDiverseBeamCarry({ ...options, onTerminalCandidate: (candidate) => terminals.push(candidate) });
+
+  assert.equal(observed.quality.score, normal.quality.score);
+  assert.deepEqual(observed.state.inventory, normal.state.inventory);
+  assert.deepEqual(observed.state.events, normal.state.events);
+  assert.deepEqual(observed.searchTelemetry.widthsCompleted, normal.searchTelemetry.widthsCompleted);
+  assert.equal(observed.searchTelemetry.generatedStates, normal.searchTelemetry.generatedStates);
+  assert.equal(observed.searchTelemetry.evaluations, normal.searchTelemetry.evaluations);
+  assert.deepEqual(observed.searchTelemetry.terminalAudit, normal.searchTelemetry.terminalAudit);
+  assert.ok(terminals.length > 0);
+  assert.ok(terminals.every((candidate) => candidate.state.earnedSouls === budget));
+});
+
 test("Baseline compact Carry metrics keep the three current ten-second damage rows mathematically identical", () => {
   const data = canonicalWardenData();
   const result = evaluateCarryPerformance({ inventory: ["upgrade_rapid_rounds"] },
