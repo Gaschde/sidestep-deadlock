@@ -149,7 +149,6 @@ function exactSmallCandidates(data, definition, reference) {
 }
 
 function controlledBeamRun(data, definition, reference, objectiveVersion, scorer) {
-  const width = definition.maxBeamWidth;
   const observed = [];
   const result = runIterativeDiverseBeamCarry({
     data,
@@ -164,31 +163,39 @@ function controlledBeamRun(data, definition, reference, objectiveVersion, scorer
     referenceTimeMs: definition.referenceTimeMs,
     reference,
     slotUnlocks: slotUnlocks(data),
-    initialBeamWidth: width,
-    maxBeamWidth: width,
+    initialBeamWidth: definition.initialBeamWidth,
+    maxBeamWidth: definition.maxBeamWidth,
     widenFactor: definition.widenFactor,
     scorePath: scorer,
     profile: false,
     onTerminalCandidate: (candidate) => {
-      if (candidate.observation?.width !== width) return;
-      observed.push(rawCandidate(candidate.state,
-        `${objectiveVersion}:${candidate.observation?.phase || "beam-terminal"}`));
+      const phase = candidate.observation?.phase || "terminal";
+      const width = candidate.observation?.width ?? "audit";
+      observed.push(rawCandidate(candidate.state, `${objectiveVersion}:${phase}:w${width}`));
     }
   });
-  if (!result.searchTelemetry.widthsCompleted.includes(width)) {
-    throw new Error(`${definition.id}: fixed width ${width} did not complete for ${objectiveVersion}; refusing partial candidate set`);
+  if (!result.searchTelemetry.widthsCompleted.includes(definition.maxBeamWidth)) {
+    throw new Error(`${definition.id}: max Beam width ${definition.maxBeamWidth} did not complete for ${objectiveVersion}; refusing partial candidate set`);
+  }
+  if (result.searchTelemetry.terminalAudit.complete !== true) {
+    throw new Error(`${definition.id}: terminal audit incomplete for ${objectiveVersion}; refusing partial audit candidate set`);
   }
   if (!observed.length) throw new Error(`${definition.id}: no terminal candidates observed for ${objectiveVersion}`);
   return {
     raw: observed,
     metadata: {
       objectiveVersion,
-      fixedWidth: width,
+      configuredWidths: {
+        initialBeamWidth: definition.initialBeamWidth,
+        maxBeamWidth: definition.maxBeamWidth,
+        widenFactor: definition.widenFactor
+      },
       completedWidths: result.searchTelemetry.widthsCompleted,
+      terminalAuditComplete: result.searchTelemetry.terminalAudit.complete,
       generatedStates: result.searchTelemetry.generatedStates,
       evaluatedInventories: result.searchTelemetry.evaluations,
       observedTerminalCandidates: observed.length,
-      candidateObservation: "passive; only flushed after the fixed Beam width completed"
+      candidateObservation: "passive generated terminal states from completed Beam widths plus fully checked terminal-audit neighbours; materialized only after search/audit"
     }
   };
 }
@@ -201,7 +208,7 @@ function controlledCandidates(data, definition, reference) {
   return {
     raw: [...merged.values()],
     metadata: {
-      method: "union of completed fixed-width terminal candidates from the two already-existing A/B scorers",
+      method: "union of passive terminal candidates from completed standard CONTROLLED Beam runs plus complete terminal-audit neighbourhoods for the two already-existing A/B scorers",
       paretoUsedDuringGeneration: false,
       runs: [baseline.metadata, v1a.metadata]
     }
