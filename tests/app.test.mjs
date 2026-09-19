@@ -23,6 +23,15 @@ test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
   assert.doesNotMatch(app, /budget: 60000/);
 });
 
+test("Browser zeigt nur die aktuelle 40k-Build-Aktion", () => {
+  const html = readFileSync("app/index.html", "utf8");
+  const app = readFileSync("app/app.js", "utf8");
+  assert.match(html, /id="fast-build-button"/);
+  assert.doesNotMatch(html, /id="(?:build-button|new-build-button|new-build-40k-button)"/);
+  assert.match(app, /\$\("#fast-build-button"\)\.addEventListener\("click", startFastBuild\)/);
+  assert.doesNotMatch(app, /\$\("#(?:build-button|new-build-button|new-build-40k-button)"\)/);
+});
+
 test("Browserauswahl beschränkt sich auf den kanonisch öffentlichen 38-Helden-Roster und hat Karten-Fallbacks", () => {
   const heroes = parseCsv(readFileSync("data/heroes/heroes.csv", "utf8"));
   assert.equal(heroes.filter((hero) => hero.publicly_playable === "true").length, 38);
