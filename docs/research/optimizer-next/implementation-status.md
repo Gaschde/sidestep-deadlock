@@ -165,7 +165,7 @@ The Python engine is a parallel implementation untouched by optimizer-next. Its 
 ## Known remaining risks
 
 - Full 40k/all-items Beam quality is still heuristic and benchmark quality has not been converted into an optimality gap.
-- Beam ranking/reference work can consume a meaningful fraction of the 25 s budget on large candidate pools.
+- Beam ranking/reference work can consume a meaningful fraction of the current 60 s product budget on large candidate pools.
 - The current internal Pareto layer is intentionally small; the UI still selects one default build instead of exposing a visual Pareto frontier.
 - Terminal local verification covers the direct purchase/upgrade/replacement neighbourhood, not an arbitrary multi-step neighbourhood.
 - B&B certification is disabled until admissibility is implementation-safe.
@@ -208,6 +208,8 @@ Data commit: `0f84bd091ac8c7d33d6ed18d3590ed2af690370f`.
 The bounded SMALL/EXACT case reaches the exact score with zero gap. All six 40k production cases are legally path-verified, but every one completes only Beam Width 4 within the fixed-reference 25 s contract. Infernus evaluation is measured at roughly 32–36× the Warden per-inventory cost on the baseline runner, and all three Infernus 40k terminal audits remain incomplete.
 
 These are now measurement facts to investigate before changing search heuristics or the production objective. Inclusive profiler timers overlap and are not bottleneck percentages.
+
+The `baseline-v0` files remain a historical **25 s** measurement contract. The current Product wall-clock budget is **60 s**; new measurements are recorded separately rather than rewriting `baseline-v0`.
 
 
 ## Objective / Buildpath Investigation — V1A
