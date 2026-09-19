@@ -8,6 +8,7 @@ import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, preferPublishedCandidate, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS, DAMAGE_FOCUS_WEIGHTS } from "../app/anytime-search.mjs";
+import { runIterativeDiverseBeamCarry, scoreMilestonePath } from "../app/beam-search.mjs";
 import { buildOptimizerData, evaluateAfterburnMechanics, evaluateSpiritMechanics, evaluateWeaponMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
@@ -704,4 +705,43 @@ test("History-free reference traversal preserves reachable configurations and sn
   const keys = (domain, result) => new Set(result.labels.map(({ state, label }) => `${domain.futureKey(state)}:${JSON.stringify(label)}`));
   assert.deepEqual(keys(regular, left), keys(lean, right));
   assert.ok(right.labels.every(({ state }) => state.events.length === 0 && state.snapshots.length === 0));
+});
+
+
+test("Iterative Diverse Beam bleibt im kleinen exakten Raum legal und erreicht das Milestone-Oracle", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis: axis, slotUnlocks,
+    metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics });
+  const terminal = domain.enumerate().states.filter((entry) => entry.state.earnedSouls === budget);
+  const exact = Math.max(...terminal.map((entry) => scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
+  const outputs = [];
+  const result = runIterativeDiverseBeamCarry({ data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 1500, initialBeamWidth: 64, maxBeamWidth: 64, onResult: (value) => outputs.push(value) });
+  assert.equal(result.validation.valid, true);
+  assert.equal(result.semantics.legallyPathVerified, true);
+  assert.equal(result.semantics.bounded, false);
+  assert.equal(result.semantics.optimal, false);
+  assert.equal(result.backend, "iterative-diverse-beam");
+  assert.ok(Math.abs(result.quality.score - exact) < 1e-12, `small beam oracle gap: ${exact - result.quality.score}`);
+  assert.deepEqual(result.milestones.configured, [budget]);
+  assert.equal(result.telemetry.pruning.paretoDominancePruning, false);
+  for (let index = 1; index < outputs.length; index++) assert.ok(outputs[index].quality.score >= outputs[index - 1].quality.score);
+});
+
+test("Anytime fallback accepts the same explicit opponent scenario and milestone reporting contract", () => {
+  const data = canonicalWardenData();
+  const result = runAnytimeWarden({ data, itemIds: ["upgrade_rapid_rounds"], budget: 800, timeMs: 500,
+    maxRollouts: 1, milestones: [400], opponentBulletResist: 25, opponentSpiritResist: 10 });
+  assert.equal(result.validation.valid, true);
+  assert.equal(result.backend, "anytime");
+  assert.deepEqual(result.milestones.configured, [400, 800]);
+  assert.equal(result.scenario.opponentBulletResist, 25);
+  assert.equal(result.semantics.optimal, false);
 });

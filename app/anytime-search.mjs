@@ -3,6 +3,8 @@ import { evaluateCarryPerformance, CARRY_METRICS, carryResourceAxis } from "./wa
 import { validateSearchPath } from "./validate-search-path.mjs";
 import { heroCanPurchaseItem } from "./optimizer.mjs";
 import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
+import { normalizeMilestones, milestoneSnapshots } from "./search-milestones.mjs";
+import { normalizeOpponentScenario } from "./search-scenarios.mjs";
 
 export const ANYTIME_METRIC_GROUPS = {
   damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
@@ -107,8 +109,11 @@ export function preferPublishedCandidate(candidate, incumbent) {
 // Deadline is an explicit approximation budget, not an optimality certificate.
 export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon", itemIds = data.items.map((i) => i.item_id), budget = FAST_SEARCH_BUDGET,
   timeMs = 30000, referenceTimeMs = 2000, onResult, onProgress, maxRollouts = Infinity, reference: suppliedReference, slotUnlocks = [],
-  localRefinement = true, pathSimplification = true, profile = false, compactMetrics = true }) {
+  localRefinement = true, pathSimplification = true, profile = false, compactMetrics = true, milestones,
+  opponentBulletResist = 0, opponentSpiritResist = 0 }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
+  const opponentScenario = normalizeOpponentScenario({ opponentBulletResist, opponentSpiritResist });
+  const configuredMilestones = normalizeMilestones(milestones, budget);
   // Reserve an explicit part of the visible budget for the terminal shop
   // audit. It is a verification phase, not an item or search-space limit.
   const terminalAuditReserveMs = Math.min(2000, Math.max(0, timeMs * 0.2));
@@ -140,7 +145,9 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   const metrics = (s) => {
     const key = [...s.inventory].sort().join("|");
     if (!cache.has(key)) {
-      const result = timed("inventoryEvaluationMs", () => evaluateCarryPerformance(s, { heroId, damageFocus, budget, cacheProfiles: false, metricsOnly: compactMetrics }, data));
+      const result = timed("inventoryEvaluationMs", () => evaluateCarryPerformance(s, {
+        heroId, damageFocus, budget, cacheProfiles: false, metricsOnly: compactMetrics, ...opponentScenario
+      }, data));
       if (!result.valid) throw new Error(result.reason);
       cache.set(key, result.metrics); evaluations++;
     }
@@ -299,6 +306,9 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
     const validation = timed("outputValidationMs", () => validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state }));
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
+      milestones: { configured: configuredMilestones, snapshots: milestoneSnapshots(points, configuredMilestones, budget) },
+      scenario: opponentScenario, backend: "anytime", semantics: { legallyPathVerified: validation.valid === true, bestFound: true, locallyVerified: false, bounded: false, optimal: false },
+      certification: { bound: null, status: "not_run", branchAndBound: "compatible_shadow_hook_only" },
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
@@ -606,9 +616,11 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
       if (!best) { terminalAudit.complete = true; break; }
     }
   }
-  return winner ? { ...winner, searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
-    localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
-    pathSimplificationsTried, pathSimplificationsAccepted, terminalAudit, profile: profile ? profileData : undefined } } : null;
+  return winner ? { ...winner,
+    semantics: { ...winner.semantics, locallyVerified: terminalAudit.complete },
+    searchTelemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements,
+      localRefinementRan, localAlternativesTried, localImprovements, localBaselineScore,
+      pathSimplificationsTried, pathSimplificationsAccepted, terminalAudit, profile: profile ? profileData : undefined } } : null;
 }
 
 export const runAnytimeWarden = runAnytimeCarry;

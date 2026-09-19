@@ -10,10 +10,14 @@ export function paretoDominates(left, right) {
 
 export function paretoFront(entries, vector = (entry) => entry) {
   if (!Array.isArray(entries)) throw new TypeError("entries muss ein Array sein.");
-  return entries.filter((candidate, index) => {
+  const front = [];
+  for (const candidate of entries) {
     const candidateVector = vector(candidate);
-    return !entries.some((other, otherIndex) =>
-      otherIndex !== index && paretoDominates(vector(other), candidateVector)
-    );
-  });
+    if (front.some((other) => paretoDominates(vector(other), candidateVector))) continue;
+    for (let index = front.length - 1; index >= 0; index--) {
+      if (paretoDominates(candidateVector, vector(front[index]))) front.splice(index, 1);
+    }
+    front.push(candidate);
+  }
+  return front;
 }

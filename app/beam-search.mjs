@@ -1,0 +1,473 @@
+import { createDeadlockDomain } from "./deadlock-domain.mjs";
+import { evaluateCarryPerformance, CARRY_METRICS, carryResourceAxis } from "./warden-search.mjs";
+import { validateSearchPath } from "./validate-search-path.mjs";
+import { heroCanPurchaseItem } from "./optimizer.mjs";
+import { ANYTIME_METRIC_GROUPS, DAMAGE_FOCUS_WEIGHTS } from "./anytime-search.mjs";
+import { normalizeMilestones, milestoneSnapshots } from "./search-milestones.mjs";
+import { normalizeOpponentScenario } from "./search-scenarios.mjs";
+import { paretoFront } from "./pareto.mjs";
+import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
+
+const DAMAGE_COMPONENTS = Object.freeze({
+  sustainedWeaponDps: Object.freeze({ bullet: "sustainedBulletDps", spirit: "sustainedSpiritDps" }),
+  laneTradeWindowDps: Object.freeze({ bullet: "laneTradeBulletDps", spirit: "laneTradeSpiritDps" }),
+  farmWindowDps: Object.freeze({ bullet: "farmBulletDps", spirit: "farmSpiritDps" }),
+  skirmishWindowDps: Object.freeze({ bullet: "skirmishBulletDps", spirit: "skirmishSpiritDps" }),
+  teamfightWindowDps: Object.freeze({ bullet: "teamfightBulletDps", spirit: "teamfightSpiritDps" })
+});
+const COMPONENT_PARENT = new Map(Object.entries(DAMAGE_COMPONENTS).flatMap(([metric, parts]) => [
+  [parts.bullet, metric], [parts.spirit, metric]
+]));
+const COMPONENT_METRICS = Object.values(DAMAGE_COMPONENTS).flatMap((parts) => [parts.bullet, parts.spirit]);
+const REFERENCE_METRICS = Object.freeze([...CARRY_METRICS, ...COMPONENT_METRICS]);
+
+function metricValue(values, metric) {
+  if (Number.isFinite(values?.[metric])) return values[metric];
+  const parent = COMPONENT_PARENT.get(metric);
+  return parent && Number.isFinite(values?.[parent]) ? values[parent] : 0;
+}
+
+function normalizedValue(value, reference) {
+  return value + reference > 0 ? value / (value + reference) : 0;
+}
+
+export function scoreMilestonePath(points, reference, milestones, budget, damageFocus = "hybrid") {
+  const checkpoints = normalizeMilestones(milestones, budget);
+  if (!reference || JSON.stringify(reference.axis) === "[]") throw new TypeError("Milestone-Bewertung benötigt eine Referenz.");
+  const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
+  const snapshots = milestoneSnapshots(points, checkpoints, budget);
+  const weights = DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid;
+  const rows = snapshots.map((snapshot) => {
+    const index = referenceIndex.get(snapshot.earnedSouls);
+    if (index === undefined) throw new RangeError(`Milestone ${snapshot.earnedSouls} fehlt auf der Referenzachse.`);
+    const ref = reference.values[index];
+    const damage = ANYTIME_METRIC_GROUPS.damage.metrics.reduce((sum, metric) => {
+      const parts = DAMAGE_COMPONENTS[metric];
+      const bullet = normalizedValue(metricValue(snapshot.metrics, parts.bullet), metricValue(ref, parts.bullet));
+      const spirit = normalizedValue(metricValue(snapshot.metrics, parts.spirit), metricValue(ref, parts.spirit));
+      return sum + weights.bullet * bullet + weights.spirit * spirit;
+    }, 0) / ANYTIME_METRIC_GROUPS.damage.metrics.length;
+    const survivability = ANYTIME_METRIC_GROUPS.survival.metrics.reduce((sum, metric) =>
+      sum + normalizedValue(metricValue(snapshot.metrics, metric), metricValue(ref, metric)), 0
+    ) / ANYTIME_METRIC_GROUPS.survival.metrics.length;
+    return { ...snapshot, damage, survivability, score: 0.5 * damage + 0.5 * survivability };
+  });
+  const average = (key) => rows.reduce((sum, row) => sum + row[key], 0) / rows.length;
+  return {
+    score: average("score"),
+    damage: average("damage"),
+    survivability: average("survivability"),
+    milestones: rows,
+    policy: {
+      milestoneWeights: "equal",
+      damageSurvivabilityWeights: { damage: 0.5, survivability: 0.5 },
+      damageFocus,
+      damageFocusWeights: weights,
+      normalization: "x/(x+reference)",
+      reference: "attainable sampled reference; not an admissible bound"
+    }
+  };
+}
+
+function transactionCount(node) {
+  let count = 0;
+  for (let current = node; current?.parent; current = current.parent) count += Number(current.event?.type !== "save");
+  return count;
+}
+
+function eventChain(node) {
+  const chain = [];
+  for (let current = node; current?.parent; current = current.parent) chain.push(current.event);
+  return chain.reverse();
+}
+
+function buildFamilyRoots(data) {
+  const parent = new Map(data.upgrades.map((edge) => [edge.to_item_id, edge.from_item_id]));
+  const cache = new Map();
+  return (id) => {
+    if (cache.has(id)) return cache.get(id);
+    let current = id;
+    const seen = new Set();
+    while (parent.has(current) && !seen.has(current)) {
+      seen.add(current);
+      current = parent.get(current);
+    }
+    cache.set(id, current);
+    return current;
+  };
+}
+
+function better(candidate, incumbent) {
+  if (!incumbent) return true;
+  if (candidate.quality.score !== incumbent.quality.score) return candidate.quality.score > incumbent.quality.score;
+  return candidate.transactions < incumbent.transactions ||
+    (candidate.transactions === incumbent.transactions && candidate.node.serial < incumbent.node.serial);
+}
+
+export function runIterativeDiverseBeamCarry({
+  data,
+  heroId = "warden",
+  damageFocus = "weapon",
+  itemIds = data.items.map((item) => item.item_id),
+  budget = FAST_SEARCH_BUDGET,
+  milestones,
+  opponentBulletResist = 0,
+  opponentSpiritResist = 0,
+  timeMs = 25000,
+  referenceTimeMs = 1500,
+  reference: suppliedReference,
+  slotUnlocks = [],
+  initialBeamWidth = 4,
+  maxBeamWidth = 32,
+  widenFactor = 2,
+  onResult,
+  onProgress
+}) {
+  if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
+  for (const [name, value] of [["initialBeamWidth", initialBeamWidth], ["maxBeamWidth", maxBeamWidth], ["widenFactor", widenFactor]]) {
+    if (!Number.isSafeInteger(value) || value < (name === "widenFactor" ? 2 : 1)) throw new RangeError(`${name} ist ungültig.`);
+  }
+  if (initialBeamWidth > maxBeamWidth) throw new RangeError("initialBeamWidth darf maxBeamWidth nicht überschreiten.");
+
+  const scenario = normalizeOpponentScenario({ opponentBulletResist, opponentSpiritResist });
+  const checkpoints = normalizeMilestones(milestones, budget);
+  const started = performance.now();
+  const terminalAuditReserveMs = Math.min(2000, Math.max(0, timeMs * 0.2));
+  const searchDeadline = started + timeMs - terminalAuditReserveMs;
+  const finalDeadline = started + timeMs;
+  const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, heroId));
+  const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
+  const compressed = carryResourceAxis(data, legalItemIds, budget);
+  const axis = [...new Set([...compressed.axis, ...checkpoints])].sort((a, b) => a - b);
+  const resource = { ...compressed, axis, configuredMilestones: checkpoints };
+  const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: axis, metrics: () => ({ value: 0 }) });
+  const clean = (state) => ({ ...state, events: [], snapshots: [] });
+  const request = { heroId, damageFocus, budget, cacheProfiles: false, metricsOnly: true, ...scenario };
+  const metricCache = new Map();
+  let evaluations = 0;
+  const metrics = (state) => {
+    const key = [...state.inventory].sort().join("|");
+    if (!metricCache.has(key)) {
+      const result = evaluateCarryPerformance(state, request, data);
+      if (!result.valid) throw new Error(result.reason);
+      metricCache.set(key, result.metrics);
+      evaluations++;
+    }
+    return metricCache.get(key);
+  };
+  const root = { state: clean(domain.initial), parent: null, event: null, serial: "" };
+  const pointsCache = new WeakMap();
+  const qualityCache = new WeakMap();
+  const continuationCache = new WeakMap();
+  const nodePoints = (node) => {
+    if (pointsCache.has(node)) return pointsCache.get(node);
+    const chain = [];
+    for (let current = node; current; current = current.parent) chain.push(current);
+    const points = chain.reverse().map((entry) => ({ earnedSouls: entry.state.earnedSouls, metrics: metrics(entry.state) }));
+    pointsCache.set(node, points);
+    return points;
+  };
+  const nodeQuality = (node) => {
+    if (!qualityCache.has(node)) qualityCache.set(node, scoreMilestonePath(nodePoints(node), reference, checkpoints, budget, damageFocus));
+    return qualityCache.get(node);
+  };
+  const makeNode = (parent, nextState) => {
+    const event = nextState.events[0];
+    return { state: clean(nextState), parent, event, serial: `${parent.serial}|${JSON.stringify(event)}` };
+  };
+  const transitions = (node) => domain.transitions(node.state).map((state) => makeNode(node, state));
+
+  const baseline = metrics(root.state);
+  let reference = suppliedReference;
+  if (reference) {
+    if (JSON.stringify(reference.axis) !== JSON.stringify(axis)) throw new Error("Reference axis mismatch");
+  } else {
+    reference = { axis, values: axis.map(() => ({ ...baseline })) };
+    const referenceDeadline = Math.min(searchDeadline, started + Math.min(referenceTimeMs, timeMs * 0.2));
+    for (const objective of CARRY_METRICS) {
+      let state = { ...root.state, cash: budget, earnedSouls: budget };
+      while (performance.now() < referenceDeadline) {
+        const currentMetrics = metrics(state);
+        let best = null;
+        let bestValue = metricValue(currentMetrics, objective);
+        for (const next of domain.transitions(state)) {
+          const type = next.events[0]?.type;
+          if (!["purchase", "upgrade", "replacement"].includes(type)) continue;
+          const values = metrics(next);
+          const spent = budget - next.cash;
+          const first = axis.findIndex((souls) => souls >= spent);
+          if (first >= 0) for (let index = first; index < reference.values.length; index++) {
+            for (const metric of REFERENCE_METRICS) {
+              reference.values[index][metric] = Math.max(metricValue(reference.values[index], metric), metricValue(values, metric));
+            }
+          }
+          const value = metricValue(values, objective);
+          if (value > bestValue) { best = next; bestValue = value; }
+          if (performance.now() >= referenceDeadline) break;
+        }
+        if (!best) break;
+        state = clean(best);
+      }
+    }
+    // Every reference row is an attainable sampled envelope, so enforce only
+    // monotone carry-forward, never a claimed upper bound.
+    for (let index = 1; index < reference.values.length; index++) {
+      for (const metric of REFERENCE_METRICS) {
+        reference.values[index][metric] = Math.max(metricValue(reference.values[index - 1], metric), metricValue(reference.values[index], metric));
+      }
+    }
+  }
+
+  const rootFamily = buildFamilyRoots(data);
+  const diversityKey = (node) => {
+    const counts = { Weapon: 0, Vitality: 0, Spirit: 0, Other: 0 };
+    const roots = [];
+    for (const id of node.state.inventory) {
+      const category = data.itemsById.get(id)?.category;
+      counts[Object.hasOwn(counts, category) ? category : "Other"]++;
+      roots.push(rootFamily(id));
+    }
+    return `${counts.Weapon}/${counts.Vitality}/${counts.Spirit}/${counts.Other}:${[...new Set(roots)].sort().join(",")}`;
+  };
+
+  const continuationScore = (node) => {
+    if (continuationCache.has(node)) return continuationCache.get(node);
+    let best = nodeQuality(node).score;
+    if (node.event?.type === "purchase") {
+      for (const edge of domain.supportedUpgradesByFrom.get(node.event.item) || []) {
+        let projected = node;
+        while (projected.state.earnedSouls < budget && performance.now() < searchDeadline) {
+          const successors = transitions(projected);
+          const upgrade = successors.find((candidate) =>
+            candidate.event?.type === "upgrade" && candidate.event.from === edge.from_item_id && candidate.event.item === edge.to_item_id);
+          if (upgrade) {
+            best = Math.max(best, nodeQuality(upgrade).score);
+            break;
+          }
+          const save = successors.find((candidate) => candidate.event?.type === "save");
+          if (!save) break;
+          projected = save;
+        }
+      }
+    }
+    continuationCache.set(node, best);
+    return best;
+  };
+
+  const completedHistorySignature = (node) => {
+    const quality = nodeQuality(node);
+    return JSON.stringify(quality.milestones
+      .filter((row) => row.earnedSouls <= node.state.earnedSouls)
+      .map((row) => [row.earnedSouls, row.damage, row.survivability]));
+  };
+  const safeDedupe = (nodes) => {
+    const unique = new Map();
+    for (const node of nodes) {
+      const key = `${domain.futureKey(node.state)}::${completedHistorySignature(node)}`;
+      const prior = unique.get(key);
+      if (!prior || transactionCount(node) < transactionCount(prior) ||
+          (transactionCount(node) === transactionCount(prior) && node.serial < prior.serial)) unique.set(key, node);
+    }
+    return [...unique.values()];
+  };
+
+  const compareNodes = (left, right) => {
+    const score = continuationScore(right) - continuationScore(left);
+    if (score) return score;
+    const quality = nodeQuality(right).score - nodeQuality(left).score;
+    return quality || left.serial.localeCompare(right.serial);
+  };
+
+  const selectDiverse = (nodes, width) => {
+    const deduped = safeDedupe(nodes);
+    if (deduped.length <= width) return deduped.sort(compareNodes);
+    const front = paretoFront(deduped, (node) => {
+      const quality = nodeQuality(node);
+      return { damage: quality.damage, survivability: quality.survivability };
+    }).sort(compareNodes);
+    const selected = [];
+    const selectedSet = new Set();
+    const add = (node) => {
+      if (node && selected.length < width && !selectedSet.has(node)) {
+        selected.push(node);
+        selectedSet.add(node);
+      }
+    };
+    const ranked = [...deduped].sort(compareNodes);
+    add(ranked[0]);
+    add([...deduped].sort((a, b) => nodeQuality(b).damage - nodeQuality(a).damage || compareNodes(a, b))[0]);
+    add([...deduped].sort((a, b) => nodeQuality(b).survivability - nodeQuality(a).survivability || compareNodes(a, b))[0]);
+    for (const node of front) add(node);
+
+    const buckets = new Map();
+    for (const node of ranked) {
+      const key = diversityKey(node);
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(node);
+    }
+    const keys = [...buckets.keys()].sort();
+    let progressed = true;
+    while (selected.length < width && progressed) {
+      progressed = false;
+      for (const key of keys) {
+        const bucket = buckets.get(key);
+        while (bucket.length && selectedSet.has(bucket[0])) bucket.shift();
+        if (bucket.length) { add(bucket.shift()); progressed = true; }
+        if (selected.length >= width) break;
+      }
+    }
+    for (const node of ranked) add(node);
+    return selected;
+  };
+
+  const completeBySaving = (node) => {
+    let current = node;
+    while (current.state.earnedSouls < budget) {
+      const save = transitions(current).find((candidate) => candidate.event?.type === "save");
+      if (!save) throw new Error("Legal save completion unavailable.");
+      current = save;
+    }
+    return current;
+  };
+
+  let winner = null;
+  let publishedImprovements = 0;
+  let generatedStates = 0;
+  let duplicateStates = 0;
+  let maxCandidatePool = 0;
+  const widthsStarted = [];
+  const widthsCompleted = [];
+  const publish = (node, locallyVerified = false) => {
+    const quality = nodeQuality(node);
+    const candidate = { node, quality, transactions: transactionCount(node) };
+    if (!better(candidate, winner)) return false;
+    const points = nodePoints(node);
+    const state = { ...node.state, events: eventChain(node), snapshots: points };
+    const validation = validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: axis, slotUnlocks, state });
+    const milestonesResult = milestoneSnapshots(points, checkpoints, budget);
+    winner = {
+      ...candidate,
+      state,
+      slotUnlocks,
+      slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots,
+      validation,
+      milestones: { configured: checkpoints, snapshots: milestonesResult },
+      scenario,
+      reference,
+      resource,
+      backend: "iterative-diverse-beam",
+      approximate: true,
+      unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
+      unavailableItemIds,
+      semantics: {
+        legallyPathVerified: validation.valid === true,
+        bestFound: true,
+        locallyVerified,
+        bounded: false,
+        optimal: false
+      },
+      certification: {
+        bound: null,
+        status: "not_run",
+        branchAndBound: "compatible_shadow_hook_only"
+      }
+    };
+    publishedImprovements++;
+    onResult?.(winner);
+    return true;
+  };
+
+  let width = initialBeamWidth;
+  while (performance.now() < searchDeadline) {
+    widthsStarted.push(width);
+    let beam = [root];
+    let completed = true;
+    let firstCompletionPublished = false;
+    while (beam.length && performance.now() < searchDeadline) {
+      const candidates = [];
+      let interrupted = false;
+      for (const node of beam) {
+        if (node.state.earnedSouls === budget) {
+          publish(node);
+          continue;
+        }
+        const successors = transitions(node);
+        generatedStates += successors.length;
+        candidates.push(...successors);
+        if (performance.now() >= searchDeadline) { interrupted = true; break; }
+      }
+      if (!candidates.length) break;
+      maxCandidatePool = Math.max(maxCandidatePool, candidates.length);
+      const unique = safeDedupe(candidates);
+      duplicateStates += candidates.length - unique.length;
+      beam = selectDiverse(unique, width);
+      if (!firstCompletionPublished && beam.length) {
+        publish(completeBySaving(beam[0]));
+        firstCompletionPublished = true;
+      }
+      for (const node of beam) if (node.state.earnedSouls === budget) publish(node);
+      onProgress?.({ phase: "beam", width, runtimeMs: performance.now() - started, evaluations, generatedStates,
+        retained: beam.length, bestScore: winner?.quality.score, paretoCount: paretoFront(beam, (node) => {
+          const q = nodeQuality(node); return { damage: q.damage, survivability: q.survivability };
+        }).length });
+      if (interrupted) { completed = false; break; }
+    }
+    if (completed) widthsCompleted.push(width);
+    if (!completed || width >= maxBeamWidth || performance.now() >= searchDeadline) break;
+    width = Math.min(maxBeamWidth, width * widenFactor);
+  }
+
+  // Reuse the existing terminal-audit idea: repeatedly inspect the complete
+  // direct purchase/upgrade/replacement neighbourhood under the same domain.
+  const terminalAudit = { complete: false, rounds: 0, legalActions: 0, checkedActions: 0, improvements: 0,
+    neighbourhood: "purchase|upgrade|replacement", incumbentScore: winner?.quality.score ?? null };
+  if (winner) {
+    let current = winner.node;
+    while (performance.now() < finalDeadline) {
+      terminalAudit.rounds++;
+      const actions = transitions(current).filter((node) => ["purchase", "upgrade", "replacement"].includes(node.event?.type));
+      terminalAudit.legalActions += actions.length;
+      let best = null;
+      let interrupted = false;
+      for (const candidate of actions) {
+        if (performance.now() >= finalDeadline) { interrupted = true; break; }
+        terminalAudit.checkedActions++;
+        const q = nodeQuality(candidate);
+        if (!best || q.score > best.quality.score) best = { node: candidate, quality: q };
+      }
+      if (best && best.quality.score > nodeQuality(current).score) {
+        current = best.node;
+        terminalAudit.improvements++;
+        publish(current);
+      } else if (!interrupted) {
+        terminalAudit.complete = true;
+        break;
+      }
+      if (interrupted) break;
+    }
+    winner.semantics = { ...winner.semantics, locallyVerified: terminalAudit.complete };
+  }
+
+  if (!winner) {
+    // A valid empty-build incumbent is preferable to returning no result when
+    // the evaluation/reference phase consumed an unusually small time budget.
+    publish(completeBySaving(root));
+  }
+  const telemetry = {
+    runtimeMs: performance.now() - started,
+    evaluations,
+    generatedStates,
+    duplicateStates,
+    maxCandidatePool,
+    widthsStarted,
+    widthsCompleted,
+    publishedImprovements,
+    terminalAudit,
+    pruning: {
+      exactFutureHistoryDedupe: true,
+      paretoDominancePruning: false,
+      beamTruncation: "heuristic_budgeted"
+    }
+  };
+  return { ...winner, telemetry, searchTelemetry: telemetry };
+}
