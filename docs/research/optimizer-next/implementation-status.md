@@ -208,3 +208,18 @@ Data commit: `0f84bd091ac8c7d33d6ed18d3590ed2af690370f`.
 The bounded SMALL/EXACT case reaches the exact score with zero gap. All six 40k production cases are legally path-verified, but every one completes only Beam Width 4 within the fixed-reference 25 s contract. Infernus evaluation is measured at roughly 32–36× the Warden per-inventory cost on the baseline runner, and all three Infernus 40k terminal audits remain incomplete.
 
 These are now measurement facts to investigate before changing search heuristics or the production objective. Inclusive profiler timers overlap and are not bottleneck percentages.
+
+
+## Objective / Buildpath Investigation — V1A
+
+The experimental objective `objective-v1a-soul-auc-terminal-gmean` exists behind explicit scorer injection only. Production still defaults to `baseline-v0`.
+
+V1A keeps the existing normalized Damage/Survival state utility unchanged, integrates it piecewise-constantly over the modeled earned-Souls axis, keeps terminal utility separate, and combines Path/End symmetrically with a geometric mean for the experiment.
+
+The fixed-reference A/B matrix completed successfully across SMALL/EXACT, both CONTROLLED cases and all six 40k Production cases. SMALL/EXACT has zero gap for both objective definitions and all A/B paths replay legally.
+
+The experiment does **not** justify activation: only two of nine cases improve Path utility, both lose terminal utility, and no case both improves Path and preserves terminal quality. Every V1A 40k Production result still makes its first transaction at 40k. Warden Hybrid additionally exposes an Objective/Search compatibility failure: the baseline-guided run found a path that cross-scores better under V1A than the V1A-guided winner.
+
+Decision: **revise V1A; Production remains baseline-v0**.
+
+Full evidence: `docs/research/optimizer-next/objective-v1-investigation.md` and `benchmarks/optimizer-v1/experiments/objective-v1a/`.
