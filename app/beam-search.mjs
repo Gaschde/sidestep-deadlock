@@ -70,7 +70,8 @@ export function runIterativeDiverseBeamCarry({
   scorePath = scoreMilestonePath,
   profile = false,
   onResult,
-  onProgress
+  onProgress,
+  onTerminalCandidate
 }) {
   if (!Number.isFinite(timeMs) || timeMs <= 0 || !Number.isSafeInteger(budget) || budget <= 0) throw new Error("Invalid search budget");
   for (const [name, value] of [["initialBeamWidth", initialBeamWidth], ["maxBeamWidth", maxBeamWidth], ["widenFactor", widenFactor]]) {
@@ -302,6 +303,33 @@ export function runIterativeDiverseBeamCarry({
     return current;
   };
 
+  const observedTerminalsByWidth = new Map();
+  const queueTerminalObservation = (node, width, phase) => {
+    if (!onTerminalCandidate) return;
+    const entries = observedTerminalsByWidth.get(width) || [];
+    entries.push({ node, phase });
+    observedTerminalsByWidth.set(width, entries);
+  };
+  const flushTerminalObservations = (width) => {
+    if (!onTerminalCandidate) return;
+    const entries = observedTerminalsByWidth.get(width) || [];
+    for (const { node, phase } of entries) {
+      const points = nodePoints(node);
+      onTerminalCandidate({
+        state: {
+          ...node.state,
+          inventory: [...node.state.inventory],
+          events: eventChain(node),
+          snapshots: points
+        },
+        quality: nodeQuality(node),
+        transactions: transactionCount(node),
+        observation: { phase, width }
+      });
+    }
+    observedTerminalsByWidth.delete(width);
+  };
+
   let winner = null;
   let publishedImprovements = 0;
   let generatedStates = 0;
@@ -368,6 +396,7 @@ export function runIterativeDiverseBeamCarry({
       let interrupted = false;
       for (const node of beam) {
         if (node.state.earnedSouls === budget) {
+          queueTerminalObservation(node, width, "beam-terminal");
           publish(node);
           continue;
         }
@@ -385,17 +414,28 @@ export function runIterativeDiverseBeamCarry({
       profiler.count("duplicateStates", candidates.length - unique.length);
       beam = selectDiverse(unique, width);
       if (!firstCompletionPublished && beam.length) {
-        publish(completeBySaving(beam[0]));
+        const completedNode = completeBySaving(beam[0]);
+        queueTerminalObservation(completedNode, width, "beam-save-completion");
+        publish(completedNode);
         firstCompletionPublished = true;
       }
-      for (const node of beam) if (node.state.earnedSouls === budget) publish(node);
+      for (const node of beam) {
+        if (node.state.earnedSouls !== budget) continue;
+        queueTerminalObservation(node, width, "beam-terminal");
+        publish(node);
+      }
       onProgress?.({ phase: "beam", width, runtimeMs: performance.now() - started, evaluations, generatedStates,
         retained: beam.length, bestScore: winner?.quality.score, paretoCount: timedPareto(beam, (node) => {
           const q = nodeQuality(node); return { damage: q.damage, survivability: q.survivability };
         }).length });
       if (interrupted) { completed = false; break; }
     }
-    if (completed) widthsCompleted.push(width);
+    if (completed) {
+      widthsCompleted.push(width);
+      flushTerminalObservations(width);
+    } else {
+      observedTerminalsByWidth.delete(width);
+    }
     profiler.pushWidth({ width, generatedStates: generatedStates - widthGeneratedAtStart,
       runtimeMs: profiler.enabled ? performance.now() - widthStartedAt : 0, completed });
     if (!completed || width >= maxBeamWidth || performance.now() >= searchDeadline) break;
