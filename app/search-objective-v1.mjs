@@ -66,7 +66,7 @@ function rowAt(rows, souls) {
   return row;
 }
 
-export function measureSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid") {
+export function measureSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid", telemetry = null) {
   if (!Number.isSafeInteger(budget) || budget <= 0) throw new RangeError("budget muss eine positive ganze Soul-Zahl sein.");
   const actual = committedActual(points);
   const refs = referenceRows(reference);
@@ -87,7 +87,10 @@ export function measureSoulAxisPath(points, reference, _milestones, budget, dama
     const actualRow = rowAt(actual, earnedSouls);
     const referenceRow = rowAt(refs, earnedSouls);
     if (!actualRow || !referenceRow) throw new RangeError("Soul-Achse ist am Auswertungspunkt nicht definiert.");
-    const quality = stateQuality(actualRow.metrics, referenceRow.metrics, damageFocus);
+    const scoreState = () => stateQuality(actualRow.metrics, referenceRow.metrics, damageFocus);
+    const quality = telemetry?.enabled
+      ? telemetry.time(earnedSouls === budget ? "endbuildScoreMs" : "pathAucScoreMs", scoreState)
+      : scoreState();
     return {
       earnedSouls,
       sourceEarnedSouls: actualRow.earnedSouls,
@@ -98,12 +101,16 @@ export function measureSoulAxisPath(points, reference, _milestones, budget, dama
   let scoreArea = 0;
   let damageArea = 0;
   let survivalArea = 0;
-  for (let index = 0; index < rows.length - 1; index += 1) {
-    const width = rows[index + 1].earnedSouls - rows[index].earnedSouls;
-    scoreArea += width * rows[index].score;
-    damageArea += width * rows[index].damage;
-    survivalArea += width * rows[index].survivability;
-  }
+  const integratePath = () => {
+    for (let index = 0; index < rows.length - 1; index += 1) {
+      const width = rows[index + 1].earnedSouls - rows[index].earnedSouls;
+      scoreArea += width * rows[index].score;
+      damageArea += width * rows[index].damage;
+      survivalArea += width * rows[index].survivability;
+    }
+  };
+  if (telemetry?.enabled) telemetry.time("pathAucScoreMs", integratePath);
+  else integratePath();
 
   const end = rows.at(-1);
   return {
