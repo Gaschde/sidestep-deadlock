@@ -1,8 +1,8 @@
 {
   "schemaVersion": "optimizer-path-end-pareto-v1",
   "experiment": "path-vs-end-pareto",
-  "sourceCommit": "fa7227016df0d5ec03b443d88c90e2e51d38cc04",
-  "generatedAt": "2026-09-19T18:36:07.359Z",
+  "sourceCommit": "ca3f69d4f5da4ecd6abc2a28adb0fa5e1e78d6c4",
+  "generatedAt": "2026-09-19T18:38:35.233Z",
   "measurementVersion": "path-end-measurement-v1",
   "objectiveDimensions": [
     "Path-AUC",
