@@ -719,8 +719,18 @@ test("Iterative Diverse Beam bleibt im kleinen exakten Raum legal und erreicht d
     Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
   const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis: axis, slotUnlocks,
     metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics });
-  const terminal = domain.enumerate().states.filter((entry) => entry.state.earnedSouls === budget);
-  const exact = Math.max(...terminal.map((entry) => scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
+  // search-core is exact here because full state identity is also the future
+  // identity: no two distinct path histories may dominate/prune each other.
+  const oracle = searchLabels({
+    initialState: domain.initial,
+    expand: domain.transitions,
+    stateKey: domain.stateKey,
+    futureKey: domain.stateKey,
+    label: () => ({ reachable: 1 })
+  });
+  const terminal = oracle.labels.filter((entry) => entry.state.earnedSouls === budget);
+  const exact = Math.max(...terminal.map((entry) =>
+    scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
   const outputs = [];
   const result = runIterativeDiverseBeamCarry({ data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
     timeMs: 1500, initialBeamWidth: 64, maxBeamWidth: 64, onResult: (value) => outputs.push(value) });
@@ -732,6 +742,8 @@ test("Iterative Diverse Beam bleibt im kleinen exakten Raum legal und erreicht d
   assert.ok(Math.abs(result.quality.score - exact) < 1e-12, `small beam oracle gap: ${exact - result.quality.score}`);
   assert.deepEqual(result.milestones.configured, [budget]);
   assert.equal(result.telemetry.pruning.paretoDominancePruning, false);
+  assert.ok(oracle.expandedStates > 0);
+  assert.ok(terminal.length > 0);
   for (let index = 1; index < outputs.length; index++) assert.ok(outputs[index].quality.score >= outputs[index - 1].quality.score);
 });
 
