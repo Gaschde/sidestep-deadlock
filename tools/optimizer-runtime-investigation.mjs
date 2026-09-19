@@ -76,6 +76,8 @@ function fixedWidth(caseId, width) {
     evaluations: result.searchTelemetry.evaluations,
     maxCandidatePool: result.searchTelemetry.maxCandidatePool,
     terminalAuditComplete: result.searchTelemetry.terminalAudit.complete,
+    terminalAudit: result.searchTelemetry.terminalAudit,
+    publishedImprovements: result.searchTelemetry.publishedImprovements,
     widthsCompleted: result.searchTelemetry.widthsCompleted
   };
 }
