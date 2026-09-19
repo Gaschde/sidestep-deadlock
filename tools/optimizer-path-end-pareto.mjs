@@ -335,6 +335,52 @@ function caseResult(data, definition, references, baselineDocument) {
   };
 }
 
+function compactPathObservables(observed) {
+  if (!observed) return null;
+  const { timeline: _timeline, ...compact } = observed;
+  return compact;
+}
+
+function compactCandidate(candidate) {
+  return {
+    id: candidate.id,
+    sources: candidate.sources,
+    pathScore: candidate.pathScore,
+    endScore: candidate.endScore,
+    pathDamage: candidate.pathDamage,
+    endDamage: candidate.endDamage,
+    pathSurvivability: candidate.pathSurvivability,
+    endSurvivability: candidate.endSurvivability,
+    inventory: candidate.inventory,
+    cash: candidate.cash,
+    pathObservables: compactPathObservables(candidate.pathObservables)
+  };
+}
+
+function compactCase(result) {
+  const frontIds = new Set(result.pareto.candidateIds);
+  return {
+    caseId: result.caseId,
+    level: result.level,
+    hero: result.hero,
+    role: result.role,
+    focus: result.focus,
+    budget: result.budget,
+    itemIds: result.itemIds,
+    referenceVersion: result.referenceVersion,
+    candidateGeneration: result.candidateGeneration,
+    candidateSet: result.candidateSet,
+    baseline: {
+      ...result.baseline,
+      pathObservables: compactPathObservables(result.baseline.pathObservables)
+    },
+    pareto: {
+      ...result.pareto,
+      front: result.candidates.filter((candidate) => frontIds.has(candidate.id)).map(compactCandidate)
+    }
+  };
+}
+
 function main() {
   const data = loadData();
   const references = JSON.parse(readFileSync(REFERENCE_FILE, "utf8"));
@@ -377,9 +423,15 @@ function main() {
   };
 
   const target = outputPath();
+  const summaryTarget = resolve(dirname(target), "summary.json");
+  const summary = {
+    ...result,
+    cases: cases.map(compactCase)
+  };
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, JSON.stringify(result, null, 2) + "\n");
-  console.log(JSON.stringify({ status: "COMPLETE", output: target, cases: cases.length }));
+  writeFileSync(summaryTarget, JSON.stringify(summary, null, 2) + "\n");
+  console.log(JSON.stringify({ status: "COMPLETE", output: target, summaryOutput: summaryTarget, cases: cases.length }));
 }
 
 try {
