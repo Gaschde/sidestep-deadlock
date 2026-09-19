@@ -2,12 +2,12 @@ import { runWardenCarryPareto, cachedWardenReference } from "./warden-search.mjs
 import { indexedReferenceStorage } from "./reference-cache.mjs";
 import { runAnytimeCarry } from "./anytime-search.mjs";
 import { runIterativeDiverseBeamCarry } from "./beam-search.mjs";
-import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCTION_SEARCH_BACKEND } from "./search-config.mjs";
 
 self.onmessage = async (event) => {
   const { data, itemIds, budget } = event.data;
   try {
-    const mode = event.data.mode || "beam";
+    const mode = event.data.mode || PRODUCTION_SEARCH_BACKEND;
     const approximateMode = mode === "beam" || mode === "anytime";
     const effectiveBudget = approximateMode ? FAST_SEARCH_BUDGET : budget;
     self.postMessage({ type: "started", mode, itemCount: itemIds.length, budget: effectiveBudget });

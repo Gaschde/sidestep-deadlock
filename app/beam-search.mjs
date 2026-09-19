@@ -369,7 +369,7 @@ export function runIterativeDiverseBeamCarry({
       certification: {
         bound: null,
         status: "not_run",
-        branchAndBound: "compatible_shadow_hook_only"
+        branchAndBound: "shadow_disabled_pending_outward_rounded_bounds"
       },
       telemetry: { runtimeMs: performance.now() - started, evaluations, generatedStates, publishedImprovements: publishedImprovements + 1 }
     };

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { applyOpponentResistances, normalizeOpponentScenario, NEUTRAL_OPPONENT_SCENARIO } from "../app/search-scenarios.mjs";
 import { normalizeMilestones, milestoneSnapshots } from "../app/search-milestones.mjs";
 import { paretoDominates, paretoFront } from "../app/pareto.mjs";
+import { PRODUCTION_SEARCH_BACKEND } from "../app/search-config.mjs";
 
 test("Opponent scenario defaults are neutral and preserve negative resistance amplification", () => {
   assert.deepEqual(NEUTRAL_OPPONENT_SCENARIO, { opponentBulletResist: 0, opponentSpiritResist: 0 });
@@ -39,4 +40,9 @@ test("Two-dimensional Pareto representation preserves Damage/EHP trade-offs", ()
   ];
   assert.equal(paretoDominates(entries[2], entries[3]), true);
   assert.deepEqual(paretoFront(entries).map((entry) => entry.id), ["damage", "tank", "balanced"]);
+});
+
+
+test("Production backend is explicitly Beam while exact diagnostics stay separate", () => {
+  assert.equal(PRODUCTION_SEARCH_BACKEND, "beam");
 });

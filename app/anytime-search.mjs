@@ -308,7 +308,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
       milestones: { configured: configuredMilestones, snapshots: milestoneSnapshots(points, configuredMilestones, budget) },
       scenario: opponentScenario, backend: "anytime", semantics: { legallyPathVerified: validation.valid === true, bestFound: true, locallyVerified: false, bounded: false, optimal: false },
-      certification: { bound: null, status: "not_run", branchAndBound: "compatible_shadow_hook_only" },
+      certification: { bound: null, status: "not_run", branchAndBound: "shadow_disabled_pending_outward_rounded_bounds" },
       unsupportedUpgrades: domain.resourceEvents.unsupportedUpgrades,
       unavailableItemIds,
       telemetry: { runtimeMs: performance.now() - started, evaluations, rollouts, completedPaths, publishedImprovements: publishedImprovements + 1,
