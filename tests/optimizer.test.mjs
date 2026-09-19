@@ -14,6 +14,7 @@ import {
   createCarryScenarioPlan,
   evaluateCarryDecision,
   evaluateCarryScenarios,
+  evaluateCarrySearchMetrics,
   evaluateWeaponMechanics,
   evaluateWeaponState,
   optimizeWeaponCarry,
@@ -557,4 +558,20 @@ test("Warden-Standardpfad respektiert die verfügbare Slotkapazität und bleibt 
   assert.ok(boundlessSpirit.synergies.some((entry) => entry.kind === "spirit_weapon_scaling" && entry.treatment === "included_in_weapon_calculation"));
   assert.ok(sharpshooter.synergies.some((entry) => entry.kind === "weapon_or_ability_range"));
   assert.ok(sharpshooter.synergies.some((entry) => entry.kind === "distance_conditional_weapon_effect" && entry.treatment === "documented_without_position_assumption"));
+});
+
+
+test("Explizite Gegnerresistenzen skalieren nur ausgehenden Schaden; neutral bleibt unverändert", () => {
+  const data = fixture();
+  const state = { inventory: [data.itemsById.get("damage")] };
+  const neutral = evaluateCarrySearchMetrics(state, { ...request, opponentBulletResist: 0, opponentSpiritResist: 0 }, data);
+  const armored = evaluateCarrySearchMetrics(state, { ...request, opponentBulletResist: 25, opponentSpiritResist: 50 }, data);
+  assert.equal(neutral.valid, true);
+  assert.equal(armored.valid, true);
+  assert.ok(Math.abs(armored.metrics.sustainedBulletDps - neutral.metrics.sustainedBulletDps * 0.75) < 1e-9);
+  assert.equal(armored.metrics.bulletEhp, neutral.metrics.bulletEhp);
+  const profile = evaluateCarryScenarios(state, { ...request, opponentBulletResist: -30 }, data);
+  assert.equal(profile.common.opponent_scenario.opponentBulletResist, -30);
+  assert.ok(profile.common.sustained_bullet_dps > neutral.metrics.sustainedBulletDps);
+  assert.throws(() => evaluateCarrySearchMetrics(state, { ...request, opponentBulletResist: 101 }, data), /100%/);
 });

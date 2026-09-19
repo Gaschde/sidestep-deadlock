@@ -1,3 +1,4 @@
+import { normalizeOpponentScenario } from "./search-scenarios.mjs";
 import {
   buildHeroCapabilityProfile,
   buildPathMilestones,
@@ -579,8 +580,9 @@ export function createCarryScenarioPlan() {
 }
 
 export function evaluateCarryScenarios(state, request, data) {
+  const opponentScenario = normalizeOpponentScenario(request);
   const cached = (request.cacheProfiles === false ? null : SCENARIO_PROFILE_CACHE.get(data)) || new Map();
-  const cacheKey = `${request.heroId}:${request.damageFocus || "weapon"}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
+  const cacheKey = `${request.heroId}:${request.damageFocus || "weapon"}:${opponentScenario.opponentBulletResist}:${opponentScenario.opponentSpiritResist}:${state.inventory.map((item) => item.item_id).sort().join("|")}`;
   if (cached.has(cacheKey)) return cached.get(cacheKey);
   const plan = createCarryScenarioPlan();
   const weapon = evaluateWeaponMechanics(state, request, data);
@@ -606,15 +608,19 @@ export function evaluateCarryScenarios(state, request, data) {
   const spiritResistance = combinedResistance(state, data, new Set(["spirit_resist", "tech_resist"]));
   const permanentBulletLifesteal = capabilities.sustain.combatHealing.bulletLifestealPercent / 100;
   const permanentRegen = (baseRegen || 0) + capabilities.sustain.regeneration.alwaysHealthPerSecond;
+  const outgoingBulletDamage = (seconds) => damageModel.weaponDamageAt(seconds) * opponentScenario.bulletDamageMultiplier;
+  const outgoingSpiritDamage = (seconds) =>
+    (damageModel.abilityDamageAt(seconds) + damageModel.afterburnDamageAt(seconds)) * opponentScenario.spiritDamageMultiplier;
+  const outgoingDamage = (seconds) => outgoingBulletDamage(seconds) + outgoingSpiritDamage(seconds);
   const survivalCapacity = (resist, duration, weaponDamage, includeBulletLifesteal) => {
     const recovery = permanentRegen * duration + (includeBulletLifesteal ? weaponDamage * permanentBulletLifesteal : 0);
     const rawCapacity = health + recovery;
     return resist >= 100 ? null : rawCapacity / (1 - resist / 100);
   };
   const common = {
-    sustained_weapon_dps: damageModel.damageAt(60) / 60,
-    sustained_bullet_dps: damageModel.weaponDamageAt(60) / 60,
-    sustained_spirit_dps: (damageModel.abilityDamageAt(60) + damageModel.afterburnDamageAt(60)) / 60,
+    sustained_weapon_dps: outgoingDamage(60) / 60,
+    sustained_bullet_dps: outgoingBulletDamage(60) / 60,
+    sustained_spirit_dps: outgoingSpiritDamage(60) / 60,
     damage_per_bullet: weapon.damage_per_bullet,
     rounds_per_second: weapon.rounds_per_second,
     clip_size: weapon.clip_size,
@@ -647,6 +653,7 @@ export function evaluateCarryScenarios(state, request, data) {
     kit_coverage: heroProfile.kitCoverage,
     item_kit_synergies: capabilities.synergies,
     damage_focus: focus,
+    opponent_scenario: opponentScenario,
     combat_strategy: damageModel.strategy,
     spirit_mechanics: spirit,
     afterburn_mechanics: afterburn,
@@ -680,8 +687,10 @@ export function evaluateCarryScenarios(state, request, data) {
     },
     common,
     scenarios: plan.scenarios.map((scenario) => {
-      const damage = damageModel.damageAt(scenario.duration_seconds);
-      const weaponDamage = damageModel.weaponDamageAt(scenario.duration_seconds);
+      const rawWeaponDamage = damageModel.weaponDamageAt(scenario.duration_seconds);
+      const weaponDamage = outgoingBulletDamage(scenario.duration_seconds);
+      const spiritDamage = outgoingSpiritDamage(scenario.duration_seconds);
+      const damage = weaponDamage + spiritDamage;
       const combo = request.heroId === "warden" ? wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) : null;
       const incomingRawDamage = plan.incoming_damage_model.raw_damage_per_second * scenario.duration_seconds;
       const bulletRecovery = permanentRegen * scenario.duration_seconds + weaponDamage * permanentBulletLifesteal;
@@ -693,11 +702,11 @@ export function evaluateCarryScenarios(state, request, data) {
         window_dps: damage / scenario.duration_seconds,
         bullet_damage: weaponDamage,
         bullet_dps: weaponDamage / scenario.duration_seconds,
-        direct_ability_damage: damageModel.abilityDamageAt(scenario.duration_seconds),
-        afterburn_damage: damageModel.afterburnDamageAt(scenario.duration_seconds),
-        spirit_damage: damageModel.abilityDamageAt(scenario.duration_seconds) + damageModel.afterburnDamageAt(scenario.duration_seconds),
-        spirit_dps: (damageModel.abilityDamageAt(scenario.duration_seconds) + damageModel.afterburnDamageAt(scenario.duration_seconds)) / scenario.duration_seconds,
-        survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, weaponDamage, true),
+        direct_ability_damage: damageModel.abilityDamageAt(scenario.duration_seconds) * opponentScenario.spiritDamageMultiplier,
+        afterburn_damage: damageModel.afterburnDamageAt(scenario.duration_seconds) * opponentScenario.spiritDamageMultiplier,
+        spirit_damage: spiritDamage,
+        spirit_dps: spiritDamage / scenario.duration_seconds,
+        survival_capacity_bullet: survivalCapacity(bulletResistance.percent, scenario.duration_seconds, rawWeaponDamage, true),
         survival_capacity_spirit: survivalCapacity(spiritResistance.percent, scenario.duration_seconds, damage, false),
         recovery_health: bulletRecovery,
         incoming_damage: {
@@ -729,6 +738,7 @@ export function evaluateCarryScenarios(state, request, data) {
 // from the audit-rich scenario profile avoids recreating sources, plans and
 // interaction display rows for every transient inventory the search visits.
 export function evaluateCarrySearchMetrics(state, request, data) {
+  const opponentScenario = normalizeOpponentScenario(request);
   const weapon = evaluateWeaponMechanics(state, request, data);
   const spirit = evaluateSpiritMechanics(state, request, data);
   const afterburn = evaluateAfterburnMechanics(state, request, data, weapon);
@@ -760,9 +770,10 @@ export function evaluateCarrySearchMetrics(state, request, data) {
   const spiritMultiplier = resistance(new Set(["spirit_resist", "tech_resist"]));
   if (bulletMultiplier <= 0 || spiritMultiplier <= 0) return { valid: false, reason: "UNBOUNDED_SURVIVAL_CAPACITY" };
   const health = (baseHealth + bonusHealth) * (1 + thresholds.bonuses.vitalityHealthPercent / 100);
-  const damageAt = (seconds) => damageModel.damageAt(seconds);
-  const weaponDamageAt = (seconds) => damageModel.weaponDamageAt(seconds);
-  const spiritDamageAt = (seconds) => damageModel.abilityDamageAt(seconds) + damageModel.afterburnDamageAt(seconds);
+  const weaponDamageAt = (seconds) => damageModel.weaponDamageAt(seconds) * opponentScenario.bulletDamageMultiplier;
+  const spiritDamageAt = (seconds) =>
+    (damageModel.abilityDamageAt(seconds) + damageModel.afterburnDamageAt(seconds)) * opponentScenario.spiritDamageMultiplier;
+  const damageAt = (seconds) => weaponDamageAt(seconds) + spiritDamageAt(seconds);
   const teamfightDamage = damageAt(10);
   const metrics = {
     valid: true,
@@ -772,7 +783,7 @@ export function evaluateCarrySearchMetrics(state, request, data) {
       farmWindowDps: damageAt(10) / 10,
       skirmishWindowDps: damageAt(4) / 4,
       teamfightWindowDps: teamfightDamage / 10,
-      bulletEhp: (health + regen * 10 + weaponDamageAt(10) * (bulletLifestealPercent / 100)) / bulletMultiplier,
+      bulletEhp: (health + regen * 10 + damageModel.weaponDamageAt(10) * (bulletLifestealPercent / 100)) / bulletMultiplier,
       spiritEhp: (health + regen * 10) / spiritMultiplier,
       // These component rows are intentionally separate from the existing
       // seven public Carry metrics. The search uses them only to apply the
