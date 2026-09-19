@@ -138,6 +138,23 @@ export function runIterativeDiverseBeamCarry({
     return states;
   });
   const transitions = (node) => domainTransitions(node.state).map((state) => makeNode(node, state));
+  const soulSummary = (nodes) => {
+    if (!nodes.length) return { min: null, max: null, counts: {} };
+    const counts = {};
+    let min = Infinity;
+    let max = -Infinity;
+    for (const node of nodes) {
+      const souls = node.state.earnedSouls;
+      counts[souls] = (counts[souls] || 0) + 1;
+      min = Math.min(min, souls);
+      max = Math.max(max, souls);
+    }
+    return { min, max, counts };
+  };
+  const checkpointCounts = (nodes) => Object.fromEntries(checkpoints.map((souls) => [
+    souls,
+    nodes.reduce((sum, node) => sum + Number(node.state.earnedSouls === souls), 0)
+  ]));
 
   const referenceStartedAt = profiler.enabled ? performance.now() : 0;
   const baseline = metrics(root.state);
@@ -293,7 +310,7 @@ export function runIterativeDiverseBeamCarry({
     return selected;
   });
 
-  const completeBySaving = (node) => {
+  const completeBySaving = (node) => profiler.time("terminalCompletionMs", () => {
     let current = node;
     while (current.state.earnedSouls < budget) {
       const save = transitions(current).find((candidate) => candidate.event?.type === "save");
@@ -301,7 +318,7 @@ export function runIterativeDiverseBeamCarry({
       current = save;
     }
     return current;
-  };
+  });
 
   const observedTerminalsByWidth = new Map();
   const terminalAuditObservations = [];
@@ -393,6 +410,7 @@ export function runIterativeDiverseBeamCarry({
     let beam = [root];
     let completed = true;
     let firstCompletionPublished = false;
+    let depth = 0;
     while (beam.length && performance.now() < searchDeadline) {
       const candidates = [];
       let interrupted = false;
@@ -420,6 +438,26 @@ export function runIterativeDiverseBeamCarry({
       profiler.count("uniqueStates", unique.length);
       profiler.count("duplicateStates", candidates.length - unique.length);
       beam = selectDiverse(unique, width);
+      if (profiler.enabled) {
+        profiler.pushProgress({
+          engine: "production",
+          width,
+          depth,
+          runtimeMs: performance.now() - started,
+          candidates: candidates.length,
+          unique: unique.length,
+          retained: beam.length,
+          candidateSouls: soulSummary(candidates),
+          uniqueSouls: soulSummary(unique),
+          retainedSouls: soulSummary(beam),
+          checkpointCounts: {
+            candidates: checkpointCounts(candidates),
+            unique: checkpointCounts(unique),
+            retained: checkpointCounts(beam)
+          }
+        });
+      }
+      depth += 1;
       if (!firstCompletionPublished && beam.length) {
         const completedNode = completeBySaving(beam[0]);
         queueTerminalObservation(completedNode, width, "beam-save-completion");
