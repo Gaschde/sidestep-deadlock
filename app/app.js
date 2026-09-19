@@ -282,6 +282,23 @@ function setFastControls(running) {
     "search-backend", "search-milestones", "opponent-bullet-resist", "opponent-spirit-resist"]) $("#" + id).disabled = running;
 }
 
+function fastSearchGuarantee(semantics = {}) {
+  return [
+    semantics.legallyPathVerified ? "Pfad legal verifiziert" : "Pfad nicht verifiziert",
+    "best found",
+    semantics.locallyVerified ? "lokal verifiziert" : "lokal nicht abschließend verifiziert",
+    semantics.bounded ? "bounded" : "kein gültiger Bound",
+    semantics.optimal ? "optimal bewiesen" : "kein Optimalitätsbeweis"
+  ].join(" · ");
+}
+
+function fastSearchScope(result, damageFocus) {
+  const unavailableChargeItems = (result.unavailableItemIds || [])
+    .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
+    .join(", ");
+  return `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Backend: ${result.backend}. Milestones: ${result.milestones.configured.join(", ")}. Gegnerresistenz Bullet/Spirit: ${result.scenario.opponentBulletResist}%/${result.scenario.opponentSpiritResist}%. Nicht kaufbare Charge-Items: ${unavailableChargeItems || "keine"}. ${fastSearchGuarantee(result.semantics)}.`;
+}
+
 function fastBuildSummary(result, inventory, telemetry) {
   const categoryCount = (category) => inventory.filter((item) => item.category === category).length;
   const active = inventory.filter((item) => Boolean(item.active_type)).length;
@@ -347,20 +364,9 @@ function startFastBuild() {
         opponentBulletResist: result.scenario?.opponentBulletResist ?? 0,
         opponentSpiritResist: result.scenario?.opponentSpiritResist ?? 0
       }, state.data);
-      const unavailableChargeItems = result.unavailableItemIds
-        .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
-        .join(", ");
-      const semantics = result.semantics || {};
-      const guarantee = [
-        semantics.legallyPathVerified ? "Pfad legal verifiziert" : "Pfad nicht verifiziert",
-        "best found",
-        semantics.locallyVerified ? "lokal verifiziert" : "lokal nicht abschließend verifiziert",
-        semantics.bounded ? "bounded" : "kein gültiger Bound",
-        semantics.optimal ? "optimal bewiesen" : "kein Optimalitätsbeweis"
-      ].join(" · ");
       state.build = { events, inventory, spent: result.state.earnedSouls - result.state.cash, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Backend: ${result.backend}. Milestones: ${result.milestones.configured.join(", ")}. Gegnerresistenz Bullet/Spirit: ${result.scenario.opponentBulletResist}%/${result.scenario.opponentSpiritResist}%. Nicht kaufbare Charge-Items: ${unavailableChargeItems || "keine"}. ${guarantee}.` } };
+          scope: fastSearchScope(result, damageFocus) } };
       $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
       $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();
@@ -376,7 +382,9 @@ function startFastBuild() {
         state.build.search.searchTelemetry = telemetry;
         state.build.search.semantics = message.result.semantics;
         state.build.search.certification = message.result.certification;
+        state.build.search.scope = fastSearchScope(state.build.search, $("#damage-focus").value);
         $("#result-summary").textContent = fastBuildSummary(state.build.search, state.build.inventory, telemetry);
+        renderPhase();
       }
       const first = firstResultMs === null ? "kein Ergebnis" : `${(firstResultMs / 1000).toFixed(2)} s`;
       const work = telemetry.generatedStates !== undefined
@@ -473,7 +481,7 @@ function startNewBuild(budget = FAST_SEARCH_BUDGET) {
     $("#new-build-40k-button").disabled = false;
     $("#build-button").disabled = false;
   };
-  activeOptimizerWorker.postMessage({ data: state.data, itemIds, budget, heroId: state.selectedHeroId, damageFocus });
+  activeOptimizerWorker.postMessage({ mode: "diagnostic", data: state.data, itemIds, budget, heroId: state.selectedHeroId, damageFocus });
 }
 
 function renderPicker(filter = "") {
