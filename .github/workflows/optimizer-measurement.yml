@@ -1,0 +1,25 @@
+name: optimizer measurement baseline
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+jobs:
+  baseline:
+    if: contains(github.event.head_commit.message, '[baseline]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run optimizer V1 measurement baseline
+        run: npm run benchmark:optimizer-v1 -- --suite all --output-dir artifacts/optimizer-v1
+      - name: Upload measurement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-v1-baseline
+          path: artifacts/optimizer-v1/
+          if-no-files-found: error
