@@ -145,7 +145,16 @@ function evaluatorStudy(heroId) {
     opponentSpiritResist: 0
   };
   const weapon = evaluateWeaponMechanics(stateItems, request, data);
+  const spirit = evaluateSpiritMechanics(stateItems, request, data);
   const afterburn = evaluateAfterburnMechanics(stateItems, request, data, weapon);
+  const selectedAbilitiesAt = (seconds) => spirit.abilities.filter((row) => {
+    if (!row.included) return false;
+    const actionTime = row.castTimeAt(seconds);
+    return row.damageAt(seconds) > weapon.sustained_cycle_dps * actionTime;
+  });
+  const castTimeAt = (seconds) => Math.min(Math.max(0, seconds), selectedAbilitiesAt(seconds)
+    .reduce((total, row) => total + row.castTimeAt(seconds), 0));
+  const weaponTimeAt = (seconds) => Math.max(0, seconds - castTimeAt(seconds));
   const afterburnWindows = [10, 60, 10, 10, 4, 60, 10, 10, 4, 10];
   return {
     heroId,
@@ -157,8 +166,11 @@ function evaluatorStudy(heroId) {
     weaponSetup: measure(() => evaluateWeaponMechanics(stateItems, request, data), 100),
     spiritSetup: measure(() => evaluateSpiritMechanics(stateItems, request, data), 100),
     afterburnSetup: measure(() => evaluateAfterburnMechanics(stateItems, request, data, weapon), 100),
-    afterburnMetricWork: measure(() => {
+    afterburnMetricWorkIdentitySchedule: measure(() => {
       for (const seconds of afterburnWindows) afterburn.damageAt(seconds);
+    }, 30),
+    afterburnMetricWorkActualAbilitySchedule: measure(() => {
+      for (const seconds of afterburnWindows) afterburn.damageAt(seconds, weaponTimeAt);
     }, 30),
     afterburn: {
       applicable: afterburn.applicable,
