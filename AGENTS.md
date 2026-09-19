@@ -48,7 +48,7 @@ Zwei parallele Engines:
 - Produktionssuche: **0–40.000 Souls** (nicht 60k; 60k ist historisch und unvollständig)
 - 12 Startslots (3 Walker-Freischaltungen ab Beginn)
 - Alle 156 kanonischen Items, 38 öffentlich spielbare Helden
-- 25-Sekunden-Worker-Budget
+- 60-Sekunden-Worker-Budget
 - Approximative Bewertung: 70% Endstärke / 30% Verlauf, Schaden/Überleben 50/50
 - Schwerpunktgewichte: Weapon 70/30 Bullet/Spirit, Spirit 30/70, Hybrid 50/50
 - Suchkern: `app/search-core.mjs`, Domäne: `app/deadlock-domain.mjs`
