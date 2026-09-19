@@ -1,19 +1,14 @@
 import { createDeadlockDomain } from "./deadlock-domain.mjs";
-import { evaluateCarryPerformance, CARRY_METRICS, carryResourceAxis } from "./warden-search.mjs";
+import { evaluateCarryPerformance, carryResourceAxis } from "./warden-search.mjs";
 import { validateSearchPath } from "./validate-search-path.mjs";
 import { heroCanPurchaseItem } from "./optimizer.mjs";
 import { normalizeMilestones, milestoneSnapshots } from "./search-milestones.mjs";
-import {
-  COMPONENT_METRICS,
-  metricValue,
-  scoreMilestonePath
-} from "./search-objective.mjs";
+import { scoreMilestonePath } from "./search-objective.mjs";
 import { normalizeOpponentScenario } from "./search-scenarios.mjs";
 import { paretoFront } from "./pareto.mjs";
 import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS } from "./search-config.mjs";
 import { createBeamProfiler } from "./search-telemetry.mjs";
-
-const REFERENCE_METRICS = Object.freeze([...CARRY_METRICS, ...COMPONENT_METRICS]);
+import { buildSampledCarryReference } from "./sampled-reference.mjs";
 export { scoreMilestonePath };
 
 function transactionCount(node) {
@@ -157,45 +152,20 @@ export function runIterativeDiverseBeamCarry({
   ]));
 
   const referenceStartedAt = profiler.enabled ? performance.now() : 0;
-  const baseline = metrics(root.state);
   let reference = suppliedReference;
   if (reference) {
     if (JSON.stringify(reference.axis) !== JSON.stringify(axis)) throw new Error("Reference axis mismatch");
   } else {
-    reference = { axis, values: axis.map(() => ({ ...baseline })) };
     const referenceDeadline = Math.min(searchDeadline, started + Math.min(referenceTimeMs, timeMs * 0.2));
-    for (const objective of CARRY_METRICS) {
-      let state = { ...root.state, cash: budget, earnedSouls: budget };
-      while (performance.now() < referenceDeadline) {
-        const currentMetrics = metrics(state);
-        let best = null;
-        let bestValue = metricValue(currentMetrics, objective);
-        for (const next of domainTransitions(state)) {
-          const type = next.events[0]?.type;
-          if (!["purchase", "upgrade", "replacement"].includes(type)) continue;
-          const values = metrics(next);
-          const spent = budget - next.cash;
-          const first = axis.findIndex((souls) => souls >= spent);
-          if (first >= 0) for (let index = first; index < reference.values.length; index++) {
-            for (const metric of REFERENCE_METRICS) {
-              reference.values[index][metric] = Math.max(metricValue(reference.values[index], metric), metricValue(values, metric));
-            }
-          }
-          const value = metricValue(values, objective);
-          if (value > bestValue) { best = next; bestValue = value; }
-          if (performance.now() >= referenceDeadline) break;
-        }
-        if (!best) break;
-        state = clean(best);
-      }
-    }
-    // Every reference row is an attainable sampled envelope, so enforce only
-    // monotone carry-forward, never a claimed upper bound.
-    for (let index = 1; index < reference.values.length; index++) {
-      for (const metric of REFERENCE_METRICS) {
-        reference.values[index][metric] = Math.max(metricValue(reference.values[index - 1], metric), metricValue(reference.values[index], metric));
-      }
-    }
+    reference = buildSampledCarryReference({
+      axis,
+      initialState: root.state,
+      budget,
+      metrics,
+      transitions: domainTransitions,
+      clean,
+      deadline: referenceDeadline
+    });
   }
   if (profiler.enabled) profiler.add("referenceMs", performance.now() - referenceStartedAt);
 
