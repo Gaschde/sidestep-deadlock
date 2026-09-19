@@ -5,6 +5,9 @@ on:
     branches:
       - feature/optimizer-next
 
+permissions:
+  contents: write
+
 jobs:
   baseline:
     if: contains(github.event.head_commit.message, '[baseline]')
@@ -23,3 +26,14 @@ jobs:
           name: optimizer-v1-baseline
           path: artifacts/optimizer-v1/
           if-no-files-found: error
+      - name: Store BASELINE V0 on the measurement branch
+        shell: bash
+        run: |
+          mkdir -p benchmarks/optimizer-v1/references benchmarks/optimizer-v1/baselines
+          cp artifacts/optimizer-v1/references-baseline-v0.json benchmarks/optimizer-v1/references/baseline-v0.json
+          cp artifacts/optimizer-v1/baseline-v0.json benchmarks/optimizer-v1/baselines/baseline-v0.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/references/baseline-v0.json benchmarks/optimizer-v1/baselines/baseline-v0.json
+          git commit -m "data(benchmark): record optimizer baseline v0"
+          git push origin HEAD:feature/optimizer-next

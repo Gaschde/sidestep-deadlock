@@ -47,7 +47,7 @@ function cli() {
     suite: value("--suite", "all"),
     outputDir: resolve(value("--output-dir", "artifacts/optimizer-v1")),
     referenceFile: resolve(value("--references", existsSync(DEFAULT_REFERENCE_FILE) ? DEFAULT_REFERENCE_FILE : "artifacts/optimizer-v1/references-baseline-v0.json")),
-    compare: args.includes("--compare") ? [value("--compare"), args[args.indexOf("--compare") + 2]].map(resolve) : null
+    compare: args.includes("--compare") ? [value("--compare"), args[args.indexOf("--compare") + 2]].map((path) => resolve(path)) : null
   };
 }
 
@@ -161,7 +161,7 @@ function loadReferenceDocument(path) {
 }
 
 function captureReference(data, definition) {
-  const captured = runBeam(data, definition, undefined, true, definition.referenceCaptureTimeMs);
+  const captured = runBeam(data, definition, undefined, false, definition.referenceCaptureTimeMs);
   return {
     version: `${BASELINE_ID}:${definition.id}`,
     source: "current-beam-sampled-reference",
@@ -175,7 +175,11 @@ function captureReference(data, definition) {
 }
 
 function recordFor(data, definition, referenceEntry, hardware, timestamp) {
-  const result = runBeam(data, definition, referenceEntry.reference, true);
+  // The score/result baseline is intentionally unprofiled so profiler overhead
+  // cannot change how much wall-clock search work completes. Profiling is a
+  // separate run against the exact same fixed reference and search contract.
+  const result = runBeam(data, definition, referenceEntry.reference, false);
+  const profilingRun = runBeam(data, definition, referenceEntry.reference, true);
   const exact = definition.exactOracle ? exactOracle(data, definition, referenceEntry.reference) : null;
   const gap = exact ? calculateGap(exact.exactScore, result.quality.score) : null;
   const ids = caseItems(data, definition);
@@ -243,7 +247,14 @@ function recordFor(data, definition, referenceEntry, hardware, timestamp) {
     bounded: exact ? true : result.semantics.bounded,
     optimal: exact ? gap.absoluteGap <= 1e-12 : result.semantics.optimal,
     exact: exact ? { ...exact, ...gap } : null,
-    searchTelemetry: result.searchTelemetry
+    searchTelemetry: result.searchTelemetry,
+    profilingRun: {
+      resultScore: profilingRun.quality.score,
+      inventory: profilingRun.state.inventory,
+      legallyPathVerified: profilingRun.semantics.legallyPathVerified,
+      locallyVerified: profilingRun.semantics.locallyVerified,
+      telemetry: profilingRun.searchTelemetry
+    }
   };
 }
 

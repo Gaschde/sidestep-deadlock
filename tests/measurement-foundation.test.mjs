@@ -15,7 +15,11 @@ test("Optimizer V1 benchmark matrix contains exact, controlled and all six produ
 });
 
 test("Exact benchmark gap is absolute and relative to the exact score", () => {
-  assert.deepEqual(calculateGap(0.8, 0.6), { exactScore: 0.8, candidateScore: 0.6, absoluteGap: 0.20000000000000007, relativeGap: 0.25000000000000006 });
+  const gap = calculateGap(0.8, 0.6);
+  assert.equal(gap.exactScore, 0.8);
+  assert.equal(gap.candidateScore, 0.6);
+  assert.ok(Math.abs(gap.absoluteGap - 0.2) < 1e-12);
+  assert.ok(Math.abs(gap.relativeGap - 0.25) < 1e-12);
   assert.deepEqual(calculateGap(0, 0), { exactScore: 0, candidateScore: 0, absoluteGap: 0, relativeGap: 0 });
 });
 
