@@ -5,9 +5,10 @@ This directory preserves the research that led to the next optimizer architectur
 ## Read order for an implementation agent
 
 1. **`decisions.md`** — authoritative implementation direction.
-2. **`gpt-council.md`** — broad mathematical/model critique and long-term architecture.
-3. **`claude-council.md`** — repository-grounded, conservative engineering review.
-4. **`gemini-meta-review.md`** — independent comparison/red-team of both reports.
+2. **`implementation-status.md`** — current implementation contract on `feature/optimizer-next`.
+3. **`gpt-council.md`** — broad mathematical/model critique and long-term architecture.
+4. **`claude-council.md`** — repository-grounded, conservative engineering review.
+5. **`gemini-meta-review.md`** — independent comparison/red-team of both reports.
 
 ## Important
 
