@@ -279,3 +279,46 @@ Decision: **A — the Multiobjective Beam works well enough in CONTROLLED to jus
 Exactly one next step: run a **40k Shadow experiment** without changing Production selection or UI.
 
 Full evidence: `docs/research/optimizer-next/controlled-multiobjective-beam-experiment.md` and `benchmarks/optimizer-v1/experiments/controlled-multiobjective-beam/`.
+
+
+## 60s Product Budget + 40k Multiobjective Shadow
+
+The current Product wall-clock budget is now **60 seconds**. Historical `baseline-v0` benchmark files remain the original 25 s measurement contract and were not rewritten.
+
+The 60 s Production rerun changes search reach asymmetrically:
+
+- all three Warden 40k cases complete Width 4 and Width 8;
+- all three Infernus 40k cases still complete only Width 4;
+- Warden terminal audits complete; Infernus terminal audits remain incomplete.
+
+The experimental 40k Multiobjective Shadow uses the same 60 s wall-clock budget per case and keeps `(Path-AUC, Endbuild)` separate with no Path/End scalarization.
+
+Observed across Warden/Infernus × Weapon/Spirit/Hybrid:
+
+- all six Shadow runs start Width 4;
+- none completes Width 4 within 60 s;
+- none reaches a terminal candidate;
+- therefore no terminal 40k Pareto front is produced;
+- repeated runs reproduce the same empty terminal front and identical State/Evaluation counts.
+
+Partial first fronts remain small (maximum 6), so the measured blocker is not a terminal frontier explosion. The current experimental 40k search simply does not progress far enough within the Product budget.
+
+The 60 s Production paths also expose path-quality problems that are measured but not repaired here:
+
+- Warden Weapon: 46 transactions / 26 replacements;
+- Warden Spirit: 44 / 24;
+- Warden Hybrid: 79 / 62, including heavy repeated Grit ↔ Health Stimpak reacquisition;
+- all three Infernus cases still make their first transaction only at 40k.
+
+No anti-churn rule, Search heuristic, Objective, Afterburn evaluator, item data or Production selection was changed.
+
+Workflow `35464300745` succeeded with 106/106 JavaScript tests and stored:
+
+- `benchmarks/optimizer-v1/experiments/40k-multiobjective-shadow/results.json`
+- `benchmarks/optimizer-v1/experiments/40k-multiobjective-shadow/summary.json`
+
+Decision: **C — the CONTROLLED success does not transfer sufficiently to 40k. Production remains unchanged.**
+
+Exactly one next step: profile the 40k Multiobjective Width-4 run to locate the lost Search progress before changing any Search heuristic.
+
+Full evidence: `docs/research/optimizer-next/40k-multiobjective-shadow-experiment.md`.
