@@ -405,7 +405,7 @@ test("Anytime output is legal, improves monotonically and compares with an exact
     const reference = { axis, values: axis.map((_, i) => Object.fromEntries(names.map((m) => [m, ref.byMetric[m][i].metrics[m]]))) };
     const options = { data, itemIds, budget, slotUnlocks, soulAxis: axis, metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics };
     const oracle = createDeadlockDomain(options).enumerate().states.filter((e) => e.state.earnedSouls === budget);
-    const exact = Math.max(...oracle.map((e) => scoreAnytimePath(e.state.snapshots, reference, budget, "weapon").score));
+    const exact = Math.max(...oracle.map((e) => scoreMilestonePath(e.state.snapshots, reference, [budget], budget, "weapon").score));
     const outputs = [];
     const result = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 2000, maxRollouts: 5, onResult: (r) => outputs.push(r) });
     assert.ok(result.validation.valid);
@@ -417,7 +417,9 @@ test("Anytime output is legal, improves monotonically and compares with an exact
     assert.equal(result.slotLimit, 9 + (slotUnlocks[0]?.slots || 0));
     assert.ok(Math.abs(exact - result.quality.score) < 1e-12, `small-case score gap: ${exact - result.quality.score}`);
     for (let i = 1; i < outputs.length; i++) assert.ok(outputs[i].quality.score > outputs[i - 1].quality.score);
-    assert.equal(result.policy.end, 0.7);
+    assert.equal(result.policy.milestoneWeights, "equal");
+    assert.deepEqual(result.quality.milestones.map((entry) => entry.earnedSouls), [budget]);
+    assert.equal(result.legacyPolicy.end, 0.7);
     assert.equal(ANYTIME_POLICY.worst + ANYTIME_POLICY.integrated, 0.3);
     assert.deepEqual(result.reference, reference);
   }
@@ -492,7 +494,7 @@ test("Lokale Gegenprobe bleibt exakt und hält reale Upgradeübergänge im Suchr
     .states.filter((entry) => entry.state.earnedSouls === budget);
   assert.ok(oracle.some((entry) => entry.state.events.some((event) => event.type === "upgrade" && event.item === "upgrade_titan_round")),
     "der exakte Vergleich enthält weiterhin den legalen Komponenten→Upgrade-Übergang");
-  const exact = Math.max(...oracle.map((entry) => scoreAnytimePath(entry.state.snapshots, reference, budget, "weapon").score));
+  const exact = Math.max(...oracle.map((entry) => scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
   const before = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1, localRefinement: false });
   const after = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1 });
 
@@ -754,6 +756,8 @@ test("Anytime fallback accepts the same explicit opponent scenario and milestone
   assert.equal(result.validation.valid, true);
   assert.equal(result.backend, "anytime");
   assert.deepEqual(result.milestones.configured, [400, 800]);
+  assert.deepEqual(result.quality.milestones.map((entry) => entry.earnedSouls), [400, 800]);
+  assert.equal(result.policy.milestoneWeights, "equal");
   assert.equal(result.scenario.opponentBulletResist, 25);
   assert.equal(result.semantics.optimal, false);
 });
