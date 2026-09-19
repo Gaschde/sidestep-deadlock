@@ -108,3 +108,33 @@ test("trade-off summary is deterministic and does not invent a weighted winner",
   assert.ok(Math.abs(summary.medianEndLoss - 0.1) < 1e-12);
   assert.equal(Object.hasOwn(summary, "winner"), false);
 });
+
+
+test("explicit save-to-horizon materialization preserves Path-AUC and Endbuild measurement", () => {
+  const reference = {
+    axis: [0, 400, 800],
+    values: [metrics(100), metrics(100), metrics(100)]
+  };
+  const partial = measureSoulAxisPath([
+    { earnedSouls: 0, metrics: metrics(10) },
+    { earnedSouls: 400, metrics: metrics(80) }
+  ], reference, [800], 800, "hybrid");
+  const materialized = measureSoulAxisPath([
+    { earnedSouls: 0, metrics: metrics(10) },
+    { earnedSouls: 400, metrics: metrics(80) },
+    { earnedSouls: 800, metrics: metrics(80) }
+  ], reference, [800], 800, "hybrid");
+
+  for (const key of [
+    "pathScore",
+    "endScore",
+    "pathDamage",
+    "endDamage",
+    "pathSurvivability",
+    "endSurvivability"
+  ]) {
+    assert.equal(materialized[key], partial[key], key);
+  }
+  assert.equal(materialized.policy.aggregation, "none");
+  assert.equal(Object.hasOwn(materialized, "score"), false);
+});
