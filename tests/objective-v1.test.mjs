@@ -63,3 +63,13 @@ test("same-Soul intermediate shop states have zero width and only the committed 
   assert.equal(noisy.endScore, clean.endScore);
   assert.equal(noisy.score, clean.score);
 });
+
+
+test("Objective V1A is invariant to redundant Soul-axis subdivisions when step functions do not change", () => {
+  const points = [p(0, 0), p(400, 100), p(800, 100)];
+  const coarse = scoreSoulAxisPath(points, reference([0, 400, 800]), [800], 800, "hybrid");
+  const fine = scoreSoulAxisPath(points, reference([0, 200, 400, 600, 800]), [800], 800, "hybrid");
+  assert.ok(Math.abs(coarse.pathScore - fine.pathScore) < 1e-12);
+  assert.ok(Math.abs(coarse.endScore - fine.endScore) < 1e-12);
+  assert.ok(Math.abs(coarse.score - fine.score) < 1e-12);
+});
