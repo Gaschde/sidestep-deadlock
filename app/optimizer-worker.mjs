@@ -2,7 +2,7 @@ import { runWardenCarryPareto, cachedWardenReference } from "./warden-search.mjs
 import { indexedReferenceStorage } from "./reference-cache.mjs";
 import { runAnytimeCarry } from "./anytime-search.mjs";
 import { runIterativeDiverseBeamCarry } from "./beam-search.mjs";
-import { FAST_SEARCH_BUDGET, PRODUCTION_SEARCH_BACKEND } from "./search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS, PRODUCTION_SEARCH_BACKEND } from "./search-config.mjs";
 
 self.onmessage = async (event) => {
   const { data, itemIds, budget } = event.data;
@@ -22,7 +22,7 @@ self.onmessage = async (event) => {
         milestones: event.data.milestones,
         opponentBulletResist: event.data.opponentBulletResist,
         opponentSpiritResist: event.data.opponentSpiritResist,
-        timeMs: 25000,
+        timeMs: PRODUCT_SEARCH_TIME_MS,
         slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
         onResult: (result) => self.postMessage({ type: "incumbent", result }),
         onProgress: (progress) => self.postMessage({ type: "progress", ...progress })
