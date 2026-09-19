@@ -304,29 +304,31 @@ export function runIterativeDiverseBeamCarry({
   };
 
   const observedTerminalsByWidth = new Map();
+  const terminalAuditObservations = [];
   const queueTerminalObservation = (node, width, phase) => {
     if (!onTerminalCandidate) return;
     const entries = observedTerminalsByWidth.get(width) || [];
     entries.push({ node, phase });
     observedTerminalsByWidth.set(width, entries);
   };
-  const flushTerminalObservations = (width) => {
+  const emitTerminalObservation = (node, observation) => {
     if (!onTerminalCandidate) return;
+    const points = nodePoints(node);
+    onTerminalCandidate({
+      state: {
+        ...node.state,
+        inventory: [...node.state.inventory],
+        events: eventChain(node),
+        snapshots: points
+      },
+      quality: nodeQuality(node),
+      transactions: transactionCount(node),
+      observation
+    });
+  };
+  const flushTerminalObservations = (width) => {
     const entries = observedTerminalsByWidth.get(width) || [];
-    for (const { node, phase } of entries) {
-      const points = nodePoints(node);
-      onTerminalCandidate({
-        state: {
-          ...node.state,
-          inventory: [...node.state.inventory],
-          events: eventChain(node),
-          snapshots: points
-        },
-        quality: nodeQuality(node),
-        transactions: transactionCount(node),
-        observation: { phase, width }
-      });
-    }
+    for (const { node, phase } of entries) emitTerminalObservation(node, { phase, width });
     observedTerminalsByWidth.delete(width);
   };
 
@@ -403,6 +405,11 @@ export function runIterativeDiverseBeamCarry({
         const successors = transitions(node);
         generatedStates += successors.length;
         candidates.push(...successors);
+        for (const successor of successors) {
+          if (successor.state.earnedSouls === budget) {
+            queueTerminalObservation(successor, width, "generated-terminal");
+          }
+        }
         if (performance.now() >= searchDeadline) { interrupted = true; break; }
       }
       if (!candidates.length) break;
@@ -432,7 +439,6 @@ export function runIterativeDiverseBeamCarry({
     }
     if (completed) {
       widthsCompleted.push(width);
-      flushTerminalObservations(width);
     } else {
       observedTerminalsByWidth.delete(width);
     }
@@ -460,6 +466,7 @@ export function runIterativeDiverseBeamCarry({
         if (performance.now() >= finalDeadline) { interrupted = true; break; }
         terminalAudit.checkedActions++;
         const q = nodeQuality(candidate);
+        if (onTerminalCandidate) terminalAuditObservations.push(candidate);
         if (!best || q.score > best.quality.score) best = { node: candidate, quality: q };
       }
       if (best && best.quality.score > nodeQuality(current).score) {
@@ -498,5 +505,19 @@ export function runIterativeDiverseBeamCarry({
     },
     profile: profiler.snapshot({ widthsStarted: [...widthsStarted], widthsCompleted: [...widthsCompleted] })
   };
+
+  // Diagnostic observers are deliberately materialized only after all search
+  // and terminal-audit decisions are finished, so observer evaluation cannot
+  // consume the search/audit wall-clock budget or alter retention/ranking.
+  if (onTerminalCandidate) {
+    for (const completedWidth of widthsCompleted) flushTerminalObservations(completedWidth);
+    if (terminalAudit.complete) {
+      const auditWidth = widthsCompleted.at(-1) ?? null;
+      for (const node of terminalAuditObservations) {
+        emitTerminalObservation(node, { phase: "terminal-audit-neighbour", width: auditWidth });
+      }
+    }
+  }
+
   return { ...winner, telemetry, searchTelemetry: telemetry };
 }
