@@ -70,7 +70,6 @@ python tools/calculate_build.py warden --boon 35 --walker-slots 3 --item upgrade
 - `docs/search_specification.md` – Suchmodell, Metriken und Modellgrenzen
 - `docs/engine.md` – Python-Engine: Feature-Set, Szenarien, Profile, Known Limitations
 - `archive/api/README.md` – API-Import- und Integritätsvertrag
-- `PROJECT_CONTEXT.md` – Technischer Handover-Stand
 
 ## Wichtige Regeln
 

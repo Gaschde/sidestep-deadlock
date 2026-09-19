@@ -35,7 +35,7 @@ The repository currently contains:
 - a versioned Deadlock Assets API import and review workflow;
 - automated tests for the calculator, path generation, current Warden slice, and API importer.
 
-The optimizer is intentionally described as **best evaluated**, not globally optimal. It does not yet jointly optimize skill levels, hit/headshot rates, positional falloff, proc uptime, objectives, or arbitrary multi-step sale chains. The terminal shop check is time-bounded and reports whether it completed. See [.agent/CONTINUITY.md](.agent/CONTINUITY.md) for dated measurements and decisions, [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) for the current handover, and [docs/search_specification.md](docs/search_specification.md) for the precise browser model and its limits.
+The optimizer is intentionally described as **best evaluated**, not globally optimal. It does not yet jointly optimize skill levels, hit/headshot rates, positional falloff, proc uptime, objectives, or arbitrary multi-step sale chains. The terminal shop check is time-bounded and reports whether it completed. See [docs/search_specification.md](docs/search_specification.md) for the precise browser model and its limits.
 
 ## Browser scope and limits
 
