@@ -693,7 +693,7 @@ export function evaluateCarryScenarios(state, request, data) {
       const damage = weaponDamage + spiritDamage;
       const combo = request.heroId === "warden" ? wardenSlowingHexBindingWordCombo(state, data, weapon, scenario) : null;
       const incomingRawDamage = plan.incoming_damage_model.raw_damage_per_second * scenario.duration_seconds;
-      const bulletRecovery = permanentRegen * scenario.duration_seconds + weaponDamage * permanentBulletLifesteal;
+      const bulletRecovery = permanentRegen * scenario.duration_seconds + rawWeaponDamage * permanentBulletLifesteal;
       const spiritRecovery = permanentRegen * scenario.duration_seconds;
       return {
         ...scenario,
