@@ -139,3 +139,15 @@ Production and benchmark records keep these concepts separate:
 - `optimal`: false for production heuristic runs. In SMALL/EXACT it applies only to that stated bounded case when candidate and exact score match.
 
 No global game optimality is implied.
+
+
+## Recorded execution
+
+BASELINE V0 was captured from `371a22e3bda9c015a7b1c5e19947db06c6fb7045` and stored by data commit `0f84bd091ac8c7d33d6ed18d3590ed2af690370f`.
+
+Structured records:
+
+- `benchmarks/optimizer-v1/references/baseline-v0.json`
+- `benchmarks/optimizer-v1/baselines/baseline-v0.json`
+
+The recorded 40k fixed-reference runs all completed only Width 4. The bounded SMALL/EXACT case has zero candidate-to-oracle gap. See `measurement-foundation.md` for the measured results and profiler caveats.

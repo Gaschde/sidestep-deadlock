@@ -198,3 +198,13 @@ See:
 - `docs/research/optimizer-next/baseline-contract-v0.md`
 - `docs/research/optimizer-next/measurement-foundation.md`
 - `docs/research/optimizer-next/objective-contract-v1.md`
+
+
+### BASELINE V0 recorded
+
+Source commit: `371a22e3bda9c015a7b1c5e19947db06c6fb7045`.
+Data commit: `0f84bd091ac8c7d33d6ed18d3590ed2af690370f`.
+
+The bounded SMALL/EXACT case reaches the exact score with zero gap. All six 40k production cases are legally path-verified, but every one completes only Beam Width 4 within the fixed-reference 25 s contract. Infernus evaluation is measured at roughly 32–36× the Warden per-inventory cost on the baseline runner, and all three Infernus 40k terminal audits remain incomplete.
+
+These are now measurement facts to investigate before changing search heuristics or the production objective. Inclusive profiler timers overlap and are not bottleneck percentages.
