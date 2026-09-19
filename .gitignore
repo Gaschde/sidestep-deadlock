@@ -32,3 +32,9 @@ Thumbs.db
 # Lokale OpenRouter-Zugangsdaten und erzeugte Debattenprotokolle
 debatte/*.env
 debatte/outputs/
+
+# Alte Agent-/OpenCode-/OMO-Backups und CodeGraph-Index
+.agent-backup/
+.opencode-backup/
+.omo-backup/
+.codegraph/

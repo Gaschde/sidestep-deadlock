@@ -20,7 +20,11 @@ const mime = {
 
 createServer((request, response) => {
   const requestPath = decodeURIComponent(new URL(request.url, `http://${request.headers.host}`).pathname);
-  const routedPath = requestPath === "/" ? "/app/" : requestPath;
+  if (requestPath === "/") {
+    response.writeHead(302, { Location: "/app/" }).end();
+    return;
+  }
+  const routedPath = requestPath;
   const candidate = resolve(root, `.${normalize(routedPath)}`);
 
   if (!candidate.startsWith(root)) {

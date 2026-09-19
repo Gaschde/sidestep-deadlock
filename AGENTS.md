@@ -4,7 +4,7 @@
 
 - Antworte dem Nutzer standardmäßig auf Deutsch.
 - Dieses Projekt nutzt verifizierte Deadlock-Daten, um nachvollziehbare Build-Analysen zu erstellen.
-- Behandle „Champion“ in Nutzeranfragen als „Held“, ohne den Nutzer dafür zu korrigieren.
+- Behandle „Champion" in Nutzeranfragen als „Held", ohne den Nutzer dafür zu korrigieren.
 
 ## Verbindliche Datenquellen
 
@@ -24,8 +24,8 @@ Bei jeder Anfrage nach einem Build, einer Kaufreihenfolge, einem Itemvergleich o
 3. Verwende `docs/schemas/build_result_schema.md` für das Ergebnis.
 4. Vergleiche zuerst `data/core/manifest.json` und `data/heroes/manifest.json` auf Patch- und Moduskompatibilität.
 5. Lade nur die für den angefragten Helden, die Kandidaten und die betroffenen Mechaniken benötigten Datensätze.
-6. Rechne Kosten, Investments, Schwellen, Upgrades, Slots und abgeleitete Werte deterministisch und nachvollziehbar. Verwende für größere Filter-, Join-, Such- oder Rechenaufgaben ein lokales Hilfsskript statt Kopfrechnen.
-7. Nenne ein Ergebnis nur dann „optimal“, wenn der Suchraum und das Optimierungsziel klar definiert sind und die geprüften Kandidaten den behaupteten Suchraum abdecken. Sonst nenne es „bester geprüfter Build“.
+6. Rechne Kosten, Investments, Schwellen, Upgrades, Slots und abgeleitete Werte deterministisch und nachvollziehbar.
+7. Nenne ein Ergebnis nur dann „optimal", wenn der Suchraum und das Optimierungsziel klar definiert sind und die geprüften Kandidaten den behaupteten Suchraum abdecken. Sonst nenne es „bester geprüfter Build".
 8. Führe die Schlusskontrolle aus `docs/prompts/build_optimizer.md` aus, bevor du eine Empfehlung abgibst.
 9. Schreibe Ergebnisse nur auf ausdrücklichen Wunsch nach `builds/`; ansonsten gib sie im Chat aus.
 
@@ -35,7 +35,47 @@ Bei jeder Anfrage nach einem Build, einer Kaufreihenfolge, einem Itemvergleich o
 - Recherchiere nur, wenn der Nutzer es verlangt, die Manifeste widersprüchlich sind oder der Datenstand erkennbar nicht aktuell genug ist.
 - `deadlock.wiki` bleibt bei neuer Spielrecherche die verpflichtende Primärquelle; `deadlockwiki.org` ist ausgeschlossen.
 
-## Projektkontinuität
+## Technischer Stand
 
-- `.agent/CONTINUITY.md` ist die einzige laufend gepflegte Status- und Übergabedatei. Relevante Projektänderungen, Entscheidungen und offene Punkte werden dort dokumentiert.
+### Architektur
 
+Zwei parallele Engines:
+- **Python (`engine/`)** für CLI, Tests, Audit und API-Import
+- **JavaScript (`app/`)** als primärer Browser-Optimizer mit Web-Worker
+
+### Browser-Optimizer
+
+- Produktionssuche: **0–40.000 Souls** (nicht 60k; 60k ist historisch und unvollständig)
+- 12 Startslots (3 Walker-Freischaltungen ab Beginn)
+- Alle 156 kanonischen Items, 38 öffentlich spielbare Helden
+- 25-Sekunden-Worker-Budget
+- Approximative Bewertung: 70% Endstärke / 30% Verlauf, Schaden/Überleben 50/50
+- Schwerpunktgewichte: Weapon 70/30 Bullet/Spirit, Spirit 30/70, Hybrid 50/50
+- Suchkern: `app/search-core.mjs`, Domäne: `app/deadlock-domain.mjs`
+- Anytime-Worker: `app/optimizer-worker.mjs`
+
+### Testbefehle
+
+```bash
+npm test          # Vollständige Node-Testsuite (75+ Tests)
+npm start         # Lokaler Server auf http://127.0.0.1:4173/app/
+python tools/calculate_build.py warden --boon 35 --walker-slots 3 --item upgrade_close_quarter_combat
+```
+
+## Dokumentationsverweise
+
+- `docs/prompts/build_optimizer.md` – Verbindliches Arbeitsverfahren für Build-Analysen
+- `docs/schemas/build_request_schema.md` – Eingaben und Annahmen
+- `docs/schemas/build_result_schema.md` – Verifizierbares Ergebnis
+- `docs/search_specification.md` – Suchmodell, Metriken und Modellgrenzen
+- `docs/engine.md` – Python-Engine: Feature-Set, Szenarien, Profile, Known Limitations
+- `archive/api/README.md` – API-Import- und Integritätsvertrag
+- `PROJECT_CONTEXT.md` – Technischer Handover-Stand
+
+## Wichtige Regeln
+
+1. Ergebnisse immer als „bester geprüfter Build" bezeichnen, es sei denn, Suchraum und Ziel sind formal definiert.
+2. Keine unbewiesenenAnnahmen für Proc-Uptime, Skill-Level, Trefferquoten oder Zwischenstände.
+3. Bedingte Effekte nur mit dokumentiertem Trigger und Dauer bewerten.
+4. API-Snapshots werden versioniert importiert; `data/core/` und `data/heroes/` werden nicht direkt überschrieben.
+5. `archive/api/` ist die verbindliche API-Snapshot-Ablage; `review_required.json` erfordert explizite Freigabe.
