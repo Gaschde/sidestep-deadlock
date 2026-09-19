@@ -6,6 +6,7 @@ import {
 } from "./search-objective.mjs";
 
 export const EXPERIMENTAL_OBJECTIVE_VERSION = "objective-v1a-soul-auc-terminal-gmean";
+export const PATH_END_MEASUREMENT_VERSION = "path-end-measurement-v1";
 
 function normalizedValue(value, reference) {
   return value + reference > 0 ? value / (value + reference) : 0;
@@ -65,7 +66,7 @@ function rowAt(rows, souls) {
   return row;
 }
 
-export function scoreSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid") {
+export function measureSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid") {
   if (!Number.isSafeInteger(budget) || budget <= 0) throw new RangeError("budget muss eine positive ganze Soul-Zahl sein.");
   const actual = committedActual(points);
   const refs = referenceRows(reference);
@@ -104,43 +105,46 @@ export function scoreSoulAxisPath(points, reference, _milestones, budget, damage
     survivalArea += width * rows[index].survivability;
   }
 
-  const pathScore = scoreArea / budget;
-  const pathDamage = damageArea / budget;
-  const pathSurvivability = survivalArea / budget;
   const end = rows.at(-1);
-  const endScore = end.score;
-  const endDamage = end.damage;
-  const endSurvivability = end.survivability;
-
-  // No 70/30-style coefficient: path and terminal quality are separate,
-  // dimensionless quantities on the same normalization and enter symmetrically.
-  const score = Math.sqrt(pathScore * endScore);
-  const damage = Math.sqrt(pathDamage * endDamage);
-  const survivability = Math.sqrt(pathSurvivability * endSurvivability);
-
   return {
-    score,
-    damage,
-    survivability,
-    pathScore,
-    endScore,
-    pathDamage,
-    endDamage,
-    pathSurvivability,
-    endSurvivability,
-    milestones: rows,
+    pathScore: scoreArea / budget,
+    endScore: end.score,
+    pathDamage: damageArea / budget,
+    endDamage: end.damage,
+    pathSurvivability: survivalArea / budget,
+    endSurvivability: end.survivability,
     soulAxis: rows,
     policy: {
-      version: EXPERIMENTAL_OBJECTIVE_VERSION,
+      version: PATH_END_MEASUREMENT_VERSION,
       trajectory: "piecewise-constant integral over earned Souls",
       terminal: "separate horizon utility",
-      aggregation: "geometric mean(path utility, terminal utility)",
+      aggregation: "none",
       damageSurvivabilityWeights: { damage: 0.5, survivability: 0.5 },
       damageFocus,
       damageFocusWeights: DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid,
       normalization: "x/(x+reference)",
       reference: "fixed attainable sampled reference; not an admissible bound",
-      duplicateDamageMetrics: "preserved from baseline-v0 for isolated A/B"
+      duplicateDamageMetrics: "preserved from baseline-v0 for isolated comparison"
+    }
+  };
+}
+
+export function scoreSoulAxisPath(points, reference, milestones, budget, damageFocus = "hybrid") {
+  const measured = measureSoulAxisPath(points, reference, milestones, budget, damageFocus);
+  const score = Math.sqrt(measured.pathScore * measured.endScore);
+  const damage = Math.sqrt(measured.pathDamage * measured.endDamage);
+  const survivability = Math.sqrt(measured.pathSurvivability * measured.endSurvivability);
+
+  return {
+    ...measured,
+    score,
+    damage,
+    survivability,
+    milestones: measured.soulAxis,
+    policy: {
+      ...measured.policy,
+      version: EXPERIMENTAL_OBJECTIVE_VERSION,
+      aggregation: "geometric mean(path utility, terminal utility)"
     }
   };
 }
