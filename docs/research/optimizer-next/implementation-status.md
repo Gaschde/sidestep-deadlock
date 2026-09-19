@@ -246,3 +246,34 @@ Decision: **continue with Multiobjective experimentally; do not change Productio
 Exactly one next step: run a CONTROLLED-only experimental Beam that preserves non-dominated `(Path-AUC, Endbuild)` alternatives during search and compare it against these frozen fronts.
 
 Full evidence: `docs/research/optimizer-next/path-end-pareto-experiment.md` and `benchmarks/optimizer-v1/experiments/path-end-pareto/`.
+
+
+## Controlled Multiobjective Beam Experiment
+
+A CONTROLLED-only experimental search now retains candidates by the two separate dimensions `(Path-AUC, Endbuild)` with no Path/End scalarization. The experiment is isolated in `benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs`; the Production Beam remains unchanged.
+
+Search retention uses Pareto layers. Dominance across different future configurations is not treated as a proof-safe global prune: later Pareto layers remain eligible while Beam capacity exists. Future-safe dedupe includes the future configuration plus the exact unrounded Path/End save-completion vector, so objective-distinct Path-AUC histories are not merged.
+
+Two identical runs across fixed Widths 8/16/32/64 produced identical front hashes for both CONTROLLED Warden Hybrid and CONTROLLED Infernus Hybrid. The first Pareto front remained small (maximum 6 for Warden, 3 for Infernus) and never overflowed Width 8.
+
+The frozen two-point reference fronts were not recovered exactly. Instead:
+
+- Warden: by Width 8, both frozen points are dominated by newly found candidates. Width 32 stabilizes at `(0.449185, 0.427123)`.
+- Infernus: Width 8 still misses the frozen End-side baseline, but Width 16 dominates both frozen points. Width 32 stabilizes at `(0.455859, 0.441198)`.
+- Width 64 improves neither final front.
+
+The stable Width-32 candidates each use seven purchases with no replacements, sells, reacquisitions or same-Soul transaction groups. Lower widths still show limited replacement/reacquisition behavior, but no Sell/Rebuy or Same-Soul pathology was observed on the experiment fronts.
+
+Cost relative to the existing same-runner CONTROLLED baseline:
+
+- cumulative Width 8+16: Warden 2.15× runtime / 0.95× generated Search States; Infernus 1.80× / 0.89×;
+- cumulative through Width 32: Warden 5.31× runtime / 2.41× Search States; Infernus 3.27× / 2.25×;
+- Width 64 adds substantial work without an observed front improvement.
+
+Workflow `35463184096` completed successfully with 106/106 JavaScript tests and stored the benchmark data. Existing optimizer-next workflow `35463184126` also completed successfully.
+
+Decision: **A — the Multiobjective Beam works well enough in CONTROLLED to justify a 40k shadow experiment; Production remains unchanged.**
+
+Exactly one next step: run a **40k Shadow experiment** without changing Production selection or UI.
+
+Full evidence: `docs/research/optimizer-next/controlled-multiobjective-beam-experiment.md` and `benchmarks/optimizer-v1/experiments/controlled-multiobjective-beam/`.
