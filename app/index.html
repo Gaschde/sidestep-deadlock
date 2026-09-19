@@ -54,11 +54,34 @@
           <section class="setup-step build-step">
             <h2><span class="step-seal">4</span> Vorschau</h2>
             <button id="fast-build-button" class="primary-button" type="button">Build erstellen · 40k</button>
-            <small>70 % Endstärke · 30 % Verlauf. Rechenbudget 25 s, Abbruch jederzeit.</small>
+            <small>Default: Iterative Diverse Beam · 25 s Rechenbudget · Abbruch jederzeit.</small>
             <button id="build-button" class="primary-button" type="button"><span aria-hidden="true">✦</span> Bisherigen Optimizer prüfen</button>
             <button id="new-build-button" class="secondary-button" type="button"><span aria-hidden="true">⟳</span> Neuen vollständigen Suchlauf starten</button>
             <button id="new-build-40k-button" class="secondary-button" type="button"><span aria-hidden="true">◌</span> Neuer 40k-Testlauf (Diagnose)</button>
           </section>
+        </div>
+
+        <div class="options-row">
+          <details class="advanced-options">
+            <summary>Search-Einstellungen <span>optional · neutral ohne Eingabe</span></summary>
+            <div class="advanced-grid">
+              <label>Backend
+                <select id="search-backend">
+                  <option value="beam">Iterative Diverse Beam</option>
+                  <option value="anytime">Anytime (Fallback)</option>
+                </select>
+              </label>
+              <label>Soul-Meilensteine
+                <input id="search-milestones" inputmode="numeric" placeholder="leer = nur 40k" />
+              </label>
+              <label>Gegner Bullet Resist %
+                <input id="opponent-bullet-resist" type="number" max="100" value="0" step="1" />
+              </label>
+              <label>Gegner Spirit Resist %
+                <input id="opponent-spirit-resist" type="number" max="100" value="0" step="1" />
+              </label>
+            </div>
+          </details>
         </div>
 
       </header>
@@ -76,7 +99,7 @@
 
         <div class="truth-banner" role="note">
           <span class="truth-icon">i</span>
-          <div><strong>Transparenzhinweis</strong><p>„Build erstellen“ liefert einen besten geprüften Kaufpfad mit approximativer Suche bis 40.000 Souls: 70 % Endstärke, 15 % schlimmster und 15 % durchschnittlicher Rückstand gegenüber einer Stichprobenreferenz. Schaden und Überleben bilden getrennte, gleich gewichtete Gruppen; Endwerte werden mit x/(x+Referenz) normiert. Keine Optimalitätsgarantie. Testszenario: zwölf Slots ab Beginn verfügbar. Belegte permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal fließen in die Überlebenskapazität ein. Binding Word und Hex → Binding Word werden getrennt gezeigt; ohne Treffer-, Flucht- oder Skillzustand zählt Hex nicht mit einem erfundenen Zusatzwert. Andere aktive Effekte, Trigger und Combos bleiben ohne belegte Uptime oder Trefferwirkung sichtbar, aber ausgeschlossen.</p></div>
+          <div><strong>Transparenzhinweis</strong><p>„Build erstellen“ nutzt standardmäßig Iterative Diverse Beam Search bis 40.000 Souls. Konfigurierte Soul-Meilensteine werden gleich gewichtet; ohne Eingabe ist nur der Endhorizont 40.000 aktiv. Schaden und Überleben bilden getrennte, gleich gewichtete Gruppen. Gegner-Bullet-/Spirit-Resistenz ist explizit parametrierbar und standardmäßig neutral (0/0). Anytime bleibt als Fallback verfügbar. Legale Pfadprüfung ist keine Optimalitätsgarantie. Testszenario: zwölf Slots ab Beginn verfügbar. Belegte permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal fließen in die Überlebenskapazität ein. Binding Word und Hex → Binding Word werden getrennt gezeigt; ohne Treffer-, Flucht- oder Skillzustand zählt Hex nicht mit einem erfundenen Zusatzwert. Andere aktive Effekte, Trigger und Combos bleiben ohne belegte Uptime oder Trefferwirkung sichtbar, aber ausgeschlossen.</p></div>
         </div>
 
         <section id="phase-panel" class="phase-panel panel" aria-live="polite"></section>

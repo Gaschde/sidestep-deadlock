@@ -278,7 +278,8 @@ function cancelNewBuild() {
 
 function setFastControls(running) {
   $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 40k";
-  for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus"]) $("#" + id).disabled = running;
+  for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus",
+    "search-backend", "search-milestones", "opponent-bullet-resist", "opponent-spirit-resist"]) $("#" + id).disabled = running;
 }
 
 function fastBuildSummary(result, inventory, telemetry) {
@@ -288,11 +289,28 @@ function fastBuildSummary(result, inventory, telemetry) {
   const activeLimit = Number(state.data.slots.active_item_limit);
   const totalSouls = result.state.earnedSouls - result.state.cash;
   const evaluations = telemetry?.evaluations ?? result.searchTelemetry?.evaluations ?? result.telemetry?.evaluations ?? 0;
-  const completedPaths = telemetry?.completedPaths ?? result.searchTelemetry?.completedPaths ?? result.telemetry?.completedPaths ?? 0;
+  const explored = telemetry?.generatedStates ?? result.searchTelemetry?.generatedStates ?? result.telemetry?.generatedStates;
+  const completedPaths = telemetry?.completedPaths ?? result.searchTelemetry?.completedPaths ?? result.telemetry?.completedPaths;
   const runtimeMs = telemetry?.runtimeMs ?? result.searchTelemetry?.runtimeMs ?? result.telemetry?.runtimeMs ?? 0;
   const audit = telemetry?.terminalAudit ?? result.searchTelemetry?.terminalAudit ?? result.telemetry?.terminalAudit;
   const auditText = audit ? ` · Endgegenprobe ${audit.complete ? "vollständig" : "unterbrochen"} (${audit.checkedActions}/${audit.legalActions})` : "";
-  return `${inventory.length}/${slots} Slots · davon ${active}/${activeLimit} aktiv · ${categoryCount("Weapon")} Weapon · ${categoryCount("Vitality")} Vitality · ${categoryCount("Spirit")} Spirit · Ausgaben ${formatSouls(totalSouls)} · Rest ${formatSouls(result.state.cash)} · ${evaluations.toLocaleString("de-CH")} Inventare bewertet · ${completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade · ${(runtimeMs / 1000).toFixed(1)} s${auditText}`;
+  const workText = explored !== undefined
+    ? `${explored.toLocaleString("de-CH")} Zustände erzeugt`
+    : `${(completedPaths ?? 0).toLocaleString("de-CH")} vollständige Kaufpfade`;
+  return `${inventory.length}/${slots} Slots · davon ${active}/${activeLimit} aktiv · ${categoryCount("Weapon")} Weapon · ${categoryCount("Vitality")} Vitality · ${categoryCount("Spirit")} Spirit · Ausgaben ${formatSouls(totalSouls)} · Rest ${formatSouls(result.state.cash)} · ${evaluations.toLocaleString("de-CH")} Inventare bewertet · ${workText} · ${(runtimeMs / 1000).toFixed(1)} s${auditText}`;
+}
+
+function readSearchOptions() {
+  const rawMilestones = $("#search-milestones").value.trim();
+  const milestones = rawMilestones
+    ? rawMilestones.split(/[\s,;]+/).filter(Boolean).map((value) => Number(value))
+    : undefined;
+  return {
+    backend: $("#search-backend").value,
+    milestones,
+    opponentBulletResist: Number($("#opponent-bullet-resist").value || 0),
+    opponentSpiritResist: Number($("#opponent-spirit-resist").value || 0)
+  };
 }
 
 function startFastBuild() {
@@ -301,10 +319,11 @@ function startFastBuild() {
     $("#search-progress").textContent = "Dieser Build-Lauf unterstützt derzeit nur Carry.";
     return;
   }
+  const options = readSearchOptions();
   const started = performance.now();
   let firstResultMs = null;
   setFastControls(true);
-  $("#search-progress").textContent = "Suche läuft · alle Items zugelassen · 25 s Rechenbudget · Stichprobenreferenz wird vorbereitet.";
+  $("#search-progress").textContent = `${options.backend === "beam" ? "Iterative Diverse Beam" : "Anytime-Fallback"} läuft · 25 s Rechenbudget · Referenz wird vorbereitet.`;
   const worker = activeOptimizerWorker = new Worker("./optimizer-worker.mjs", { type: "module" });
   const finish = (text) => {
     worker.terminate(); activeOptimizerWorker = null; setFastControls(false);
@@ -321,28 +340,63 @@ function startFastBuild() {
           cashCost: event.payment, saleProceeds: event.saleProceeds || 0 }));
       const inventory = result.state.inventory.map((id) => itemMap.get(id));
       const damageFocus = $("#damage-focus").value;
-      const evaluation = evaluateCarryPerformance(result.state, { heroId: state.selectedHeroId, damageFocus, budget: FAST_SEARCH_BUDGET }, state.data);
+      const evaluation = evaluateCarryPerformance(result.state, {
+        heroId: state.selectedHeroId,
+        damageFocus,
+        budget: FAST_SEARCH_BUDGET,
+        opponentBulletResist: result.scenario?.opponentBulletResist ?? 0,
+        opponentSpiritResist: result.scenario?.opponentSpiritResist ?? 0
+      }, state.data);
       const unavailableChargeItems = result.unavailableItemIds
         .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
         .join(", ");
+      const semantics = result.semantics || {};
+      const guarantee = [
+        semantics.legallyPathVerified ? "Pfad legal verifiziert" : "Pfad nicht verifiziert",
+        "best found",
+        semantics.locallyVerified ? "lokal verifiziert" : "lokal nicht abschließend verifiziert",
+        semantics.bounded ? "bounded" : "kein gültiger Bound",
+        semantics.optimal ? "optimal bewiesen" : "kein Optimalitätsbeweis"
+      ].join(" · ");
       state.build = { events, inventory, spent: result.state.earnedSouls - result.state.cash, winner: { evaluation },
         search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
+          scope: `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Backend: ${result.backend}. Milestones: ${result.milestones.configured.join(", ")}. Gegnerresistenz Bullet/Spirit: ${result.scenario.opponentBulletResist}%/${result.scenario.opponentSpiritResist}%. Nicht kaufbare Charge-Items: ${unavailableChargeItems || "keine"}. ${guarantee}.` } };
       $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
       $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
       renderPhase();
-    } else if (message.type === "anytime-complete") {
+    } else if (message.type === "progress") {
+      if (message.phase === "beam") {
+        $("#search-progress").textContent = `Beam ${message.width} · ${message.retained} Pfade behalten · ${message.generatedStates.toLocaleString("de-CH")} Zustände erzeugt · bester Auswahlwert ${(message.bestScore ?? 0).toFixed(5)}.`;
+      } else if (message.phase === "anytime") {
+        $("#search-progress").textContent = `Anytime · ${message.rollouts.toLocaleString("de-CH")} Rollouts · ${message.evaluations.toLocaleString("de-CH")} Inventare bewertet · bester Auswahlwert ${(message.bestScore ?? 0).toFixed(5)}.`;
+      }
+    } else if (message.type === "search-complete") {
       const telemetry = message.telemetry;
       if (state.build?.search?.approximate) {
         state.build.search.searchTelemetry = telemetry;
+        state.build.search.semantics = message.result.semantics;
+        state.build.search.certification = message.result.certification;
         $("#result-summary").textContent = fastBuildSummary(state.build.search, state.build.inventory, telemetry);
       }
       const first = firstResultMs === null ? "kein Ergebnis" : `${(firstResultMs / 1000).toFixed(2)} s`;
-      finish(`Abgeschlossen · erstes Ergebnis: ${first} · Gesamtlaufzeit: ${(telemetry.runtimeMs / 1000).toFixed(1)} s · ${telemetry.evaluations.toLocaleString("de-CH")} Inventare bewertet · ${telemetry.completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade geprüft.`);
+      const work = telemetry.generatedStates !== undefined
+        ? `${telemetry.generatedStates.toLocaleString("de-CH")} Zustände erzeugt`
+        : `${telemetry.completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade geprüft`;
+      finish(`Abgeschlossen · ${message.backend} · erstes Ergebnis: ${first} · Gesamtlaufzeit: ${(telemetry.runtimeMs / 1000).toFixed(1)} s · ${telemetry.evaluations.toLocaleString("de-CH")} Inventare bewertet · ${work}.`);
     } else if (message.type === "error") finish(`Suche fehlgeschlagen: ${message.message}`);
   };
   worker.onerror = (error) => finish(`Suche fehlgeschlagen: ${error.message}`);
-  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: FAST_SEARCH_BUDGET, heroId: state.selectedHeroId, damageFocus: $("#damage-focus").value });
+  worker.postMessage({
+    mode: options.backend,
+    data: state.data,
+    itemIds: state.data.items.map((item) => item.item_id),
+    budget: FAST_SEARCH_BUDGET,
+    heroId: state.selectedHeroId,
+    damageFocus: $("#damage-focus").value,
+    milestones: options.milestones,
+    opponentBulletResist: options.opponentBulletResist,
+    opponentSpiritResist: options.opponentSpiritResist
+  });
 }
 
 function startNewBuild(budget = FAST_SEARCH_BUDGET) {

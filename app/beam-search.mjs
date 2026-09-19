@@ -370,7 +370,8 @@ export function runIterativeDiverseBeamCarry({
         bound: null,
         status: "not_run",
         branchAndBound: "compatible_shadow_hook_only"
-      }
+      },
+      telemetry: { runtimeMs: performance.now() - started, evaluations, generatedStates, publishedImprovements: publishedImprovements + 1 }
     };
     publishedImprovements++;
     onResult?.(winner);
