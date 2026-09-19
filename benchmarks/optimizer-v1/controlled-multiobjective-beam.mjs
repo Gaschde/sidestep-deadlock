@@ -322,7 +322,7 @@ export function runControlledMultiobjectiveBeamCarry({
       }
       candidates.push(...successors);
     }
-    if (!candidates.length) break;
+    if (!candidates.length) { beam = []; break; }
 
     maxCandidatePool = Math.max(maxCandidatePool, candidates.length);
     const unique = dedupeFuturePathHistory(candidates, futureKey, nodeVector);
