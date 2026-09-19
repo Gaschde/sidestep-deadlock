@@ -240,6 +240,9 @@ function runShadowOnce(data, definition, reference, repeat) {
     maxFirstFrontSize: runs.length ? Math.max(...runs.map((run) => run.telemetry.maxFirstFrontSize)) : 0,
     frontierOverflowSteps: runs.reduce((sum, run) => sum + run.telemetry.frontierOverflowSteps, 0),
     terminalCandidates: runs.reduce((sum, run) => sum + run.telemetry.terminalCandidates, 0),
+    maxNaturalReachedSouls: runs.length ? Math.max(...runs.map((run) => run.telemetry.maxReachedSouls)) : 0,
+    saveCompletionGeneratedStates: runs.reduce((sum, run) => sum + (run.telemetry.saveCompletionGeneratedStates || 0), 0),
+    terminalCompletion: runs.length ? runs.at(-1).telemetry.terminalCompletion : null,
     terminalAudit: runs.length ? runs.at(-1).telemetry.terminalAudit : null,
     runs: runs.map((run) => ({
       width: run.width,
@@ -254,6 +257,9 @@ function runShadowOnce(data, definition, reference, repeat) {
       maxFirstFrontSize: run.telemetry.maxFirstFrontSize,
       frontierOverflowSteps: run.telemetry.frontierOverflowSteps,
       terminalCandidates: run.telemetry.terminalCandidates,
+      maxNaturalReachedSouls: run.telemetry.maxReachedSouls,
+      saveCompletionGeneratedStates: run.telemetry.saveCompletionGeneratedStates || 0,
+      terminalCompletion: run.telemetry.terminalCompletion,
       terminalAudit: run.telemetry.terminalAudit
     }))
   };
@@ -373,6 +379,9 @@ function caseExperiment(data, definition, reference) {
       searchGeneratedStates: shadowRepeats[1].searchGeneratedStates,
       totalGeneratedStates: shadowRepeats[1].totalGeneratedStates,
       evaluations: shadowRepeats[1].evaluations,
+      maxNaturalReachedSouls: shadowRepeats[1].maxNaturalReachedSouls,
+      saveCompletionGeneratedStates: shadowRepeats[1].saveCompletionGeneratedStates,
+      terminalCompletion: shadowRepeats[1].terminalCompletion,
       maxFirstFrontSize: shadowRepeats[1].maxFirstFrontSize,
       frontierOverflowSteps: shadowRepeats[1].frontierOverflowSteps,
       terminalAudit: shadowRepeats[1].terminalAudit
