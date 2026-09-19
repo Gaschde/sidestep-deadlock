@@ -1,0 +1,4295 @@
+{
+  "schemaVersion": "optimizer-40k-multiobjective-shadow-v1",
+  "experiment": "60s-product-budget-plus-40k-multiobjective-shadow",
+  "sourceCommit": "1441b2aa559b2fcd2180316eae48b76b39d9fa1f",
+  "generatedAt": "2026-09-19T19:44:10.376Z",
+  "productTimeBudgetMs": 60000,
+  "productionSelectionChanged": false,
+  "productionUiChanged": false,
+  "productionObjectiveChanged": false,
+  "shadowOnly": true,
+  "objectiveDimensions": [
+    "Path-AUC",
+    "Endbuild"
+  ],
+  "scalarizationUsedByShadow": false,
+  "widths": [
+    4,
+    8,
+    16,
+    32
+  ],
+  "repeatCount": 2,
+  "reference": {
+    "file": "benchmarks/optimizer-v1/references/baseline-v0.json",
+    "policy": "historical baseline-v0 frozen reference reused; historical 25s results are not overwritten"
+  },
+  "limitations": [
+    "Production and shadow both receive the same 60s wall-clock budget per case, but use different retention logic.",
+    "The Shadow runner performs iterative fixed-width passes inside one 60s envelope; a final width may be partial.",
+    "Wall-clock cutoffs can change which width is reached across machines or repeats, so completed-width hashes and final timed fronts are reported separately.",
+    "Pareto dominance is relative to observed candidates and is not a global optimality proof.",
+    "No Production selection, UI, objective, search heuristic, canonical item data, Afterburn evaluator or solver is changed by this experiment."
+  ],
+  "cases": [
+    {
+      "caseId": "production-40k-warden-carry-weapon",
+      "hero": "warden",
+      "focus": "weapon",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 58722.022805,
+        "path": {
+          "id": "e3003a8463010e95",
+          "source": "production",
+          "pathScore": 0.4320771947608242,
+          "endScore": 0.4769834140990815,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_reinforcing_casings",
+            "upgrade_debuff_reducer",
+            "upgrade_blitz_bullets",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_vulnerability",
+            "upgrade_magic_shield",
+            "upgrade_suppressor",
+            "upgrade_chonky",
+            "upgrade_pristine_emblem"
+          ],
+          "transactions": 46,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 8,
+              "replacement": 26,
+              "sell": 0
+            },
+            "transactionCount": 46,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 2400,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 4,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_close_range",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 4,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_close_range",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 1600,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 3200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4000,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4800,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 5200,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 6000,
+                "item": "upgrade_crackshot",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 6800,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 7200,
+                "item": "upgrade_improved_spirit",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8000,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8800,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 9600,
+                "item": "upgrade_medic_bullets",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 10800,
+                "item": "upgrade_withering_whip",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 11600,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 12400,
+                "item": "upgrade_bullet_resist_shredder",
+                "from": "upgrade_crackshot",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 13200,
+                "item": "upgrade_blitz_bullets",
+                "from": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 14000,
+                "item": "upgrade_close_range",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 14400,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_close_range",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15200,
+                "item": "upgrade_active_reload",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15600,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_headshot_booster",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 16400,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 17200,
+                "item": "upgrade_close_range",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17600,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_close_range",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 18400,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 19200,
+                "item": "upgrade_sprint_booster",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19600,
+                "item": "upgrade_melee_rebuttal",
+                "from": "upgrade_sprint_booster",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20400,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_medic_bullets",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21600,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_active_reload",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22400,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 23200,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24000,
+                "item": "upgrade_fleetfoot_boots",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_headshot_booster",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26000,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28000,
+                "item": "upgrade_headshot_booster2",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29200,
+                "item": "upgrade_return_fire",
+                "from": "upgrade_withering_whip",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31600,
+                "item": "upgrade_reinforcing_casings",
+                "from": "upgrade_headshot_booster2",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32400,
+                "item": "upgrade_blitz_bullets",
+                "from": "upgrade_fleetfoot_boots",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34800,
+                "item": "upgrade_improved_bullet_armor",
+                "from": "upgrade_return_fire",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_fleetfoot_boots",
+                "from": "upgrade_melee_rebuttal",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36800,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37600,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_fleetfoot_boots",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 40000,
+                "item": "upgrade_chonky",
+                "from": "upgrade_health",
+                "payment": 2400
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 58711.088074,
+          "evaluations": 66376,
+          "generatedStates": 191817,
+          "duplicateStates": 6209,
+          "maxCandidatePool": 2872,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4,
+            8
+          ],
+          "publishedImprovements": 3,
+          "terminalAudit": {
+            "complete": true,
+            "rounds": 2,
+            "legalActions": 1395,
+            "checkedActions": 1395,
+            "improvements": 1,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.45811760242673993
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": true,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 58485.49383,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 58776,
+        "totalGeneratedStates": 58776,
+        "evaluations": 17169,
+        "duplicateStates": 350,
+        "maxFirstFrontSize": 3,
+        "frontierOverflowSteps": 0,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 58483.052128999996,
+            "evaluations": 17169,
+            "searchGeneratedStates": 58776,
+            "totalGeneratedStates": 58776,
+            "maxFirstFrontSize": 3,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 58040.138014,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 58776,
+        "totalGeneratedStates": 58776,
+        "evaluations": 17169,
+        "maxFirstFrontSize": 3,
+        "frontierOverflowSteps": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "e3003a8463010e95",
+          "pathScore": 0.4320771947608242,
+          "endScore": 0.4769834140990815,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 8,
+              "replacement": 26,
+              "sell": 0
+            },
+            "transactionCount": 46,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 2400,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 4,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_close_range",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 4,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_close_range",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 1600,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 3200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4000,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4800,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 5200,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 6000,
+                "item": "upgrade_crackshot",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 6800,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 7200,
+                "item": "upgrade_improved_spirit",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8000,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8800,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 9600,
+                "item": "upgrade_medic_bullets",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 10800,
+                "item": "upgrade_withering_whip",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 11600,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 12400,
+                "item": "upgrade_bullet_resist_shredder",
+                "from": "upgrade_crackshot",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 13200,
+                "item": "upgrade_blitz_bullets",
+                "from": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 14000,
+                "item": "upgrade_close_range",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 14400,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_close_range",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15200,
+                "item": "upgrade_active_reload",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15600,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_headshot_booster",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 16400,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 17200,
+                "item": "upgrade_close_range",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17600,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_close_range",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 18400,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 19200,
+                "item": "upgrade_sprint_booster",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19600,
+                "item": "upgrade_melee_rebuttal",
+                "from": "upgrade_sprint_booster",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20400,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_medic_bullets",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21600,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_active_reload",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22400,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 23200,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24000,
+                "item": "upgrade_fleetfoot_boots",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_headshot_booster",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26000,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28000,
+                "item": "upgrade_headshot_booster2",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29200,
+                "item": "upgrade_return_fire",
+                "from": "upgrade_withering_whip",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31600,
+                "item": "upgrade_reinforcing_casings",
+                "from": "upgrade_headshot_booster2",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32400,
+                "item": "upgrade_blitz_bullets",
+                "from": "upgrade_fleetfoot_boots",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34800,
+                "item": "upgrade_improved_bullet_armor",
+                "from": "upgrade_return_fire",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_fleetfoot_boots",
+                "from": "upgrade_melee_rebuttal",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36800,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37600,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_fleetfoot_boots",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 40000,
+                "item": "upgrade_chonky",
+                "from": "upgrade_health",
+                "payment": 2400
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:e3003a8463010e95",
+            "source": "production",
+            "pathScore": 0.4320771947608242,
+            "endScore": 0.4769834140990815
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "production-40k-warden-carry-spirit",
+      "hero": "warden",
+      "focus": "spirit",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 58691.83131800001,
+        "path": {
+          "id": "925987795838eef6",
+          "source": "production",
+          "pathScore": 0.450626054800113,
+          "endScore": 0.5026466351154937,
+          "inventory": [
+            "upgrade_magic_slow",
+            "upgrade_titan_round",
+            "upgrade_soaring_spirit",
+            "upgrade_magic_vulnerability",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_magic_shield",
+            "upgrade_improved_bullet_armor",
+            "upgrade_debuff_reducer",
+            "upgrade_chonky",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_suppressor",
+            "upgrade_tech_purge"
+          ],
+          "transactions": 44,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 8,
+              "replacement": 24,
+              "sell": 0
+            },
+            "transactionCount": 44,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 2400,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_healing_booster",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_magic_vulnerability",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_suppressor",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_clip_size",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_debuff_reducer",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_healing_booster",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_magic_vulnerability",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_suppressor",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_debuff_reducer",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_endurance",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_clip_size",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 1600,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 3200,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4000,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 4400,
+                "item": "upgrade_withering_whip",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 5200,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 6000,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_titan_round",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 6800,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 7600,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 8400,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 8800,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 9600,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_medic_bullets",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 11200,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12000,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 12400,
+                "item": "upgrade_melee_rebuttal",
+                "from": "upgrade_rapid_rounds",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 13200,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 13600,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_medic_bullets",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 14400,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_titan_round",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15200,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16000,
+                "item": "upgrade_return_fire",
+                "from": "upgrade_suppressor",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 16800,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 17600,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18400,
+                "item": "upgrade_bullet_resist_shredder",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 19200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 20000,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_headshot_booster2",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 21600,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 22400,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24400,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_headshot_booster",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25600,
+                "item": "upgrade_restorative_locket",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26400,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_magic_vulnerability",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28800,
+                "item": "upgrade_improved_bullet_armor",
+                "from": "upgrade_healing_booster",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29600,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_suppressor",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32000,
+                "item": "upgrade_tech_purge",
+                "from": "upgrade_magic_vulnerability",
+                "payment": 2400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 34400,
+                "item": "upgrade_chonky",
+                "from": "upgrade_health",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_headshot_booster2",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_restorative_locket",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_withering_whip",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38000,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_return_fire",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38800,
+                "item": "upgrade_magic_slow",
+                "from": "upgrade_debuff_reducer",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 40000,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_melee_rebuttal",
+                "payment": 1200
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 58690.222884999996,
+          "evaluations": 66954,
+          "generatedStates": 181167,
+          "duplicateStates": 5622,
+          "maxCandidatePool": 2543,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4,
+            8
+          ],
+          "publishedImprovements": 4,
+          "terminalAudit": {
+            "complete": true,
+            "rounds": 2,
+            "legalActions": 957,
+            "checkedActions": 957,
+            "improvements": 1,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.5013473424225946
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": true,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 58509.493149000016,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 66129,
+        "totalGeneratedStates": 66129,
+        "evaluations": 20063,
+        "duplicateStates": 1073,
+        "maxFirstFrontSize": 6,
+        "frontierOverflowSteps": 1,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 58507.652597999986,
+            "evaluations": 20063,
+            "searchGeneratedStates": 66129,
+            "totalGeneratedStates": 66129,
+            "maxFirstFrontSize": 6,
+            "frontierOverflowSteps": 1,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 58889.05841400003,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 66129,
+        "totalGeneratedStates": 66129,
+        "evaluations": 20063,
+        "maxFirstFrontSize": 6,
+        "frontierOverflowSteps": 1,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "925987795838eef6",
+          "pathScore": 0.450626054800113,
+          "endScore": 0.5026466351154937,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 8,
+              "replacement": 24,
+              "sell": 0
+            },
+            "transactionCount": 44,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 2400,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_healing_booster",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_magic_vulnerability",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_suppressor",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_clip_size",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_debuff_reducer",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_healing_booster",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_magic_vulnerability",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_suppressor",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_debuff_reducer",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_endurance",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_clip_size",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 1600,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 3200,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 4000,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 4400,
+                "item": "upgrade_withering_whip",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 5200,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 6000,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_titan_round",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 6800,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 7600,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 8400,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 8800,
+                "item": "upgrade_high_velocity_mag",
+                "from": "upgrade_health",
+                "payment": 400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 9600,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_medic_bullets",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 11200,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12000,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 12400,
+                "item": "upgrade_melee_rebuttal",
+                "from": "upgrade_rapid_rounds",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 13200,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 13600,
+                "item": "upgrade_headshot_booster",
+                "from": "upgrade_medic_bullets",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 14400,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_titan_round",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 15200,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16000,
+                "item": "upgrade_return_fire",
+                "from": "upgrade_suppressor",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 16800,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 17600,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18400,
+                "item": "upgrade_bullet_resist_shredder",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 19200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 20000,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_headshot_booster2",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 21600,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 22400,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24400,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_headshot_booster",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25600,
+                "item": "upgrade_restorative_locket",
+                "from": "upgrade_mystic_regeneration",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26400,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_magic_vulnerability",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28800,
+                "item": "upgrade_improved_bullet_armor",
+                "from": "upgrade_healing_booster",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29600,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_suppressor",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32000,
+                "item": "upgrade_tech_purge",
+                "from": "upgrade_magic_vulnerability",
+                "payment": 2400
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 34400,
+                "item": "upgrade_chonky",
+                "from": "upgrade_health",
+                "payment": 2400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35200,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_headshot_booster2",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_magic_vulnerability",
+                "from": "upgrade_restorative_locket",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37200,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_withering_whip",
+                "payment": 1200
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38000,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_return_fire",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38800,
+                "item": "upgrade_magic_slow",
+                "from": "upgrade_debuff_reducer",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 40000,
+                "item": "upgrade_debuff_reducer",
+                "from": "upgrade_melee_rebuttal",
+                "payment": 1200
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:925987795838eef6",
+            "source": "production",
+            "pathScore": 0.450626054800113,
+            "endScore": 0.5026466351154937
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "production-40k-warden-carry-hybrid",
+      "hero": "warden",
+      "focus": "hybrid",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 59303.05066299997,
+        "path": {
+          "id": "4642b65d4b34eed0",
+          "source": "production",
+          "pathScore": 0.44051653718648986,
+          "endScore": 0.40412729777695033,
+          "inventory": [
+            "upgrade_health",
+            "upgrade_melee_rebuttal",
+            "upgrade_withering_whip",
+            "upgrade_magic_shield",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_soaring_spirit",
+            "upgrade_titan_round",
+            "upgrade_mystic_regeneration",
+            "upgrade_headshot_booster",
+            "upgrade_grit",
+            "upgrade_suppressor",
+            "upgrade_endurance"
+          ],
+          "transactions": 79,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 5,
+              "replacement": 62,
+              "sell": 0
+            },
+            "transactionCount": 79,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 39600,
+            "longestNoShopSoulSpan": 800,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_grit",
+                "count": 29,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_health_stimpak",
+                "count": 28,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_grit",
+                "count": 29,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_health_stimpak",
+                "count": 28,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_endurance",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 1600,
+                "item": "upgrade_melee_rebuttal",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_withering_whip",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 3200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 4000,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 4800,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 5600,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 6400,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 7200,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 8000,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8800,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 9600,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 11200,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12000,
+                "item": "upgrade_headshot_booster",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12800,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 13600,
+                "item": "upgrade_high_velocity_mag",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 14400,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 15200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16000,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16400,
+                "item": "upgrade_grit",
+                "from": "upgrade_rapid_rounds",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 33200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 33600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 39200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 39600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 59301.544050000026,
+          "evaluations": 62345,
+          "generatedStates": 211913,
+          "duplicateStates": 8323,
+          "maxCandidatePool": 4061,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4,
+            8
+          ],
+          "publishedImprovements": 3,
+          "terminalAudit": {
+            "complete": true,
+            "rounds": 1,
+            "legalActions": 158,
+            "checkedActions": 158,
+            "improvements": 0,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.40412729777695033
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": true,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 61030.88369799999,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 66897,
+        "totalGeneratedStates": 66897,
+        "evaluations": 24259,
+        "duplicateStates": 704,
+        "maxFirstFrontSize": 6,
+        "frontierOverflowSteps": 1,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 61028.82276300003,
+            "evaluations": 24259,
+            "searchGeneratedStates": 66897,
+            "totalGeneratedStates": 66897,
+            "maxFirstFrontSize": 6,
+            "frontierOverflowSteps": 1,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 60897.15307499998,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 66897,
+        "totalGeneratedStates": 66897,
+        "evaluations": 24259,
+        "maxFirstFrontSize": 6,
+        "frontierOverflowSteps": 1,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "4642b65d4b34eed0",
+          "pathScore": 0.44051653718648986,
+          "endScore": 0.40412729777695033,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 12,
+              "upgrade": 5,
+              "replacement": 62,
+              "sell": 0
+            },
+            "transactionCount": 79,
+            "firstTransactionSouls": 800,
+            "lastTransactionSouls": 39600,
+            "longestNoShopSoulSpan": 800,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [
+              {
+                "item": "upgrade_grit",
+                "count": 29,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_health_stimpak",
+                "count": 28,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "sellRebuys": [],
+            "replacementRebuys": [
+              {
+                "item": "upgrade_grit",
+                "count": 29,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_health_stimpak",
+                "count": 28,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "upgradeBacktracks": [
+              {
+                "item": "upgrade_endurance",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 800,
+                "item": "upgrade_health",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 1600,
+                "item": "upgrade_melee_rebuttal",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 2400,
+                "item": "upgrade_withering_whip",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 3200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 4000,
+                "item": "upgrade_healing_booster",
+                "from": "upgrade_endurance",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 4800,
+                "item": "upgrade_magic_shield",
+                "from": "upgrade_healing_booster",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 5600,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 6400,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 7200,
+                "item": "upgrade_regenerating_bullet_shield",
+                "from": "upgrade_soaring_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 8000,
+                "item": "upgrade_improved_spirit",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 8800,
+                "item": "upgrade_soaring_spirit",
+                "from": "upgrade_improved_spirit",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 9600,
+                "item": "upgrade_clip_size",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 10400,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 11200,
+                "item": "upgrade_titan_round",
+                "from": "upgrade_clip_size",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12000,
+                "item": "upgrade_headshot_booster",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 12800,
+                "item": "upgrade_rapid_rounds",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 13600,
+                "item": "upgrade_high_velocity_mag",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "earnedSouls": 14400,
+                "item": "upgrade_pristine_emblem",
+                "from": "upgrade_high_velocity_mag",
+                "payment": 800
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 15200,
+                "item": "upgrade_endurance",
+                "from": null,
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16000,
+                "item": "upgrade_suppressor",
+                "from": "upgrade_pristine_emblem",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16400,
+                "item": "upgrade_grit",
+                "from": "upgrade_rapid_rounds",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 16800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 17600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 18800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 19600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 20800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 21600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 22800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 23600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 24800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 25600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 26800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 27600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 28800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 29600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 30800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 31600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 32800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 33200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 33600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 34800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 35600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36000,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36400,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 36800,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37200,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 37600,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38000,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38400,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 38800,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 39200,
+                "item": "upgrade_health_stimpak",
+                "from": "upgrade_grit",
+                "payment": 400
+              },
+              {
+                "type": "replacement",
+                "earnedSouls": 39600,
+                "item": "upgrade_grit",
+                "from": "upgrade_health_stimpak",
+                "payment": 400
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:4642b65d4b34eed0",
+            "source": "production",
+            "pathScore": 0.44051653718648986,
+            "endScore": 0.40412729777695033
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "production-40k-infernus-carry-weapon",
+      "hero": "infernus",
+      "focus": "weapon",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 60021.65481599991,
+        "path": {
+          "id": "d5ea753b9fe50038",
+          "source": "production",
+          "pathScore": 0.3442884462943994,
+          "endScore": 0.3992370964190435,
+          "inventory": [
+            "upgrade_chonky"
+          ],
+          "transactions": 1,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 1,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 1,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_chonky",
+                "from": null,
+                "payment": 3200
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 60019.350034,
+          "evaluations": 4538,
+          "generatedStates": 9244,
+          "duplicateStates": 476,
+          "maxCandidatePool": 644,
+          "widthsStarted": [
+            4
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "publishedImprovements": 2,
+          "terminalAudit": {
+            "complete": false,
+            "rounds": 1,
+            "legalActions": 156,
+            "checkedActions": 80,
+            "improvements": 1,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.3342447313162031
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": false,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 59072.27593100001,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 13220,
+        "totalGeneratedStates": 13220,
+        "evaluations": 3854,
+        "duplicateStates": 114,
+        "maxFirstFrontSize": 2,
+        "frontierOverflowSteps": 0,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 59071.76568199997,
+            "evaluations": 3854,
+            "searchGeneratedStates": 13220,
+            "totalGeneratedStates": 13220,
+            "maxFirstFrontSize": 2,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 58849.65239199996,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 13220,
+        "totalGeneratedStates": 13220,
+        "evaluations": 3854,
+        "maxFirstFrontSize": 2,
+        "frontierOverflowSteps": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "d5ea753b9fe50038",
+          "pathScore": 0.3442884462943994,
+          "endScore": 0.3992370964190435,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 1,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 1,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_chonky",
+                "from": null,
+                "payment": 3200
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:d5ea753b9fe50038",
+            "source": "production",
+            "pathScore": 0.3442884462943994,
+            "endScore": 0.3992370964190435
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "production-40k-infernus-carry-spirit",
+      "hero": "infernus",
+      "focus": "spirit",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 60014.79529399995,
+        "path": {
+          "id": "3bbc72c9ce0a8907",
+          "source": "production",
+          "pathScore": 0.32664941617961146,
+          "endScore": 0.41324379250081933,
+          "inventory": [
+            "upgrade_boundless_spirit",
+            "upgrade_mystic_regeneration"
+          ],
+          "transactions": 2,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 2,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 2,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_boundless_spirit",
+                  "upgrade_mystic_regeneration"
+                ]
+              }
+            ],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 60013.792958999984,
+          "evaluations": 4938,
+          "generatedStates": 9273,
+          "duplicateStates": 316,
+          "maxCandidatePool": 649,
+          "widthsStarted": [
+            4
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "publishedImprovements": 3,
+          "terminalAudit": {
+            "complete": false,
+            "rounds": 2,
+            "legalActions": 464,
+            "checkedActions": 161,
+            "improvements": 2,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.3132618833630436
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": false,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 61623.75233699998,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 17074,
+        "totalGeneratedStates": 17074,
+        "evaluations": 4406,
+        "duplicateStates": 159,
+        "maxFirstFrontSize": 1,
+        "frontierOverflowSteps": 0,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 61623.05163999996,
+            "evaluations": 4406,
+            "searchGeneratedStates": 17074,
+            "totalGeneratedStates": 17074,
+            "maxFirstFrontSize": 1,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 61782.463185,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 17074,
+        "totalGeneratedStates": 17074,
+        "evaluations": 4406,
+        "maxFirstFrontSize": 1,
+        "frontierOverflowSteps": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "3bbc72c9ce0a8907",
+          "pathScore": 0.32664941617961146,
+          "endScore": 0.41324379250081933,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 2,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 2,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_boundless_spirit",
+                  "upgrade_mystic_regeneration"
+                ]
+              }
+            ],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_mystic_regeneration",
+                "from": null,
+                "payment": 800
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:3bbc72c9ce0a8907",
+            "source": "production",
+            "pathScore": 0.32664941617961146,
+            "endScore": 0.41324379250081933
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "production-40k-infernus-carry-hybrid",
+      "hero": "infernus",
+      "focus": "hybrid",
+      "budget": 40000,
+      "timeBudgetMs": 60000,
+      "production": {
+        "runtimeMs": 60017.63027900003,
+        "path": {
+          "id": "506265ab2018e23b",
+          "source": "production",
+          "pathScore": 0.33546893123700633,
+          "endScore": 0.4728509350348199,
+          "inventory": [
+            "upgrade_damage_recycler",
+            "upgrade_boundless_spirit"
+          ],
+          "transactions": 2,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 2,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 2,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_damage_recycler",
+                  "upgrade_boundless_spirit"
+                ]
+              }
+            ],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_damage_recycler",
+                "from": null,
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
+              }
+            ]
+          }
+        },
+        "telemetry": {
+          "runtimeMs": 60016.60801700002,
+          "evaluations": 4838,
+          "generatedStates": 8142,
+          "duplicateStates": 319,
+          "maxCandidatePool": 624,
+          "widthsStarted": [
+            4
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "publishedImprovements": 3,
+          "terminalAudit": {
+            "complete": false,
+            "rounds": 2,
+            "legalActions": 464,
+            "checkedActions": 227,
+            "improvements": 2,
+            "neighbourhood": "purchase|upgrade|replacement",
+            "incumbentScore": 0.3237533073396234
+          },
+          "pruning": {
+            "exactFutureHistoryDedupe": true,
+            "paretoDominancePruning": false,
+            "beamTruncation": "heuristic_budgeted"
+          }
+        },
+        "semantics": {
+          "legallyPathVerified": true,
+          "bestFound": true,
+          "locallyVerified": false,
+          "bounded": false,
+          "optimal": false
+        }
+      },
+      "shadow": {
+        "repeat": 1,
+        "runtimeMs": 59837.11422999995,
+        "timeBudgetMs": 60000,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "front": [],
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "frontCount": 0,
+        "legal": false,
+        "scalarizationUsed": false,
+        "searchGeneratedStates": 19477,
+        "totalGeneratedStates": 19477,
+        "evaluations": 3662,
+        "duplicateStates": 33,
+        "maxFirstFrontSize": 1,
+        "frontierOverflowSteps": 0,
+        "terminalCandidates": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        },
+        "runs": [
+          {
+            "width": 4,
+            "frontCount": 0,
+            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "searchComplete": false,
+            "deadlineReached": true,
+            "runtimeMs": 59836.4692680001,
+            "evaluations": 3662,
+            "searchGeneratedStates": 19477,
+            "totalGeneratedStates": 19477,
+            "maxFirstFrontSize": 1,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            }
+          }
+        ]
+      },
+      "reproducibility": {
+        "sameWidthsStarted": true,
+        "sameWidthsCompleted": true,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 4,
+            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstComplete": false,
+            "secondComplete": false,
+            "identical": true
+          }
+        ]
+      },
+      "repeat2": {
+        "runtimeMs": 60040.00651899993,
+        "deadlineReached": true,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [],
+        "partialWidth": 4,
+        "frontCount": 0,
+        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "legal": false,
+        "searchGeneratedStates": 19477,
+        "totalGeneratedStates": 19477,
+        "evaluations": 3662,
+        "maxFirstFrontSize": 1,
+        "frontierOverflowSteps": 0,
+        "terminalAudit": {
+          "depth": 1,
+          "completeDirectNeighbourhood": false,
+          "checkedActions": 0
+        }
+      },
+      "comparison": {
+        "production": {
+          "id": "506265ab2018e23b",
+          "pathScore": 0.33546893123700633,
+          "endScore": 0.4728509350348199,
+          "legal": true,
+          "pathObservables": {
+            "counts": {
+              "purchase": 2,
+              "upgrade": 0,
+              "replacement": 0,
+              "sell": 0
+            },
+            "transactionCount": 2,
+            "firstTransactionSouls": 40000,
+            "lastTransactionSouls": 40000,
+            "longestNoShopSoulSpan": 40000,
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_damage_recycler",
+                  "upgrade_boundless_spirit"
+                ]
+              }
+            ],
+            "reacquiredItems": [],
+            "sellRebuys": [],
+            "replacementRebuys": [],
+            "upgradeBacktracks": [],
+            "timeline": [
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_damage_recycler",
+                "from": null,
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
+              }
+            ]
+          }
+        },
+        "shadowFrontCount": 0,
+        "shadowDominatesProduction": [],
+        "betterPathNoEndLoss": [],
+        "betterEndNoPathLoss": [],
+        "productionOnCombinedFront": true,
+        "combinedFront": [
+          {
+            "id": "production:506265ab2018e23b",
+            "source": "production",
+            "pathScore": 0.33546893123700633,
+            "endScore": 0.4728509350348199
+          }
+        ]
+      }
+    }
+  ]
+}
