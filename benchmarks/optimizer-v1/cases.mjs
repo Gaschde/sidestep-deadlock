@@ -4,7 +4,7 @@ const CONTROLLED_ITEMS = Object.freeze([
   "upgrade_health",
   "upgrade_health_stimpak",
   "upgrade_titan_round",
-  "upgrade_bullet_lifesteal",
+  "upgrade_vampire",
   "upgrade_weighted_shots",
   "upgrade_improved_bullet_armor",
   "upgrade_soaring_spirit"
