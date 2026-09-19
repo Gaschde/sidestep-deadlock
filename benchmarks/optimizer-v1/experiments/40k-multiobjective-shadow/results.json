@@ -1,8 +1,8 @@
 {
   "schemaVersion": "optimizer-40k-multiobjective-shadow-v1",
   "experiment": "60s-product-budget-plus-40k-multiobjective-shadow",
-  "sourceCommit": "1441b2aa559b2fcd2180316eae48b76b39d9fa1f",
-  "generatedAt": "2026-09-19T19:44:10.376Z",
+  "sourceCommit": "1e26829ea914bc21a7233cbd5ee06854ebb73fb6",
+  "generatedAt": "2026-09-19T21:10:46.120Z",
   "productTimeBudgetMs": 60000,
   "productionSelectionChanged": false,
   "productionUiChanged": false,
@@ -40,7 +40,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-weapon",
       "production": {
-        "runtimeMs": 58722.022805,
+        "runtimeMs": 58761.467861,
         "path": {
           "id": "e3003a8463010e95",
           "source": "production",
@@ -508,10 +508,10 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 58711.088074,
-          "evaluations": 66376,
-          "generatedStates": 191817,
-          "duplicateStates": 6209,
+          "runtimeMs": 58743.035098,
+          "evaluations": 65408,
+          "generatedStates": 187778,
+          "duplicateStates": 5909,
           "maxCandidatePool": 2872,
           "widthsStarted": [
             4,
@@ -547,7 +547,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 58485.49383,
+        "runtimeMs": 58930.55397,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -555,18 +555,400 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "065241c520b83eb5",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.46546264208976845,
+            "endScore": 0.48957545878916486,
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_titan_round",
+              "upgrade_blitz_bullets",
+              "upgrade_tech_purge",
+              "upgrade_magic_shield",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_suppressor",
+              "upgrade_fleetfoot_boots",
+              "upgrade_magic_vulnerability",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_improved_bullet_armor",
+              "upgrade_reinforcing_casings"
+            ],
+            "transactions": 37,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 12,
+                "upgrade": 9,
+                "replacement": 16,
+                "sell": 0
+              },
+              "transactionCount": 37,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 36800,
+              "longestNoShopSoulSpan": 3200,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 7600,
+                  "item": "upgrade_improved_spirit",
+                  "from": "upgrade_mystic_regeneration",
+                  "payment": 400
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 8400,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 9200,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 10000,
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 10800,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 11600,
+                  "item": "upgrade_rapid_rounds",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 12400,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 13200,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 14000,
+                  "item": "upgrade_fleetfoot_boots",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 14800,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 15600,
+                  "item": "upgrade_blitz_bullets",
+                  "from": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 16400,
+                  "item": "upgrade_bullet_resist_shredder",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 17200,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 18000,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18800,
+                  "item": "upgrade_debuff_reducer",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 19600,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 20400,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 21200,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 22400,
+                  "item": "upgrade_suppressor",
+                  "from": "upgrade_mystic_regeneration",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 23600,
+                  "item": "upgrade_return_fire",
+                  "from": "upgrade_withering_whip",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 24400,
+                  "item": "upgrade_headshot_booster2",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 26800,
+                  "item": "upgrade_tech_purge",
+                  "from": "upgrade_return_fire",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 28000,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_melee_rebuttal",
+                  "payment": 1200
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 30400,
+                  "item": "upgrade_chonky",
+                  "from": "upgrade_health",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 32800,
+                  "item": "upgrade_improved_bullet_armor",
+                  "from": "upgrade_debuff_reducer",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 35200,
+                  "item": "upgrade_reinforcing_casings",
+                  "from": "upgrade_headshot_booster2",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 36000,
+                  "item": "upgrade_blitz_bullets",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 36800,
+                  "item": "upgrade_magic_vulnerability",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                }
+              ]
+            }
+          }
+        ],
+        "frontHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
+        "frontCount": 1,
+        "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 58776,
-        "totalGeneratedStates": 58776,
-        "evaluations": 17169,
-        "duplicateStates": 350,
+        "searchGeneratedStates": 137344,
+        "totalGeneratedStates": 161248,
+        "evaluations": 23980,
+        "duplicateStates": 373,
         "maxFirstFrontSize": 3,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 0,
+        "terminalCandidates": 4,
+        "maxNaturalReachedSouls": 37200,
+        "saveCompletionGeneratedStates": 23904,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            36800,
+            36800,
+            36800,
+            36800
+          ],
+          "generatedStates": 23904,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 37200
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -575,17 +957,35 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 1,
+            "frontHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 58483.052128999996,
-            "evaluations": 17169,
-            "searchGeneratedStates": 58776,
-            "totalGeneratedStates": 58776,
+            "runtimeMs": 58927.689033999995,
+            "evaluations": 23980,
+            "searchGeneratedStates": 137344,
+            "totalGeneratedStates": 161248,
             "maxFirstFrontSize": 3,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 0,
+            "terminalCandidates": 4,
+            "maxNaturalReachedSouls": 37200,
+            "saveCompletionGeneratedStates": 23904,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                36800,
+                36800,
+                36800,
+                36800
+              ],
+              "generatedStates": 23904,
+              "deadlineReached": false,
+              "naturalSearchMaxReachedSouls": 37200
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -597,33 +997,51 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": true,
-        "identicalCommonWidthFrontHashes": true,
+        "identicalFinalFrontHash": false,
+        "identicalCommonWidthFrontHashes": false,
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
+            "secondHash": "1e660db2c8cd79e474a834de838d09b1d9bde8063f03734425e58eb7033d2ef6",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": true
+            "identical": false
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 58040.138014,
+        "runtimeMs": 58565.692933,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 58776,
-        "totalGeneratedStates": 58776,
-        "evaluations": 17169,
+        "frontCount": 1,
+        "frontHash": "1e660db2c8cd79e474a834de838d09b1d9bde8063f03734425e58eb7033d2ef6",
+        "legal": true,
+        "searchGeneratedStates": 142980,
+        "totalGeneratedStates": 157476,
+        "evaluations": 25135,
+        "maxNaturalReachedSouls": 38000,
+        "saveCompletionGeneratedStates": 14496,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            37600,
+            37600,
+            37600,
+            37600
+          ],
+          "generatedStates": 14496,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 38000
+        },
         "maxFirstFrontSize": 3,
         "frontierOverflowSteps": 0,
         "terminalAudit": {
@@ -1083,17 +1501,23 @@
             ]
           }
         },
-        "shadowFrontCount": 0,
-        "shadowDominatesProduction": [],
-        "betterPathNoEndLoss": [],
-        "betterEndNoPathLoss": [],
-        "productionOnCombinedFront": true,
+        "shadowFrontCount": 1,
+        "shadowDominatesProduction": [
+          "065241c520b83eb5"
+        ],
+        "betterPathNoEndLoss": [
+          "065241c520b83eb5"
+        ],
+        "betterEndNoPathLoss": [
+          "065241c520b83eb5"
+        ],
+        "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "production:e3003a8463010e95",
-            "source": "production",
-            "pathScore": 0.4320771947608242,
-            "endScore": 0.4769834140990815
+            "id": "shadow:065241c520b83eb5",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.46546264208976845,
+            "endScore": 0.48957545878916486
           }
         ]
       }
@@ -1106,7 +1530,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-spirit",
       "production": {
-        "runtimeMs": 58691.83131800001,
+        "runtimeMs": 58629.542361,
         "path": {
           "id": "925987795838eef6",
           "source": "production",
@@ -1560,10 +1984,10 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 58690.222884999996,
-          "evaluations": 66954,
-          "generatedStates": 181167,
-          "duplicateStates": 5622,
+          "runtimeMs": 58628.097844,
+          "evaluations": 64289,
+          "generatedStates": 174559,
+          "duplicateStates": 5374,
           "maxCandidatePool": 2543,
           "widthsStarted": [
             4,
@@ -1599,7 +2023,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 58509.493149000016,
+        "runtimeMs": 59249.153533000004,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -1607,18 +2031,695 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "450f5e3abf951bb7",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4901369437082784,
+            "endScore": 0.5222445471972562,
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_veil_walker",
+              "upgrade_reinforcing_casings",
+              "upgrade_suppressor",
+              "upgrade_magic_shield",
+              "upgrade_magic_vulnerability",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_titan_round",
+              "upgrade_tech_purge",
+              "upgrade_bullet_resist_shredder"
+            ],
+            "transactions": 35,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 12,
+                "upgrade": 7,
+                "replacement": 16,
+                "sell": 0
+              },
+              "transactionCount": 35,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 38000,
+              "longestNoShopSoulSpan": 2400,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_suppressor",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 8000,
+                  "item": "upgrade_endurance",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 8800,
+                  "item": "upgrade_healing_booster",
+                  "from": "upgrade_endurance",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 9600,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_healing_booster",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 10400,
+                  "item": "upgrade_headshot_booster",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 11200,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 12000,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 12800,
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 13600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 14400,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 15200,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 16000,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 16800,
+                  "item": "upgrade_medic_bullets",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18000,
+                  "item": "upgrade_bullet_resist_shredder",
+                  "from": "upgrade_medic_bullets",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18800,
+                  "item": "upgrade_debuff_reducer",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 20000,
+                  "item": "upgrade_magic_vulnerability",
+                  "from": "upgrade_headshot_booster",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 21200,
+                  "item": "upgrade_return_fire",
+                  "from": "upgrade_mystic_regeneration",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 22400,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_withering_whip",
+                  "payment": 1200
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 24800,
+                  "item": "upgrade_chonky",
+                  "from": "upgrade_health",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 25600,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_return_fire",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 26400,
+                  "item": "upgrade_headshot_booster2",
+                  "from": "upgrade_magic_slow",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 27600,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_melee_rebuttal",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 30000,
+                  "item": "upgrade_improved_bullet_armor",
+                  "from": "upgrade_magic_slow",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 32400,
+                  "item": "upgrade_tech_purge",
+                  "from": "upgrade_debuff_reducer",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 34800,
+                  "item": "upgrade_veil_walker",
+                  "from": "upgrade_headshot_booster2",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 35600,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 38000,
+                  "item": "upgrade_reinforcing_casings",
+                  "from": "upgrade_magic_slow",
+                  "payment": 2400
+                }
+              ]
+            }
+          },
+          {
+            "id": "25be0d2745e49b32",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.49013495123538087,
+            "endScore": 0.5223257790480336,
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_veil_walker",
+              "upgrade_hollow_point_rounds",
+              "upgrade_suppressor",
+              "upgrade_magic_shield",
+              "upgrade_magic_vulnerability",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_titan_round",
+              "upgrade_tech_purge",
+              "upgrade_bullet_resist_shredder"
+            ],
+            "transactions": 35,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 12,
+                "upgrade": 7,
+                "replacement": 16,
+                "sell": 0
+              },
+              "transactionCount": 35,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 38000,
+              "longestNoShopSoulSpan": 2400,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_suppressor",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 8000,
+                  "item": "upgrade_endurance",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 8800,
+                  "item": "upgrade_healing_booster",
+                  "from": "upgrade_endurance",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 9600,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_healing_booster",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 10400,
+                  "item": "upgrade_headshot_booster",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 11200,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 12000,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 12800,
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 13600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 14400,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 15200,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 16000,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 16800,
+                  "item": "upgrade_medic_bullets",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18000,
+                  "item": "upgrade_bullet_resist_shredder",
+                  "from": "upgrade_medic_bullets",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18800,
+                  "item": "upgrade_debuff_reducer",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 20000,
+                  "item": "upgrade_magic_vulnerability",
+                  "from": "upgrade_headshot_booster",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 21200,
+                  "item": "upgrade_return_fire",
+                  "from": "upgrade_mystic_regeneration",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 22400,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_withering_whip",
+                  "payment": 1200
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 24800,
+                  "item": "upgrade_chonky",
+                  "from": "upgrade_health",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 25600,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_return_fire",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 26400,
+                  "item": "upgrade_headshot_booster2",
+                  "from": "upgrade_magic_slow",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 27600,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_melee_rebuttal",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 30000,
+                  "item": "upgrade_improved_bullet_armor",
+                  "from": "upgrade_magic_slow",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 32400,
+                  "item": "upgrade_tech_purge",
+                  "from": "upgrade_debuff_reducer",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 34800,
+                  "item": "upgrade_veil_walker",
+                  "from": "upgrade_headshot_booster2",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 35600,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_pristine_emblem",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 38000,
+                  "item": "upgrade_hollow_point_rounds",
+                  "from": "upgrade_magic_slow",
+                  "payment": 2400
+                }
+              ]
+            }
+          }
+        ],
+        "frontHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
+        "frontCount": 2,
+        "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 66129,
-        "totalGeneratedStates": 66129,
-        "evaluations": 20063,
-        "duplicateStates": 1073,
+        "searchGeneratedStates": 137092,
+        "totalGeneratedStates": 143037,
+        "evaluations": 35693,
+        "duplicateStates": 2862,
         "maxFirstFrontSize": 6,
-        "frontierOverflowSteps": 1,
-        "terminalCandidates": 0,
+        "frontierOverflowSteps": 4,
+        "terminalCandidates": 4,
+        "maxNaturalReachedSouls": 39200,
+        "saveCompletionGeneratedStates": 5945,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            39200,
+            39200,
+            38800,
+            38800
+          ],
+          "generatedStates": 5945,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 39200
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -1627,17 +2728,35 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 2,
+            "frontHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 58507.652597999986,
-            "evaluations": 20063,
-            "searchGeneratedStates": 66129,
-            "totalGeneratedStates": 66129,
+            "runtimeMs": 59246.751783000014,
+            "evaluations": 35693,
+            "searchGeneratedStates": 137092,
+            "totalGeneratedStates": 143037,
             "maxFirstFrontSize": 6,
-            "frontierOverflowSteps": 1,
-            "terminalCandidates": 0,
+            "frontierOverflowSteps": 4,
+            "terminalCandidates": 4,
+            "maxNaturalReachedSouls": 39200,
+            "saveCompletionGeneratedStates": 5945,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                39200,
+                39200,
+                38800,
+                38800
+              ],
+              "generatedStates": 5945,
+              "deadlineReached": false,
+              "naturalSearchMaxReachedSouls": 39200
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -1654,8 +2773,8 @@
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
+            "secondHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
             "firstComplete": false,
             "secondComplete": false,
             "identical": true
@@ -1663,21 +2782,39 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 58889.05841400003,
+        "runtimeMs": 58989.206397,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 66129,
-        "totalGeneratedStates": 66129,
-        "evaluations": 20063,
+        "frontCount": 2,
+        "frontHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
+        "legal": true,
+        "searchGeneratedStates": 137092,
+        "totalGeneratedStates": 143037,
+        "evaluations": 35693,
+        "maxNaturalReachedSouls": 39200,
+        "saveCompletionGeneratedStates": 5945,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            39200,
+            39200,
+            38800,
+            38800
+          ],
+          "generatedStates": 5945,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 39200
+        },
         "maxFirstFrontSize": 6,
-        "frontierOverflowSteps": 1,
+        "frontierOverflowSteps": 4,
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -2121,17 +3258,32 @@
             ]
           }
         },
-        "shadowFrontCount": 0,
-        "shadowDominatesProduction": [],
-        "betterPathNoEndLoss": [],
-        "betterEndNoPathLoss": [],
-        "productionOnCombinedFront": true,
+        "shadowFrontCount": 2,
+        "shadowDominatesProduction": [
+          "450f5e3abf951bb7",
+          "25be0d2745e49b32"
+        ],
+        "betterPathNoEndLoss": [
+          "450f5e3abf951bb7",
+          "25be0d2745e49b32"
+        ],
+        "betterEndNoPathLoss": [
+          "450f5e3abf951bb7",
+          "25be0d2745e49b32"
+        ],
+        "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "production:925987795838eef6",
-            "source": "production",
-            "pathScore": 0.450626054800113,
-            "endScore": 0.5026466351154937
+            "id": "shadow:450f5e3abf951bb7",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4901369437082784,
+            "endScore": 0.5222445471972562
+          },
+          {
+            "id": "shadow:25be0d2745e49b32",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.49013495123538087,
+            "endScore": 0.5223257790480336
           }
         ]
       }
@@ -2144,7 +3296,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-hybrid",
       "production": {
-        "runtimeMs": 59303.05066299997,
+        "runtimeMs": 58160.94663800002,
         "path": {
           "id": "4642b65d4b34eed0",
           "source": "production",
@@ -2793,10 +3945,10 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 59301.544050000026,
-          "evaluations": 62345,
-          "generatedStates": 211913,
-          "duplicateStates": 8323,
+          "runtimeMs": 58158.58180799999,
+          "evaluations": 60370,
+          "generatedStates": 208089,
+          "duplicateStates": 8208,
           "maxCandidatePool": 4061,
           "widthsStarted": [
             4,
@@ -2832,7 +3984,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 61030.88369799999,
+        "runtimeMs": 58361.22871300002,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -2840,18 +3992,366 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "2869cff9451b3481",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4759599394665237,
+            "endScore": 0.49584748712485194,
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_magic_shield",
+              "upgrade_veil_walker",
+              "upgrade_tech_purge",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_suppressor",
+              "upgrade_titan_round",
+              "upgrade_pristine_emblem",
+              "upgrade_fleetfoot_boots"
+            ],
+            "transactions": 35,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 12,
+                "upgrade": 7,
+                "replacement": 16,
+                "sell": 0
+              },
+              "transactionCount": 35,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 36000,
+              "longestNoShopSoulSpan": 4000,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster2",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster2",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_endurance",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 8000,
+                  "item": "upgrade_healing_booster",
+                  "from": "upgrade_endurance",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 8800,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 9600,
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "from": "upgrade_healing_booster",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 10400,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 11200,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 12000,
+                  "item": "upgrade_headshot_booster",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 12800,
+                  "item": "upgrade_rapid_rounds",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 13600,
+                  "item": "upgrade_bullet_resist_shredder",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 14000,
+                  "item": "upgrade_clip_size",
+                  "from": "upgrade_rapid_rounds",
+                  "payment": 400
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 14800,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 15600,
+                  "item": "upgrade_high_velocity_mag",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 16400,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_high_velocity_mag",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 17200,
+                  "item": "upgrade_medic_bullets",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 18400,
+                  "item": "upgrade_headshot_booster2",
+                  "from": "upgrade_medic_bullets",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 19600,
+                  "item": "upgrade_suppressor",
+                  "from": "upgrade_headshot_booster",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 20800,
+                  "item": "upgrade_debuff_reducer",
+                  "from": "upgrade_mystic_regeneration",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 22000,
+                  "item": "upgrade_return_fire",
+                  "from": "upgrade_withering_whip",
+                  "payment": 1200
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 24400,
+                  "item": "upgrade_chonky",
+                  "from": "upgrade_health",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 25200,
+                  "item": "upgrade_magic_vulnerability",
+                  "from": "upgrade_return_fire",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 26400,
+                  "item": "upgrade_magic_slow",
+                  "from": "upgrade_melee_rebuttal",
+                  "payment": 1200
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 27200,
+                  "item": "upgrade_fleetfoot_boots",
+                  "from": "upgrade_headshot_booster2",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 29600,
+                  "item": "upgrade_improved_bullet_armor",
+                  "from": "upgrade_magic_slow",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 30400,
+                  "item": "upgrade_headshot_booster2",
+                  "from": "upgrade_fleetfoot_boots",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 32800,
+                  "item": "upgrade_tech_purge",
+                  "from": "upgrade_debuff_reducer",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 35200,
+                  "item": "upgrade_veil_walker",
+                  "from": "upgrade_magic_vulnerability",
+                  "payment": 2400
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 36000,
+                  "item": "upgrade_fleetfoot_boots",
+                  "from": "upgrade_headshot_booster2",
+                  "payment": 800
+                }
+              ]
+            }
+          }
+        ],
+        "frontHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
+        "frontCount": 1,
+        "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 66897,
-        "totalGeneratedStates": 66897,
-        "evaluations": 24259,
-        "duplicateStates": 704,
-        "maxFirstFrontSize": 6,
-        "frontierOverflowSteps": 1,
-        "terminalCandidates": 0,
+        "searchGeneratedStates": 138726,
+        "totalGeneratedStates": 159664,
+        "evaluations": 31670,
+        "duplicateStates": 1163,
+        "maxFirstFrontSize": 7,
+        "frontierOverflowSteps": 5,
+        "terminalCandidates": 4,
+        "maxNaturalReachedSouls": 38000,
+        "saveCompletionGeneratedStates": 20938,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            38000,
+            38000,
+            37600,
+            38000
+          ],
+          "generatedStates": 20938,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 38000
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -2860,17 +4360,35 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 1,
+            "frontHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 61028.82276300003,
-            "evaluations": 24259,
-            "searchGeneratedStates": 66897,
-            "totalGeneratedStates": 66897,
-            "maxFirstFrontSize": 6,
-            "frontierOverflowSteps": 1,
-            "terminalCandidates": 0,
+            "runtimeMs": 58358.57377899997,
+            "evaluations": 31670,
+            "searchGeneratedStates": 138726,
+            "totalGeneratedStates": 159664,
+            "maxFirstFrontSize": 7,
+            "frontierOverflowSteps": 5,
+            "terminalCandidates": 4,
+            "maxNaturalReachedSouls": 38000,
+            "saveCompletionGeneratedStates": 20938,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                38000,
+                38000,
+                37600,
+                38000
+              ],
+              "generatedStates": 20938,
+              "deadlineReached": false,
+              "naturalSearchMaxReachedSouls": 38000
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -2887,8 +4405,8 @@
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
+            "secondHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
             "firstComplete": false,
             "secondComplete": false,
             "identical": true
@@ -2896,21 +4414,39 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 60897.15307499998,
+        "runtimeMs": 58480.00080199994,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 66897,
-        "totalGeneratedStates": 66897,
-        "evaluations": 24259,
-        "maxFirstFrontSize": 6,
-        "frontierOverflowSteps": 1,
+        "frontCount": 1,
+        "frontHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
+        "legal": true,
+        "searchGeneratedStates": 138726,
+        "totalGeneratedStates": 159664,
+        "evaluations": 31670,
+        "maxNaturalReachedSouls": 38000,
+        "saveCompletionGeneratedStates": 20938,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            38000,
+            38000,
+            37600,
+            38000
+          ],
+          "generatedStates": 20938,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 38000
+        },
+        "maxFirstFrontSize": 7,
+        "frontierOverflowSteps": 5,
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -3549,17 +5085,23 @@
             ]
           }
         },
-        "shadowFrontCount": 0,
-        "shadowDominatesProduction": [],
-        "betterPathNoEndLoss": [],
-        "betterEndNoPathLoss": [],
-        "productionOnCombinedFront": true,
+        "shadowFrontCount": 1,
+        "shadowDominatesProduction": [
+          "2869cff9451b3481"
+        ],
+        "betterPathNoEndLoss": [
+          "2869cff9451b3481"
+        ],
+        "betterEndNoPathLoss": [
+          "2869cff9451b3481"
+        ],
+        "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "production:4642b65d4b34eed0",
-            "source": "production",
-            "pathScore": 0.44051653718648986,
-            "endScore": 0.40412729777695033
+            "id": "shadow:2869cff9451b3481",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4759599394665237,
+            "endScore": 0.49584748712485194
           }
         ]
       }
@@ -3572,29 +5114,43 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-weapon",
       "production": {
-        "runtimeMs": 60021.65481599991,
+        "runtimeMs": 60021.00105800002,
         "path": {
-          "id": "d5ea753b9fe50038",
+          "id": "506265ab2018e23b",
           "source": "production",
           "pathScore": 0.3442884462943994,
-          "endScore": 0.3992370964190435,
+          "endScore": 0.4594364862806488,
           "inventory": [
-            "upgrade_chonky"
+            "upgrade_damage_recycler",
+            "upgrade_boundless_spirit"
           ],
-          "transactions": 1,
+          "transactions": 2,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 1,
+              "purchase": 2,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 1,
+            "transactionCount": 2,
             "firstTransactionSouls": 40000,
             "lastTransactionSouls": 40000,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [],
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_damage_recycler",
+                  "upgrade_boundless_spirit"
+                ]
+              }
+            ],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
@@ -3603,18 +5159,25 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_chonky",
+                "item": "upgrade_damage_recycler",
                 "from": null,
-                "payment": 3200
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
               }
             ]
           }
         },
         "telemetry": {
-          "runtimeMs": 60019.350034,
-          "evaluations": 4538,
-          "generatedStates": 9244,
-          "duplicateStates": 476,
+          "runtimeMs": 60018.27552300005,
+          "evaluations": 4478,
+          "generatedStates": 8814,
+          "duplicateStates": 475,
           "maxCandidatePool": 644,
           "widthsStarted": [
             4
@@ -3622,13 +5185,13 @@
           "widthsCompleted": [
             4
           ],
-          "publishedImprovements": 2,
+          "publishedImprovements": 3,
           "terminalAudit": {
             "complete": false,
-            "rounds": 1,
-            "legalActions": 156,
-            "checkedActions": 80,
-            "improvements": 1,
+            "rounds": 2,
+            "legalActions": 464,
+            "checkedActions": 197,
+            "improvements": 2,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3342447313162031
           },
@@ -3648,7 +5211,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 59072.27593100001,
+        "runtimeMs": 59594.85013499996,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -3656,18 +5219,195 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "dc9a5ed73f8b6c6c",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4999497553123182,
+            "endScore": 0.5084177764472415,
+            "inventory": [
+              "upgrade_health",
+              "upgrade_titan_round",
+              "upgrade_melee_rebuttal",
+              "upgrade_withering_whip",
+              "upgrade_blitz_bullets",
+              "upgrade_pristine_emblem",
+              "upgrade_magic_shield",
+              "upgrade_improved_spirit"
+            ],
+            "transactions": 14,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 8,
+                "upgrade": 4,
+                "replacement": 2,
+                "sell": 0
+              },
+              "transactionCount": 14,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 11200,
+              "longestNoShopSoulSpan": 28800,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_rapid_rounds",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_blitz_bullets",
+                  "from": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 8000,
+                  "item": "upgrade_pristine_emblem",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 8800,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 9600,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 10400,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_soaring_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 11200,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                }
+              ]
+            }
+          }
+        ],
+        "frontHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
+        "frontCount": 1,
+        "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 13220,
-        "totalGeneratedStates": 13220,
-        "evaluations": 3854,
+        "searchGeneratedStates": 14084,
+        "totalGeneratedStates": 343252,
+        "evaluations": 4046,
         "duplicateStates": 114,
         "maxFirstFrontSize": 2,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 0,
+        "terminalCandidates": 4,
+        "maxNaturalReachedSouls": 12000,
+        "saveCompletionGeneratedStates": 329168,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            12000,
+            12000,
+            12000,
+            12000
+          ],
+          "generatedStates": 329168,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 12000
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -3676,17 +5416,35 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 1,
+            "frontHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 59071.76568199997,
-            "evaluations": 3854,
-            "searchGeneratedStates": 13220,
-            "totalGeneratedStates": 13220,
+            "runtimeMs": 59594.254559999914,
+            "evaluations": 4046,
+            "searchGeneratedStates": 14084,
+            "totalGeneratedStates": 343252,
             "maxFirstFrontSize": 2,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 0,
+            "terminalCandidates": 4,
+            "maxNaturalReachedSouls": 12000,
+            "saveCompletionGeneratedStates": 329168,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                12000,
+                12000,
+                12000,
+                12000
+              ],
+              "generatedStates": 329168,
+              "deadlineReached": false,
+              "naturalSearchMaxReachedSouls": 12000
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -3698,21 +5456,21 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": true,
-        "identicalCommonWidthFrontHashes": true,
+        "identicalFinalFrontHash": false,
+        "identicalCommonWidthFrontHashes": false,
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
             "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": true
+            "identical": false
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 58849.65239199996,
+        "runtimeMs": 62022.528109000064,
         "deadlineReached": true,
         "widthsStarted": [
           4
@@ -3722,9 +5480,22 @@
         "frontCount": 0,
         "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "legal": false,
-        "searchGeneratedStates": 13220,
-        "totalGeneratedStates": 13220,
-        "evaluations": 3854,
+        "searchGeneratedStates": 15320,
+        "totalGeneratedStates": 15320,
+        "evaluations": 4342,
+        "maxNaturalReachedSouls": 12400,
+        "saveCompletionGeneratedStates": 0,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 0,
+          "completedNodes": 0,
+          "sourceSouls": [],
+          "generatedStates": 0,
+          "deadlineReached": true,
+          "naturalSearchMaxReachedSouls": 12400
+        },
         "maxFirstFrontSize": 2,
         "frontierOverflowSteps": 0,
         "terminalAudit": {
@@ -3735,22 +5506,35 @@
       },
       "comparison": {
         "production": {
-          "id": "d5ea753b9fe50038",
+          "id": "506265ab2018e23b",
           "pathScore": 0.3442884462943994,
-          "endScore": 0.3992370964190435,
+          "endScore": 0.4594364862806488,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 1,
+              "purchase": 2,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 1,
+            "transactionCount": 2,
             "firstTransactionSouls": 40000,
             "lastTransactionSouls": 40000,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [],
+            "sameSoulTransactionGroups": [
+              {
+                "earnedSouls": 40000,
+                "transactionCount": 2,
+                "types": [
+                  "purchase",
+                  "purchase"
+                ],
+                "items": [
+                  "upgrade_damage_recycler",
+                  "upgrade_boundless_spirit"
+                ]
+              }
+            ],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
@@ -3759,24 +5543,37 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_chonky",
+                "item": "upgrade_damage_recycler",
                 "from": null,
-                "payment": 3200
+                "payment": 6400
+              },
+              {
+                "type": "purchase",
+                "earnedSouls": 40000,
+                "item": "upgrade_boundless_spirit",
+                "from": null,
+                "payment": 6400
               }
             ]
           }
         },
-        "shadowFrontCount": 0,
-        "shadowDominatesProduction": [],
-        "betterPathNoEndLoss": [],
-        "betterEndNoPathLoss": [],
-        "productionOnCombinedFront": true,
+        "shadowFrontCount": 1,
+        "shadowDominatesProduction": [
+          "dc9a5ed73f8b6c6c"
+        ],
+        "betterPathNoEndLoss": [
+          "dc9a5ed73f8b6c6c"
+        ],
+        "betterEndNoPathLoss": [
+          "dc9a5ed73f8b6c6c"
+        ],
+        "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "production:d5ea753b9fe50038",
-            "source": "production",
-            "pathScore": 0.3442884462943994,
-            "endScore": 0.3992370964190435
+            "id": "shadow:dc9a5ed73f8b6c6c",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.4999497553123182,
+            "endScore": 0.5084177764472415
           }
         ]
       }
@@ -3789,15 +5586,15 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-spirit",
       "production": {
-        "runtimeMs": 60014.79529399995,
+        "runtimeMs": 60011.51057699998,
         "path": {
-          "id": "3bbc72c9ce0a8907",
+          "id": "e188b059f0cef1c7",
           "source": "production",
           "pathScore": 0.32664941617961146,
-          "endScore": 0.41324379250081933,
+          "endScore": 0.4256745327950462,
           "inventory": [
             "upgrade_boundless_spirit",
-            "upgrade_mystic_regeneration"
+            "upgrade_rupture"
           ],
           "transactions": 2,
           "legal": true,
@@ -3822,7 +5619,7 @@
                 ],
                 "items": [
                   "upgrade_boundless_spirit",
-                  "upgrade_mystic_regeneration"
+                  "upgrade_rupture"
                 ]
               }
             ],
@@ -3841,16 +5638,16 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_mystic_regeneration",
+                "item": "upgrade_rupture",
                 "from": null,
-                "payment": 800
+                "payment": 3200
               }
             ]
           }
         },
         "telemetry": {
-          "runtimeMs": 60013.792958999984,
-          "evaluations": 4938,
+          "runtimeMs": 60010.75781800004,
+          "evaluations": 4963,
           "generatedStates": 9273,
           "duplicateStates": 316,
           "maxCandidatePool": 649,
@@ -3865,7 +5662,7 @@
             "complete": false,
             "rounds": 2,
             "legalActions": 464,
-            "checkedActions": 161,
+            "checkedActions": 186,
             "improvements": 2,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3132618833630436
@@ -3886,7 +5683,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 61623.75233699998,
+        "runtimeMs": 59473.73840899998,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -3894,18 +5691,227 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "9a24c11b43adb094",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.5023950995782172,
+            "endScore": 0.5155672871838284,
+            "inventory": [
+              "upgrade_health",
+              "upgrade_soaring_spirit",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_melee_rebuttal",
+              "upgrade_withering_whip",
+              "upgrade_mystic_regeneration",
+              "upgrade_suppressor",
+              "upgrade_magic_shield",
+              "upgrade_clip_size"
+            ],
+            "transactions": 17,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 9,
+                "upgrade": 4,
+                "replacement": 4,
+                "sell": 0
+              },
+              "transactionCount": 17,
+              "firstTransactionSouls": 800,
+              "lastTransactionSouls": 13200,
+              "longestNoShopSoulSpan": 26800,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_endurance",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_endurance",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "timeline": [
+                {
+                  "type": "purchase",
+                  "earnedSouls": 800,
+                  "item": "upgrade_health",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 1600,
+                  "item": "upgrade_improved_spirit",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 2400,
+                  "item": "upgrade_soaring_spirit",
+                  "from": "upgrade_improved_spirit",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 3200,
+                  "item": "upgrade_clip_size",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4000,
+                  "item": "upgrade_melee_rebuttal",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 4800,
+                  "item": "upgrade_withering_whip",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 5600,
+                  "item": "upgrade_mystic_regeneration",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 6400,
+                  "item": "upgrade_endurance",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 7200,
+                  "item": "upgrade_healing_booster",
+                  "from": "upgrade_endurance",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 8000,
+                  "item": "upgrade_suppressor",
+                  "from": "upgrade_healing_booster",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 8800,
+                  "item": "upgrade_endurance",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 9600,
+                  "item": "upgrade_healing_booster",
+                  "from": "upgrade_endurance",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 10400,
+                  "item": "upgrade_magic_shield",
+                  "from": "upgrade_healing_booster",
+                  "payment": 800
+                },
+                {
+                  "type": "purchase",
+                  "earnedSouls": 11200,
+                  "item": "upgrade_headshot_booster",
+                  "from": null,
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "earnedSouls": 12000,
+                  "item": "upgrade_titan_round",
+                  "from": "upgrade_clip_size",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 12800,
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "from": "upgrade_titan_round",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "earnedSouls": 13200,
+                  "item": "upgrade_clip_size",
+                  "from": "upgrade_headshot_booster",
+                  "payment": 400
+                }
+              ]
+            }
+          }
+        ],
+        "frontHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
+        "frontCount": 1,
+        "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 17074,
-        "totalGeneratedStates": 17074,
-        "evaluations": 4406,
+        "searchGeneratedStates": 18046,
+        "totalGeneratedStates": 356286,
+        "evaluations": 4531,
         "duplicateStates": 159,
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 0,
+        "terminalCandidates": 4,
+        "maxNaturalReachedSouls": 13600,
+        "saveCompletionGeneratedStates": 338240,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            13200,
+            13200,
+            13200,
+            13200
+          ],
+          "generatedStates": 338240,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 13600
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -3914,17 +5920,35 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 1,
+            "frontHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 61623.05163999996,
-            "evaluations": 4406,
-            "searchGeneratedStates": 17074,
-            "totalGeneratedStates": 17074,
+            "runtimeMs": 59473.00037600007,
+            "evaluations": 4531,
+            "searchGeneratedStates": 18046,
+            "totalGeneratedStates": 356286,
             "maxFirstFrontSize": 1,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 0,
+            "terminalCandidates": 4,
+            "maxNaturalReachedSouls": 13600,
+            "saveCompletionGeneratedStates": 338240,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                13200,
+                13200,
+                13200,
+                13200
+              ],
+              "generatedStates": 338240,
+              "deadlineReached": false,
+              "naturalSearchMaxReachedSouls": 13600
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -3936,33 +5960,51 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": true,
-        "identicalCommonWidthFrontHashes": true,
+        "identicalFinalFrontHash": false,
+        "identicalCommonWidthFrontHashes": false,
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
+            "secondHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": true
+            "identical": false
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 61782.463185,
+        "runtimeMs": 58786.00799900002,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 17074,
-        "totalGeneratedStates": 17074,
-        "evaluations": 4406,
+        "frontCount": 1,
+        "frontHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
+        "legal": true,
+        "searchGeneratedStates": 17390,
+        "totalGeneratedStates": 363062,
+        "evaluations": 4446,
+        "maxNaturalReachedSouls": 13200,
+        "saveCompletionGeneratedStates": 345672,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 4,
+          "completedNodes": 4,
+          "sourceSouls": [
+            13200,
+            13200,
+            13200,
+            13200
+          ],
+          "generatedStates": 345672,
+          "deadlineReached": false,
+          "naturalSearchMaxReachedSouls": 13200
+        },
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
         "terminalAudit": {
@@ -3973,9 +6015,9 @@
       },
       "comparison": {
         "production": {
-          "id": "3bbc72c9ce0a8907",
+          "id": "e188b059f0cef1c7",
           "pathScore": 0.32664941617961146,
-          "endScore": 0.41324379250081933,
+          "endScore": 0.4256745327950462,
           "legal": true,
           "pathObservables": {
             "counts": {
@@ -3998,7 +6040,7 @@
                 ],
                 "items": [
                   "upgrade_boundless_spirit",
-                  "upgrade_mystic_regeneration"
+                  "upgrade_rupture"
                 ]
               }
             ],
@@ -4017,24 +6059,30 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_mystic_regeneration",
+                "item": "upgrade_rupture",
                 "from": null,
-                "payment": 800
+                "payment": 3200
               }
             ]
           }
         },
-        "shadowFrontCount": 0,
-        "shadowDominatesProduction": [],
-        "betterPathNoEndLoss": [],
-        "betterEndNoPathLoss": [],
-        "productionOnCombinedFront": true,
+        "shadowFrontCount": 1,
+        "shadowDominatesProduction": [
+          "9a24c11b43adb094"
+        ],
+        "betterPathNoEndLoss": [
+          "9a24c11b43adb094"
+        ],
+        "betterEndNoPathLoss": [
+          "9a24c11b43adb094"
+        ],
+        "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "production:3bbc72c9ce0a8907",
-            "source": "production",
-            "pathScore": 0.32664941617961146,
-            "endScore": 0.41324379250081933
+            "id": "shadow:9a24c11b43adb094",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.5023950995782172,
+            "endScore": 0.5155672871838284
           }
         ]
       }
@@ -4047,7 +6095,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-hybrid",
       "production": {
-        "runtimeMs": 60017.63027900003,
+        "runtimeMs": 60018.99950799998,
         "path": {
           "id": "506265ab2018e23b",
           "source": "production",
@@ -4107,8 +6155,8 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 60016.60801700002,
-          "evaluations": 4838,
+          "runtimeMs": 60018.19076300005,
+          "evaluations": 4831,
           "generatedStates": 8142,
           "duplicateStates": 319,
           "maxCandidatePool": 624,
@@ -4123,7 +6171,7 @@
             "complete": false,
             "rounds": 2,
             "legalActions": 464,
-            "checkedActions": 227,
+            "checkedActions": 220,
             "improvements": 2,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3237533073396234
@@ -4144,7 +6192,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 59837.11422999995,
+        "runtimeMs": 60572.764246999985,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -4157,13 +6205,26 @@
         "frontCount": 0,
         "legal": false,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 19477,
-        "totalGeneratedStates": 19477,
-        "evaluations": 3662,
+        "searchGeneratedStates": 21929,
+        "totalGeneratedStates": 21929,
+        "evaluations": 4267,
         "duplicateStates": 33,
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
         "terminalCandidates": 0,
+        "maxNaturalReachedSouls": 14000,
+        "saveCompletionGeneratedStates": 0,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 0,
+          "completedNodes": 0,
+          "sourceSouls": [],
+          "generatedStates": 0,
+          "deadlineReached": true,
+          "naturalSearchMaxReachedSouls": 14000
+        },
         "terminalAudit": {
           "depth": 1,
           "completeDirectNeighbourhood": false,
@@ -4176,13 +6237,26 @@
             "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 59836.4692680001,
-            "evaluations": 3662,
-            "searchGeneratedStates": 19477,
-            "totalGeneratedStates": 19477,
+            "runtimeMs": 60572.02301799995,
+            "evaluations": 4267,
+            "searchGeneratedStates": 21929,
+            "totalGeneratedStates": 21929,
             "maxFirstFrontSize": 1,
             "frontierOverflowSteps": 0,
             "terminalCandidates": 0,
+            "maxNaturalReachedSouls": 14000,
+            "saveCompletionGeneratedStates": 0,
+            "terminalCompletion": {
+              "mode": "retained_partial_nodes_legal_save_to_horizon",
+              "separatePass": true,
+              "source": "all retained partial nodes at natural-search stop",
+              "attemptedNodes": 0,
+              "completedNodes": 0,
+              "sourceSouls": [],
+              "generatedStates": 0,
+              "deadlineReached": true,
+              "naturalSearchMaxReachedSouls": 14000
+            },
             "terminalAudit": {
               "depth": 1,
               "completeDirectNeighbourhood": false,
@@ -4208,7 +6282,7 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 60040.00651899993,
+        "runtimeMs": 60725.882752000005,
         "deadlineReached": true,
         "widthsStarted": [
           4
@@ -4218,9 +6292,22 @@
         "frontCount": 0,
         "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "legal": false,
-        "searchGeneratedStates": 19477,
-        "totalGeneratedStates": 19477,
-        "evaluations": 3662,
+        "searchGeneratedStates": 21929,
+        "totalGeneratedStates": 21929,
+        "evaluations": 4267,
+        "maxNaturalReachedSouls": 14000,
+        "saveCompletionGeneratedStates": 0,
+        "terminalCompletion": {
+          "mode": "retained_partial_nodes_legal_save_to_horizon",
+          "separatePass": true,
+          "source": "all retained partial nodes at natural-search stop",
+          "attemptedNodes": 0,
+          "completedNodes": 0,
+          "sourceSouls": [],
+          "generatedStates": 0,
+          "deadlineReached": true,
+          "naturalSearchMaxReachedSouls": 14000
+        },
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
         "terminalAudit": {
