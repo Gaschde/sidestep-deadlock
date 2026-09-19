@@ -5,6 +5,7 @@ import { normalizeMilestones } from "../../app/search-milestones.mjs";
 import { normalizeOpponentScenario } from "../../app/search-scenarios.mjs";
 import { measureSoulAxisPath } from "../../app/search-objective-v1.mjs";
 import { validateSearchPath } from "../../app/validate-search-path.mjs";
+import { createBeamProfiler } from "../../app/search-telemetry.mjs";
 import { pathEndDominates, pathEndParetoFront } from "./path-end-pareto-lib.mjs";
 
 function transactionCount(node) {
@@ -41,8 +42,11 @@ function stableId(entry) {
   return String(entry?.id ?? entry?.serial ?? entry?.node?.serial ?? "");
 }
 
-export function pathEndNonDominatedLayers(entries) {
+export function pathEndNonDominatedLayers(entries, profiler = null) {
   if (!Array.isArray(entries)) throw new TypeError("entries muss ein Array sein.");
+  const timedSort = (array, compare) => profiler?.enabled
+    ? profiler.time("sortingMs", () => array.sort(compare))
+    : array.sort(compare);
   const remaining = [...entries];
   const layers = [];
   while (remaining.length) {
@@ -50,7 +54,7 @@ export function pathEndNonDominatedLayers(entries) {
       !remaining.some((other, otherIndex) => otherIndex !== index && pathEndDominates(other, candidate))
     );
     if (!front.length) throw new Error("Pareto layering made no progress.");
-    front.sort((a, b) => stableId(a).localeCompare(stableId(b)));
+    timedSort(front, (a, b) => stableId(a).localeCompare(stableId(b)));
     layers.push(front);
     const selected = new Set(front);
     for (let index = remaining.length - 1; index >= 0; index -= 1) {
@@ -60,9 +64,12 @@ export function pathEndNonDominatedLayers(entries) {
   return layers;
 }
 
-function partialLayerSelection(layer, capacity, diversityKey) {
+function partialLayerSelection(layer, capacity, diversityKey, profiler = null) {
+  const timedSort = (array, compare) => profiler?.enabled
+    ? profiler.time("sortingMs", () => array.sort(compare))
+    : array.sort(compare);
   if (capacity <= 0) return [];
-  if (layer.length <= capacity) return [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)));
+  if (layer.length <= capacity) return timedSort([...layer], (a, b) => stableId(a).localeCompare(stableId(b)));
 
   const selected = [];
   const selectedSet = new Set();
@@ -74,28 +81,28 @@ function partialLayerSelection(layer, capacity, diversityKey) {
   };
 
   if (capacity === 1) {
-    add([...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))[0]);
+    add(timedSort([...layer], (a, b) => stableId(a).localeCompare(stableId(b)))[0]);
     return selected;
   }
 
-  const pathExtreme = [...layer].sort((a, b) =>
+  const pathExtreme = timedSort([...layer], (a, b) =>
     b.pathScore - a.pathScore || b.endScore - a.endScore || stableId(a).localeCompare(stableId(b))
   )[0];
-  const endExtreme = [...layer].sort((a, b) =>
+  const endExtreme = timedSort([...layer], (a, b) =>
     b.endScore - a.endScore || b.pathScore - a.pathScore || stableId(a).localeCompare(stableId(b))
   )[0];
   add(pathExtreme);
   add(endExtreme);
 
   const buckets = new Map();
-  for (const entry of [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))) {
+  for (const entry of timedSort([...layer], (a, b) => stableId(a).localeCompare(stableId(b)))) {
     if (selectedSet.has(entry)) continue;
     const key = String(diversityKey(entry.node));
     if (!buckets.has(key)) buckets.set(key, []);
     buckets.get(key).push(entry);
   }
 
-  const keys = [...buckets.keys()].sort();
+  const keys = timedSort([...buckets.keys()], (a, b) => a.localeCompare(b));
   let progressed = true;
   while (selected.length < capacity && progressed) {
     progressed = false;
@@ -109,15 +116,16 @@ function partialLayerSelection(layer, capacity, diversityKey) {
     }
   }
 
-  for (const entry of [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))) add(entry);
+  for (const entry of timedSort([...layer], (a, b) => stableId(a).localeCompare(stableId(b)))) add(entry);
   return selected;
 }
 
-export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = () => "") {
+export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = () => "", profiler = null) {
   if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
   if (!Number.isSafeInteger(width) || width < 1) throw new RangeError("width muss positiv ganzzahlig sein.");
   if (typeof vectorFor !== "function") throw new TypeError("vectorFor muss eine Funktion sein.");
 
+  const frontierStartedAt = profiler?.enabled ? performance.now() : 0;
   const decorated = nodes.map((node) => {
     const vector = vectorFor(node);
     return {
@@ -127,7 +135,10 @@ export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = 
       endScore: vector.endScore
     };
   });
-  const layers = pathEndNonDominatedLayers(decorated);
+  profiler?.count?.("paretoCandidates", decorated.length);
+  const layers = profiler?.enabled
+    ? profiler.time("paretoMs", () => pathEndNonDominatedLayers(decorated, profiler))
+    : pathEndNonDominatedLayers(decorated, profiler);
   const selected = [];
   let truncatedLayerIndex = null;
 
@@ -139,9 +150,12 @@ export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = 
       continue;
     }
     truncatedLayerIndex = index;
-    selected.push(...partialLayerSelection(layer, remaining, diversityKey));
+    selected.push(...(profiler?.enabled
+      ? profiler.time("diversityMs", () => partialLayerSelection(layer, remaining, diversityKey, profiler))
+      : partialLayerSelection(layer, remaining, diversityKey, profiler)));
   }
 
+  if (profiler?.enabled) profiler.add("frontierMaintenanceMs", performance.now() - frontierStartedAt);
   return {
     selected: selected.map((entry) => entry.node),
     metadata: {
