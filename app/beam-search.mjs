@@ -10,7 +10,7 @@ import {
 } from "./search-objective.mjs";
 import { normalizeOpponentScenario } from "./search-scenarios.mjs";
 import { paretoFront } from "./pareto.mjs";
-import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS } from "./search-config.mjs";
 import { createBeamProfiler } from "./search-telemetry.mjs";
 
 const REFERENCE_METRICS = Object.freeze([...CARRY_METRICS, ...COMPONENT_METRICS]);
@@ -60,7 +60,7 @@ export function runIterativeDiverseBeamCarry({
   milestones,
   opponentBulletResist = 0,
   opponentSpiritResist = 0,
-  timeMs = 25000,
+  timeMs = PRODUCT_SEARCH_TIME_MS,
   referenceTimeMs = 1500,
   reference: suppliedReference,
   slotUnlocks = [],
