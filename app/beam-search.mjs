@@ -67,6 +67,7 @@ export function runIterativeDiverseBeamCarry({
   initialBeamWidth = 4,
   maxBeamWidth = 32,
   widenFactor = 2,
+  scorePath = scoreMilestonePath,
   profile = false,
   onResult,
   onProgress
@@ -76,6 +77,7 @@ export function runIterativeDiverseBeamCarry({
     if (!Number.isSafeInteger(value) || value < (name === "widenFactor" ? 2 : 1)) throw new RangeError(`${name} ist ungültig.`);
   }
   if (initialBeamWidth > maxBeamWidth) throw new RangeError("initialBeamWidth darf maxBeamWidth nicht überschreiten.");
+  if (typeof scorePath !== "function") throw new TypeError("scorePath muss eine Funktion sein.");
 
   const scenario = normalizeOpponentScenario({ opponentBulletResist, opponentSpiritResist });
   const checkpoints = normalizeMilestones(milestones, budget);
@@ -121,7 +123,7 @@ export function runIterativeDiverseBeamCarry({
   };
   const nodeQuality = (node) => {
     if (!qualityCache.has(node)) qualityCache.set(node, profiler.time("trajectoryScoreMs",
-      () => scoreMilestonePath(nodePoints(node), reference, checkpoints, budget, damageFocus)));
+      () => scorePath(nodePoints(node), reference, checkpoints, budget, damageFocus)));
     return qualityCache.get(node);
   };
   const makeNode = (parent, nextState) => {
