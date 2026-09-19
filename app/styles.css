@@ -242,3 +242,26 @@ button { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+
+/* Current Multiobjective optimizer preview */
+.pareto-switcher { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.pareto-switcher button { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--card); cursor: pointer; text-align: left; }
+.pareto-switcher button[aria-current="true"] { border-color: var(--sage); background: var(--raised); }
+.pareto-switcher small { color: var(--quiet); font-size: 8px; }
+.optimizer-status-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.optimizer-status-grid article { min-width: 0; display: grid; gap: 4px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); }
+.optimizer-status-grid small { color: var(--quiet); font-size: 8px; text-transform: uppercase; letter-spacing: .06em; }
+.optimizer-status-grid strong { overflow-wrap: anywhere; font-size: 11px; }
+.final-inventory, .chronological-build { margin-top: 14px; padding: 12px; border: 1px solid rgba(232, 224, 200, .12); border-radius: 12px; background: #101d16; }
+.final-inventory h3 { margin: 0 0 7px; font-size: 13px; }
+.final-inventory p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.chronological-build .build-card-row { gap: 10px; }
+.chronological-build .build-card { width: 150px; min-height: 150px; padding: 8px; border: 1px solid rgba(232, 224, 200, .1); border-radius: 9px; background: #0d1912; }
+.chronological-build .build-card .item-tile { width: 58px; height: 58px; font-size: 16px; }
+.chronological-build .build-card small { white-space: normal; line-height: 1.25; }
+
+@media (max-width: 760px) {
+  .optimizer-status-grid { grid-template-columns: 1fr 1fr; }
+  .chronological-build .build-card { width: calc(50% - 5px); }
+}
