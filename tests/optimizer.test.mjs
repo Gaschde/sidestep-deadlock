@@ -570,6 +570,24 @@ test("Explizite Gegnerresistenzen skalieren nur ausgehenden Schaden; neutral ble
   assert.equal(armored.valid, true);
   assert.ok(Math.abs(armored.metrics.sustainedBulletDps - neutral.metrics.sustainedBulletDps * 0.75) < 1e-9);
   assert.equal(armored.metrics.bulletEhp, neutral.metrics.bulletEhp);
+
+  const noLifeState = { inventory: [] };
+  const lifeState = { inventory: [data.itemsById.get("lifesteal")] };
+  const noLifeNeutral = evaluateCarrySearchMetrics(noLifeState, { ...request, opponentBulletResist: 0 }, data);
+  const lifeNeutral = evaluateCarrySearchMetrics(lifeState, { ...request, opponentBulletResist: 0 }, data);
+  const noLifeArmored = evaluateCarrySearchMetrics(noLifeState, { ...request, opponentBulletResist: 50 }, data);
+  const lifeArmored = evaluateCarrySearchMetrics(lifeState, { ...request, opponentBulletResist: 50 }, data);
+  const neutralLifestealGain = lifeNeutral.metrics.bulletEhp - noLifeNeutral.metrics.bulletEhp;
+  const armoredLifestealGain = lifeArmored.metrics.bulletEhp - noLifeArmored.metrics.bulletEhp;
+  assert.ok(neutralLifestealGain > 0);
+  assert.ok(Math.abs(armoredLifestealGain - neutralLifestealGain * 0.5) < 1e-9);
+
+  const fullLifeNeutral = evaluateCarryScenarios(lifeState, { ...request, opponentBulletResist: 0 }, data)
+    .scenarios.find((scenario) => scenario.id === "skirmish");
+  const fullLifeArmored = evaluateCarryScenarios(lifeState, { ...request, opponentBulletResist: 50 }, data)
+    .scenarios.find((scenario) => scenario.id === "skirmish");
+  assert.ok(Math.abs(fullLifeArmored.recovery_health - fullLifeNeutral.recovery_health * 0.5) < 1e-9);
+
   const profile = evaluateCarryScenarios(state, { ...request, opponentBulletResist: -30 }, data);
   assert.equal(profile.common.opponent_scenario.opponentBulletResist, -30);
   assert.ok(profile.common.sustained_bullet_dps > neutral.metrics.sustainedBulletDps);
