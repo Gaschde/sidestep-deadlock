@@ -8,10 +8,11 @@ import { createSmallDomain } from "../app/small-domain.mjs";
 import { calculateTrajectoryObjectives } from "../app/trajectory-objectives.mjs";
 import { createDeadlockDomain } from "../app/deadlock-domain.mjs";
 import { buildOptimizerData } from "../app/optimizer.mjs";
-import { FAST_SEARCH_BUDGET, PRODUCTION_SEARCH_BACKEND } from "../app/search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS, PRODUCTION_SEARCH_BACKEND } from "../app/search-config.mjs";
 
 test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
   assert.equal(FAST_SEARCH_BUDGET, 40000);
+  assert.equal(PRODUCT_SEARCH_TIME_MS, 60000);
   assert.equal(PRODUCTION_SEARCH_BACKEND, "beam");
   const app = readFileSync("app/app.js", "utf8");
   const worker = readFileSync("app/optimizer-worker.mjs", "utf8");
