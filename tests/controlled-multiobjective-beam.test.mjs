@@ -238,3 +238,20 @@ test("save-to-horizon completion follows only legal save successors and preserve
   const repeat = completeNodeBySaving(makePartial("a"), 4000, transitions);
   assert.equal(repeat.serial, first.serial);
 });
+
+
+test("save-to-horizon completion is a no-op for an already terminal retained node", () => {
+  const terminal = {
+    state: { earnedSouls: 4000, cash: 1234, inventory: ["held"] },
+    parent: null,
+    event: null,
+    serial: "terminal"
+  };
+  let transitionCalls = 0;
+  const completed = completeNodeBySaving(terminal, 4000, () => {
+    transitionCalls += 1;
+    return [];
+  });
+  assert.equal(completed, terminal);
+  assert.equal(transitionCalls, 0);
+});
