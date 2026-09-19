@@ -182,3 +182,19 @@ The branch is intended for external review of:
 5. full-scale runtime/memory behavior;
 6. result wording and guarantee boundaries;
 7. eventual shadow B&B integration.
+
+
+## Optimizer V1 Measurement & Objective Foundation
+
+The branch now has an orthogonal measurement layer for the production Beam. `profile=false` remains the default; instrumentation does not alter the objective, legality rules, Beam widths, diversity rules, milestone defaults or opponent scenario contract.
+
+The benchmark matrix is defined in `benchmarks/optimizer-v1/cases.mjs` and covers a bounded SMALL/EXACT Warden case, two CONTROLLED/MEDIUM cases, and the six 40k production Carry combinations Warden/Infernus × Weapon/Spirit/Hybrid.
+
+Benchmark comparisons can freeze and reuse the existing sampled Beam reference through `suppliedReference`. This reference remains heuristic and non-admissible; freezing it is solely a reproducibility control.
+
+The current objective has been named `baseline-v0`. Its existing three 10-second Damage rows (lane trade, farm, teamfight) are explicitly regression-locked as mathematically identical in the compact evaluator. They are not changed by this phase.
+
+See:
+- `docs/research/optimizer-next/baseline-contract-v0.md`
+- `docs/research/optimizer-next/measurement-foundation.md`
+- `docs/research/optimizer-next/objective-contract-v1.md`
