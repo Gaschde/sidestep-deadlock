@@ -353,3 +353,24 @@ Verification:
 Exactly one next step: optimize the experimental Multiobjective Pareto retention **without changing selected nodes** by extracting Pareto layers lazily only until Beam capacity is filled, prove retained-node equivalence against the current full-layer implementation, then rerun the same 40k Width-4 Warden/Infernus measurement.
 
 Full evidence: `docs/research/optimizer-next/40k-multiobjective-width4-profiling.md` and `benchmarks/optimizer-v1/experiments/40k-multiobjective-width4-profile/`.
+
+
+## Lazy Multiobjective Pareto Retention
+
+The experimental Multiobjective Beam now extracts Pareto layers lazily: it stops as soon as the extracted complete layer prefix contains enough candidates to fill the current Beam width. Dominance, dedupe identity, Width, partial-layer Path/End extremes, Diversity and ordering are unchanged.
+
+The former full-layer behavior remains only as a regression-test oracle. Full and Lazy share the same single-layer extraction, and 111/111 JavaScript tests pass, including exact retained-node order comparisons across multiple pool sizes, widths, Pareto layers, equal Path/End vectors and repeated runs.
+
+The repeated 40k Width-4 profile confirms the hotspot removal:
+
+- Warden Hybrid Multiobjective Pareto time: 35.35 s -> 1.68 s (-95.3%); control Soul reach: 32.4k -> 37.2k.
+- Infernus Hybrid Multiobjective Pareto time: 10.59 s -> 0.12 s (-98.9%); remaining runtime is dominated by evaluation/vector-dedupe work.
+- Across the new profiled runs, 99.58% of Warden and 99.05% of Infernus unique candidate-layer assignments were unnecessary for filling Width 4 and are now skipped.
+- Neither Multiobjective case completes the natural Width-4 search or produces a terminal candidate inside the wall-clock budget. The known separate Save-to-40k materialization asymmetry remains unchanged.
+- Production behavior was not modified. Warden Production performs the same deterministic 88,760 states / 16,791 evaluations; cross-run wall-clock differences confirm GitHub-runner variance.
+
+Workflow `35467808600` and optimizer-next tests `35467808611` succeeded. Python retains the same six advisory failures.
+
+Exactly one next step: add **Multiobjective Save-to-40k terminal materialization parity** as a separate change, without modifying Objective or Pareto retention, so wall-clock-limited Multiobjective runs can expose legal terminal Pareto candidates comparable to Production.
+
+Full evidence: `docs/research/optimizer-next/lazy-multiobjective-pareto-retention.md` and `benchmarks/optimizer-v1/experiments/40k-multiobjective-width4-profile/`.
