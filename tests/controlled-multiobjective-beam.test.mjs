@@ -2,8 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   dedupeFuturePathHistory,
+  pathEndLazyNonDominatedLayers,
   pathEndNonDominatedLayers,
-  selectPathEndParetoBeam
+  selectPathEndParetoBeam,
+  selectPathEndParetoBeamFullReferenceForTest
 } from "../benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs";
 
 function node(serial, pathScore, endScore, bucket = "x", transactions = 1) {
@@ -84,4 +86,97 @@ test("a dominated partial candidate can remain when capacity reaches a later Par
   const result = selectPathEndParetoBeam(nodes, 3, (entry) => entry.vector, (entry) => entry.bucket);
   assert.deepEqual(result.selected.map((entry) => entry.serial).sort(), ["front-1", "front-2", "later-state"]);
   assert.deepEqual(result.metadata.layerSizes, [2, 1]);
+});
+
+
+test("lazy Pareto layers are the exact prefix needed to fill the requested capacity", () => {
+  const entries = [
+    { id: "a", pathScore: 0.9, endScore: 0.3 },
+    { id: "b", pathScore: 0.7, endScore: 0.5 },
+    { id: "c", pathScore: 0.5, endScore: 0.7 },
+    { id: "d", pathScore: 0.3, endScore: 0.9 },
+    { id: "e", pathScore: 0.6, endScore: 0.4 },
+    { id: "f", pathScore: 0.4, endScore: 0.6 },
+    { id: "g", pathScore: 0.2, endScore: 0.2 }
+  ];
+  const full = pathEndNonDominatedLayers(entries);
+  const lazy = pathEndLazyNonDominatedLayers(entries, 5);
+  assert.deepEqual(
+    lazy.layers.map((layer) => layer.map((entry) => entry.id)),
+    full.slice(0, lazy.layers.length).map((layer) => layer.map((entry) => entry.id))
+  );
+  assert.ok(lazy.layeredCount >= 5);
+  assert.equal(lazy.layeredCount + lazy.unlayeredCount, entries.length);
+  assert.equal(lazy.complete, lazy.unlayeredCount === 0);
+});
+
+test("lazy retention is semantically identical to full layering across pools, widths, ties and repeated runs", () => {
+  const pools = [
+    [node("solo", 0.5, 0.5, "a")],
+    [
+      node("a", 0.8, 0.2, "weapon"),
+      node("b", 0.7, 0.4, "vitality"),
+      node("c", 0.5, 0.6, "spirit"),
+      node("d", 0.2, 0.8, "other"),
+      node("e", 0.4, 0.3, "weapon"),
+      node("f", 0.3, 0.2, "spirit")
+    ],
+    [
+      node("tie-a", 0.6, 0.6, "weapon"),
+      node("tie-b", 0.6, 0.6, "vitality"),
+      node("path", 0.8, 0.3, "weapon"),
+      node("end", 0.3, 0.8, "spirit"),
+      node("mid", 0.5, 0.5, "other"),
+      node("low-a", 0.4, 0.4, "weapon"),
+      node("low-b", 0.4, 0.4, "spirit"),
+      node("floor", 0.1, 0.1, "other")
+    ],
+    [
+      node("n01", 0.91, 0.21, "a"),
+      node("n02", 0.84, 0.35, "b"),
+      node("n03", 0.75, 0.48, "c"),
+      node("n04", 0.66, 0.58, "d"),
+      node("n05", 0.58, 0.66, "a"),
+      node("n06", 0.49, 0.75, "b"),
+      node("n07", 0.35, 0.84, "c"),
+      node("n08", 0.21, 0.91, "d"),
+      node("n09", 0.70, 0.30, "a"),
+      node("n10", 0.55, 0.44, "b"),
+      node("n11", 0.44, 0.55, "c"),
+      node("n12", 0.30, 0.70, "d")
+    ]
+  ];
+  const widths = [1, 2, 3, 4, 5, 8, 12];
+  const vectorFor = (entry) => entry.vector;
+  const diversityKey = (entry) => entry.bucket;
+
+  for (const nodes of pools) {
+    for (const width of widths.filter((value) => value <= nodes.length)) {
+      const full = selectPathEndParetoBeamFullReferenceForTest(nodes, width, vectorFor, diversityKey);
+      const lazyA = selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey);
+      const lazyB = selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey);
+      const ids = (result) => result.selected.map((entry) => entry.serial);
+      assert.deepEqual(ids(lazyA), ids(full), `pool=${nodes.length} width=${width}`);
+      assert.deepEqual(ids(lazyB), ids(lazyA), `repeat pool=${nodes.length} width=${width}`);
+      assert.equal(lazyA.metadata.firstFrontSize, full.metadata.firstFrontSize);
+      assert.equal(lazyA.metadata.truncatedLayerIndex, full.metadata.truncatedLayerIndex);
+    }
+  }
+});
+
+test("lazy retention stops before unused later Pareto layers", () => {
+  const nodes = [
+    node("front", 1.0, 1.0, "a"),
+    node("l2", 0.9, 0.9, "b"),
+    node("l3", 0.8, 0.8, "c"),
+    node("l4", 0.7, 0.7, "d"),
+    node("l5", 0.6, 0.6, "e"),
+    node("l6", 0.5, 0.5, "f")
+  ];
+  const result = selectPathEndParetoBeam(nodes, 2, (entry) => entry.vector, (entry) => entry.bucket);
+  assert.deepEqual(result.selected.map((entry) => entry.serial), ["front", "l2"]);
+  assert.deepEqual(result.metadata.layerSizes, [1, 1]);
+  assert.equal(result.metadata.layeringComplete, false);
+  assert.equal(result.metadata.layeredCandidates, 2);
+  assert.equal(result.metadata.unlayeredCandidates, 4);
 });
