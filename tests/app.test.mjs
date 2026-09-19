@@ -18,6 +18,8 @@ test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
   assert.match(app, /budget: FAST_SEARCH_BUDGET/);
   assert.match(worker, /const approximateMode = mode === "beam" \|\| mode === "anytime"/);
   assert.match(worker, /effectiveBudget = approximateMode \? FAST_SEARCH_BUDGET : budget/);
+  assert.match(app, /postMessage\(\{ mode: "diagnostic", data: state\.data, itemIds, budget/);
+  assert.match(app, /state\.build\.search\.scope = fastSearchScope/);
   assert.doesNotMatch(app, /budget: 60000/);
 });
 
