@@ -287,9 +287,11 @@ The current Product wall-clock budget is now **60 seconds**. Historical `baselin
 
 The 60 s Production rerun changes search reach asymmetrically:
 
-- all three Warden 40k cases complete Width 4 and Width 8;
-- all three Infernus 40k cases still complete only Width 4;
+- all three Warden 40k cases report Width 4 and Width 8 completed;
+- all three Infernus 40k cases report only Width 4 completed;
 - Warden terminal audits complete; Infernus terminal audits remain incomplete.
+
+The later Width-4 profiler qualifies the Infernus wording: `widthsCompleted:[4]` is not evidence that the normal Infernus Beam traversed to 40k. Production materializes an early legal save-to-horizon incumbent, and the width-completion flag can remain true when the outer wall-clock condition ends the loop between iterations. The profiled Infernus Hybrid Beam itself reached only 11.2k Souls before the deadline while still returning a legal terminal build.
 
 The experimental 40k Multiobjective Shadow uses the same 60 s wall-clock budget per case and keeps `(Path-AUC, Endbuild)` separate with no Path/End scalarization.
 
@@ -322,3 +324,32 @@ Decision: **C — the CONTROLLED success does not transfer sufficiently to 40k. 
 Exactly one next step: profile the 40k Multiobjective Width-4 run to locate the lost Search progress before changing any Search heuristic.
 
 Full evidence: `docs/research/optimizer-next/40k-multiobjective-shadow-experiment.md`.
+
+
+## 40k Multiobjective Width-4 Profiling
+
+The diagnostic Width-4 phase is complete. Search semantics, Objective, Beam Width, item data and Production selection were not changed.
+
+The core Production-vs-Multiobjective terminal difference is now explicit: Production calls a legal save-to-horizon completion early, while Multiobjective only uses that same save-to-horizon idea implicitly inside its partial Path/End vector and does not materialize a terminal node. This is decisive for Infernus: the profiled Production Beam naturally reached only 11.2k Souls, while Multiobjective reached 17.2k, yet Production returned a terminal build and Multiobjective returned none.
+
+Runtime attribution is engine-specific:
+
+- **Warden Hybrid Multiobjective:** 58.12 s Search; 22.52 s future-safe dedupe followed by 35.38 s frontier maintenance. Full Pareto-layer construction accounts for 35.35 s. The first front is small; the cost is constructing all later layers for large unique pools even though Width is only 4.
+- **Infernus Hybrid Multiobjective:** 58.18 s Search; 47.51 s future-safe dedupe followed by 10.60 s frontier maintenance. Evaluation occupies 42.54 s inside Vector/Dedupe work; Pareto layering adds 10.59 s.
+- Multiobjective dedupe removes only 1.24% of Warden and 0.10% of Infernus generated Search candidates.
+- Direct transition/action generation, Diversity, Endbuild scoring and terminal audit are not the measured blockers.
+- Warden Production naturally reaches 40k at about 10.5 s in the profiled Width-4 run; Warden Multiobjective reaches only 32.0k profiled / 32.4k control.
+- Infernus Multiobjective progresses farther than the normal Production Beam, so its zero-terminal result is not caused by worse Soul reach.
+
+Timer values are inclusive/nested unless the profiling document explicitly identifies sequential loop sections; child timers must not be summed as runtime percentages.
+
+Verification:
+
+- 108/108 JavaScript tests pass.
+- optimizer-next workflow `35466351173`: success.
+- profiling workflow `35466351196`: success.
+- Python baseline remains advisory with the same six pre-existing failures.
+
+Exactly one next step: optimize the experimental Multiobjective Pareto retention **without changing selected nodes** by extracting Pareto layers lazily only until Beam capacity is filled, prove retained-node equivalence against the current full-layer implementation, then rerun the same 40k Width-4 Warden/Infernus measurement.
+
+Full evidence: `docs/research/optimizer-next/40k-multiobjective-width4-profiling.md` and `benchmarks/optimizer-v1/experiments/40k-multiobjective-width4-profile/`.
