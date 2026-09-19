@@ -200,7 +200,8 @@ export function runControlledMultiobjectiveBeamCarry({
   beamWidth = 16,
   maxSteps = 1000,
   timeMs = Infinity,
-  auditReserveMs = 0
+  auditReserveMs = 0,
+  profile = false
 }) {
   if (!reference?.axis || !reference?.values) throw new TypeError("Frozen reference is required.");
   if (!Number.isSafeInteger(beamWidth) || beamWidth < 1) throw new RangeError("beamWidth ist ungültig.");
@@ -212,6 +213,7 @@ export function runControlledMultiobjectiveBeamCarry({
   }
 
   const started = performance.now();
+  const profiler = createBeamProfiler(profile);
   const finiteDeadline = Number.isFinite(timeMs);
   const searchDeadline = finiteDeadline ? started + timeMs - auditReserveMs : Infinity;
   const finalDeadline = finiteDeadline ? started + timeMs : Infinity;
@@ -231,7 +233,8 @@ export function runControlledMultiobjectiveBeamCarry({
     budget,
     slotUnlocks,
     soulAxis: expectedAxis,
-    metrics: () => ({ value: 0 })
+    metrics: () => ({ value: 0 }),
+    telemetry: profiler.enabled ? profiler : null
   });
   const clean = (state) => ({ ...state, events: [], snapshots: [] });
   const request = {
@@ -247,10 +250,14 @@ export function runControlledMultiobjectiveBeamCarry({
   const metrics = (state) => {
     const key = [...state.inventory].sort().join("|");
     if (!metricCache.has(key)) {
-      const result = evaluateCarryPerformance(state, request, data);
+      profiler.count("metricCacheMisses");
+      const result = profiler.time("evaluationMs", () => evaluateCarryPerformance(state, request, data));
       if (!result.valid) throw new Error(result.reason);
       metricCache.set(key, result.metrics);
       evaluations += 1;
+      profiler.count("evaluatedInventories");
+    } else {
+      profiler.count("metricCacheHits");
     }
     return metricCache.get(key);
   };
@@ -259,25 +266,35 @@ export function runControlledMultiobjectiveBeamCarry({
   const pointsCache = new WeakMap();
   const vectorCache = new WeakMap();
   const nodePoints = (node) => {
-    if (pointsCache.has(node)) return pointsCache.get(node);
-    const chain = [];
-    for (let current = node; current; current = current.parent) chain.push(current);
-    const points = chain.reverse().map((entry) => ({
-      earnedSouls: entry.state.earnedSouls,
-      metrics: metrics(entry.state)
-    }));
-    pointsCache.set(node, points);
-    return points;
+    if (pointsCache.has(node)) {
+      profiler.count("pointsCacheHits");
+      return pointsCache.get(node);
+    }
+    profiler.count("pointsCacheMisses");
+    return profiler.time("pathReconstructionMs", () => {
+      const chain = [];
+      for (let current = node; current; current = current.parent) chain.push(current);
+      const points = chain.reverse().map((entry) => ({
+        earnedSouls: entry.state.earnedSouls,
+        metrics: metrics(entry.state)
+      }));
+      pointsCache.set(node, points);
+      return points;
+    });
   };
   const nodeVector = (node) => {
-    if (!vectorCache.has(node)) {
-      const measured = measureSoulAxisPath(nodePoints(node), reference, checkpoints, budget, damageFocus);
-      vectorCache.set(node, {
-        pathScore: measured.pathScore,
-        endScore: measured.endScore,
-        measurement: measured
-      });
+    if (vectorCache.has(node)) {
+      profiler.count("vectorCacheHits");
+      return vectorCache.get(node);
     }
+    profiler.count("vectorCacheMisses");
+    const measured = profiler.time("trajectoryScoreMs", () =>
+      measureSoulAxisPath(nodePoints(node), reference, checkpoints, budget, damageFocus, profiler));
+    vectorCache.set(node, {
+      pathScore: measured.pathScore,
+      endScore: measured.endScore,
+      measurement: measured
+    });
     return vectorCache.get(node);
   };
 
@@ -293,12 +310,31 @@ export function runControlledMultiobjectiveBeamCarry({
 
   let transitionCalls = 0;
   let generatedStates = 0;
-  const transitions = (node) => {
+  const transitions = (node) => profiler.time("transitionMs", () => {
     transitionCalls += 1;
+    profiler.count("transitionCalls");
     const states = domain.transitions(node.state);
     generatedStates += states.length;
+    profiler.count("generatedStates", states.length);
     return states.map((state) => makeNode(node, state));
+  });
+  const soulSummary = (nodes) => {
+    if (!nodes.length) return { min: null, max: null, counts: {} };
+    const counts = {};
+    let min = Infinity;
+    let max = -Infinity;
+    for (const node of nodes) {
+      const souls = node.state.earnedSouls;
+      counts[souls] = (counts[souls] || 0) + 1;
+      min = Math.min(min, souls);
+      max = Math.max(max, souls);
+    }
+    return { min, max, counts };
   };
+  const checkpointCounts = (nodes) => Object.fromEntries(checkpoints.map((souls) => [
+    souls,
+    nodes.reduce((sum, node) => sum + Number(node.state.earnedSouls === souls), 0)
+  ]));
 
   const rootFamily = buildFamilyRoots(data);
   const diversityKey = (node) => {
@@ -317,7 +353,10 @@ export function runControlledMultiobjectiveBeamCarry({
   const terminalSources = new Map();
   const observeTerminal = (node, source) => {
     if (node.state.earnedSouls !== budget) return;
-    if (!terminalNodes.has(node.serial)) terminalNodes.set(node.serial, node);
+    if (!terminalNodes.has(node.serial)) {
+      terminalNodes.set(node.serial, node);
+      profiler.count("terminalNodes");
+    }
     const sources = terminalSources.get(node.serial) || new Set();
     sources.add(source);
     terminalSources.set(node.serial, sources);
@@ -333,6 +372,8 @@ export function runControlledMultiobjectiveBeamCarry({
   const selectionTrace = [];
 
   let deadlineReached = false;
+  let maxReachedSouls = 0;
+  const beamSearchStartedAt = profiler.enabled ? performance.now() : 0;
   while (beam.length && steps < maxSteps && performance.now() < searchDeadline) {
     const candidates = [];
     let partialStep = false;
@@ -356,9 +397,13 @@ export function runControlledMultiobjectiveBeamCarry({
     if (!candidates.length) { beam = []; break; }
 
     maxCandidatePool = Math.max(maxCandidatePool, candidates.length);
-    const unique = dedupeFuturePathHistory(candidates, futureKey, nodeVector);
+    maxReachedSouls = Math.max(maxReachedSouls, ...candidates.map((node) => node.state.earnedSouls));
+    const unique = profiler.time("dedupeMs", () =>
+      dedupeFuturePathHistory(candidates, futureKey, nodeVector));
     duplicateStates += candidates.length - unique.length;
-    const selection = selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey);
+    profiler.count("uniqueStates", unique.length);
+    profiler.count("duplicateStates", candidates.length - unique.length);
+    const selection = selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey, profiler);
     maxFirstFrontSize = Math.max(maxFirstFrontSize, selection.metadata.firstFrontSize);
     maxParetoLayerCount = Math.max(maxParetoLayerCount, selection.metadata.layerSizes.length);
     if (selection.metadata.frontierOverflow) frontierOverflowSteps += 1;
@@ -369,10 +414,32 @@ export function runControlledMultiobjectiveBeamCarry({
       retained: selection.selected.length,
       ...selection.metadata
     });
+    if (profiler.enabled) {
+      profiler.pushProgress({
+        engine: "multiobjective",
+        width: beamWidth,
+        depth: steps,
+        runtimeMs: performance.now() - started,
+        candidates: candidates.length,
+        unique: unique.length,
+        retained: selection.selected.length,
+        firstFrontSize: selection.metadata.firstFrontSize,
+        layerSizes: selection.metadata.layerSizes,
+        candidateSouls: soulSummary(candidates),
+        uniqueSouls: soulSummary(unique),
+        retainedSouls: soulSummary(selection.selected),
+        checkpointCounts: {
+          candidates: checkpointCounts(candidates),
+          unique: checkpointCounts(unique),
+          retained: checkpointCounts(selection.selected)
+        }
+      });
+    }
     beam = selection.selected;
     steps += 1;
   }
 
+  if (profiler.enabled) profiler.add("beamSearchMs", performance.now() - beamSearchStartedAt);
   if (finiteDeadline && performance.now() >= searchDeadline && beam.length) deadlineReached = true;
   const searchComplete = beam.length === 0;
   if (!searchComplete && steps >= maxSteps && !deadlineReached) {
@@ -389,10 +456,11 @@ export function runControlledMultiobjectiveBeamCarry({
     };
   });
 
-  const preAuditFront = pathEndParetoFront(terminalEntries());
+  const preAuditFront = profiler.time("paretoMs", () => pathEndParetoFront(terminalEntries()));
   let auditCheckedActions = 0;
   let auditGeneratedStates = 0;
   let auditComplete = searchComplete;
+  const terminalAuditStartedAt = profiler.enabled ? performance.now() : 0;
   if (searchComplete) {
     auditLoop: for (const entry of preAuditFront) {
       if (performance.now() >= finalDeadline) { auditComplete = false; break; }
@@ -409,7 +477,8 @@ export function runControlledMultiobjectiveBeamCarry({
     }
   }
 
-  const finalEntries = pathEndParetoFront(terminalEntries());
+  if (profiler.enabled) profiler.add("terminalAuditMs", performance.now() - terminalAuditStartedAt);
+  const finalEntries = profiler.time("paretoMs", () => pathEndParetoFront(terminalEntries()));
   const front = finalEntries.map((entry) => {
     const node = entry.node;
     const vector = nodeVector(node);
@@ -420,14 +489,14 @@ export function runControlledMultiobjectiveBeamCarry({
       events: eventChain(node),
       snapshots: points
     };
-    const validation = validateSearchPath({
+    const validation = profiler.time("validationMs", () => validateSearchPath({
       data,
       itemIds: legalItemIds,
       budget,
       soulAxis: expectedAxis,
       slotUnlocks,
       state
-    });
+    }));
     if (validation.valid !== true) throw new Error("Illegal path escaped controlled multiobjective search.");
     return {
       state,
@@ -456,6 +525,7 @@ export function runControlledMultiobjectiveBeamCarry({
       beamWidth,
       steps,
       maxCandidatePool,
+      maxReachedSouls,
       maxFirstFrontSize,
       frontierOverflowSteps,
       maxParetoLayerCount,
@@ -474,8 +544,17 @@ export function runControlledMultiobjectiveBeamCarry({
       },
       scalarizationUsed: false,
       partialVectorSemantics: "Path/End of the legal save-to-horizon completion of the current partial path",
+      terminalCompletion: {
+        mode: "implicit_piecewise_constant_save_to_horizon_in_path_end_measurement",
+        separatePass: false
+      },
       searchComplete,
-      selectionTrace
+      selectionTrace,
+      profile: profiler.snapshot({
+        maxReachedSouls,
+        completedDepth: steps,
+        checkpointSouls: [...checkpoints]
+      })
     }
   };
 }
