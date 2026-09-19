@@ -26,7 +26,7 @@ The repository currently contains:
 - a verified, patch-specific dataset for items, heroes, abilities, progression, global mechanics, and documented special interactions;
 - a deterministic calculator for evaluating a specified build;
 - a local JavaScript browser search for Carry builds with Weapon, Spirit, and Hybrid focus; it uses one shared search core for every canonical hero whose required base weapon data are present;
-- a 0–40,000-Souls test scenario with twelve slots from the start, all legally purchasable canonical items, a visible 25-second budget, early results, cancellation, and legal path replay before publication;
+- a 0–40,000-Souls test scenario with twelve slots from the start, all legally purchasable canonical items, a visible 60-second budget, early results, cancellation, and legal path replay before publication;
 - a documented approximate selection rule: 70% end strength / 30% path, with damage and survival weighted 50/50; Weapon, Spirit, and Hybrid only change the Bullet/Spirit preference inside the damage group;
 - common combat windows that combine weapon damage, directly modelled ability damage, and verified procs without treating the focus as an action ban. Warden and Infernus are the more closely checked hero profiles; other selectable profiles are explicitly experimental;
 - multiplicative stacking of permanent Bullet and Spirit Resistance according to `RES-002` in `data/core/mechanics.json`;
@@ -42,7 +42,7 @@ The optimizer is intentionally described as **best evaluated**, not globally opt
 - **Supported UI scope:** Carry with Weapon, Spirit, or Hybrid focus. The selector contains all canonical heroes; heroes without Bullet Damage, fire rate, magazine, or reload data explain the missing fields instead of creating a zero-value build.
 - **Modelled combat:** permanent item stats, reload/magazine operation, documented cast and channel time, directly specified ability damage and duration-DPS, permanent cooldown reduction, Warden's Last Stand timing, and Infernus Afterburn after its documented weapon-hit trigger.
 - **Not modelled as score:** unknown skill levels, hit/headshot probability, unspecified tick timing, target changes, most active-item effects, unproven proc uptime, and mechanics without sufficient canonical timing or trigger data. They remain visible as gaps rather than being treated as confirmed zero value.
-- **Search scope:** all legal candidates remain available; the 25-second heuristic and sampled reference do not prove global optimality. A path may save Souls before the 40k horizon.
+- **Search scope:** all legal candidates remain available; the 60-second heuristic and sampled reference do not prove global optimality. A path may save Souls before the 40k horizon.
 
 ## Local web app
 
