@@ -22,6 +22,21 @@ function eventChain(node) {
   return chain.reverse();
 }
 
+export function completeNodeBySaving(node, budget, transitions, deadline = Infinity) {
+  if (!node?.state) throw new TypeError("node.state fehlt.");
+  if (!Number.isSafeInteger(budget) || budget <= 0) throw new RangeError("budget ist ungültig.");
+  if (typeof transitions !== "function") throw new TypeError("transitions muss eine Funktion sein.");
+  let current = node;
+  while (current.state.earnedSouls < budget) {
+    if (performance.now() >= deadline) return null;
+    const save = transitions(current).find((candidate) => candidate.event?.type === "save");
+    if (!save) throw new Error("Legal save completion unavailable.");
+    current = save;
+  }
+  if (current.state.earnedSouls !== budget) throw new Error("Save completion overshot the configured horizon.");
+  return current;
+}
+
 function buildFamilyRoots(data) {
   const parent = new Map(data.upgrades.map((edge) => [edge.to_item_id, edge.from_item_id]));
   const cache = new Map();
@@ -493,6 +508,36 @@ export function runControlledMultiobjectiveBeamCarry({
     throw new Error(`Controlled multiobjective search exceeded maxSteps=${maxSteps}.`);
   }
 
+  let saveCompletionGeneratedStates = 0;
+  let saveCompletionAttemptedNodes = 0;
+  let saveCompletionCompletedNodes = 0;
+  let saveCompletionDeadlineReached = false;
+  const saveCompletionSourceSouls = [];
+  if (!searchComplete && beam.length) {
+    for (const node of beam) {
+      if (node.state.earnedSouls === budget) {
+        observeTerminal(node, "retained-terminal");
+        continue;
+      }
+      if (performance.now() >= finalDeadline) {
+        saveCompletionDeadlineReached = true;
+        break;
+      }
+      saveCompletionAttemptedNodes += 1;
+      saveCompletionSourceSouls.push(node.state.earnedSouls);
+      const before = generatedStates;
+      const completed = profiler.time("terminalCompletionMs", () =>
+        completeNodeBySaving(node, budget, transitions, finalDeadline));
+      saveCompletionGeneratedStates += generatedStates - before;
+      if (!completed) {
+        saveCompletionDeadlineReached = true;
+        break;
+      }
+      observeTerminal(completed, "retained-save-completion");
+      saveCompletionCompletedNodes += 1;
+    }
+  }
+
   const terminalEntries = () => [...terminalNodes.values()].map((node) => {
     const vector = nodeVector(node);
     return {
@@ -565,7 +610,8 @@ export function runControlledMultiobjectiveBeamCarry({
       deadlineReached,
       evaluations,
       generatedStates,
-      searchGeneratedStates: generatedStates - auditGeneratedStates,
+      searchGeneratedStates: generatedStates - auditGeneratedStates - saveCompletionGeneratedStates,
+      saveCompletionGeneratedStates,
       auditGeneratedStates,
       transitionCalls,
       duplicateStates,
@@ -592,8 +638,15 @@ export function runControlledMultiobjectiveBeamCarry({
       scalarizationUsed: false,
       partialVectorSemantics: "Path/End of the legal save-to-horizon completion of the current partial path",
       terminalCompletion: {
-        mode: "implicit_piecewise_constant_save_to_horizon_in_path_end_measurement",
-        separatePass: false
+        mode: "retained_partial_nodes_legal_save_to_horizon",
+        separatePass: true,
+        source: "all retained partial nodes at natural-search stop",
+        attemptedNodes: saveCompletionAttemptedNodes,
+        completedNodes: saveCompletionCompletedNodes,
+        sourceSouls: saveCompletionSourceSouls,
+        generatedStates: saveCompletionGeneratedStates,
+        deadlineReached: saveCompletionDeadlineReached,
+        naturalSearchMaxReachedSouls: maxReachedSouls
       },
       searchComplete,
       selectionTrace,
