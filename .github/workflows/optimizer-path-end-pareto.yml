@@ -9,6 +9,7 @@ permissions:
   contents: write
 
 jobs:
+  # Re-running this workflow with unchanged experiment code verifies candidate-set reproducibility.
   path-end-pareto:
     if: contains(github.event.head_commit.message, '[pareto-exp]')
     runs-on: ubuntu-latest
