@@ -223,3 +223,26 @@ The experiment does **not** justify activation: only two of nine cases improve P
 Decision: **revise V1A; Production remains baseline-v0**.
 
 Full evidence: `docs/research/optimizer-next/objective-v1-investigation.md` and `benchmarks/optimizer-v1/experiments/objective-v1a/`.
+
+
+## Path vs End Pareto Experiment
+
+The V1A geometric-mean scalar remains rejected and Production still defaults to `baseline-v0`.
+
+A dedicated experiment now evaluates Path-AUC and Endbuild as separate Pareto dimensions with no scalarization. SMALL uses the existing exact bounded search. CONTROLLED uses a fixed candidate union from fully completed standard Beam Width 8→16 runs and complete terminal-audit neighbourhoods under the already-existing baseline-v0 and V1A scorers. Terminal observation is materialized only after Search/Audit decisions, so the diagnostic observer does not consume their time budget or change ranking/retention.
+
+Final reproducible candidate sets:
+
+- SMALL Warden Weapon: 5 legal candidates, Pareto count 1.
+- CONTROLLED Warden Hybrid: 322 legal candidates, Pareto count 2.
+- CONTROLLED Infernus Hybrid: 361 legal candidates, Pareto count 2.
+
+Two consecutive runs produced identical candidate-set hashes and identical Pareto results. The final run passed 101/101 JavaScript tests.
+
+In both CONTROLLED cases, `baseline-v0` is Pareto-optimal. The second Pareto point improves Path-AUC but loses Endbuild quality; no observed candidate improves Path without Endbuild loss, and none improves Endbuild without Path loss.
+
+Decision: **continue with Multiobjective experimentally; do not change Production yet**.
+
+Exactly one next step: run a CONTROLLED-only experimental Beam that preserves non-dominated `(Path-AUC, Endbuild)` alternatives during search and compare it against these frozen fronts.
+
+Full evidence: `docs/research/optimizer-next/path-end-pareto-experiment.md` and `benchmarks/optimizer-v1/experiments/path-end-pareto/`.
