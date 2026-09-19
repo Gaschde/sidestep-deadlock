@@ -33,7 +33,15 @@ function conditions(record) {
   };
 }
 
-const stable = (value) => JSON.stringify(value, Object.keys(value || {}).sort());
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]));
+  }
+  return value;
+}
+
+const stable = (value) => JSON.stringify(canonical(value));
 const delta = (a, b) => Number(b) - Number(a);
 const comparisons = left.records.map((baseline) => {
   const candidate = byId.get(baseline.metadata.caseId);
