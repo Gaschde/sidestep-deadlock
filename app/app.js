@@ -269,16 +269,12 @@ function cancelNewBuild() {
   activeOptimizerWorker.terminate();
   activeOptimizerWorker = null;
   $("#search-progress").textContent = "Neuer Suchlauf abgebrochen; der letzte vollständig geprüfte Zwischenstand bleibt sichtbar.";
-  $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-  $("#new-build-button").disabled = false;
-  $("#new-build-40k-button").disabled = false;
-  $("#build-button").disabled = false;
   setFastControls(false);
 }
 
 function setFastControls(running) {
-  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 40k";
-  for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus",
+  $("#fast-build-button").textContent = "Build erstellen · 40k";
+  for (const id of ["fast-build-button", "hero-trigger", "role", "damage-focus",
     "search-backend", "search-milestones", "opponent-bullet-resist", "opponent-spirit-resist"]) $("#" + id).disabled = running;
 }
 
@@ -420,10 +416,7 @@ function startNewBuild(budget = FAST_SEARCH_BUDGET) {
   }
   const itemIds = state.data.items.map((item) => item.item_id);
   activeOptimizerWorker = new Worker("./optimizer-worker.mjs", { type: "module" });
-  $("#new-build-button").textContent = "Abbrechen";
-  $("#new-build-button").disabled = false;
-  $("#new-build-40k-button").disabled = true;
-  $("#build-button").disabled = true;
+  setFastControls(true);
   $("#search-progress").textContent = `Neue Suche gestartet: ${itemIds.length} Items, Horizont ${formatSouls(budget)} Souls.`;
   activeOptimizerWorker.onmessage = (event) => {
     const message = event.data;
@@ -461,25 +454,19 @@ function startNewBuild(budget = FAST_SEARCH_BUDGET) {
       $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
       activeOptimizerWorker.terminate();
       activeOptimizerWorker = null;
-      $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-      $("#new-build-40k-button").disabled = false;
-      $("#build-button").disabled = false;
+      setFastControls(false);
     } else if (message.type === "error") {
       $("#search-progress").textContent = `Neue Suche fehlgeschlagen: ${message.message}`;
       activeOptimizerWorker.terminate();
       activeOptimizerWorker = null;
-      $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-      $("#new-build-40k-button").disabled = false;
-      $("#build-button").disabled = false;
+      setFastControls(false);
     }
   };
   activeOptimizerWorker.onerror = (error) => {
     $("#search-progress").textContent = `Worker-Fehler: ${error.message || "unbekannter Fehler"}`;
     activeOptimizerWorker?.terminate();
     activeOptimizerWorker = null;
-    $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-    $("#new-build-40k-button").disabled = false;
-    $("#build-button").disabled = false;
+    setFastControls(false);
   };
   activeOptimizerWorker.postMessage({ mode: "diagnostic", data: state.data, itemIds, budget, heroId: state.selectedHeroId, damageFocus });
 }
@@ -524,10 +511,7 @@ function bindEvents() {
     renderPhase();
   });
   $("#damage-focus").addEventListener("change", () => $("#role").dispatchEvent(new Event("change")));
-  $("#build-button").addEventListener("click", createBuild);
   $("#fast-build-button").addEventListener("click", startFastBuild);
-  $("#new-build-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
-  $("#new-build-40k-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
 }
 
 async function init() {
@@ -542,7 +526,7 @@ async function init() {
     const notice = $("#data-error");
     notice.hidden = false;
     notice.textContent = `Die lokalen Daten konnten nicht geladen werden: ${error.message}. Bitte die App über den lokalen Server öffnen.`;
-    $("#build-button").disabled = true;
+    $("#fast-build-button").disabled = true;
     console.error(error);
   }
 }
