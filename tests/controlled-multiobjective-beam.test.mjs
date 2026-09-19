@@ -282,16 +282,22 @@ function canonicalData() {
   });
 }
 
-test("shared browser-safe Multiobjective kernel runs Warden and Venator with per-hero sampled reference", () => {
+test("shared browser-safe Multiobjective kernel reaches 40k for Warden focuses and Venator Weapon", () => {
   const data = canonicalData();
   const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
-  for (const heroId of ["warden", "venator"]) {
+  const cases = [
+    { heroId: "warden", damageFocus: "weapon" },
+    { heroId: "warden", damageFocus: "spirit" },
+    { heroId: "warden", damageFocus: "hybrid" },
+    { heroId: "venator", damageFocus: "weapon" }
+  ];
+  for (const { heroId, damageFocus } of cases) {
     const result = runControlledMultiobjectiveBeamCarry({
       data,
       heroId,
-      damageFocus: "weapon",
+      damageFocus,
       itemIds: ["upgrade_rapid_rounds"],
-      budget: 800,
+      budget: 40000,
       milestones: [],
       slotUnlocks,
       beamWidth: 4,
@@ -299,10 +305,11 @@ test("shared browser-safe Multiobjective kernel runs Warden and Venator with per
       auditReserveMs: 100,
       referenceTimeMs: 100
     });
-    assert.ok(result.front.length >= 1, heroId);
-    assert.ok(result.front.every((entry) => entry.validation.valid === true), heroId);
-    assert.equal(result.telemetry.scalarizationUsed, false, heroId);
-    assert.equal(result.telemetry.referenceSource, "sampled", heroId);
-    assert.equal(result.telemetry.timeBudgetMs, 1000, heroId);
+    assert.ok(result.front.length >= 1, `${heroId}/${damageFocus}`);
+    assert.ok(result.front.every((entry) => entry.state.earnedSouls === 40000), `${heroId}/${damageFocus}`);
+    assert.ok(result.front.every((entry) => entry.validation.valid === true), `${heroId}/${damageFocus}`);
+    assert.equal(result.telemetry.scalarizationUsed, false, `${heroId}/${damageFocus}`);
+    assert.equal(result.telemetry.referenceSource, "sampled", `${heroId}/${damageFocus}`);
+    assert.equal(result.telemetry.timeBudgetMs, 1000, `${heroId}/${damageFocus}`);
   }
 });
