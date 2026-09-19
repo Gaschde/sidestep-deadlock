@@ -184,14 +184,23 @@ export function runControlledMultiobjectiveBeamCarry({
   opponentSpiritResist = 0,
   slotUnlocks = [],
   beamWidth = 16,
-  maxSteps = 1000
+  maxSteps = 1000,
+  timeMs = Infinity,
+  auditReserveMs = 0
 }) {
   if (!reference?.axis || !reference?.values) throw new TypeError("Frozen reference is required.");
   if (!Number.isSafeInteger(beamWidth) || beamWidth < 1) throw new RangeError("beamWidth ist ungültig.");
   if (!Number.isSafeInteger(maxSteps) || maxSteps < 1) throw new RangeError("maxSteps ist ungültig.");
   if (!Number.isSafeInteger(budget) || budget <= 0) throw new RangeError("budget ist ungültig.");
+  if (!(timeMs === Infinity || (Number.isFinite(timeMs) && timeMs > 0))) throw new RangeError("timeMs ist ungültig.");
+  if (!Number.isFinite(auditReserveMs) || auditReserveMs < 0 || (Number.isFinite(timeMs) && auditReserveMs >= timeMs)) {
+    throw new RangeError("auditReserveMs ist ungültig.");
+  }
 
   const started = performance.now();
+  const finiteDeadline = Number.isFinite(timeMs);
+  const searchDeadline = finiteDeadline ? started + timeMs - auditReserveMs : Infinity;
+  const finalDeadline = finiteDeadline ? started + timeMs : Infinity;
   const scenario = normalizeOpponentScenario({ opponentBulletResist, opponentSpiritResist });
   const checkpoints = normalizeMilestones(milestones, budget);
   const requestedItemIds = itemIds ? [...itemIds] : data.items.map((item) => item.item_id);
@@ -309,9 +318,16 @@ export function runControlledMultiobjectiveBeamCarry({
   let maxParetoLayerCount = 0;
   const selectionTrace = [];
 
-  while (beam.length && steps < maxSteps) {
+  let deadlineReached = false;
+  while (beam.length && steps < maxSteps && performance.now() < searchDeadline) {
     const candidates = [];
+    let partialStep = false;
     for (const node of beam) {
+      if (performance.now() >= searchDeadline) {
+        partialStep = true;
+        deadlineReached = true;
+        break;
+      }
       if (node.state.earnedSouls === budget) {
         observeTerminal(node, "retained-terminal");
         continue;
@@ -322,6 +338,7 @@ export function runControlledMultiobjectiveBeamCarry({
       }
       candidates.push(...successors);
     }
+    if (partialStep) break;
     if (!candidates.length) { beam = []; break; }
 
     maxCandidatePool = Math.max(maxCandidatePool, candidates.length);
@@ -342,8 +359,9 @@ export function runControlledMultiobjectiveBeamCarry({
     steps += 1;
   }
 
+  if (finiteDeadline && performance.now() >= searchDeadline && beam.length) deadlineReached = true;
   const searchComplete = beam.length === 0;
-  if (!searchComplete && steps >= maxSteps) {
+  if (!searchComplete && steps >= maxSteps && !deadlineReached) {
     throw new Error(`Controlled multiobjective search exceeded maxSteps=${maxSteps}.`);
   }
 
@@ -360,15 +378,20 @@ export function runControlledMultiobjectiveBeamCarry({
   const preAuditFront = pathEndParetoFront(terminalEntries());
   let auditCheckedActions = 0;
   let auditGeneratedStates = 0;
-  for (const entry of preAuditFront) {
-    const before = generatedStates;
-    const actions = transitions(entry.node).filter((candidate) =>
-      ["purchase", "upgrade", "replacement"].includes(candidate.event?.type)
-    );
-    auditGeneratedStates += generatedStates - before;
-    for (const candidate of actions) {
-      auditCheckedActions += 1;
-      observeTerminal(candidate, "direct-terminal-audit");
+  let auditComplete = searchComplete;
+  if (searchComplete) {
+    auditLoop: for (const entry of preAuditFront) {
+      if (performance.now() >= finalDeadline) { auditComplete = false; break; }
+      const before = generatedStates;
+      const actions = transitions(entry.node).filter((candidate) =>
+        ["purchase", "upgrade", "replacement"].includes(candidate.event?.type)
+      );
+      auditGeneratedStates += generatedStates - before;
+      for (const candidate of actions) {
+        if (performance.now() >= finalDeadline) { auditComplete = false; break auditLoop; }
+        auditCheckedActions += 1;
+        observeTerminal(candidate, "direct-terminal-audit");
+      }
     }
   }
 
@@ -407,6 +430,9 @@ export function runControlledMultiobjectiveBeamCarry({
     front,
     telemetry: {
       runtimeMs: performance.now() - started,
+      timeBudgetMs: finiteDeadline ? timeMs : null,
+      searchDeadlineMs: finiteDeadline ? timeMs - auditReserveMs : null,
+      deadlineReached,
       evaluations,
       generatedStates,
       searchGeneratedStates: generatedStates - auditGeneratedStates,
@@ -424,7 +450,7 @@ export function runControlledMultiobjectiveBeamCarry({
       finalFrontSize: front.length,
       terminalAudit: {
         depth: 1,
-        completeDirectNeighbourhood: true,
+        completeDirectNeighbourhood: auditComplete,
         checkedActions: auditCheckedActions
       },
       pruning: {
