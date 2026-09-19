@@ -104,7 +104,7 @@ test("trade-off summary is deterministic and does not invent a weighted winner",
   ];
   const summary = summarizeTradeoffs(front);
   assert.equal(summary.adjacentTradeoffs.length, 2);
-  assert.equal(summary.medianPathGain, 0.1);
+  assert.ok(Math.abs(summary.medianPathGain - 0.1) < 1e-12);
   assert.ok(Math.abs(summary.medianEndLoss - 0.1) < 1e-12);
   assert.equal(Object.hasOwn(summary, "winner"), false);
 });
