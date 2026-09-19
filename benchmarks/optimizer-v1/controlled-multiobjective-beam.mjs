@@ -42,26 +42,49 @@ function stableId(entry) {
   return String(entry?.id ?? entry?.serial ?? entry?.node?.serial ?? "");
 }
 
-export function pathEndNonDominatedLayers(entries, profiler = null) {
-  if (!Array.isArray(entries)) throw new TypeError("entries muss ein Array sein.");
+function extractNextPathEndLayer(remaining, profiler = null) {
   const timedSort = (array, compare) => profiler?.enabled
     ? profiler.time("sortingMs", () => array.sort(compare))
     : array.sort(compare);
+  const front = remaining.filter((candidate, index) =>
+    !remaining.some((other, otherIndex) => otherIndex !== index && pathEndDominates(other, candidate))
+  );
+  if (!front.length) throw new Error("Pareto layering made no progress.");
+  timedSort(front, (a, b) => stableId(a).localeCompare(stableId(b)));
+  const selected = new Set(front);
+  for (let index = remaining.length - 1; index >= 0; index -= 1) {
+    if (selected.has(remaining[index])) remaining.splice(index, 1);
+  }
+  return front;
+}
+
+export function pathEndNonDominatedLayers(entries, profiler = null) {
+  if (!Array.isArray(entries)) throw new TypeError("entries muss ein Array sein.");
   const remaining = [...entries];
   const layers = [];
-  while (remaining.length) {
-    const front = remaining.filter((candidate, index) =>
-      !remaining.some((other, otherIndex) => otherIndex !== index && pathEndDominates(other, candidate))
-    );
-    if (!front.length) throw new Error("Pareto layering made no progress.");
-    timedSort(front, (a, b) => stableId(a).localeCompare(stableId(b)));
-    layers.push(front);
-    const selected = new Set(front);
-    for (let index = remaining.length - 1; index >= 0; index -= 1) {
-      if (selected.has(remaining[index])) remaining.splice(index, 1);
-    }
-  }
+  while (remaining.length) layers.push(extractNextPathEndLayer(remaining, profiler));
   return layers;
+}
+
+export function pathEndLazyNonDominatedLayers(entries, requiredCount, profiler = null) {
+  if (!Array.isArray(entries)) throw new TypeError("entries muss ein Array sein.");
+  if (!Number.isSafeInteger(requiredCount) || requiredCount < 1) {
+    throw new RangeError("requiredCount muss positiv ganzzahlig sein.");
+  }
+  const remaining = [...entries];
+  const layers = [];
+  let layeredCount = 0;
+  while (remaining.length && layeredCount < requiredCount) {
+    const front = extractNextPathEndLayer(remaining, profiler);
+    layers.push(front);
+    layeredCount += front.length;
+  }
+  return {
+    layers,
+    layeredCount,
+    unlayeredCount: remaining.length,
+    complete: remaining.length === 0
+  };
 }
 
 function partialLayerSelection(layer, capacity, diversityKey, profiler = null) {
@@ -120,25 +143,7 @@ function partialLayerSelection(layer, capacity, diversityKey, profiler = null) {
   return selected;
 }
 
-export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = () => "", profiler = null) {
-  if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
-  if (!Number.isSafeInteger(width) || width < 1) throw new RangeError("width muss positiv ganzzahlig sein.");
-  if (typeof vectorFor !== "function") throw new TypeError("vectorFor muss eine Funktion sein.");
-
-  const frontierStartedAt = profiler?.enabled ? performance.now() : 0;
-  const decorated = nodes.map((node) => {
-    const vector = vectorFor(node);
-    return {
-      node,
-      id: stableId(node),
-      pathScore: vector.pathScore,
-      endScore: vector.endScore
-    };
-  });
-  profiler?.count?.("paretoCandidates", decorated.length);
-  const layers = profiler?.enabled
-    ? profiler.time("paretoMs", () => pathEndNonDominatedLayers(decorated, profiler))
-    : pathEndNonDominatedLayers(decorated, profiler);
+function retainPathEndParetoLayers(layers, width, diversityKey, profiler = null, layering = null) {
   const selected = [];
   let truncatedLayerIndex = null;
 
@@ -155,7 +160,6 @@ export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = 
       : partialLayerSelection(layer, remaining, diversityKey, profiler)));
   }
 
-  if (profiler?.enabled) profiler.add("frontierMaintenanceMs", performance.now() - frontierStartedAt);
   return {
     selected: selected.map((entry) => entry.node),
     metadata: {
@@ -165,9 +169,52 @@ export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = 
       frontierOverflow: (layers[0]?.length ?? 0) > width,
       truncatedLayerIndex,
       scalarizationUsed: false,
+      lazyLayering: layering !== null,
+      layeringComplete: layering?.complete ?? true,
+      layeredCandidates: layering?.layeredCount ?? layers.reduce((sum, layer) => sum + layer.length, 0),
+      unlayeredCandidates: layering?.unlayeredCount ?? 0,
       retention: "Pareto layers; partial layer uses Path/End extremes plus existing category/family diversity"
     }
   };
+}
+
+function decoratePathEndNodes(nodes, vectorFor) {
+  return nodes.map((node) => {
+    const vector = vectorFor(node);
+    return {
+      node,
+      id: stableId(node),
+      pathScore: vector.pathScore,
+      endScore: vector.endScore
+    };
+  });
+}
+
+export function selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey = () => "", profiler = null) {
+  if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
+  if (!Number.isSafeInteger(width) || width < 1) throw new RangeError("width muss positiv ganzzahlig sein.");
+  if (typeof vectorFor !== "function") throw new TypeError("vectorFor muss eine Funktion sein.");
+
+  const frontierStartedAt = profiler?.enabled ? performance.now() : 0;
+  const decorated = decoratePathEndNodes(nodes, vectorFor);
+  profiler?.count?.("paretoCandidates", decorated.length);
+  const layering = profiler?.enabled
+    ? profiler.time("paretoMs", () => pathEndLazyNonDominatedLayers(decorated, width, profiler))
+    : pathEndLazyNonDominatedLayers(decorated, width, profiler);
+  const result = retainPathEndParetoLayers(layering.layers, width, diversityKey, profiler, layering);
+
+  if (profiler?.enabled) profiler.add("frontierMaintenanceMs", performance.now() - frontierStartedAt);
+  return result;
+}
+
+// Test-only semantic oracle for the pre-lazy full-layer retention. Search runners never call this path.
+export function selectPathEndParetoBeamFullReferenceForTest(nodes, width, vectorFor, diversityKey = () => "") {
+  if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
+  if (!Number.isSafeInteger(width) || width < 1) throw new RangeError("width muss positiv ganzzahlig sein.");
+  if (typeof vectorFor !== "function") throw new TypeError("vectorFor muss eine Funktion sein.");
+  const decorated = decoratePathEndNodes(nodes, vectorFor);
+  const layers = pathEndNonDominatedLayers(decorated);
+  return retainPathEndParetoLayers(layers, width, diversityKey);
 }
 
 export function dedupeFuturePathHistory(nodes, futureKey, vectorFor, transactionCounter = transactionCount) {
