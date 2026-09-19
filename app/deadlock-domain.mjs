@@ -10,7 +10,7 @@ function ancestors(itemId, upgrades, seen = new Set()) {
   return seen;
 }
 
-export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, slotUnlocks = [], metrics, label, recordHistory = true }) {
+export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, slotUnlocks = [], metrics, label, recordHistory = true, telemetry = null }) {
   if (!data?.itemsById || !data?.upgrades) throw new TypeError("Kanonische Optimizer-Daten sind erforderlich.");
   if (!Number.isSafeInteger(budget) || budget < 0) throw new RangeError("budget muss eine nichtnegative ganze Soul-Zahl sein.");
   // Explicit model: purchases are possible at every integer earned-Soul value.
@@ -61,7 +61,10 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
 
   const unlockCount = (earnedSouls) => slotUnlocks.filter((unlock) => earnedSouls >= unlock.earnedSouls).reduce((sum, unlock) => sum + unlock.slots, 0);
   const ancestorSets = new Map(items.map((item) => [item.item_id, ancestors(item.item_id, data.upgrades)]));
-  const familyConflict = (state, itemId) => state.inventory.some((ownedId) => ownedId === itemId || ancestorSets.get(itemId).has(ownedId) || ancestorSets.get(ownedId).has(itemId));
+  const familyConflict = (state, itemId) => {
+    telemetry?.count?.("familyConflictChecks");
+    return state.inventory.some((ownedId) => ownedId === itemId || ancestorSets.get(itemId).has(ownedId) || ancestorSets.get(ownedId).has(itemId));
+  };
   const activeCount = (inventory) => inventory.reduce((sum, id) => sum + Number(Boolean(itemById.get(id)?.active_type)), 0);
   const withEvent = (state, event, earnedSouls, cash, inventory) => {
     // Reference reachability uses only current configuration, never past reward.
@@ -76,14 +79,19 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
     const nextSoul = axis ? axis.find((souls) => souls > state.earnedSouls)
       : state.earnedSouls < budget ? state.earnedSouls + 1 : undefined;
     if (nextSoul !== undefined) successors.push(withEvent(state, { type: "save", earnedSouls: nextSoul }, nextSoul, state.cash + nextSoul - state.earnedSouls, state.inventory));
+    const purchaseStarted = telemetry?.enabled ? performance.now() : 0;
     for (const item of items) {
+      telemetry?.count?.("purchaseChecks");
       const cost = Number(item.total_cost);
       if (state.cash < cost || state.inventory.length >= baseSlots + state.unlockedSlots || familyConflict(state, item.item_id)) continue;
       const inventory = [...state.inventory, item.item_id];
       if (activeCount(inventory) > activeLimit) continue;
       successors.push(withEvent(state, { type: "purchase", item: item.item_id, payment: cost }, state.earnedSouls, state.cash - cost, inventory));
     }
+    if (telemetry?.enabled) telemetry.add("purchaseGenerationMs", performance.now() - purchaseStarted);
+    const upgradeStarted = telemetry?.enabled ? performance.now() : 0;
     for (const edge of upgrades) {
+      telemetry?.count?.("upgradeChecks");
       const index = state.inventory.indexOf(edge.from_item_id);
       const payment = Number(edge.additional_cost);
       if (index < 0 || state.cash < payment || familyConflict({ inventory: state.inventory.filter((_, i) => i !== index) }, edge.to_item_id)) continue;
@@ -92,11 +100,14 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
       if (activeCount(inventory) > activeLimit) continue;
       successors.push(withEvent(state, { type: "upgrade", from: edge.from_item_id, item: edge.to_item_id, payment }, state.earnedSouls, state.cash - payment, inventory));
     }
+    if (telemetry?.enabled) telemetry.add("upgradeGenerationMs", performance.now() - upgradeStarted);
+    const replacementStarted = telemetry?.enabled ? performance.now() : 0;
     for (const ownedId of state.inventory) {
       const owned = itemById.get(ownedId);
       if (!owned) continue;
       const proceeds = Number(owned.total_cost) * sellbackRate;
       for (const item of items) {
+        telemetry?.count?.("replacementChecks");
         const payment = Number(item.total_cost) - proceeds;
         const inventory = state.inventory.map((id) => id === ownedId ? item.item_id : id);
         if (item.item_id === ownedId || state.inventory.includes(item.item_id) || state.cash < payment || activeCount(inventory) > activeLimit || familyConflict({ inventory: state.inventory.filter((id) => id !== ownedId) }, item.item_id)) continue;
@@ -104,6 +115,7 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
       }
       successors.push(withEvent(state, { type: "sell", from: ownedId, payment: -proceeds }, state.earnedSouls, state.cash + proceeds, state.inventory.filter((id) => id !== ownedId)));
     }
+    if (telemetry?.enabled) telemetry.add("replacementGenerationMs", performance.now() - replacementStarted);
     return successors;
   };
 

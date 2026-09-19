@@ -787,3 +787,48 @@ test("Anytime fallback accepts the same explicit opponent scenario and milestone
   assert.equal(result.scenario.opponentBulletResist, 25);
   assert.equal(result.semantics.optimal, false);
 });
+
+
+test("Beam profiling is opt-in, preserves a completed small-space result and exposes plausible counters", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const options = { data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 5000, initialBeamWidth: 64, maxBeamWidth: 64 };
+  const normal = runIterativeDiverseBeamCarry(options);
+  const profiled = runIterativeDiverseBeamCarry({ ...options, profile: true });
+  assert.equal(profiled.quality.score, normal.quality.score);
+  assert.deepEqual(profiled.state.inventory, normal.state.inventory);
+  assert.deepEqual(profiled.reference, reference);
+  assert.equal(normal.searchTelemetry.profile, undefined);
+  const p = profiled.searchTelemetry.profile;
+  for (const key of ["referenceMs", "beamSearchMs", "terminalAuditMs", "validationMs", "transitionMs",
+    "purchaseGenerationMs", "upgradeGenerationMs", "replacementGenerationMs", "evaluationMs",
+    "trajectoryScoreMs", "pathReconstructionMs", "continuationLookaheadMs", "dedupeMs", "paretoMs",
+    "diversityMs", "sortingMs"]) assert.ok(Number.isFinite(p.timers[key]) && p.timers[key] >= 0, key);
+  assert.ok(p.counters.transitionCalls > 0);
+  assert.ok(p.counters.generatedStates >= p.counters.uniqueStates);
+  assert.equal(p.counters.metricCacheMisses, p.counters.evaluatedInventories);
+  assert.ok(p.counters.purchaseChecks > 0);
+  assert.ok(p.counters.familyConflictChecks > 0);
+  assert.ok(p.perWidth.length >= 1);
+  assert.ok(p.candidatePoolSizes.length >= 1);
+});
+
+test("Baseline compact Carry metrics keep the three current ten-second damage rows mathematically identical", () => {
+  const data = canonicalWardenData();
+  const result = evaluateCarryPerformance({ inventory: ["upgrade_rapid_rounds"] },
+    { heroId: "warden", damageFocus: "weapon", budget: 40000, metricsOnly: true }, data);
+  assert.equal(result.valid, true);
+  assert.equal(result.metrics.laneTradeWindowDps, result.metrics.farmWindowDps);
+  assert.equal(result.metrics.farmWindowDps, result.metrics.teamfightWindowDps);
+  assert.equal(result.metrics.laneTradeBulletDps, result.metrics.farmBulletDps);
+  assert.equal(result.metrics.farmBulletDps, result.metrics.teamfightBulletDps);
+  assert.equal(result.metrics.laneTradeSpiritDps, result.metrics.farmSpiritDps);
+  assert.equal(result.metrics.farmSpiritDps, result.metrics.teamfightSpiritDps);
+});

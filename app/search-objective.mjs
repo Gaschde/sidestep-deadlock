@@ -1,5 +1,7 @@
 import { normalizeMilestones, milestoneSnapshots } from "./search-milestones.mjs";
 
+export const SEARCH_OBJECTIVE_VERSION = "baseline-v0";
+
 export const SEARCH_METRIC_GROUPS = Object.freeze({
   damage: Object.freeze({
     metrics: Object.freeze(["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"]),
