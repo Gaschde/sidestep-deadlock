@@ -5,42 +5,20 @@ import { heroCanPurchaseItem } from "./optimizer.mjs";
 import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
 import { normalizeMilestones, milestoneSnapshots } from "./search-milestones.mjs";
 import { normalizeOpponentScenario } from "./search-scenarios.mjs";
+import {
+  SEARCH_METRIC_GROUPS,
+  DAMAGE_FOCUS_WEIGHTS,
+  DAMAGE_COMPONENTS,
+  COMPONENT_METRICS,
+  metricValue,
+  scoreMilestonePath
+} from "./search-objective.mjs";
 
-export const ANYTIME_METRIC_GROUPS = {
-  damage: { metrics: ["sustainedWeaponDps", "laneTradeWindowDps", "farmWindowDps", "skirmishWindowDps", "teamfightWindowDps"], weight: 0.5 },
-  survival: { metrics: ["bulletEhp", "spiritEhp"], weight: 0.5 }
-};
+export const ANYTIME_METRIC_GROUPS = SEARCH_METRIC_GROUPS;
+export { DAMAGE_FOCUS_WEIGHTS };
 
-// Focus only changes the mixture inside the existing 50%-weighted damage
-// group. It neither makes an action unavailable nor changes its raw damage.
-export const DAMAGE_FOCUS_WEIGHTS = Object.freeze({
-  weapon: Object.freeze({ bullet: 0.7, spirit: 0.3 }),
-  spirit: Object.freeze({ bullet: 0.3, spirit: 0.7 }),
-  hybrid: Object.freeze({ bullet: 0.5, spirit: 0.5 })
-});
-
-const DAMAGE_COMPONENTS = Object.freeze({
-  sustainedWeaponDps: Object.freeze({ bullet: "sustainedBulletDps", spirit: "sustainedSpiritDps" }),
-  laneTradeWindowDps: Object.freeze({ bullet: "laneTradeBulletDps", spirit: "laneTradeSpiritDps" }),
-  farmWindowDps: Object.freeze({ bullet: "farmBulletDps", spirit: "farmSpiritDps" }),
-  skirmishWindowDps: Object.freeze({ bullet: "skirmishBulletDps", spirit: "skirmishSpiritDps" }),
-  teamfightWindowDps: Object.freeze({ bullet: "teamfightBulletDps", spirit: "teamfightSpiritDps" })
-});
-
-const COMPONENT_METRICS = Object.freeze(Object.values(DAMAGE_COMPONENTS).flatMap((entry) => [entry.bullet, entry.spirit]));
 const SCORING_METRICS = Object.freeze([...CARRY_METRICS, ...COMPONENT_METRICS]);
-const COMPONENT_PARENT = new Map(Object.entries(DAMAGE_COMPONENTS).flatMap(([metric, components]) => [
-  [components.bullet, metric], [components.spirit, metric]
-]));
-
 const focusWeights = (damageFocus) => DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid;
-const metricValue = (values, metric) => {
-  if (Number.isFinite(values[metric])) return values[metric];
-  const parent = COMPONENT_PARENT.get(metric);
-  // Compatibility for explicit small references that predate component rows:
-  // preserving the aggregate value makes their focus-neutral assertions exact.
-  return parent && Number.isFinite(values[parent]) ? values[parent] : 0;
-};
 
 export const ANYTIME_POLICY = { end: 0.7, worst: 0.15, integrated: 0.15,
   metricWeights: "Damage-Gruppe und Überlebens-Gruppe je 50%; Weapon 70/30, Spirit 30/70, Hybrid 50/50 für vergleichbar normalisierte Bullet-/Spirit-Schadensbeiträge", endNormalization: "x / (x + Referenz am Horizont)",
@@ -120,8 +98,10 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   const started = performance.now(), deadline = started + timeMs - terminalAuditReserveMs, terminalAuditDeadline = started + timeMs;
   const unavailableItemIds = itemIds.filter((id) => !heroCanPurchaseItem(data.itemsById.get(id), data, heroId));
   const legalItemIds = itemIds.filter((id) => !unavailableItemIds.includes(id));
-  const resource = carryResourceAxis(data, legalItemIds, budget);
-  const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: resource.axis, metrics: () => ({ value: 0 }) });
+  const compressed = carryResourceAxis(data, legalItemIds, budget);
+  const axis = [...new Set([...compressed.axis, ...configuredMilestones])].sort((a, b) => a - b);
+  const resource = { ...compressed, axis, configuredMilestones };
+  const domain = createDeadlockDomain({ data, itemIds: legalItemIds, budget, slotUnlocks, soulAxis: axis, metrics: () => ({ value: 0 }) });
   const profileData = { referencePreparationMs: 0, inventoryEvaluationMs: 0, actionGenerationMs: 0, scoringMs: 0,
     upgradeCounterprobeMs: 0, pathContinuationMs: 0, outputValidationMs: 0,
     variants: { seedsStarted: 0, seedsCompleted: 0, seedsInterrupted: 0, rolloutsStarted: 0, rolloutsCompleted: 0,
@@ -186,8 +166,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
   let pathSimplificationsTried = 0, pathSimplificationsAccepted = 0;
   let terminalAudit = { reserveMs: terminalAuditReserveMs, complete: false, rounds: 0, legalActions: 0, checkedActions: 0, improvements: 0,
     incumbentScore: null, bestCheckedScore: null, bestCheckedAction: null };
-  const referenceIndex = new Map(reference.axis.map((souls, index) => [souls, index]));
-  const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap(), trajectoryCache = new WeakMap();
+  const pointsCache = new WeakMap(), rankCache = new WeakMap(), preferenceCache = new WeakMap();
   const random = () => { rng ^= rng << 13; rng ^= rng >>> 17; rng ^= rng << 5; return (rng >>> 0) / 4294967296; };
   const buildPoints = (node) => {
     if (pointsCache.has(node)) return pointsCache.get(node);
@@ -197,58 +176,8 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     pointsCache.set(node, points);
     return points;
   };
-  const trajectory = (node) => {
-    if (trajectoryCache.has(node)) return trajectoryCache.get(node);
-    const values = metrics(node.state);
-    const index = referenceIndex.get(node.state.earnedSouls);
-    if (index === undefined) throw new Error("State außerhalb der eingefrorenen Soul-Achse.");
-    const prior = node.parent ? trajectory(node.parent) : null;
-    const area = prior ? [...prior.area] : Array(SCORING_METRICS.length).fill(0);
-    const worstBefore = prior ? [...prior.worstBefore] : Array(SCORING_METRICS.length).fill(0);
-    if (prior && node.state.earnedSouls > prior.souls) {
-      const width = node.state.earnedSouls - prior.souls;
-      for (let metricIndex = 0; metricIndex < SCORING_METRICS.length; metricIndex++) {
-        area[metricIndex] += width * prior.currentRegret[metricIndex];
-        worstBefore[metricIndex] = Math.max(worstBefore[metricIndex], prior.currentRegret[metricIndex]);
-      }
-    }
-    const currentRegret = SCORING_METRICS.map((metric) => {
-      const referenceValue = metricValue(reference.values[index], metric);
-      const value = metricValue(values, metric);
-      return referenceValue > 0 ? Math.max(0, 1 - value / referenceValue) : 0;
-    });
-    const result = { souls: node.state.earnedSouls, values, area, worstBefore, currentRegret };
-    trajectoryCache.set(node, result);
-    return result;
-  };
-  const projectedQuality = (node) => {
-    const state = trajectory(node);
-    const byMetric = new Map();
-    for (let metricIndex = 0; metricIndex < SCORING_METRICS.length; metricIndex++) {
-      const metric = SCORING_METRICS[metricIndex];
-      const scale = metricValue(reference.values.at(-1), metric);
-      const value = metricValue(state.values, metric);
-      const end = value + scale > 0 ? value / (value + scale) : 0;
-      const worst = Math.max(state.worstBefore[metricIndex], state.currentRegret[metricIndex]);
-      const integrated = budget ? (state.area[metricIndex] + (budget - state.souls) * state.currentRegret[metricIndex]) / budget : 0;
-      byMetric.set(metric, { end, worst, integrated });
-    }
-    const group = (key) => {
-      const rows = ANYTIME_METRIC_GROUPS[key].metrics.map((metric) => byMetric.get(metric));
-      return Object.fromEntries(["end", "worst", "integrated"].map((field) => [field, rows.reduce((sum, row) => sum + row[field], 0) / rows.length]));
-    };
-    const weights = focusWeights(damageFocus);
-    const damage = Object.fromEntries(["end", "worst", "integrated"].map((field) => [field,
-      ANYTIME_METRIC_GROUPS.damage.metrics.reduce((sum, metric) => {
-        const components = DAMAGE_COMPONENTS[metric];
-        return sum + weights.bullet * byMetric.get(components.bullet)[field] + weights.spirit * byMetric.get(components.spirit)[field];
-      }, 0) / ANYTIME_METRIC_GROUPS.damage.metrics.length]));
-    const survival = group("survival");
-    const weighted = (field) => ANYTIME_METRIC_GROUPS.damage.weight * damage[field] + ANYTIME_METRIC_GROUPS.survival.weight * survival[field];
-    const endUtility = weighted("end"), worstRegret = weighted("worst"), integratedRegret = weighted("integrated");
-    return { score: 0.7 * endUtility + 0.15 * (1 - worstRegret) + 0.15 * (1 - integratedRegret), endUtility, worstRegret, integratedRegret,
-      metricGroups: { damage: { ...damage, focus: damageFocus, weights }, survival } };
-  };
+  const projectedQuality = (node) =>
+    scoreMilestonePath(buildPoints(node), reference, configuredMilestones, budget, damageFocus);
   const rank = (node) => {
     if (rankCache.has(node)) return rankCache.get(node);
     const value = timed("scoringMs", () => projectedQuality(node).score);
@@ -294,7 +223,7 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     for (let n = node; n.parent; n = n.parent) chain.push(n);
     chain.reverse();
     const points = buildPoints(node);
-    const quality = scoreAnytimePath(points, reference, budget, damageFocus);
+    const quality = scoreMilestonePath(points, reference, configuredMilestones, budget, damageFocus);
     completedPaths++;
     const candidateTransactions = transactionCount(chain.map((n) => n.event));
     // A shorter path is only preferable when every scored value is exactly
@@ -305,7 +234,8 @@ export function runAnytimeCarry({ data, heroId = "warden", damageFocus = "weapon
     })) return false;
     const state = { ...node.state, events: chain.map((n) => n.event), snapshots: points };
     const validation = timed("outputValidationMs", () => validateSearchPath({ data, itemIds: legalItemIds, budget, soulAxis: resource.axis, slotUnlocks, state }));
-    winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference, policy: ANYTIME_POLICY, resource,
+    winner = { state, slotUnlocks, slotLimit: Number(data.slots.starting_slots.universal) + node.state.unlockedSlots, quality, validation, reference,
+      policy: quality.policy, legacyPolicy: ANYTIME_POLICY, resource,
       milestones: { configured: configuredMilestones, snapshots: milestoneSnapshots(points, configuredMilestones, budget) },
       scenario: opponentScenario, backend: "anytime", semantics: { legallyPathVerified: validation.valid === true, bestFound: true, locallyVerified: false, bounded: false, optimal: false },
       certification: { bound: null, status: "not_run", branchAndBound: "shadow_disabled_pending_outward_rounded_bounds" },
