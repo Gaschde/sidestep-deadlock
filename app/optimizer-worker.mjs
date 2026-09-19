@@ -1,58 +1,37 @@
-import { runWardenCarryPareto, cachedWardenReference } from "./warden-search.mjs";
-import { indexedReferenceStorage } from "./reference-cache.mjs";
-import { runAnytimeCarry } from "./anytime-search.mjs";
-import { runIterativeDiverseBeamCarry } from "./beam-search.mjs";
-import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS, PRODUCTION_SEARCH_BACKEND } from "./search-config.mjs";
+import { runControlledMultiobjectiveBeamCarry } from "./multiobjective-search.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS } from "./search-config.mjs";
 
-self.onmessage = async (event) => {
-  const { data, itemIds, budget } = event.data;
+const CURRENT_MULTI_OBJECTIVE_WIDTH = 4;
+const AUDIT_RESERVE_MS = 2000;
+const REFERENCE_TIME_MS = 1500;
+
+self.onmessage = (event) => {
+  const { data, itemIds } = event.data;
   try {
-    const mode = event.data.mode || PRODUCTION_SEARCH_BACKEND;
-    const approximateMode = mode === "beam" || mode === "anytime";
-    const effectiveBudget = approximateMode ? FAST_SEARCH_BUDGET : budget;
-    self.postMessage({ type: "started", mode, itemCount: itemIds.length, budget: effectiveBudget });
-    if (approximateMode) {
-      const run = mode === "beam" ? runIterativeDiverseBeamCarry : runAnytimeCarry;
-      const result = run({
-        data,
-        itemIds,
-        budget: effectiveBudget,
-        heroId: event.data.heroId,
-        damageFocus: event.data.damageFocus,
-        milestones: event.data.milestones,
-        opponentBulletResist: event.data.opponentBulletResist,
-        opponentSpiritResist: event.data.opponentSpiritResist,
-        timeMs: PRODUCT_SEARCH_TIME_MS,
-        slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
-        onResult: (result) => self.postMessage({ type: "incumbent", result }),
-        onProgress: (progress) => self.postMessage({ type: "progress", ...progress })
-      });
-      if (!result) throw new Error("Kein vollständiger Pfad im Rechenbudget gefunden.");
-      self.postMessage({ type: "search-complete", backend: result.backend, result, telemetry: result.searchTelemetry });
-      return;
-    }
-    const onProgress = (progress) => self.postMessage({ type: "progress", ...progress });
-    // Fingerprint the complete current module graph, including evaluator defaults.
-    const sources = {};
-    const collect = async (url) => {
-      if (Object.hasOwn(sources, url)) return;
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) throw new Error("Cannot fingerprint reference implementation");
-      const source = await response.text();
-      sources[url] = source;
-      for (const match of source.matchAll(/(?:import|export)\s+(?:[^;]*?\s+from\s+)?["'](\.\.?\/[^"']+)["']/g)) await collect(new URL(match[1], url).href);
-    };
-    await collect(new URL("./warden-search.mjs", import.meta.url).href);
-    const referenceResult = await cachedWardenReference({ data, itemIds, budget, storage: indexedReferenceStorage(), sourceIdentity: sources, onProgress });
-    const result = runWardenCarryPareto({
+    self.postMessage({
+      type: "started",
+      mode: "multiobjective",
+      itemCount: itemIds.length,
+      budget: FAST_SEARCH_BUDGET,
+      timeBudgetMs: PRODUCT_SEARCH_TIME_MS
+    });
+
+    const result = runControlledMultiobjectiveBeamCarry({
       data,
       itemIds,
-      budget,
-      slotUnlocks: [],
-      referenceResult,
+      budget: FAST_SEARCH_BUDGET,
+      heroId: event.data.heroId,
+      damageFocus: event.data.damageFocus,
+      slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
+      beamWidth: CURRENT_MULTI_OBJECTIVE_WIDTH,
+      timeMs: PRODUCT_SEARCH_TIME_MS,
+      auditReserveMs: AUDIT_RESERVE_MS,
+      referenceTimeMs: REFERENCE_TIME_MS,
       onProgress: (progress) => self.postMessage({ type: "progress", ...progress })
     });
-    self.postMessage({ type: "complete", result });
+
+    if (!result.front.length) throw new Error("Kein terminaler Pareto-Build im Rechenbudget gefunden.");
+    self.postMessage({ type: "search-complete", backend: "multiobjective", result, telemetry: result.telemetry });
   } catch (error) {
     self.postMessage({ type: "error", message: error?.stack || error?.message || String(error) });
   }
