@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { BENCHMARK_CASES, benchmarkCases } from "../benchmarks/optimizer-v1/cases.mjs";
+import { PRODUCT_SEARCH_TIME_MS } from "../app/search-config.mjs";
 import { calculateGap, compareBenchmarkRecords, comparisonKey } from "../benchmarks/optimizer-v1/benchmark-lib.mjs";
 
 test("Optimizer V1 benchmark matrix contains exact, controlled and all six production Carry cases", () => {
@@ -11,7 +12,7 @@ test("Optimizer V1 benchmark matrix contains exact, controlled and all six produ
   assert.deepEqual(new Set(production.map((entry) => entry.hero)), new Set(["warden", "infernus"]));
   assert.deepEqual(new Set(production.map((entry) => entry.focus)), new Set(["weapon", "spirit", "hybrid"]));
   assert.ok(BENCHMARK_CASES.every((entry) => entry.role === "carry" && entry.backend === "beam"));
-  assert.ok(production.every((entry) => entry.budget === 40000 && entry.timeBudgetMs === 25000));
+  assert.ok(production.every((entry) => entry.budget === 40000 && entry.timeBudgetMs === PRODUCT_SEARCH_TIME_MS));
 });
 
 test("Exact benchmark gap is absolute and relative to the exact score", () => {
