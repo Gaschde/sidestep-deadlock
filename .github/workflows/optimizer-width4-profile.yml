@@ -1,0 +1,42 @@
+name: optimizer 40k multiobjective width4 profiling
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  width4-profile:
+    if: contains(github.event.head_commit.message, '[width4-profile]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run 40k width4 profiling
+        run: node tools/optimizer-width4-profile.mjs --output artifacts/optimizer-width4-profile/results.json
+      - name: Upload profiling artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-width4-profile
+          path: artifacts/optimizer-width4-profile/
+          if-no-files-found: error
+      - name: Store profiling data on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/40k-multiobjective-width4-profile"
+          mkdir -p "$target"
+          cp artifacts/optimizer-width4-profile/results.json "$target/results.json"
+          cp artifacts/optimizer-width4-profile/summary.json "$target/summary.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git commit -m "data(benchmark): record 40k width4 profiling"
+          git push origin HEAD:feature/optimizer-next
