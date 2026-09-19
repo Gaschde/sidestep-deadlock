@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  completeNodeBySaving,
   dedupeFuturePathHistory,
   pathEndLazyNonDominatedLayers,
   pathEndNonDominatedLayers,
@@ -179,4 +180,61 @@ test("lazy retention stops before unused later Pareto layers", () => {
   assert.equal(result.metadata.layeringComplete, false);
   assert.equal(result.metadata.layeredCandidates, 2);
   assert.equal(result.metadata.unlayeredCandidates, 4);
+});
+
+
+test("save-to-horizon completion follows only legal save successors and preserves inventory", () => {
+  const makePartial = (serial, earnedSouls = 0, cash = 0, inventory = ["held"]) => ({
+    state: { earnedSouls, cash, inventory: [...inventory] },
+    parent: null,
+    event: null,
+    serial
+  });
+  const transitions = (current) => {
+    const nextSouls = Math.min(4000, current.state.earnedSouls + 2000);
+    const delta = nextSouls - current.state.earnedSouls;
+    return [
+      {
+        state: {
+          ...current.state,
+          inventory: [...current.state.inventory, "illegal-choice-for-completion"]
+        },
+        parent: current,
+        event: { type: "purchase", item: "illegal-choice-for-completion" },
+        serial: current.serial + "|purchase"
+      },
+      {
+        state: {
+          ...current.state,
+          earnedSouls: nextSouls,
+          cash: current.state.cash + delta,
+          inventory: [...current.state.inventory]
+        },
+        parent: current,
+        event: { type: "save", earnedSouls: nextSouls },
+        serial: current.serial + "|save:" + nextSouls
+      }
+    ];
+  };
+
+  const first = completeNodeBySaving(makePartial("a"), 4000, transitions);
+  const second = completeNodeBySaving(makePartial("b", 2000, 500, ["other"]), 4000, transitions);
+
+  assert.equal(first.state.earnedSouls, 4000);
+  assert.equal(first.state.cash, 4000);
+  assert.deepEqual(first.state.inventory, ["held"]);
+  assert.equal(second.state.earnedSouls, 4000);
+  assert.equal(second.state.cash, 2500);
+  assert.deepEqual(second.state.inventory, ["other"]);
+
+  const types = (terminal) => {
+    const result = [];
+    for (let current = terminal; current?.parent; current = current.parent) result.push(current.event.type);
+    return result.reverse();
+  };
+  assert.deepEqual(types(first), ["save", "save"]);
+  assert.deepEqual(types(second), ["save"]);
+
+  const repeat = completeNodeBySaving(makePartial("a"), 4000, transitions);
+  assert.equal(repeat.serial, first.serial);
 });
