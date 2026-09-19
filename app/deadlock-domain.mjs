@@ -78,7 +78,12 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
     const successors = [];
     const nextSoul = axis ? axis.find((souls) => souls > state.earnedSouls)
       : state.earnedSouls < budget ? state.earnedSouls + 1 : undefined;
-    if (nextSoul !== undefined) successors.push(withEvent(state, { type: "save", earnedSouls: nextSoul }, nextSoul, state.cash + nextSoul - state.earnedSouls, state.inventory));
+    const saveStarted = telemetry?.enabled ? performance.now() : 0;
+    if (nextSoul !== undefined) {
+      successors.push(withEvent(state, { type: "save", earnedSouls: nextSoul }, nextSoul, state.cash + nextSoul - state.earnedSouls, state.inventory));
+      telemetry?.count?.("saveTransitions");
+    }
+    if (telemetry?.enabled) telemetry.add("saveGenerationMs", performance.now() - saveStarted);
     const purchaseStarted = telemetry?.enabled ? performance.now() : 0;
     for (const item of items) {
       telemetry?.count?.("purchaseChecks");
