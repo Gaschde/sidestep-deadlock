@@ -329,6 +329,32 @@ test("Globale Ability-Cooldown-Reduktion und Wardens Last Stand folgen den beleg
   assert.deepEqual(compactHybrid.metrics, fullHybrid.metrics);
 });
 
+test("Weapon-Damage-Fähigkeiten laufen durch Bullet Resist statt Spirit Resist", () => {
+  const data = canonicalWardenData();
+  const venator = evaluateSpiritMechanics({ inventory: [] }, { heroId: "venator" }, data);
+  const gutshot = venator.abilities.find((ability) => ability.abilityId === "venator_gutshot");
+  assert.ok(gutshot?.included);
+  assert.ok(gutshot.bulletDamageAt(4) > 0);
+  assert.equal(gutshot.spiritDamageAt(4), 0);
+
+  const isolated = {
+    ...data,
+    abilities: data.abilities.filter((ability) => ability.ability_id === "venator_gutshot"),
+    abilityMechanics: data.abilityMechanics.filter((effect) => effect.ability_id === "venator_gutshot")
+  };
+  const request = { heroId: "venator", damageFocus: "weapon", budget: 40000 };
+  const neutral = evaluateCarryPerformance({ inventory: [] }, request, isolated);
+  const bulletArmored = evaluateCarryPerformance({ inventory: [] }, { ...request, opponentBulletResist: 50 }, isolated);
+  const spiritArmored = evaluateCarryPerformance({ inventory: [] }, { ...request, opponentSpiritResist: 50 }, isolated);
+  const scenario = (result) => result.scenarios.scenarios.find((entry) => entry.id === "skirmish");
+  const neutralSkirmish = scenario(neutral);
+  const bulletSkirmish = scenario(bulletArmored);
+  const spiritSkirmish = scenario(spiritArmored);
+  assert.ok(neutralSkirmish.direct_ability_damage > 0);
+  assert.ok(Math.abs(bulletSkirmish.direct_ability_damage - neutralSkirmish.direct_ability_damage * 0.5) < 1e-9);
+  assert.equal(spiritSkirmish.direct_ability_damage, neutralSkirmish.direct_ability_damage);
+});
+
 test("Infernus Afterburn benötigt Weapon-Hits, tickt nach Build-up und bleibt in Suchmetriken gleich", () => {
   const data = canonicalWardenData();
   const request = { heroId: "infernus", damageFocus: "weapon", budget: 60000 };
