@@ -427,6 +427,57 @@ export function runControlledMultiobjectiveBeamCarry({
   let beam = [root];
   let steps = 0;
   let duplicateStates = 0;
+  let earlySaveCompletionMaterialized = false;
+  let saveCompletionGeneratedStates = 0;
+  let saveCompletionAttemptedNodes = 0;
+  let saveCompletionCompletedNodes = 0;
+  let saveCompletionDeadlineReached = false;
+  const saveCompletionSourceSouls = [];
+  const saveCompletionPhases = [];
+  const materializeRetainedBySaving = (nodes, source) => {
+    let attemptedNodes = 0;
+    let completedNodes = 0;
+    let generated = 0;
+    let deadlineHit = false;
+    const sourceSouls = [];
+    for (const node of nodes) {
+      if (node.state.earnedSouls === budget) {
+        observeTerminal(node, "retained-terminal");
+        continue;
+      }
+      if (performance.now() >= finalDeadline) {
+        deadlineHit = true;
+        break;
+      }
+      attemptedNodes += 1;
+      sourceSouls.push(node.state.earnedSouls);
+      const before = generatedStates;
+      const completed = profiler.time("terminalCompletionMs", () =>
+        completeNodeBySaving(node, budget, transitions, finalDeadline));
+      const generatedForNode = generatedStates - before;
+      generated += generatedForNode;
+      saveCompletionGeneratedStates += generatedForNode;
+      saveCompletionAttemptedNodes += 1;
+      saveCompletionSourceSouls.push(node.state.earnedSouls);
+      if (!completed) {
+        deadlineHit = true;
+        saveCompletionDeadlineReached = true;
+        break;
+      }
+      observeTerminal(completed, source);
+      completedNodes += 1;
+      saveCompletionCompletedNodes += 1;
+    }
+    saveCompletionDeadlineReached ||= deadlineHit;
+    saveCompletionPhases.push({
+      source,
+      attemptedNodes,
+      completedNodes,
+      sourceSouls,
+      generatedStates: generated,
+      deadlineReached: deadlineHit
+    });
+  };
   let maxCandidatePool = 0;
   let maxFirstFrontSize = 0;
   let frontierOverflowSteps = 0;
@@ -499,6 +550,10 @@ export function runControlledMultiobjectiveBeamCarry({
     }
     beam = selection.selected;
     steps += 1;
+    if (!earlySaveCompletionMaterialized && beam.length) {
+      materializeRetainedBySaving(beam, "retained-save-completion-early");
+      earlySaveCompletionMaterialized = true;
+    }
   }
 
   if (profiler.enabled) profiler.add("beamSearchMs", performance.now() - beamSearchStartedAt);
@@ -508,34 +563,8 @@ export function runControlledMultiobjectiveBeamCarry({
     throw new Error(`Controlled multiobjective search exceeded maxSteps=${maxSteps}.`);
   }
 
-  let saveCompletionGeneratedStates = 0;
-  let saveCompletionAttemptedNodes = 0;
-  let saveCompletionCompletedNodes = 0;
-  let saveCompletionDeadlineReached = false;
-  const saveCompletionSourceSouls = [];
   if (!searchComplete && beam.length) {
-    for (const node of beam) {
-      if (node.state.earnedSouls === budget) {
-        observeTerminal(node, "retained-terminal");
-        continue;
-      }
-      if (performance.now() >= finalDeadline) {
-        saveCompletionDeadlineReached = true;
-        break;
-      }
-      saveCompletionAttemptedNodes += 1;
-      saveCompletionSourceSouls.push(node.state.earnedSouls);
-      const before = generatedStates;
-      const completed = profiler.time("terminalCompletionMs", () =>
-        completeNodeBySaving(node, budget, transitions, finalDeadline));
-      saveCompletionGeneratedStates += generatedStates - before;
-      if (!completed) {
-        saveCompletionDeadlineReached = true;
-        break;
-      }
-      observeTerminal(completed, "retained-save-completion");
-      saveCompletionCompletedNodes += 1;
-    }
+    materializeRetainedBySaving(beam, "retained-save-completion-final");
   }
 
   const terminalEntries = () => [...terminalNodes.values()].map((node) => {
@@ -640,12 +669,14 @@ export function runControlledMultiobjectiveBeamCarry({
       terminalCompletion: {
         mode: "retained_partial_nodes_legal_save_to_horizon",
         separatePass: true,
-        source: "all retained partial nodes at natural-search stop",
+        source: "all retained partial nodes; early Production-parity fallback plus final retained refresh",
         attemptedNodes: saveCompletionAttemptedNodes,
         completedNodes: saveCompletionCompletedNodes,
         sourceSouls: saveCompletionSourceSouls,
         generatedStates: saveCompletionGeneratedStates,
         deadlineReached: saveCompletionDeadlineReached,
+        earlyFallbackMaterialized: earlySaveCompletionMaterialized,
+        phases: saveCompletionPhases,
         naturalSearchMaxReachedSouls: maxReachedSouls
       },
       searchComplete,
