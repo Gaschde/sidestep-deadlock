@@ -1,8 +1,8 @@
 {
   "schemaVersion": "optimizer-40k-multiobjective-shadow-v1",
   "experiment": "60s-product-budget-plus-40k-multiobjective-shadow",
-  "sourceCommit": "1e26829ea914bc21a7233cbd5ee06854ebb73fb6",
-  "generatedAt": "2026-09-19T21:10:46.120Z",
+  "sourceCommit": "ce30bc2c0b74c406af578fd529054c13db7e2f55",
+  "generatedAt": "2026-09-19T21:31:29.242Z",
   "productTimeBudgetMs": 60000,
   "productionSelectionChanged": false,
   "productionUiChanged": false,
@@ -40,7 +40,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-weapon",
       "production": {
-        "runtimeMs": 58761.467861,
+        "runtimeMs": 59021.58560200001,
         "path": {
           "id": "e3003a8463010e95",
           "source": "production",
@@ -508,11 +508,11 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 58743.035098,
-          "evaluations": 65408,
-          "generatedStates": 187778,
-          "duplicateStates": 5909,
-          "maxCandidatePool": 2872,
+          "runtimeMs": 59003.40816,
+          "evaluations": 63653,
+          "generatedStates": 178281,
+          "duplicateStates": 5196,
+          "maxCandidatePool": 2583,
           "widthsStarted": [
             4,
             8
@@ -547,7 +547,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 58930.55397,
+        "runtimeMs": 58567.088279999996,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -557,10 +557,10 @@
         "partialWidth": 4,
         "front": [
           {
-            "id": "065241c520b83eb5",
+            "id": "547ad5faf30cbcc2",
             "source": "multiobjective-shadow",
-            "pathScore": 0.46546264208976845,
-            "endScore": 0.48957545878916486,
+            "pathScore": 0.46521382701659897,
+            "endScore": 0.4864864813801558,
             "inventory": [
               "upgrade_chonky",
               "upgrade_titan_round",
@@ -570,24 +570,24 @@
               "upgrade_regenerating_bullet_shield",
               "upgrade_suppressor",
               "upgrade_fleetfoot_boots",
-              "upgrade_magic_vulnerability",
+              "upgrade_soaring_spirit",
               "upgrade_bullet_resist_shredder",
               "upgrade_improved_bullet_armor",
               "upgrade_reinforcing_casings"
             ],
-            "transactions": 37,
+            "transactions": 36,
             "legal": true,
             "pathObservables": {
               "counts": {
                 "purchase": 12,
                 "upgrade": 9,
-                "replacement": 16,
+                "replacement": 15,
                 "sell": 0
               },
-              "transactionCount": 37,
+              "transactionCount": 36,
               "firstTransactionSouls": 800,
-              "lastTransactionSouls": 36800,
-              "longestNoShopSoulSpan": 3200,
+              "lastTransactionSouls": 36000,
+              "longestNoShopSoulSpan": 4000,
               "sameSoulTransactionGroups": [],
               "reacquiredItems": [
                 {
@@ -908,46 +908,66 @@
                   "item": "upgrade_blitz_bullets",
                   "from": "upgrade_pristine_emblem",
                   "payment": 800
-                },
-                {
-                  "type": "replacement",
-                  "earnedSouls": 36800,
-                  "item": "upgrade_magic_vulnerability",
-                  "from": "upgrade_soaring_spirit",
-                  "payment": 800
                 }
               ]
             }
           }
         ],
-        "frontHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
+        "frontHash": "7e0d03604eadb2eabb9dc1a1107679fb08e5187eaab2f90beff4cfd9d665b0ce",
         "frontCount": 1,
         "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 137344,
-        "totalGeneratedStates": 161248,
-        "evaluations": 23980,
+        "searchGeneratedStates": 134784,
+        "totalGeneratedStates": 178571,
+        "evaluations": 23558,
         "duplicateStates": 373,
         "maxFirstFrontSize": 3,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 4,
-        "maxNaturalReachedSouls": 37200,
-        "saveCompletionGeneratedStates": 23904,
+        "terminalCandidates": 5,
+        "maxNaturalReachedSouls": 36800,
+        "saveCompletionGeneratedStates": 43787,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
+            400,
             36800,
             36800,
             36800,
             36800
           ],
-          "generatedStates": 23904,
+          "generatedStates": 43787,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 37200
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                36800,
+                36800,
+                36800,
+                36800
+              ],
+              "generatedStates": 29664,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 36800
         },
         "terminalAudit": {
           "depth": 1,
@@ -958,33 +978,60 @@
           {
             "width": 4,
             "frontCount": 1,
-            "frontHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
+            "frontHash": "7e0d03604eadb2eabb9dc1a1107679fb08e5187eaab2f90beff4cfd9d665b0ce",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 58927.689033999995,
-            "evaluations": 23980,
-            "searchGeneratedStates": 137344,
-            "totalGeneratedStates": 161248,
+            "runtimeMs": 58564.330669,
+            "evaluations": 23558,
+            "searchGeneratedStates": 134784,
+            "totalGeneratedStates": 178571,
             "maxFirstFrontSize": 3,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 4,
-            "maxNaturalReachedSouls": 37200,
-            "saveCompletionGeneratedStates": 23904,
+            "terminalCandidates": 5,
+            "maxNaturalReachedSouls": 36800,
+            "saveCompletionGeneratedStates": 43787,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
-              "attemptedNodes": 4,
-              "completedNodes": 4,
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+              "attemptedNodes": 5,
+              "completedNodes": 5,
               "sourceSouls": [
+                400,
                 36800,
                 36800,
                 36800,
                 36800
               ],
-              "generatedStates": 23904,
+              "generatedStates": 43787,
               "deadlineReached": false,
-              "naturalSearchMaxReachedSouls": 37200
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14123,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 4,
+                  "completedNodes": 4,
+                  "sourceSouls": [
+                    36800,
+                    36800,
+                    36800,
+                    36800
+                  ],
+                  "generatedStates": 29664,
+                  "deadlineReached": false
+                }
+              ],
+              "naturalSearchMaxReachedSouls": 36800
             },
             "terminalAudit": {
               "depth": 1,
@@ -1002,8 +1049,8 @@
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
-            "secondHash": "1e660db2c8cd79e474a834de838d09b1d9bde8063f03734425e58eb7033d2ef6",
+            "firstHash": "7e0d03604eadb2eabb9dc1a1107679fb08e5187eaab2f90beff4cfd9d665b0ce",
+            "secondHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
             "firstComplete": false,
             "secondComplete": false,
             "identical": false
@@ -1011,7 +1058,7 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 58565.692933,
+        "runtimeMs": 59290.29277300001,
         "deadlineReached": true,
         "widthsStarted": [
           4
@@ -1019,28 +1066,55 @@
         "widthsCompleted": [],
         "partialWidth": 4,
         "frontCount": 1,
-        "frontHash": "1e660db2c8cd79e474a834de838d09b1d9bde8063f03734425e58eb7033d2ef6",
+        "frontHash": "14963940c1dcbe0c03c35b4a0ebd1c2ffa0ddc76c18ad83bc5e4a3bd22f656c5",
         "legal": true,
-        "searchGeneratedStates": 142980,
-        "totalGeneratedStates": 157476,
-        "evaluations": 25135,
-        "maxNaturalReachedSouls": 38000,
-        "saveCompletionGeneratedStates": 14496,
+        "searchGeneratedStates": 137344,
+        "totalGeneratedStates": 175371,
+        "evaluations": 23980,
+        "maxNaturalReachedSouls": 37200,
+        "saveCompletionGeneratedStates": 38027,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
-            37600,
-            37600,
-            37600,
-            37600
+            400,
+            36800,
+            36800,
+            36800,
+            36800
           ],
-          "generatedStates": 14496,
+          "generatedStates": 38027,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 38000
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                36800,
+                36800,
+                36800,
+                36800
+              ],
+              "generatedStates": 23904,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 37200
         },
         "maxFirstFrontSize": 3,
         "frontierOverflowSteps": 0,
@@ -1503,21 +1577,21 @@
         },
         "shadowFrontCount": 1,
         "shadowDominatesProduction": [
-          "065241c520b83eb5"
+          "547ad5faf30cbcc2"
         ],
         "betterPathNoEndLoss": [
-          "065241c520b83eb5"
+          "547ad5faf30cbcc2"
         ],
         "betterEndNoPathLoss": [
-          "065241c520b83eb5"
+          "547ad5faf30cbcc2"
         ],
         "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "shadow:065241c520b83eb5",
+            "id": "shadow:547ad5faf30cbcc2",
             "source": "multiobjective-shadow",
-            "pathScore": 0.46546264208976845,
-            "endScore": 0.48957545878916486
+            "pathScore": 0.46521382701659897,
+            "endScore": 0.4864864813801558
           }
         ]
       }
@@ -1530,7 +1604,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-spirit",
       "production": {
-        "runtimeMs": 58629.542361,
+        "runtimeMs": 58487.911808000004,
         "path": {
           "id": "925987795838eef6",
           "source": "production",
@@ -1984,10 +2058,10 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 58628.097844,
-          "evaluations": 64289,
-          "generatedStates": 174559,
-          "duplicateStates": 5374,
+          "runtimeMs": 58486.194740000006,
+          "evaluations": 62057,
+          "generatedStates": 168061,
+          "duplicateStates": 5093,
           "maxCandidatePool": 2543,
           "widthsStarted": [
             4,
@@ -2023,7 +2097,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 59249.153533000004,
+        "runtimeMs": 59580.91038700001,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -2695,30 +2769,57 @@
         "frontCount": 2,
         "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 137092,
-        "totalGeneratedStates": 143037,
-        "evaluations": 35693,
-        "duplicateStates": 2862,
+        "searchGeneratedStates": 131222,
+        "totalGeneratedStates": 157235,
+        "evaluations": 33465,
+        "duplicateStates": 2707,
         "maxFirstFrontSize": 6,
         "frontierOverflowSteps": 4,
-        "terminalCandidates": 4,
-        "maxNaturalReachedSouls": 39200,
-        "saveCompletionGeneratedStates": 5945,
+        "terminalCandidates": 5,
+        "maxNaturalReachedSouls": 38400,
+        "saveCompletionGeneratedStates": 26013,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
-            39200,
-            39200,
-            38800,
-            38800
+            400,
+            38000,
+            38000,
+            38000,
+            38000
           ],
-          "generatedStates": 5945,
+          "generatedStates": 26013,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 39200
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                38000,
+                38000,
+                38000,
+                38000
+              ],
+              "generatedStates": 11890,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 38400
         },
         "terminalAudit": {
           "depth": 1,
@@ -2732,30 +2833,57 @@
             "frontHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 59246.751783000014,
-            "evaluations": 35693,
-            "searchGeneratedStates": 137092,
-            "totalGeneratedStates": 143037,
+            "runtimeMs": 59578.39909599998,
+            "evaluations": 33465,
+            "searchGeneratedStates": 131222,
+            "totalGeneratedStates": 157235,
             "maxFirstFrontSize": 6,
             "frontierOverflowSteps": 4,
-            "terminalCandidates": 4,
-            "maxNaturalReachedSouls": 39200,
-            "saveCompletionGeneratedStates": 5945,
+            "terminalCandidates": 5,
+            "maxNaturalReachedSouls": 38400,
+            "saveCompletionGeneratedStates": 26013,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
-              "attemptedNodes": 4,
-              "completedNodes": 4,
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+              "attemptedNodes": 5,
+              "completedNodes": 5,
               "sourceSouls": [
-                39200,
-                39200,
-                38800,
-                38800
+                400,
+                38000,
+                38000,
+                38000,
+                38000
               ],
-              "generatedStates": 5945,
+              "generatedStates": 26013,
               "deadlineReached": false,
-              "naturalSearchMaxReachedSouls": 39200
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14123,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 4,
+                  "completedNodes": 4,
+                  "sourceSouls": [
+                    38000,
+                    38000,
+                    38000,
+                    38000
+                  ],
+                  "generatedStates": 11890,
+                  "deadlineReached": false
+                }
+              ],
+              "naturalSearchMaxReachedSouls": 38400
             },
             "terminalAudit": {
               "depth": 1,
@@ -2768,50 +2896,77 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": true,
-        "identicalCommonWidthFrontHashes": true,
+        "identicalFinalFrontHash": false,
+        "identicalCommonWidthFrontHashes": false,
         "perWidth": [
           {
             "width": 4,
             "firstHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
-            "secondHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
+            "secondHash": "b72b98cd03f9ec0c0058a67afaf501b495a4e0a750b6896b6150891e27d53b7a",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": true
+            "identical": false
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 58989.206397,
+        "runtimeMs": 59016.657479999994,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 2,
-        "frontHash": "57672ae42285e5c24b2e7a40039e74aa66f62677001d55ff603d9d6572b25a27",
+        "frontCount": 1,
+        "frontHash": "b72b98cd03f9ec0c0058a67afaf501b495a4e0a750b6896b6150891e27d53b7a",
         "legal": true,
-        "searchGeneratedStates": 137092,
-        "totalGeneratedStates": 143037,
-        "evaluations": 35693,
-        "maxNaturalReachedSouls": 39200,
-        "saveCompletionGeneratedStates": 5945,
+        "searchGeneratedStates": 128438,
+        "totalGeneratedStates": 164289,
+        "evaluations": 33137,
+        "maxNaturalReachedSouls": 38000,
+        "saveCompletionGeneratedStates": 35851,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
-            39200,
-            39200,
-            38800,
-            38800
+            400,
+            37200,
+            38000,
+            37600,
+            37600
           ],
-          "generatedStates": 5945,
+          "generatedStates": 35851,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 39200
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                37200,
+                38000,
+                37600,
+                37600
+              ],
+              "generatedStates": 21728,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 38000
         },
         "maxFirstFrontSize": 6,
         "frontierOverflowSteps": 4,
@@ -3296,7 +3451,7 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-warden-carry-hybrid",
       "production": {
-        "runtimeMs": 58160.94663800002,
+        "runtimeMs": 58054.463489999995,
         "path": {
           "id": "4642b65d4b34eed0",
           "source": "production",
@@ -3945,10 +4100,10 @@
           }
         },
         "telemetry": {
-          "runtimeMs": 58158.58180799999,
-          "evaluations": 60370,
-          "generatedStates": 208089,
-          "duplicateStates": 8208,
+          "runtimeMs": 58052.936427999986,
+          "evaluations": 56521,
+          "generatedStates": 196464,
+          "duplicateStates": 7736,
           "maxCandidatePool": 4061,
           "widthsStarted": [
             4,
@@ -3984,7 +4139,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 58361.22871300002,
+        "runtimeMs": 58502.095681000035,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -4327,30 +4482,57 @@
         "frontCount": 1,
         "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 138726,
-        "totalGeneratedStates": 159664,
-        "evaluations": 31670,
+        "searchGeneratedStates": 131218,
+        "totalGeneratedStates": 174685,
+        "evaluations": 31275,
         "duplicateStates": 1163,
         "maxFirstFrontSize": 7,
         "frontierOverflowSteps": 5,
-        "terminalCandidates": 4,
-        "maxNaturalReachedSouls": 38000,
-        "saveCompletionGeneratedStates": 20938,
+        "terminalCandidates": 5,
+        "maxNaturalReachedSouls": 37200,
+        "saveCompletionGeneratedStates": 43467,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
-            38000,
-            38000,
-            37600,
-            38000
+            400,
+            36800,
+            36800,
+            36800,
+            36800
           ],
-          "generatedStates": 20938,
+          "generatedStates": 43467,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 38000
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                36800,
+                36800,
+                36800,
+                36800
+              ],
+              "generatedStates": 29344,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 37200
         },
         "terminalAudit": {
           "depth": 1,
@@ -4364,30 +4546,57 @@
             "frontHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 58358.57377899997,
-            "evaluations": 31670,
-            "searchGeneratedStates": 138726,
-            "totalGeneratedStates": 159664,
+            "runtimeMs": 58499.87659599999,
+            "evaluations": 31275,
+            "searchGeneratedStates": 131218,
+            "totalGeneratedStates": 174685,
             "maxFirstFrontSize": 7,
             "frontierOverflowSteps": 5,
-            "terminalCandidates": 4,
-            "maxNaturalReachedSouls": 38000,
-            "saveCompletionGeneratedStates": 20938,
+            "terminalCandidates": 5,
+            "maxNaturalReachedSouls": 37200,
+            "saveCompletionGeneratedStates": 43467,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
-              "attemptedNodes": 4,
-              "completedNodes": 4,
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+              "attemptedNodes": 5,
+              "completedNodes": 5,
               "sourceSouls": [
-                38000,
-                38000,
-                37600,
-                38000
+                400,
+                36800,
+                36800,
+                36800,
+                36800
               ],
-              "generatedStates": 20938,
+              "generatedStates": 43467,
               "deadlineReached": false,
-              "naturalSearchMaxReachedSouls": 38000
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14123,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 4,
+                  "completedNodes": 4,
+                  "sourceSouls": [
+                    36800,
+                    36800,
+                    36800,
+                    36800
+                  ],
+                  "generatedStates": 29344,
+                  "deadlineReached": false
+                }
+              ],
+              "naturalSearchMaxReachedSouls": 37200
             },
             "terminalAudit": {
               "depth": 1,
@@ -4414,7 +4623,7 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 58480.00080199994,
+        "runtimeMs": 59333.93937199999,
         "deadlineReached": true,
         "widthsStarted": [
           4
@@ -4424,26 +4633,53 @@
         "frontCount": 1,
         "frontHash": "805262674482650a992188288f5afb64d8d181b18849f8902b1ba7e1d51952bf",
         "legal": true,
-        "searchGeneratedStates": 138726,
-        "totalGeneratedStates": 159664,
-        "evaluations": 31670,
-        "maxNaturalReachedSouls": 38000,
-        "saveCompletionGeneratedStates": 20938,
+        "searchGeneratedStates": 133738,
+        "totalGeneratedStates": 173787,
+        "evaluations": 31506,
+        "maxNaturalReachedSouls": 37200,
+        "saveCompletionGeneratedStates": 40049,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
           "sourceSouls": [
-            38000,
-            38000,
-            37600,
-            38000
+            400,
+            37200,
+            37200,
+            37200,
+            36800
           ],
-          "generatedStates": 20938,
+          "generatedStates": 40049,
           "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 38000
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14123,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                37200,
+                37200,
+                37200,
+                36800
+              ],
+              "generatedStates": 25926,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 37200
         },
         "maxFirstFrontSize": 7,
         "frontierOverflowSteps": 5,
@@ -5114,15 +5350,15 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-weapon",
       "production": {
-        "runtimeMs": 60021.00105800002,
+        "runtimeMs": 60023.43658999994,
         "path": {
-          "id": "506265ab2018e23b",
+          "id": "13e7c93c4dc420e2",
           "source": "production",
           "pathScore": 0.3442884462943994,
-          "endScore": 0.4594364862806488,
+          "endScore": 0.4603206647889044,
           "inventory": [
             "upgrade_damage_recycler",
-            "upgrade_boundless_spirit"
+            "upgrade_chonky"
           ],
           "transactions": 2,
           "legal": true,
@@ -5147,7 +5383,7 @@
                 ],
                 "items": [
                   "upgrade_damage_recycler",
-                  "upgrade_boundless_spirit"
+                  "upgrade_chonky"
                 ]
               }
             ],
@@ -5166,18 +5402,18 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_boundless_spirit",
+                "item": "upgrade_chonky",
                 "from": null,
-                "payment": 6400
+                "payment": 3200
               }
             ]
           }
         },
         "telemetry": {
-          "runtimeMs": 60018.27552300005,
-          "evaluations": 4478,
-          "generatedStates": 8814,
-          "duplicateStates": 475,
+          "runtimeMs": 60021.206162999966,
+          "evaluations": 4368,
+          "generatedStates": 8435,
+          "duplicateStates": 468,
           "maxCandidatePool": 644,
           "widthsStarted": [
             4
@@ -5190,7 +5426,7 @@
             "complete": false,
             "rounds": 2,
             "legalActions": 464,
-            "checkedActions": 197,
+            "checkedActions": 238,
             "improvements": 2,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3342447313162031
@@ -5211,7 +5447,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 59594.85013499996,
+        "runtimeMs": 60129.98542599997,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -5384,28 +5620,55 @@
         "legal": true,
         "scalarizationUsed": false,
         "searchGeneratedStates": 14084,
-        "totalGeneratedStates": 343252,
+        "totalGeneratedStates": 320715,
         "evaluations": 4046,
         "duplicateStates": 114,
         "maxFirstFrontSize": 2,
         "frontierOverflowSteps": 0,
         "terminalCandidates": 4,
         "maxNaturalReachedSouls": 12000,
-        "saveCompletionGeneratedStates": 329168,
+        "saveCompletionGeneratedStates": 306631,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
           "completedNodes": 4,
           "sourceSouls": [
+            400,
             12000,
             12000,
             12000,
             12000
           ],
-          "generatedStates": 329168,
-          "deadlineReached": false,
+          "generatedStates": 306631,
+          "deadlineReached": true,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 3,
+              "sourceSouls": [
+                12000,
+                12000,
+                12000,
+                12000
+              ],
+              "generatedStates": 292222,
+              "deadlineReached": true
+            }
+          ],
           "naturalSearchMaxReachedSouls": 12000
         },
         "terminalAudit": {
@@ -5420,29 +5683,56 @@
             "frontHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 59594.254559999914,
+            "runtimeMs": 60129.35968300002,
             "evaluations": 4046,
             "searchGeneratedStates": 14084,
-            "totalGeneratedStates": 343252,
+            "totalGeneratedStates": 320715,
             "maxFirstFrontSize": 2,
             "frontierOverflowSteps": 0,
             "terminalCandidates": 4,
             "maxNaturalReachedSouls": 12000,
-            "saveCompletionGeneratedStates": 329168,
+            "saveCompletionGeneratedStates": 306631,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
-              "attemptedNodes": 4,
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+              "attemptedNodes": 5,
               "completedNodes": 4,
               "sourceSouls": [
+                400,
                 12000,
                 12000,
                 12000,
                 12000
               ],
-              "generatedStates": 329168,
-              "deadlineReached": false,
+              "generatedStates": 306631,
+              "deadlineReached": true,
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14409,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 4,
+                  "completedNodes": 3,
+                  "sourceSouls": [
+                    12000,
+                    12000,
+                    12000,
+                    12000
+                  ],
+                  "generatedStates": 292222,
+                  "deadlineReached": true
+                }
+              ],
               "naturalSearchMaxReachedSouls": 12000
             },
             "terminalAudit": {
@@ -5456,45 +5746,77 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": false,
-        "identicalCommonWidthFrontHashes": false,
+        "identicalFinalFrontHash": true,
+        "identicalCommonWidthFrontHashes": true,
         "perWidth": [
           {
             "width": 4,
             "firstHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "secondHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": false
+            "identical": true
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 62022.528109000064,
+        "runtimeMs": 60070.49486600002,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 15320,
-        "totalGeneratedStates": 15320,
-        "evaluations": 4342,
-        "maxNaturalReachedSouls": 12400,
-        "saveCompletionGeneratedStates": 0,
+        "frontCount": 1,
+        "frontHash": "df8fa490aa9173a67a15c86d92d280a70c566b90dcee0677e20367b0d8ceca96",
+        "legal": true,
+        "searchGeneratedStates": 14084,
+        "totalGeneratedStates": 357661,
+        "evaluations": 4046,
+        "maxNaturalReachedSouls": 12000,
+        "saveCompletionGeneratedStates": 343577,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 0,
-          "completedNodes": 0,
-          "sourceSouls": [],
-          "generatedStates": 0,
-          "deadlineReached": true,
-          "naturalSearchMaxReachedSouls": 12400
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
+          "sourceSouls": [
+            400,
+            12000,
+            12000,
+            12000,
+            12000
+          ],
+          "generatedStates": 343577,
+          "deadlineReached": false,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                12000,
+                12000,
+                12000,
+                12000
+              ],
+              "generatedStates": 329168,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 12000
         },
         "maxFirstFrontSize": 2,
         "frontierOverflowSteps": 0,
@@ -5506,9 +5828,9 @@
       },
       "comparison": {
         "production": {
-          "id": "506265ab2018e23b",
+          "id": "13e7c93c4dc420e2",
           "pathScore": 0.3442884462943994,
-          "endScore": 0.4594364862806488,
+          "endScore": 0.4603206647889044,
           "legal": true,
           "pathObservables": {
             "counts": {
@@ -5531,7 +5853,7 @@
                 ],
                 "items": [
                   "upgrade_damage_recycler",
-                  "upgrade_boundless_spirit"
+                  "upgrade_chonky"
                 ]
               }
             ],
@@ -5550,9 +5872,9 @@
               {
                 "type": "purchase",
                 "earnedSouls": 40000,
-                "item": "upgrade_boundless_spirit",
+                "item": "upgrade_chonky",
                 "from": null,
-                "payment": 6400
+                "payment": 3200
               }
             ]
           }
@@ -5586,43 +5908,29 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-spirit",
       "production": {
-        "runtimeMs": 60011.51057699998,
+        "runtimeMs": 60018.188738,
         "path": {
-          "id": "e188b059f0cef1c7",
+          "id": "f6cf1fb6dd85fd1b",
           "source": "production",
           "pathScore": 0.32664941617961146,
-          "endScore": 0.4256745327950462,
+          "endScore": 0.407172521087219,
           "inventory": [
-            "upgrade_boundless_spirit",
-            "upgrade_rupture"
+            "upgrade_boundless_spirit"
           ],
-          "transactions": 2,
+          "transactions": 1,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 2,
+              "purchase": 1,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 2,
+            "transactionCount": 1,
             "firstTransactionSouls": 40000,
             "lastTransactionSouls": 40000,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [
-              {
-                "earnedSouls": 40000,
-                "transactionCount": 2,
-                "types": [
-                  "purchase",
-                  "purchase"
-                ],
-                "items": [
-                  "upgrade_boundless_spirit",
-                  "upgrade_rupture"
-                ]
-              }
-            ],
+            "sameSoulTransactionGroups": [],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
@@ -5634,21 +5942,14 @@
                 "item": "upgrade_boundless_spirit",
                 "from": null,
                 "payment": 6400
-              },
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_rupture",
-                "from": null,
-                "payment": 3200
               }
             ]
           }
         },
         "telemetry": {
-          "runtimeMs": 60010.75781800004,
-          "evaluations": 4963,
-          "generatedStates": 9273,
+          "runtimeMs": 60017.212451,
+          "evaluations": 4761,
+          "generatedStates": 8761,
           "duplicateStates": 316,
           "maxCandidatePool": 649,
           "widthsStarted": [
@@ -5657,13 +5958,13 @@
           "widthsCompleted": [
             4
           ],
-          "publishedImprovements": 3,
+          "publishedImprovements": 2,
           "terminalAudit": {
             "complete": false,
-            "rounds": 2,
-            "legalActions": 464,
-            "checkedActions": 186,
-            "improvements": 2,
+            "rounds": 1,
+            "legalActions": 156,
+            "checkedActions": 150,
+            "improvements": 1,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3132618833630436
           },
@@ -5683,7 +5984,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 59473.73840899998,
+        "runtimeMs": 60144.480983000016,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -5693,10 +5994,10 @@
         "partialWidth": 4,
         "front": [
           {
-            "id": "9a24c11b43adb094",
+            "id": "1b98997625299908",
             "source": "multiobjective-shadow",
-            "pathScore": 0.5023950995782172,
-            "endScore": 0.5155672871838284,
+            "pathScore": 0.49680944209050987,
+            "endScore": 0.5072304849633718,
             "inventory": [
               "upgrade_health",
               "upgrade_soaring_spirit",
@@ -5706,28 +6007,23 @@
               "upgrade_mystic_regeneration",
               "upgrade_suppressor",
               "upgrade_magic_shield",
-              "upgrade_clip_size"
+              "upgrade_headshot_booster"
             ],
-            "transactions": 17,
+            "transactions": 16,
             "legal": true,
             "pathObservables": {
               "counts": {
                 "purchase": 9,
                 "upgrade": 4,
-                "replacement": 4,
+                "replacement": 3,
                 "sell": 0
               },
-              "transactionCount": 17,
+              "transactionCount": 16,
               "firstTransactionSouls": 800,
-              "lastTransactionSouls": 13200,
-              "longestNoShopSoulSpan": 26800,
+              "lastTransactionSouls": 12800,
+              "longestNoShopSoulSpan": 27200,
               "sameSoulTransactionGroups": [],
               "reacquiredItems": [
-                {
-                  "item": "upgrade_clip_size",
-                  "count": 1,
-                  "totalCost": 800
-                },
                 {
                   "item": "upgrade_endurance",
                   "count": 1,
@@ -5748,11 +6044,6 @@
                 }
               ],
               "upgradeBacktracks": [
-                {
-                  "item": "upgrade_clip_size",
-                  "count": 1,
-                  "totalCost": 800
-                },
                 {
                   "item": "upgrade_endurance",
                   "count": 1,
@@ -5871,46 +6162,64 @@
                   "item": "upgrade_regenerating_bullet_shield",
                   "from": "upgrade_titan_round",
                   "payment": 800
-                },
-                {
-                  "type": "replacement",
-                  "earnedSouls": 13200,
-                  "item": "upgrade_clip_size",
-                  "from": "upgrade_headshot_booster",
-                  "payment": 400
                 }
               ]
             }
           }
         ],
-        "frontHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
+        "frontHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
         "frontCount": 1,
         "legal": true,
         "scalarizationUsed": false,
-        "searchGeneratedStates": 18046,
-        "totalGeneratedStates": 356286,
-        "evaluations": 4531,
+        "searchGeneratedStates": 17074,
+        "totalGeneratedStates": 256822,
+        "evaluations": 4406,
         "duplicateStates": 159,
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 4,
-        "maxNaturalReachedSouls": 13600,
-        "saveCompletionGeneratedStates": 338240,
+        "terminalCandidates": 3,
+        "maxNaturalReachedSouls": 13200,
+        "saveCompletionGeneratedStates": 239748,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
           "attemptedNodes": 4,
-          "completedNodes": 4,
+          "completedNodes": 3,
           "sourceSouls": [
-            13200,
-            13200,
-            13200,
-            13200
+            400,
+            12800,
+            12800,
+            12800
           ],
-          "generatedStates": 338240,
-          "deadlineReached": false,
-          "naturalSearchMaxReachedSouls": 13600
+          "generatedStates": 239748,
+          "deadlineReached": true,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 3,
+              "completedNodes": 2,
+              "sourceSouls": [
+                12800,
+                12800,
+                12800
+              ],
+              "generatedStates": 225339,
+              "deadlineReached": true
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 13200
         },
         "terminalAudit": {
           "depth": 1,
@@ -5921,33 +6230,58 @@
           {
             "width": 4,
             "frontCount": 1,
-            "frontHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
+            "frontHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 59473.00037600007,
-            "evaluations": 4531,
-            "searchGeneratedStates": 18046,
-            "totalGeneratedStates": 356286,
+            "runtimeMs": 60143.849453,
+            "evaluations": 4406,
+            "searchGeneratedStates": 17074,
+            "totalGeneratedStates": 256822,
             "maxFirstFrontSize": 1,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 4,
-            "maxNaturalReachedSouls": 13600,
-            "saveCompletionGeneratedStates": 338240,
+            "terminalCandidates": 3,
+            "maxNaturalReachedSouls": 13200,
+            "saveCompletionGeneratedStates": 239748,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
               "attemptedNodes": 4,
-              "completedNodes": 4,
+              "completedNodes": 3,
               "sourceSouls": [
-                13200,
-                13200,
-                13200,
-                13200
+                400,
+                12800,
+                12800,
+                12800
               ],
-              "generatedStates": 338240,
-              "deadlineReached": false,
-              "naturalSearchMaxReachedSouls": 13600
+              "generatedStates": 239748,
+              "deadlineReached": true,
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14409,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 3,
+                  "completedNodes": 2,
+                  "sourceSouls": [
+                    12800,
+                    12800,
+                    12800
+                  ],
+                  "generatedStates": 225339,
+                  "deadlineReached": true
+                }
+              ],
+              "naturalSearchMaxReachedSouls": 13200
             },
             "terminalAudit": {
               "depth": 1,
@@ -5965,8 +6299,8 @@
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "d6858afad6218140ca5fe0bcce32854dc8778b53b987f38dfddc2e4338c41e60",
-            "secondHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
+            "firstHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
+            "secondHash": "468ac9366666d2540001da41b21cd119cfac9f4c021deab2a300f5769e7e65c4",
             "firstComplete": false,
             "secondComplete": false,
             "identical": false
@@ -5974,7 +6308,7 @@
         ]
       },
       "repeat2": {
-        "runtimeMs": 58786.00799900002,
+        "runtimeMs": 60012.29137699993,
         "deadlineReached": true,
         "widthsStarted": [
           4
@@ -5982,27 +6316,48 @@
         "widthsCompleted": [],
         "partialWidth": 4,
         "frontCount": 1,
-        "frontHash": "f65d0cd07141856e440afdaec8b84e1a55343c0b2016af841dd6caebf37c2607",
+        "frontHash": "468ac9366666d2540001da41b21cd119cfac9f4c021deab2a300f5769e7e65c4",
         "legal": true,
-        "searchGeneratedStates": 17390,
-        "totalGeneratedStates": 363062,
-        "evaluations": 4446,
+        "searchGeneratedStates": 17074,
+        "totalGeneratedStates": 61060,
+        "evaluations": 4406,
         "maxNaturalReachedSouls": 13200,
-        "saveCompletionGeneratedStates": 345672,
+        "saveCompletionGeneratedStates": 43986,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 4,
-          "completedNodes": 4,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 2,
+          "completedNodes": 1,
           "sourceSouls": [
-            13200,
-            13200,
-            13200,
-            13200
+            400,
+            12800
           ],
-          "generatedStates": 345672,
-          "deadlineReached": false,
+          "generatedStates": 43986,
+          "deadlineReached": true,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 1,
+              "completedNodes": 0,
+              "sourceSouls": [
+                12800
+              ],
+              "generatedStates": 29577,
+              "deadlineReached": true
+            }
+          ],
           "naturalSearchMaxReachedSouls": 13200
         },
         "maxFirstFrontSize": 1,
@@ -6015,35 +6370,22 @@
       },
       "comparison": {
         "production": {
-          "id": "e188b059f0cef1c7",
+          "id": "f6cf1fb6dd85fd1b",
           "pathScore": 0.32664941617961146,
-          "endScore": 0.4256745327950462,
+          "endScore": 0.407172521087219,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 2,
+              "purchase": 1,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 2,
+            "transactionCount": 1,
             "firstTransactionSouls": 40000,
             "lastTransactionSouls": 40000,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [
-              {
-                "earnedSouls": 40000,
-                "transactionCount": 2,
-                "types": [
-                  "purchase",
-                  "purchase"
-                ],
-                "items": [
-                  "upgrade_boundless_spirit",
-                  "upgrade_rupture"
-                ]
-              }
-            ],
+            "sameSoulTransactionGroups": [],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
@@ -6055,34 +6397,27 @@
                 "item": "upgrade_boundless_spirit",
                 "from": null,
                 "payment": 6400
-              },
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_rupture",
-                "from": null,
-                "payment": 3200
               }
             ]
           }
         },
         "shadowFrontCount": 1,
         "shadowDominatesProduction": [
-          "9a24c11b43adb094"
+          "1b98997625299908"
         ],
         "betterPathNoEndLoss": [
-          "9a24c11b43adb094"
+          "1b98997625299908"
         ],
         "betterEndNoPathLoss": [
-          "9a24c11b43adb094"
+          "1b98997625299908"
         ],
         "productionOnCombinedFront": false,
         "combinedFront": [
           {
-            "id": "shadow:9a24c11b43adb094",
+            "id": "shadow:1b98997625299908",
             "source": "multiobjective-shadow",
-            "pathScore": 0.5023950995782172,
-            "endScore": 0.5155672871838284
+            "pathScore": 0.49680944209050987,
+            "endScore": 0.5072304849633718
           }
         ]
       }
@@ -6095,68 +6430,37 @@
       "timeBudgetMs": 60000,
       "referenceVersion": "baseline-v0:production-40k-infernus-carry-hybrid",
       "production": {
-        "runtimeMs": 60018.99950799998,
+        "runtimeMs": 60638.218796,
         "path": {
-          "id": "506265ab2018e23b",
+          "id": "d56cec772c7287b1",
           "source": "production",
           "pathScore": 0.33546893123700633,
-          "endScore": 0.4728509350348199,
-          "inventory": [
-            "upgrade_damage_recycler",
-            "upgrade_boundless_spirit"
-          ],
-          "transactions": 2,
+          "endScore": 0.3237533073396234,
+          "inventory": [],
+          "transactions": 0,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 2,
+              "purchase": 0,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 2,
-            "firstTransactionSouls": 40000,
-            "lastTransactionSouls": 40000,
+            "transactionCount": 0,
+            "firstTransactionSouls": null,
+            "lastTransactionSouls": null,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [
-              {
-                "earnedSouls": 40000,
-                "transactionCount": 2,
-                "types": [
-                  "purchase",
-                  "purchase"
-                ],
-                "items": [
-                  "upgrade_damage_recycler",
-                  "upgrade_boundless_spirit"
-                ]
-              }
-            ],
+            "sameSoulTransactionGroups": [],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
             "upgradeBacktracks": [],
-            "timeline": [
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_damage_recycler",
-                "from": null,
-                "payment": 6400
-              },
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_boundless_spirit",
-                "from": null,
-                "payment": 6400
-              }
-            ]
+            "timeline": []
           }
         },
         "telemetry": {
-          "runtimeMs": 60018.19076300005,
-          "evaluations": 4831,
+          "runtimeMs": 60637.40671899996,
+          "evaluations": 4669,
           "generatedStates": 8142,
           "duplicateStates": 319,
           "maxCandidatePool": 624,
@@ -6166,13 +6470,13 @@
           "widthsCompleted": [
             4
           ],
-          "publishedImprovements": 3,
+          "publishedImprovements": 1,
           "terminalAudit": {
             "complete": false,
-            "rounds": 2,
-            "legalActions": 464,
-            "checkedActions": 220,
-            "improvements": 2,
+            "rounds": 0,
+            "legalActions": 0,
+            "checkedActions": 0,
+            "improvements": 0,
             "neighbourhood": "purchase|upgrade|replacement",
             "incumbentScore": 0.3237533073396234
           },
@@ -6192,7 +6496,7 @@
       },
       "shadow": {
         "repeat": 1,
-        "runtimeMs": 60572.764246999985,
+        "runtimeMs": 63185.855160000036,
         "timeBudgetMs": 60000,
         "deadlineReached": true,
         "widthsStarted": [
@@ -6200,29 +6504,80 @@
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "front": [],
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "frontCount": 0,
-        "legal": false,
+        "front": [
+          {
+            "id": "d56cec772c7287b1",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.33546893123700633,
+            "endScore": 0.3237533073396234,
+            "inventory": [],
+            "transactions": 0,
+            "legal": true,
+            "pathObservables": {
+              "counts": {
+                "purchase": 0,
+                "upgrade": 0,
+                "replacement": 0,
+                "sell": 0
+              },
+              "transactionCount": 0,
+              "firstTransactionSouls": null,
+              "lastTransactionSouls": null,
+              "longestNoShopSoulSpan": 40000,
+              "sameSoulTransactionGroups": [],
+              "reacquiredItems": [],
+              "sellRebuys": [],
+              "replacementRebuys": [],
+              "upgradeBacktracks": [],
+              "timeline": []
+            }
+          }
+        ],
+        "frontHash": "0f505ab6c0a6cd22164a28600730b2aed803a3274418559c253fa3546de6e4eb",
+        "frontCount": 1,
+        "legal": true,
         "scalarizationUsed": false,
         "searchGeneratedStates": 21929,
-        "totalGeneratedStates": 21929,
+        "totalGeneratedStates": 36338,
         "evaluations": 4267,
         "duplicateStates": 33,
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
-        "terminalCandidates": 0,
+        "terminalCandidates": 1,
         "maxNaturalReachedSouls": 14000,
-        "saveCompletionGeneratedStates": 0,
+        "saveCompletionGeneratedStates": 14409,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 0,
-          "completedNodes": 0,
-          "sourceSouls": [],
-          "generatedStates": 0,
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 1,
+          "completedNodes": 1,
+          "sourceSouls": [
+            400
+          ],
+          "generatedStates": 14409,
           "deadlineReached": true,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 0,
+              "completedNodes": 0,
+              "sourceSouls": [],
+              "generatedStates": 0,
+              "deadlineReached": true
+            }
+          ],
           "naturalSearchMaxReachedSouls": 14000
         },
         "terminalAudit": {
@@ -6233,28 +6588,51 @@
         "runs": [
           {
             "width": 4,
-            "frontCount": 0,
-            "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "frontCount": 1,
+            "frontHash": "0f505ab6c0a6cd22164a28600730b2aed803a3274418559c253fa3546de6e4eb",
             "searchComplete": false,
             "deadlineReached": true,
-            "runtimeMs": 60572.02301799995,
+            "runtimeMs": 63184.99945,
             "evaluations": 4267,
             "searchGeneratedStates": 21929,
-            "totalGeneratedStates": 21929,
+            "totalGeneratedStates": 36338,
             "maxFirstFrontSize": 1,
             "frontierOverflowSteps": 0,
-            "terminalCandidates": 0,
+            "terminalCandidates": 1,
             "maxNaturalReachedSouls": 14000,
-            "saveCompletionGeneratedStates": 0,
+            "saveCompletionGeneratedStates": 14409,
             "terminalCompletion": {
               "mode": "retained_partial_nodes_legal_save_to_horizon",
               "separatePass": true,
-              "source": "all retained partial nodes at natural-search stop",
-              "attemptedNodes": 0,
-              "completedNodes": 0,
-              "sourceSouls": [],
-              "generatedStates": 0,
+              "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
               "deadlineReached": true,
+              "earlyFallbackMaterialized": true,
+              "phases": [
+                {
+                  "source": "retained-save-completion-early",
+                  "attemptedNodes": 1,
+                  "completedNodes": 1,
+                  "sourceSouls": [
+                    400
+                  ],
+                  "generatedStates": 14409,
+                  "deadlineReached": false
+                },
+                {
+                  "source": "retained-save-completion-final",
+                  "attemptedNodes": 0,
+                  "completedNodes": 0,
+                  "sourceSouls": [],
+                  "generatedStates": 0,
+                  "deadlineReached": true
+                }
+              ],
               "naturalSearchMaxReachedSouls": 14000
             },
             "terminalAudit": {
@@ -6268,45 +6646,77 @@
       "reproducibility": {
         "sameWidthsStarted": true,
         "sameWidthsCompleted": true,
-        "identicalFinalFrontHash": true,
-        "identicalCommonWidthFrontHashes": true,
+        "identicalFinalFrontHash": false,
+        "identicalCommonWidthFrontHashes": false,
         "perWidth": [
           {
             "width": 4,
-            "firstHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "secondHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "firstHash": "0f505ab6c0a6cd22164a28600730b2aed803a3274418559c253fa3546de6e4eb",
+            "secondHash": "305878bfda879a8fd724881ed5e2512c0152b884a7fa05e649fbd9125ad55f3b",
             "firstComplete": false,
             "secondComplete": false,
-            "identical": true
+            "identical": false
           }
         ]
       },
       "repeat2": {
-        "runtimeMs": 60725.882752000005,
+        "runtimeMs": 59985.88572700007,
         "deadlineReached": true,
         "widthsStarted": [
           4
         ],
         "widthsCompleted": [],
         "partialWidth": 4,
-        "frontCount": 0,
-        "frontHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        "legal": false,
-        "searchGeneratedStates": 21929,
-        "totalGeneratedStates": 21929,
-        "evaluations": 4267,
-        "maxNaturalReachedSouls": 14000,
-        "saveCompletionGeneratedStates": 0,
+        "frontCount": 1,
+        "frontHash": "305878bfda879a8fd724881ed5e2512c0152b884a7fa05e649fbd9125ad55f3b",
+        "legal": true,
+        "searchGeneratedStates": 20477,
+        "totalGeneratedStates": 377630,
+        "evaluations": 3898,
+        "maxNaturalReachedSouls": 13600,
+        "saveCompletionGeneratedStates": 357153,
         "terminalCompletion": {
           "mode": "retained_partial_nodes_legal_save_to_horizon",
           "separatePass": true,
-          "source": "all retained partial nodes at natural-search stop",
-          "attemptedNodes": 0,
-          "completedNodes": 0,
-          "sourceSouls": [],
-          "generatedStates": 0,
-          "deadlineReached": true,
-          "naturalSearchMaxReachedSouls": 14000
+          "source": "all retained partial nodes; early Production-parity fallback plus final retained refresh",
+          "attemptedNodes": 5,
+          "completedNodes": 5,
+          "sourceSouls": [
+            400,
+            13600,
+            13600,
+            13600,
+            13600
+          ],
+          "generatedStates": 357153,
+          "deadlineReached": false,
+          "earlyFallbackMaterialized": true,
+          "phases": [
+            {
+              "source": "retained-save-completion-early",
+              "attemptedNodes": 1,
+              "completedNodes": 1,
+              "sourceSouls": [
+                400
+              ],
+              "generatedStates": 14409,
+              "deadlineReached": false
+            },
+            {
+              "source": "retained-save-completion-final",
+              "attemptedNodes": 4,
+              "completedNodes": 4,
+              "sourceSouls": [
+                13600,
+                13600,
+                13600,
+                13600
+              ],
+              "generatedStates": 342744,
+              "deadlineReached": false
+            }
+          ],
+          "naturalSearchMaxReachedSouls": 13600
         },
         "maxFirstFrontSize": 1,
         "frontierOverflowSteps": 0,
@@ -6318,68 +6728,46 @@
       },
       "comparison": {
         "production": {
-          "id": "506265ab2018e23b",
+          "id": "d56cec772c7287b1",
           "pathScore": 0.33546893123700633,
-          "endScore": 0.4728509350348199,
+          "endScore": 0.3237533073396234,
           "legal": true,
           "pathObservables": {
             "counts": {
-              "purchase": 2,
+              "purchase": 0,
               "upgrade": 0,
               "replacement": 0,
               "sell": 0
             },
-            "transactionCount": 2,
-            "firstTransactionSouls": 40000,
-            "lastTransactionSouls": 40000,
+            "transactionCount": 0,
+            "firstTransactionSouls": null,
+            "lastTransactionSouls": null,
             "longestNoShopSoulSpan": 40000,
-            "sameSoulTransactionGroups": [
-              {
-                "earnedSouls": 40000,
-                "transactionCount": 2,
-                "types": [
-                  "purchase",
-                  "purchase"
-                ],
-                "items": [
-                  "upgrade_damage_recycler",
-                  "upgrade_boundless_spirit"
-                ]
-              }
-            ],
+            "sameSoulTransactionGroups": [],
             "reacquiredItems": [],
             "sellRebuys": [],
             "replacementRebuys": [],
             "upgradeBacktracks": [],
-            "timeline": [
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_damage_recycler",
-                "from": null,
-                "payment": 6400
-              },
-              {
-                "type": "purchase",
-                "earnedSouls": 40000,
-                "item": "upgrade_boundless_spirit",
-                "from": null,
-                "payment": 6400
-              }
-            ]
+            "timeline": []
           }
         },
-        "shadowFrontCount": 0,
+        "shadowFrontCount": 1,
         "shadowDominatesProduction": [],
         "betterPathNoEndLoss": [],
         "betterEndNoPathLoss": [],
         "productionOnCombinedFront": true,
         "combinedFront": [
           {
-            "id": "production:506265ab2018e23b",
+            "id": "production:d56cec772c7287b1",
             "source": "production",
             "pathScore": 0.33546893123700633,
-            "endScore": 0.4728509350348199
+            "endScore": 0.3237533073396234
+          },
+          {
+            "id": "shadow:d56cec772c7287b1",
+            "source": "multiobjective-shadow",
+            "pathScore": 0.33546893123700633,
+            "endScore": 0.3237533073396234
           }
         ]
       }
