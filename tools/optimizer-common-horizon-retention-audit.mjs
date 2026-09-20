@@ -276,6 +276,19 @@ function main() {
   }
   const targetBestType = Math.max(...targetPools.map((pool) => pool.type));
   if (targetBestType < 3) {
+    console.error(JSON.stringify({
+      phase: "known-target-instrumentation-stop",
+      pathId: TARGET_PATH_ID,
+      bestType: targetBestType,
+      pools: targetPools.map((pool) => ({
+        poolIndex: pool.poolIndex,
+        step: pool.step,
+        soulGap: pool.soulGap,
+        candidateCount: pool.candidateCount,
+        type: pool.type,
+        rescuedNode: pool.nodesAddedByCommonHorizon.find((node) => node.nodeId === TARGET_PATH_ID)
+      }))
+    }, null, 2));
     throw new Error(
       `Known seed 93260772842f0c27 classified only as TYPE ${targetBestType}; stop and inspect instrumentation.`
     );
