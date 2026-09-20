@@ -1,0 +1,39 @@
+name: optimizer value-to-go diagnosis
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+    paths:
+      - tools/optimizer-value-to-go-diagnosis.mjs
+      - .github/workflows/optimizer-value-to-go-diagnosis.yml
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run Warden weapon value-to-go diagnosis
+        run: node tools/optimizer-value-to-go-diagnosis.mjs --output artifacts/value-to-go-diagnosis/results.json
+      - name: Upload diagnosis artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-value-to-go-diagnosis
+          path: artifacts/value-to-go-diagnosis/results.json
+      - name: Record diagnosis result on optimizer branch
+        run: |
+          mkdir -p benchmarks/optimizer-v1/experiments/value-to-go-diagnosis
+          cp artifacts/value-to-go-diagnosis/results.json benchmarks/optimizer-v1/experiments/value-to-go-diagnosis/results.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/experiments/value-to-go-diagnosis/results.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data(benchmark): record value-to-go diagnosis [skip ci]"
+          git push
