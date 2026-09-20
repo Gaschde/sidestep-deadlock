@@ -234,6 +234,30 @@ function parentDistance(descendant, ancestor) {
   return distance;
 }
 
+function commonHorizonPlan(nodes) {
+  const soulLevels = [...new Set(nodes.map((node) => node?.state?.earnedSouls))]
+    .filter((souls) => Number.isSafeInteger(souls) && souls >= 0)
+    .sort((a, b) => a - b);
+  if (soulLevels.length < 2) {
+    return { applied: false, reason: "single-economic-horizon", soulLevels, commonHorizon: null };
+  }
+  const commonHorizon = soulLevels[1];
+  if (soulLevels.some((souls) => souls > commonHorizon)) {
+    return {
+      applied: false,
+      reason: "pool-spans-beyond-next-economic-horizon",
+      soulLevels,
+      commonHorizon: null
+    };
+  }
+  return {
+    applied: true,
+    reason: "next-present-economic-horizon",
+    soulLevels,
+    commonHorizon
+  };
+}
+
 export function selectPathEndParetoBeamCommonHorizonShadow(
   nodes,
   width,
@@ -250,9 +274,8 @@ export function selectPathEndParetoBeamCommonHorizonShadow(
   if (typeof vectorForHorizon !== "function") throw new TypeError("vectorForHorizon muss eine Funktion sein.");
   if (typeof saveTransitions !== "function") throw new TypeError("saveTransitions muss eine Funktion sein.");
 
-  const soulLevels = [...new Set(nodes.map((node) => node?.state?.earnedSouls))]
-    .filter((souls) => Number.isSafeInteger(souls) && souls >= 0)
-    .sort((a, b) => a - b);
+  const plan = commonHorizonPlan(nodes);
+  const soulLevels = plan.soulLevels;
   const projectionStartedAt = performance.now();
   const fallback = (reason, error = null, projectionEntries = []) => {
     const selection = selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey, profiler);
@@ -265,23 +288,23 @@ export function selectPathEndParetoBeamCommonHorizonShadow(
         error,
         soulLevels,
         commonHorizon: null,
+        mode: "materialized",
         projectedCandidates: projectionEntries.length,
+        scoreOnlyProjections: 0,
+        materializedProjectedNodes: projectionEntries.length,
         saveTransitions: projectionEntries.reduce((sum, entry) => sum + entry.saveSteps, 0),
         maxSaveStepsPerCandidate: projectionEntries.reduce((max, entry) => Math.max(max, entry.saveSteps), 0),
-        projectionRuntimeMs: performance.now() - projectionStartedAt
+        projectionRuntimeMs: performance.now() - projectionStartedAt,
+        materializationRuntimeMs: performance.now() - projectionStartedAt,
+        horizonScoreRuntimeMs: 0,
+        horizonVectorRequests: 0
       },
       projectionEntries
     };
   };
 
-  if (soulLevels.length < 2) return fallback("single-economic-horizon");
-
-  // Prototype safety gate: "next present horizon" is unambiguous only when the
-  // candidate pool spans the current level and exactly one later level.
-  const commonHorizon = soulLevels[1];
-  if (soulLevels.some((souls) => souls > commonHorizon)) {
-    return fallback("pool-spans-beyond-next-economic-horizon");
-  }
+  if (!plan.applied) return fallback(plan.reason);
+  const commonHorizon = plan.commonHorizon;
 
   const projectedByOriginal = new Map();
   const projectionEntries = [];
@@ -302,9 +325,18 @@ export function selectPathEndParetoBeamCommonHorizonShadow(
     projectionEntries.push({ originalNode: node, projectedNode: projected, saveSteps });
   }
 
-  const projectionRuntimeMs = performance.now() - projectionStartedAt;
-  const retentionVector = (node) =>
-    vectorForHorizon(projectedByOriginal.get(node) || node, commonHorizon);
+  const materializationRuntimeMs = performance.now() - projectionStartedAt;
+  let horizonScoreRuntimeMs = 0;
+  let horizonVectorRequests = 0;
+  const retentionVector = (node) => {
+    const started = performance.now();
+    try {
+      horizonVectorRequests += 1;
+      return vectorForHorizon(projectedByOriginal.get(node) || node, commonHorizon);
+    } finally {
+      horizonScoreRuntimeMs += performance.now() - started;
+    }
+  };
   const selection = selectPathEndParetoBeam(nodes, width, retentionVector, diversityKey, profiler);
   const saveTransitionsUsed = projectionEntries.reduce((sum, entry) => sum + entry.saveSteps, 0);
   return {
@@ -316,12 +348,109 @@ export function selectPathEndParetoBeamCommonHorizonShadow(
       error: null,
       soulLevels,
       commonHorizon,
+      mode: "materialized",
       projectedCandidates: projectionEntries.length,
+      scoreOnlyProjections: 0,
+      materializedProjectedNodes: projectionEntries.length,
       saveTransitions: saveTransitionsUsed,
       maxSaveStepsPerCandidate: projectionEntries.reduce((max, entry) => Math.max(max, entry.saveSteps), 0),
-      projectionRuntimeMs
+      projectionRuntimeMs: materializationRuntimeMs,
+      materializationRuntimeMs,
+      horizonScoreRuntimeMs,
+      horizonVectorRequests
     },
     projectionEntries
+  };
+}
+
+export function selectPathEndParetoBeamCommonHorizonScoreOnlyShadow(
+  nodes,
+  width,
+  vectorFor,
+  vectorForHorizon,
+  diversityKey = () => "",
+  profiler = null
+) {
+  if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
+  if (!Number.isSafeInteger(width) || width < 1) throw new RangeError("width muss positiv ganzzahlig sein.");
+  if (typeof vectorFor !== "function") throw new TypeError("vectorFor muss eine Funktion sein.");
+  if (typeof vectorForHorizon !== "function") throw new TypeError("vectorForHorizon muss eine Funktion sein.");
+
+  const planStartedAt = performance.now();
+  const plan = commonHorizonPlan(nodes);
+  const planningRuntimeMs = performance.now() - planStartedAt;
+  const fallback = () => {
+    const selection = selectPathEndParetoBeam(nodes, width, vectorFor, diversityKey, profiler);
+    return {
+      ...selection,
+      shadowProjection: {
+        enabled: true,
+        mode: "score-only",
+        applied: false,
+        reason: plan.reason,
+        error: null,
+        soulLevels: plan.soulLevels,
+        commonHorizon: null,
+        projectedCandidates: 0,
+        scoreOnlyProjections: 0,
+        materializedProjectedNodes: 0,
+        saveTransitions: 0,
+        maxSaveStepsPerCandidate: 0,
+        projectionRuntimeMs: planningRuntimeMs,
+        materializationRuntimeMs: 0,
+        horizonScoreRuntimeMs: 0,
+        horizonVectorRequests: 0
+      },
+      projectionEntries: []
+    };
+  };
+  if (!plan.applied) return fallback();
+
+  const commonHorizon = plan.commonHorizon;
+  const scoreOnlyProjections = nodes.reduce(
+    (sum, node) => sum + Number(node.state.earnedSouls < commonHorizon),
+    0
+  );
+  let horizonScoreRuntimeMs = 0;
+  let horizonVectorRequests = 0;
+
+  // Exact equivalence to materialized save projection:
+  // measureSoulAxisPath is piecewise-constant and always inserts the requested
+  // budget/common horizon into its integration axis. A pure save changes no
+  // inventory metrics, so adding a virtual point at H with the same metrics as
+  // the original node cannot change Path-AUC or Endbuild at H. Evaluating the
+  // original path prefix directly at H therefore produces the same vector.
+  const retentionVector = (node) => {
+    const started = performance.now();
+    try {
+      horizonVectorRequests += 1;
+      return vectorForHorizon(node, commonHorizon);
+    } finally {
+      horizonScoreRuntimeMs += performance.now() - started;
+    }
+  };
+  const selection = selectPathEndParetoBeam(nodes, width, retentionVector, diversityKey, profiler);
+  return {
+    ...selection,
+    shadowProjection: {
+      enabled: true,
+      mode: "score-only",
+      applied: true,
+      reason: plan.reason,
+      error: null,
+      soulLevels: plan.soulLevels,
+      commonHorizon,
+      projectedCandidates: scoreOnlyProjections,
+      scoreOnlyProjections,
+      materializedProjectedNodes: 0,
+      saveTransitions: 0,
+      maxSaveStepsPerCandidate: 0,
+      projectionRuntimeMs: planningRuntimeMs + horizonScoreRuntimeMs,
+      materializationRuntimeMs: 0,
+      horizonScoreRuntimeMs,
+      horizonVectorRequests
+    },
+    projectionEntries: []
   };
 }
 
@@ -370,6 +499,7 @@ export function runControlledMultiobjectiveBeamCarry({
   auditReserveMs = 0,
   profile = false,
   commonHorizonShadow = false,
+  commonHorizonScoreOnlyShadow = false,
   onProgress
 }) {
   if (!Number.isSafeInteger(beamWidth) || beamWidth < 1) throw new RangeError("beamWidth ist ungültig.");
@@ -381,6 +511,18 @@ export function runControlledMultiobjectiveBeamCarry({
   }
   if (!Number.isFinite(referenceTimeMs) || referenceTimeMs < 0) throw new RangeError("referenceTimeMs ist ungültig.");
   if (typeof commonHorizonShadow !== "boolean") throw new TypeError("commonHorizonShadow muss boolean sein.");
+  if (typeof commonHorizonScoreOnlyShadow !== "boolean") {
+    throw new TypeError("commonHorizonScoreOnlyShadow muss boolean sein.");
+  }
+  if (commonHorizonShadow && commonHorizonScoreOnlyShadow) {
+    throw new RangeError("Materialized und Score-only Common-Horizon Shadow dürfen nicht gleichzeitig aktiv sein.");
+  }
+  const commonHorizonMode = commonHorizonShadow
+    ? "materialized"
+    : commonHorizonScoreOnlyShadow
+      ? "score-only"
+      : "off";
+  const commonHorizonEnabled = commonHorizonMode !== "off";
 
   const started = performance.now();
   const profiler = createBeamProfiler(profile);
@@ -493,13 +635,21 @@ export function runControlledMultiobjectiveBeamCarry({
   };
   const horizonVectorCaches = new Map();
   let commonHorizonVectorEvaluations = 0;
+  let commonHorizonVectorCacheHits = 0;
+  let commonHorizonVectorCacheMisses = 0;
   const nodeVectorAtHorizon = (node, horizon) => {
     if (!Number.isSafeInteger(horizon) || horizon <= 0 || horizon > budget) {
       throw new RangeError("Common Horizon ist ungültig.");
     }
     if (!horizonVectorCaches.has(horizon)) horizonVectorCaches.set(horizon, new WeakMap());
     const cache = horizonVectorCaches.get(horizon);
-    if (cache.has(node)) return cache.get(node);
+    if (cache.has(node)) {
+      commonHorizonVectorCacheHits += 1;
+      profiler.count("commonHorizonVectorCacheHits");
+      return cache.get(node);
+    }
+    commonHorizonVectorCacheMisses += 1;
+    profiler.count("commonHorizonVectorCacheMisses");
     commonHorizonVectorEvaluations += 1;
     profiler.count("commonHorizonVectorEvaluations");
     const measured = profiler.time("trajectoryScoreMs", () =>
@@ -643,14 +793,22 @@ export function runControlledMultiobjectiveBeamCarry({
   let maxParetoLayerCount = 0;
   let retentionCalls = 0;
   const commonHorizonTelemetry = {
-    enabled: commonHorizonShadow,
+    enabled: commonHorizonEnabled,
+    mode: commonHorizonMode,
     appliedPools: 0,
     skippedPools: 0,
     projectedCandidates: 0,
+    scoreOnlyProjections: 0,
+    materializedProjectedNodes: 0,
     saveTransitions: 0,
     horizonVectorEvaluations: 0,
+    horizonVectorCacheHits: 0,
+    horizonVectorCacheMisses: 0,
+    horizonVectorRequests: 0,
     additionalCarryEvaluations: 0,
     projectionRuntimeMs: 0,
+    materializationRuntimeMs: 0,
+    horizonScoreRuntimeMs: 0,
     shadowRetentionRuntimeMs: 0,
     peakProjectedCandidates: 0,
     peakProjectionEntries: 0,
@@ -695,29 +853,49 @@ export function runControlledMultiobjectiveBeamCarry({
     retentionCalls += 1;
     let selection;
     let shadowTrace = null;
-    if (commonHorizonShadow) {
+    if (commonHorizonEnabled) {
       const beforeEvaluations = evaluations;
       const beforeVectorEvaluations = commonHorizonVectorEvaluations;
+      const beforeVectorCacheHits = commonHorizonVectorCacheHits;
+      const beforeVectorCacheMisses = commonHorizonVectorCacheMisses;
       const beforeSaveTransitions = commonHorizonSaveTransitionCalls;
       const shadowStartedAt = performance.now();
-      selection = selectPathEndParetoBeamCommonHorizonShadow(
-        unique,
-        beamWidth,
-        nodeVector,
-        nodeVectorAtHorizon,
-        saveOnlyTransitions,
-        diversityKey,
-        searchDeadline,
-        profiler
+      selection = profiler.time("retentionMs", () =>
+        commonHorizonMode === "materialized"
+          ? selectPathEndParetoBeamCommonHorizonShadow(
+              unique,
+              beamWidth,
+              nodeVector,
+              nodeVectorAtHorizon,
+              saveOnlyTransitions,
+              diversityKey,
+              searchDeadline,
+              profiler
+            )
+          : selectPathEndParetoBeamCommonHorizonScoreOnlyShadow(
+              unique,
+              beamWidth,
+              nodeVector,
+              nodeVectorAtHorizon,
+              diversityKey,
+              profiler
+            )
       );
       commonHorizonTelemetry.shadowRetentionRuntimeMs += performance.now() - shadowStartedAt;
       const shadow = selection.shadowProjection;
       commonHorizonTelemetry[shadow.applied ? "appliedPools" : "skippedPools"] += 1;
       commonHorizonTelemetry.projectedCandidates += shadow.projectedCandidates;
+      commonHorizonTelemetry.scoreOnlyProjections += shadow.scoreOnlyProjections || 0;
+      commonHorizonTelemetry.materializedProjectedNodes += shadow.materializedProjectedNodes || 0;
       commonHorizonTelemetry.saveTransitions += commonHorizonSaveTransitionCalls - beforeSaveTransitions;
       commonHorizonTelemetry.horizonVectorEvaluations += commonHorizonVectorEvaluations - beforeVectorEvaluations;
+      commonHorizonTelemetry.horizonVectorCacheHits += commonHorizonVectorCacheHits - beforeVectorCacheHits;
+      commonHorizonTelemetry.horizonVectorCacheMisses += commonHorizonVectorCacheMisses - beforeVectorCacheMisses;
+      commonHorizonTelemetry.horizonVectorRequests += shadow.horizonVectorRequests || 0;
       commonHorizonTelemetry.additionalCarryEvaluations += evaluations - beforeEvaluations;
-      commonHorizonTelemetry.projectionRuntimeMs += shadow.projectionRuntimeMs;
+      commonHorizonTelemetry.projectionRuntimeMs += shadow.projectionRuntimeMs || 0;
+      commonHorizonTelemetry.materializationRuntimeMs += shadow.materializationRuntimeMs || 0;
+      commonHorizonTelemetry.horizonScoreRuntimeMs += shadow.horizonScoreRuntimeMs || 0;
       commonHorizonTelemetry.peakProjectedCandidates = Math.max(
         commonHorizonTelemetry.peakProjectedCandidates,
         shadow.projectedCandidates
@@ -739,16 +917,20 @@ export function runControlledMultiobjectiveBeamCarry({
           (commonHorizonTelemetry.skippedReasons[shadow.reason] || 0) + 1;
       }
       shadowTrace = {
+        mode: shadow.mode,
         applied: shadow.applied,
         reason: shadow.reason,
         commonHorizon: shadow.commonHorizon,
         soulLevels: shadow.soulLevels,
         projectedCandidates: shadow.projectedCandidates,
+        scoreOnlyProjections: shadow.scoreOnlyProjections,
+        materializedProjectedNodes: shadow.materializedProjectedNodes,
         saveTransitions: shadow.saveTransitions,
         maxSaveStepsPerCandidate: shadow.maxSaveStepsPerCandidate
       };
     } else {
-      selection = selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey, profiler);
+      selection = profiler.time("retentionMs", () =>
+        selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey, profiler));
     }
     maxFirstFrontSize = Math.max(maxFirstFrontSize, selection.metadata.firstFrontSize);
     maxParetoLayerCount = Math.max(maxParetoLayerCount, selection.metadata.layerSizes.length);
@@ -759,7 +941,7 @@ export function runControlledMultiobjectiveBeamCarry({
       unique: unique.length,
       retained: selection.selected.length,
       ...selection.metadata,
-      ...(commonHorizonShadow ? { commonHorizonShadow: shadowTrace } : {})
+      ...(commonHorizonEnabled ? { commonHorizonShadow: shadowTrace } : {})
     });
     if (profiler.enabled) {
       profiler.pushProgress({
@@ -893,7 +1075,7 @@ export function runControlledMultiobjectiveBeamCarry({
       beamWidth,
       steps,
       retentionCalls,
-      ...(commonHorizonShadow ? { commonHorizonShadow: commonHorizonTelemetry } : {}),
+      ...(commonHorizonEnabled ? { commonHorizonShadow: commonHorizonTelemetry } : {}),
       maxCandidatePool,
       maxReachedSouls,
       maxFirstFrontSize,
