@@ -360,6 +360,10 @@ function main() {
       storedPriorSourceCommit: storedScoreOnly.sourceCommit || null
     },
     observerEffect,
+    ancestryValidation: {
+      authority: rawAudit.finalAncestryAuthority,
+      propagatedVsDirectFinalMismatchCount: rawAudit.finalAncestryMismatchCount
+    },
     poolDistribution: {
       appliedPools,
       type0: typeCounts[0],
