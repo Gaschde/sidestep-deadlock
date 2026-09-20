@@ -1,0 +1,45 @@
+name: optimizer carry objective isolation
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  carry-objective-isolation:
+    if: contains(github.event.head_commit.message, '[carry-objective-isolation]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run fixed-candidate 2x2 objective isolation
+        run: node tools/optimizer-carry-objective-isolation.mjs --output artifacts/carry-objective-isolation/results.json
+      - name: Upload experiment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-carry-objective-isolation
+          path: artifacts/carry-objective-isolation/results.json
+          if-no-files-found: error
+      - name: Store isolation evidence on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/carry-objective-isolation"
+          mkdir -p "$target"
+          cp artifacts/carry-objective-isolation/results.json "$target/results.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          if git diff --cached --quiet; then
+            echo "No isolation changes to commit."
+          else
+            git commit -m "data(benchmark): record carry objective isolation results"
+            git push origin HEAD:feature/optimizer-next
+          fi
