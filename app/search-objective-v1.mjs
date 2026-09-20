@@ -8,12 +8,48 @@ import {
 export const EXPERIMENTAL_OBJECTIVE_VERSION = "objective-v1a-soul-auc-terminal-gmean";
 export const PATH_END_MEASUREMENT_VERSION = "path-end-measurement-v1";
 
+export const CARRY_OBJECTIVE_BASELINE_A = Object.freeze({
+  id: "carry-balanced-a-50-50",
+  damageWeight: 0.5,
+  survivalWeight: 0.5,
+  damageFocusWeights: DAMAGE_FOCUS_WEIGHTS
+});
+
+export const CARRY_OBJECTIVE_DAMAGE_PRIMARY_B = Object.freeze({
+  id: "carry-damage-primary-b-75-25",
+  damageWeight: 0.75,
+  survivalWeight: 0.25,
+  damageFocusWeights: Object.freeze({
+    weapon: Object.freeze({ bullet: 0.85, spirit: 0.15 }),
+    spirit: Object.freeze({ bullet: 0.15, spirit: 0.85 }),
+    hybrid: Object.freeze({ bullet: 0.5, spirit: 0.5 })
+  })
+});
+
+function objectiveContract(config = CARRY_OBJECTIVE_BASELINE_A) {
+  const damageWeight = Number(config?.damageWeight);
+  const survivalWeight = Number(config?.survivalWeight);
+  if (!Number.isFinite(damageWeight) || !Number.isFinite(survivalWeight) ||
+      damageWeight < 0 || survivalWeight < 0 || Math.abs(damageWeight + survivalWeight - 1) > 1e-12) {
+    throw new RangeError("Objective-Gruppengewichte müssen endlich, nichtnegativ und auf 1 normiert sein.");
+  }
+  for (const focus of ["weapon", "spirit", "hybrid"]) {
+    const weights = config?.damageFocusWeights?.[focus];
+    if (!weights || !Number.isFinite(weights.bullet) || !Number.isFinite(weights.spirit) ||
+        weights.bullet < 0 || weights.spirit < 0 || Math.abs(weights.bullet + weights.spirit - 1) > 1e-12) {
+      throw new RangeError(`Ungültige Damage-Fokusgewichte für ${focus}.`);
+    }
+  }
+  return config;
+}
+
 function normalizedValue(value, reference) {
   return value + reference > 0 ? value / (value + reference) : 0;
 }
 
-function stateQuality(metrics, referenceMetrics, damageFocus) {
-  const weights = DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid;
+function stateQuality(metrics, referenceMetrics, damageFocus, objectiveConfig = CARRY_OBJECTIVE_BASELINE_A) {
+  const contract = objectiveContract(objectiveConfig);
+  const weights = contract.damageFocusWeights[damageFocus] || contract.damageFocusWeights.hybrid;
   const damage = SEARCH_METRIC_GROUPS.damage.metrics.reduce((sum, metric) => {
     const parts = DAMAGE_COMPONENTS[metric];
     const bullet = normalizedValue(metricValue(metrics, parts.bullet), metricValue(referenceMetrics, parts.bullet));
@@ -23,7 +59,7 @@ function stateQuality(metrics, referenceMetrics, damageFocus) {
   const survivability = SEARCH_METRIC_GROUPS.survival.metrics.reduce((sum, metric) =>
     sum + normalizedValue(metricValue(metrics, metric), metricValue(referenceMetrics, metric)), 0
   ) / SEARCH_METRIC_GROUPS.survival.metrics.length;
-  return { damage, survivability, score: 0.5 * damage + 0.5 * survivability };
+  return { damage, survivability, score: contract.damageWeight * damage + contract.survivalWeight * survivability };
 }
 
 function committedActual(points) {
@@ -66,7 +102,8 @@ function rowAt(rows, souls) {
   return row;
 }
 
-export function measureSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid", telemetry = null) {
+export function measureSoulAxisPath(points, reference, _milestones, budget, damageFocus = "hybrid", telemetry = null, objectiveConfig = CARRY_OBJECTIVE_BASELINE_A) {
+  const contract = objectiveContract(objectiveConfig);
   if (!Number.isSafeInteger(budget) || budget <= 0) throw new RangeError("budget muss eine positive ganze Soul-Zahl sein.");
   const actual = committedActual(points);
   const refs = referenceRows(reference);
@@ -87,7 +124,7 @@ export function measureSoulAxisPath(points, reference, _milestones, budget, dama
     const actualRow = rowAt(actual, earnedSouls);
     const referenceRow = rowAt(refs, earnedSouls);
     if (!actualRow || !referenceRow) throw new RangeError("Soul-Achse ist am Auswertungspunkt nicht definiert.");
-    const scoreState = () => stateQuality(actualRow.metrics, referenceRow.metrics, damageFocus);
+    const scoreState = () => stateQuality(actualRow.metrics, referenceRow.metrics, damageFocus, contract);
     const quality = telemetry?.enabled
       ? telemetry.time(earnedSouls === budget ? "endbuildScoreMs" : "pathAucScoreMs", scoreState)
       : scoreState();
@@ -126,9 +163,10 @@ export function measureSoulAxisPath(points, reference, _milestones, budget, dama
       trajectory: "piecewise-constant integral over earned Souls",
       terminal: "separate horizon utility",
       aggregation: "none",
-      damageSurvivabilityWeights: { damage: 0.5, survivability: 0.5 },
+      objectiveConfigId: contract.id || "unnamed-objective-config",
+      damageSurvivabilityWeights: { damage: contract.damageWeight, survivability: contract.survivalWeight },
       damageFocus,
-      damageFocusWeights: DAMAGE_FOCUS_WEIGHTS[damageFocus] || DAMAGE_FOCUS_WEIGHTS.hybrid,
+      damageFocusWeights: contract.damageFocusWeights[damageFocus] || contract.damageFocusWeights.hybrid,
       normalization: "x/(x+reference)",
       reference: "fixed attainable sampled reference; not an admissible bound",
       duplicateDamageMetrics: "preserved from baseline-v0 for isolated comparison"
