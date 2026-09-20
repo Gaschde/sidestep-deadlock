@@ -1,6 +1,6 @@
 {
   "schemaVersion": "optimizer-common-horizon-retention-shadow-v1",
-  "sourceCommit": "7d0bbec934d72464b531130cc45afbbfa49f5de2",
+  "sourceCommit": "3f2e50622c041f7d173397fd3a6dc07b7b3d7dd0",
   "caseId": "production-40k-warden-carry-weapon",
   "scope": {
     "hero": "warden",
@@ -60,7 +60,7 @@
       4000
     ],
     "baseline": {
-      "runtimeMs": 2.0238860000000614,
+      "runtimeMs": 4.615854000000013,
       "targetLayer": 15,
       "retainedPathIds": [
         "aa4d4665b9434b92",
@@ -79,7 +79,7 @@
       }
     },
     "shadow": {
-      "runtimeMs": 10.831414999999993,
+      "runtimeMs": 13.999641999999994,
       "enabled": true,
       "applied": true,
       "reason": "next-present-economic-horizon",
@@ -89,10 +89,16 @@
         4000
       ],
       "commonHorizon": 4000,
+      "mode": "materialized",
       "projectedCandidates": 244,
+      "scoreOnlyProjections": 0,
+      "materializedProjectedNodes": 244,
       "saveTransitions": 244,
       "maxSaveStepsPerCandidate": 1,
-      "projectionRuntimeMs": 0.7989549999999781,
+      "projectionRuntimeMs": 1.0166690000000926,
+      "materializationRuntimeMs": 1.0166690000000926,
+      "horizonScoreRuntimeMs": 11.420177999999623,
+      "horizonVectorRequests": 248,
       "targetLayer": 0,
       "retainedPathIds": [
         "93260772842f0c27",
@@ -5508,7 +5514,7 @@
   },
   "stage2": {
     "skipped": false,
-    "runtimeMs": 46434.36532,
+    "runtimeMs": 57109.232555,
     "steps": 128,
     "duplicateStates": 1397,
     "maxCandidatePool": 3469,
@@ -5551,7 +5557,7 @@
   },
   "stage3": {
     "baseline": {
-      "runtimeMs": 49416.596171,
+      "runtimeMs": 58125.791198,
       "evaluations": 29636,
       "generatedStates": 151978,
       "transitionCalls": 663,
@@ -5561,7 +5567,7 @@
       "finalFrontSize": 1
     },
     "shadow": {
-      "runtimeMs": 72496.77058899999,
+      "runtimeMs": 87970.98402099998,
       "evaluations": 43655,
       "generatedStates": 165683,
       "transitionCalls": 729,
@@ -5571,14 +5577,22 @@
       "finalFrontSize": 1,
       "commonHorizon": {
         "enabled": true,
+        "mode": "materialized",
         "appliedPools": 111,
         "skippedPools": 69,
         "projectedCandidates": 59000,
+        "scoreOnlyProjections": 0,
+        "materializedProjectedNodes": 59000,
         "saveTransitions": 59000,
         "horizonVectorEvaluations": 59362,
+        "horizonVectorCacheHits": 0,
+        "horizonVectorCacheMisses": 59362,
+        "horizonVectorRequests": 59362,
         "additionalCarryEvaluations": 0,
-        "projectionRuntimeMs": 855.9818070001202,
-        "shadowRetentionRuntimeMs": 15767.441173000014,
+        "projectionRuntimeMs": 976.7958930001769,
+        "materializationRuntimeMs": 976.8507970001228,
+        "horizonScoreRuntimeMs": 17329.007260997474,
+        "shadowRetentionRuntimeMs": 18828.69525100023,
         "peakProjectedCandidates": 3113,
         "peakProjectionEntries": 3113,
         "maxSaveStepsPerCandidate": 1,
@@ -5657,8 +5671,8 @@
       }
     },
     "delta": {
-      "runtimeMs": 23080.174417999995,
-      "runtimeRatio": 1.4670530996941578,
+      "runtimeMs": 29845.192822999983,
+      "runtimeRatio": 1.5134586937721872,
       "evaluations": 14019,
       "generatedStates": 13705,
       "transitionCalls": 66,
