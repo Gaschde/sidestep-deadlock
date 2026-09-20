@@ -1,8 +1,8 @@
 {
   "schemaVersion": "optimizer-carry-objective-ab-v1",
   "experiment": "carry-50-50-vs-75-25",
-  "sourceCommit": "8f5f9b438e3e8640ad5a8e48ee2a87cd63e88ee7",
-  "generatedAt": "2026-09-20T01:10:48.218Z",
+  "sourceCommit": "78ae29460e36c2bf6aad537578543a20e83dbb6d",
+  "generatedAt": "2026-09-20T01:20:18.878Z",
   "productionChanged": false,
   "uiChanged": false,
   "baselineA": {
@@ -159,15 +159,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 6000,
-                "sequence": 23
+                "transaction": 8
               },
               "vitality": {
                 "souls": 21600,
-                "sequence": 85
+                "transaction": 31
               },
               "spirit": {
                 "souls": 12400,
-                "sequence": 48
+                "transaction": 17
               }
             },
             "transactions": 46,
@@ -325,15 +325,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 14000,
-                "sequence": 53
+                "transaction": 18
               },
               "vitality": {
                 "souls": 10000,
-                "sequence": 38
+                "transaction": 13
               },
               "spirit": {
                 "souls": 21200,
-                "sequence": 80
+                "transaction": 27
               }
             },
             "transactions": 36,
@@ -483,15 +483,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 11200,
-                "sequence": 43
+                "transaction": 15
               },
               "vitality": {
                 "souls": 14400,
-                "sequence": 56
+                "transaction": 20
               },
               "spirit": {
                 "souls": 6000,
-                "sequence": 23
+                "transaction": 8
               }
             },
             "transactions": 44,
@@ -649,15 +649,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 16800,
-                "sequence": 63
+                "transaction": 21
               },
               "vitality": {
                 "souls": 12800,
-                "sequence": 48
+                "transaction": 16
               },
               "spirit": {
                 "souls": 7200,
-                "sequence": 27
+                "transaction": 9
               }
             },
             "transactions": 35,
@@ -755,15 +755,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 16800,
-                "sequence": 63
+                "transaction": 21
               },
               "vitality": {
                 "souls": 12800,
-                "sequence": 48
+                "transaction": 16
               },
               "spirit": {
                 "souls": 7200,
-                "sequence": 27
+                "transaction": 9
               }
             },
             "transactions": 35,
@@ -889,15 +889,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 14400,
-                "sequence": 54
+                "transaction": 18
               },
               "vitality": {
                 "souls": 7200,
-                "sequence": 27
+                "transaction": 9
               },
               "spirit": {
                 "souls": 16000,
-                "sequence": 60
+                "transaction": 20
               }
             },
             "transactions": 79,
@@ -1005,15 +1005,15 @@
             "thresholds4800": {
               "weapon": {
                 "souls": 17200,
-                "sequence": 65
+                "transaction": 22
               },
               "vitality": {
                 "souls": 8800,
-                "sequence": 33
+                "transaction": 11
               },
               "spirit": {
                 "souls": 13600,
-                "sequence": 51
+                "transaction": 17
               }
             },
             "transactions": 35,
@@ -1113,59 +1113,43 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58634.815407,
+          "runtimeMs": 58318.993894,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 62007,
-          "generatedStates": 763337,
-          "searchGeneratedStates": 259543,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 24684,
+          "generatedStates": 175371,
+          "searchGeneratedStates": 140376,
+          "maxNaturalReachedSouls": 37600,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 41814.241672,
-              "evaluations": 40396,
-              "generatedStates": 191366,
-              "searchGeneratedStates": 175473,
-              "duplicateStates": 918,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 1838,
-              "finalFrontSize": 1,
-              "objectiveConfigId": "carry-balanced-a-50-50"
-            },
-            {
-              "width": 8,
               "searchComplete": false,
-              "runtimeMs": 16816.24846399999,
-              "evaluations": 21611,
-              "generatedStates": 571971,
-              "searchGeneratedStates": 84070,
-              "duplicateStates": 1163,
-              "maxNaturalReachedSouls": 23200,
-              "terminalCandidates": 9,
+              "runtimeMs": 58314.088034,
+              "evaluations": 24684,
+              "generatedStates": 175371,
+              "searchGeneratedStates": 140376,
+              "duplicateStates": 397,
+              "maxNaturalReachedSouls": 37600,
+              "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-balanced-a-50-50"
             }
           ],
           "front": [
             {
-              "id": "d2def9aeebe6f992",
+              "id": "065241c520b83eb5",
               "source": "A",
-              "pathScore": 0.46549275243476096,
-              "endScore": 0.4995550105749605,
-              "pathDamage": 0.3632958727481676,
-              "endDamage": 0.3341409192345194,
-              "pathSurvivability": 0.5676896321213543,
-              "endSurvivability": 0.6649691019154016,
+              "pathScore": 0.46546264208976845,
+              "endScore": 0.48957545878916486,
+              "pathDamage": 0.362800810295443,
+              "endDamage": 0.3402401201523085,
+              "pathSurvivability": 0.5681244738840936,
+              "endSurvivability": 0.6389107974260213,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_titan_round",
@@ -1174,36 +1158,36 @@
                 "upgrade_magic_shield",
                 "upgrade_regenerating_bullet_shield",
                 "upgrade_suppressor",
-                "upgrade_fury_trance",
+                "upgrade_fleetfoot_boots",
                 "upgrade_magic_vulnerability",
                 "upgrade_bullet_resist_shredder",
                 "upgrade_improved_bullet_armor",
                 "upgrade_reinforcing_casings"
               ],
               "investments": {
-                "weapon": 6400,
-                "vitality": 16000,
+                "weapon": 8000,
+                "vitality": 12800,
                 "spirit": 4800
               },
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 39,
+              "transactions": 37,
               "reacquisitions": [
                 {
                   "item": "upgrade_pristine_emblem",
-                  "count": 4,
+                  "count": 3,
                   "totalCost": 1600
                 },
                 {
@@ -1243,45 +1227,45 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.46549275243476096,
-              "median": 0.46549275243476096,
-              "max": 0.46549275243476096
+              "min": 0.46546264208976845,
+              "median": 0.46546264208976845,
+              "max": 0.46546264208976845
             },
             "endScore": {
-              "min": 0.4995550105749605,
-              "median": 0.4995550105749605,
-              "max": 0.4995550105749605
+              "min": 0.48957545878916486,
+              "median": 0.48957545878916486,
+              "max": 0.48957545878916486
             },
             "pathDamage": {
-              "min": 0.3632958727481676,
-              "median": 0.3632958727481676,
-              "max": 0.3632958727481676
+              "min": 0.362800810295443,
+              "median": 0.362800810295443,
+              "max": 0.362800810295443
             },
             "endDamage": {
-              "min": 0.3341409192345194,
-              "median": 0.3341409192345194,
-              "max": 0.3341409192345194
+              "min": 0.3402401201523085,
+              "median": 0.3402401201523085,
+              "max": 0.3402401201523085
             },
             "pathSurvivability": {
-              "min": 0.5676896321213543,
-              "median": 0.5676896321213543,
-              "max": 0.5676896321213543
+              "min": 0.5681244738840936,
+              "median": 0.5681244738840936,
+              "max": 0.5681244738840936
             },
             "endSurvivability": {
-              "min": 0.6649691019154016,
-              "median": 0.6649691019154016,
-              "max": 0.6649691019154016
+              "min": 0.6389107974260213,
+              "median": 0.6389107974260213,
+              "max": 0.6389107974260213
             },
             "investments": {
               "weapon": {
-                "min": 6400,
-                "median": 6400,
-                "max": 6400
+                "min": 8000,
+                "median": 8000,
+                "max": 8000
               },
               "vitality": {
-                "min": 16000,
-                "median": 16000,
-                "max": 16000
+                "min": 12800,
+                "median": 12800,
+                "max": 12800
               },
               "spirit": {
                 "min": 4800,
@@ -1310,9 +1294,9 @@
               }
             },
             "transactions": {
-              "min": 39,
-              "median": 39,
-              "max": 39
+              "min": 37,
+              "median": 37,
+              "max": 37
             },
             "reacquisitionCounts": {
               "min": 6,
@@ -1324,45 +1308,29 @@
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 59172.388768000004,
+          "runtimeMs": 58679.56242,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 60930,
-          "generatedStates": 573416,
-          "searchGeneratedStates": 267473,
+          "evaluations": 33972,
+          "generatedStates": 142894,
+          "searchGeneratedStates": 128771,
           "maxNaturalReachedSouls": 40000,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 31131.93203099999,
-              "evaluations": 34196,
-              "generatedStates": 143512,
+              "searchComplete": false,
+              "runtimeMs": 58677.517328000016,
+              "evaluations": 33972,
+              "generatedStates": 142894,
               "searchGeneratedStates": 128771,
               "duplicateStates": 2814,
               "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 611,
-              "finalFrontSize": 1,
-              "objectiveConfigId": "carry-damage-primary-b-75-25"
-            },
-            {
-              "width": 8,
-              "searchComplete": false,
-              "runtimeMs": 28037.76014900001,
-              "evaluations": 26734,
-              "generatedStates": 429904,
-              "searchGeneratedStates": 138702,
-              "duplicateStates": 6210,
-              "maxNaturalReachedSouls": 29600,
-              "terminalCandidates": 9,
+              "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
             }
@@ -1399,15 +1367,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 39,
@@ -1540,14 +1508,15 @@
         "crossScoredUnion": {
           "unionCount": 2,
           "discoveredOnlyA": [
-            "d2def9aeebe6f992"
+            "065241c520b83eb5"
           ],
           "discoveredOnlyB": [
             "1f784a3fdbf1ccf4"
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "d2def9aeebe6f992"
+            "065241c520b83eb5",
+            "1f784a3fdbf1ccf4"
           ],
           "paretoFrontUnderB": [
             "1f784a3fdbf1ccf4"
@@ -1557,34 +1526,34 @@
           "bGuidedFrontCoverageOfUnionBFront": "1/1",
           "records": [
             {
-              "id": "d2def9aeebe6f992",
+              "id": "065241c520b83eb5",
               "discoveredBy": [
                 "A"
               ],
               "investments": {
-                "weapon": 6400,
-                "vitality": 16000,
+                "weapon": 8000,
+                "vitality": 12800,
                 "spirit": 4800
               },
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 39,
+              "transactions": 37,
               "reacquisitions": [
                 {
                   "item": "upgrade_pristine_emblem",
-                  "count": 4,
+                  "count": 3,
                   "totalCost": 1600
                 },
                 {
@@ -1614,20 +1583,20 @@
                 }
               ],
               "A": {
-                "pathScore": 0.46549275243476096,
-                "endScore": 0.4995550105749605,
-                "pathDamage": 0.3632958727481676,
-                "endDamage": 0.3341409192345194,
-                "pathSurvivability": 0.5676896321213543,
-                "endSurvivability": 0.6649691019154016
+                "pathScore": 0.46546264208976845,
+                "endScore": 0.48957545878916486,
+                "pathDamage": 0.362800810295443,
+                "endDamage": 0.3402401201523085,
+                "pathSurvivability": 0.5681244738840936,
+                "endSurvivability": 0.6389107974260213
               },
               "B": {
-                "pathScore": 0.409502169235592,
-                "endScore": 0.4164229034840403,
-                "pathDamage": 0.3567730149403377,
-                "endDamage": 0.3335741706735866,
-                "pathSurvivability": 0.5676896321213543,
-                "endSurvivability": 0.6649691019154016
+                "pathScore": 0.40930680266977176,
+                "endScore": 0.4154629567689675,
+                "pathDamage": 0.35636757893166426,
+                "endDamage": 0.34098034321661624,
+                "pathSurvivability": 0.5681244738840936,
+                "endSurvivability": 0.6389107974260213
               }
             },
             {
@@ -1643,15 +1612,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 39,
@@ -1732,58 +1701,114 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58958.55480900002,
+          "runtimeMs": 58354.49522900002,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 68640,
-          "generatedStates": 741849,
-          "searchGeneratedStates": 254053,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 34809,
+          "generatedStates": 157235,
+          "searchGeneratedStates": 134482,
+          "maxNaturalReachedSouls": 38800,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 39678.912121,
-              "evaluations": 47337,
-              "generatedStates": 173147,
-              "searchGeneratedStates": 157766,
-              "duplicateStates": 3107,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 1317,
-              "finalFrontSize": 1,
-              "objectiveConfigId": "carry-balanced-a-50-50"
-            },
-            {
-              "width": 8,
               "searchComplete": false,
-              "runtimeMs": 19276.60843999998,
-              "evaluations": 21303,
-              "generatedStates": 568702,
-              "searchGeneratedStates": 96287,
-              "duplicateStates": 2434,
-              "maxNaturalReachedSouls": 24400,
-              "terminalCandidates": 9,
-              "finalFrontSize": 4,
+              "runtimeMs": 58352.49300800002,
+              "evaluations": 34809,
+              "generatedStates": 157235,
+              "searchGeneratedStates": 134482,
+              "duplicateStates": 2862,
+              "maxNaturalReachedSouls": 38800,
+              "terminalCandidates": 5,
+              "finalFrontSize": 2,
               "objectiveConfigId": "carry-balanced-a-50-50"
             }
           ],
           "front": [
             {
-              "id": "7b45fd234c36707f",
+              "id": "450f5e3abf951bb7",
               "source": "A",
               "pathScore": 0.4901369437082784,
-              "endScore": 0.5223257790480336,
+              "endScore": 0.5222445471972562,
               "pathDamage": 0.40825649895497584,
-              "endDamage": 0.377669000486911,
+              "endDamage": 0.3853790602649524,
               "pathSurvivability": 0.5720173884615817,
+              "endSurvivability": 0.65911003412956,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_soaring_spirit",
+                "upgrade_improved_bullet_armor",
+                "upgrade_veil_walker",
+                "upgrade_reinforcing_casings",
+                "upgrade_suppressor",
+                "upgrade_magic_shield",
+                "upgrade_magic_vulnerability",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_titan_round",
+                "upgrade_tech_purge",
+                "upgrade_bullet_resist_shredder"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 16000,
+                "spirit": 6400
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "transaction": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "transaction": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "transaction": null
+                }
+              },
+              "transactions": 35,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 3,
+                "upgradeBacktracks": 1
+              }
+            },
+            {
+              "id": "25be0d2745e49b32",
+              "source": "A",
+              "pathScore": 0.49013495123538087,
+              "endScore": 0.5223257790480336,
+              "pathDamage": 0.40785888783520113,
+              "endDamage": 0.377669000486911,
+              "pathSurvivability": 0.5724110146355612,
               "endSurvivability": 0.6669825576091561,
               "inventory": [
                 "upgrade_chonky",
@@ -1807,18 +1832,18 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 36,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -1850,35 +1875,35 @@
             }
           ],
           "summary": {
-            "count": 1,
+            "count": 2,
             "pathScore": {
-              "min": 0.4901369437082784,
-              "median": 0.4901369437082784,
+              "min": 0.49013495123538087,
+              "median": 0.49013594747182965,
               "max": 0.4901369437082784
             },
             "endScore": {
-              "min": 0.5223257790480336,
-              "median": 0.5223257790480336,
+              "min": 0.5222445471972562,
+              "median": 0.5222851631226448,
               "max": 0.5223257790480336
             },
             "pathDamage": {
-              "min": 0.40825649895497584,
-              "median": 0.40825649895497584,
+              "min": 0.40785888783520113,
+              "median": 0.40805769339508846,
               "max": 0.40825649895497584
             },
             "endDamage": {
               "min": 0.377669000486911,
-              "median": 0.377669000486911,
-              "max": 0.377669000486911
+              "median": 0.3815240303759317,
+              "max": 0.3853790602649524
             },
             "pathSurvivability": {
               "min": 0.5720173884615817,
-              "median": 0.5720173884615817,
-              "max": 0.5720173884615817
+              "median": 0.5722142015485714,
+              "max": 0.5724110146355612
             },
             "endSurvivability": {
-              "min": 0.6669825576091561,
-              "median": 0.6669825576091561,
+              "min": 0.65911003412956,
+              "median": 0.6630462958693581,
               "max": 0.6669825576091561
             },
             "investments": {
@@ -1903,25 +1928,25 @@
                 "min": null,
                 "median": null,
                 "max": null,
-                "nullCount": 1
+                "nullCount": 2
               },
               "vitality": {
                 "min": null,
                 "median": null,
                 "max": null,
-                "nullCount": 1
+                "nullCount": 2
               },
               "spirit": {
                 "min": null,
                 "median": null,
                 "max": null,
-                "nullCount": 1
+                "nullCount": 2
               }
             },
             "transactions": {
-              "min": 36,
-              "median": 36,
-              "max": 36
+              "min": 35,
+              "median": 35,
+              "max": 35
             },
             "reacquisitionCounts": {
               "min": 4,
@@ -1933,45 +1958,29 @@
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 58994.525585999974,
+          "runtimeMs": 58281.85439200001,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 69972,
-          "generatedStates": 692077,
-          "searchGeneratedStates": 268975,
+          "evaluations": 34057,
+          "generatedStates": 151962,
+          "searchGeneratedStates": 136774,
           "maxNaturalReachedSouls": 40000,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 37302.80426799998,
-              "evaluations": 46268,
-              "generatedStates": 167823,
-              "searchGeneratedStates": 152918,
-              "duplicateStates": 2076,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 856,
-              "finalFrontSize": 1,
-              "objectiveConfigId": "carry-damage-primary-b-75-25"
-            },
-            {
-              "width": 8,
               "searchComplete": false,
-              "runtimeMs": 21689.095197000017,
-              "evaluations": 23704,
-              "generatedStates": 524254,
-              "searchGeneratedStates": 116057,
-              "duplicateStates": 1792,
-              "maxNaturalReachedSouls": 25600,
-              "terminalCandidates": 9,
+              "runtimeMs": 58279.130297000025,
+              "evaluations": 34057,
+              "generatedStates": 151962,
+              "searchGeneratedStates": 136774,
+              "duplicateStates": 1586,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 6,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
             }
@@ -2008,15 +2017,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 39,
@@ -2142,16 +2151,18 @@
           }
         },
         "crossScoredUnion": {
-          "unionCount": 2,
+          "unionCount": 3,
           "discoveredOnlyA": [
-            "7b45fd234c36707f"
+            "450f5e3abf951bb7",
+            "25be0d2745e49b32"
           ],
           "discoveredOnlyB": [
             "91a15f82d90ff54d"
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "7b45fd234c36707f"
+            "450f5e3abf951bb7",
+            "25be0d2745e49b32"
           ],
           "paretoFrontUnderB": [
             "91a15f82d90ff54d"
@@ -2161,7 +2172,7 @@
           "bGuidedFrontCoverageOfUnionBFront": "1/1",
           "records": [
             {
-              "id": "7b45fd234c36707f",
+              "id": "450f5e3abf951bb7",
               "discoveredBy": [
                 "A"
               ],
@@ -2173,18 +2184,18 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 36,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -2209,18 +2220,82 @@
               ],
               "A": {
                 "pathScore": 0.4901369437082784,
-                "endScore": 0.5223257790480336,
+                "endScore": 0.5222445471972562,
                 "pathDamage": 0.40825649895497584,
-                "endDamage": 0.377669000486911,
+                "endDamage": 0.3853790602649524,
                 "pathSurvivability": 0.5720173884615817,
-                "endSurvivability": 0.6669825576091561
+                "endSurvivability": 0.65911003412956
               },
               "B": {
                 "pathScore": 0.46841095578977626,
-                "endScore": 0.47114291359925686,
+                "endScore": 0.4720660551461233,
                 "pathDamage": 0.4338754782325083,
-                "endDamage": 0.40586303226262377,
+                "endDamage": 0.4097180621516444,
                 "pathSurvivability": 0.5720173884615817,
+                "endSurvivability": 0.65911003412956
+              }
+            },
+            {
+              "id": "25be0d2745e49b32",
+              "discoveredBy": [
+                "A"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 16000,
+                "spirit": 6400
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "transaction": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "transaction": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "transaction": null
+                }
+              },
+              "transactions": 35,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "A": {
+                "pathScore": 0.49013495123538087,
+                "endScore": 0.5223257790480336,
+                "pathDamage": 0.40785888783520113,
+                "endDamage": 0.377669000486911,
+                "pathSurvivability": 0.5724110146355612,
+                "endSurvivability": 0.6669825576091561
+              },
+              "B": {
+                "pathScore": 0.46836025816335575,
+                "endScore": 0.47114291359925686,
+                "pathDamage": 0.4336766726726208,
+                "endDamage": 0.40586303226262377,
+                "pathSurvivability": 0.5724110146355612,
                 "endSurvivability": 0.6669825576091561
               }
             },
@@ -2237,15 +2312,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 39,
@@ -2321,59 +2396,43 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58495.323501999956,
+          "runtimeMs": 58730.53686500003,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 59143,
-          "generatedStates": 679145,
-          "searchGeneratedStates": 274363,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 31670,
+          "generatedStates": 173787,
+          "searchGeneratedStates": 138726,
+          "maxNaturalReachedSouls": 38000,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 34729.937670000014,
-              "evaluations": 34035,
-              "generatedStates": 168721,
-              "searchGeneratedStates": 153958,
-              "duplicateStates": 1236,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 633,
-              "finalFrontSize": 1,
-              "objectiveConfigId": "carry-balanced-a-50-50"
-            },
-            {
-              "width": 8,
               "searchComplete": false,
-              "runtimeMs": 23762.831469999976,
-              "evaluations": 25108,
-              "generatedStates": 510424,
-              "searchGeneratedStates": 120405,
-              "duplicateStates": 1255,
-              "maxNaturalReachedSouls": 26400,
-              "terminalCandidates": 9,
+              "runtimeMs": 58728.67782599997,
+              "evaluations": 31670,
+              "generatedStates": 173787,
+              "searchGeneratedStates": 138726,
+              "duplicateStates": 1163,
+              "maxNaturalReachedSouls": 38000,
+              "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-balanced-a-50-50"
             }
           ],
           "front": [
             {
-              "id": "4664933f4b9e2bf0",
+              "id": "2869cff9451b3481",
               "source": "A",
-              "pathScore": 0.47636876478306084,
-              "endScore": 0.506679786387213,
-              "pathDamage": 0.3802488473698325,
-              "endDamage": 0.3635647155667309,
-              "pathSurvivability": 0.5724886821962892,
-              "endSurvivability": 0.649794857207695,
+              "pathScore": 0.4759599394665237,
+              "endScore": 0.49584748712485194,
+              "pathDamage": 0.37965406980194777,
+              "endDamage": 0.34747194367174294,
+              "pathSurvivability": 0.5722658091310997,
+              "endSurvivability": 0.6442230305779609,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_soaring_spirit",
@@ -2385,29 +2444,29 @@
                 "upgrade_bullet_resist_shredder",
                 "upgrade_suppressor",
                 "upgrade_titan_round",
-                "upgrade_blitz_bullets",
-                "upgrade_reinforcing_casings"
+                "upgrade_pristine_emblem",
+                "upgrade_fleetfoot_boots"
               ],
               "investments": {
-                "weapon": 6400,
+                "weapon": 4800,
                 "vitality": 16000,
                 "spirit": 4800
               },
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 37,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -2441,40 +2500,40 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.47636876478306084,
-              "median": 0.47636876478306084,
-              "max": 0.47636876478306084
+              "min": 0.4759599394665237,
+              "median": 0.4759599394665237,
+              "max": 0.4759599394665237
             },
             "endScore": {
-              "min": 0.506679786387213,
-              "median": 0.506679786387213,
-              "max": 0.506679786387213
+              "min": 0.49584748712485194,
+              "median": 0.49584748712485194,
+              "max": 0.49584748712485194
             },
             "pathDamage": {
-              "min": 0.3802488473698325,
-              "median": 0.3802488473698325,
-              "max": 0.3802488473698325
+              "min": 0.37965406980194777,
+              "median": 0.37965406980194777,
+              "max": 0.37965406980194777
             },
             "endDamage": {
-              "min": 0.3635647155667309,
-              "median": 0.3635647155667309,
-              "max": 0.3635647155667309
+              "min": 0.34747194367174294,
+              "median": 0.34747194367174294,
+              "max": 0.34747194367174294
             },
             "pathSurvivability": {
-              "min": 0.5724886821962892,
-              "median": 0.5724886821962892,
-              "max": 0.5724886821962892
+              "min": 0.5722658091310997,
+              "median": 0.5722658091310997,
+              "max": 0.5722658091310997
             },
             "endSurvivability": {
-              "min": 0.649794857207695,
-              "median": 0.649794857207695,
-              "max": 0.649794857207695
+              "min": 0.6442230305779609,
+              "median": 0.6442230305779609,
+              "max": 0.6442230305779609
             },
             "investments": {
               "weapon": {
-                "min": 6400,
-                "median": 6400,
-                "max": 6400
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
               },
               "vitality": {
                 "min": 16000,
@@ -2508,9 +2567,9 @@
               }
             },
             "transactions": {
-              "min": 37,
-              "median": 37,
-              "max": 37
+              "min": 35,
+              "median": 35,
+              "max": 35
             },
             "reacquisitionCounts": {
               "min": 4,
@@ -2522,46 +2581,30 @@
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 59760.82971600001,
+          "runtimeMs": 58872.909525999974,
           "timeBudgetMs": 60000,
           "widthsStarted": [
-            4,
-            8
-          ],
-          "widthsCompleted": [
             4
           ],
+          "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 71808,
-          "generatedStates": 699292,
-          "searchGeneratedStates": 247583,
+          "evaluations": 38330,
+          "generatedStates": 149190,
+          "searchGeneratedStates": 134305,
           "maxNaturalReachedSouls": 40000,
           "runs": [
             {
               "width": 4,
-              "searchComplete": true,
-              "runtimeMs": 39607.68598000001,
-              "evaluations": 46105,
-              "generatedStates": 168256,
-              "searchGeneratedStates": 152935,
-              "duplicateStates": 3110,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 1267,
-              "finalFrontSize": 2,
-              "objectiveConfigId": "carry-damage-primary-b-75-25"
-            },
-            {
-              "width": 8,
               "searchComplete": false,
-              "runtimeMs": 20150.213373999984,
-              "evaluations": 25703,
-              "generatedStates": 531036,
-              "searchGeneratedStates": 94648,
-              "duplicateStates": 3017,
-              "maxNaturalReachedSouls": 24800,
-              "terminalCandidates": 9,
-              "finalFrontSize": 4,
+              "runtimeMs": 58871.08548000001,
+              "evaluations": 38330,
+              "generatedStates": 149190,
+              "searchGeneratedStates": 134305,
+              "duplicateStates": 3066,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 7,
+              "finalFrontSize": 2,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
             }
           ],
@@ -2597,15 +2640,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 38,
@@ -2684,15 +2727,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 36,
@@ -2815,7 +2858,7 @@
         "crossScoredUnion": {
           "unionCount": 3,
           "discoveredOnlyA": [
-            "4664933f4b9e2bf0"
+            "2869cff9451b3481"
           ],
           "discoveredOnlyB": [
             "d26be905a9cf5b16",
@@ -2823,7 +2866,7 @@
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "4664933f4b9e2bf0"
+            "2869cff9451b3481"
           ],
           "paretoFrontUnderB": [
             "c44f340dc288c59a",
@@ -2834,30 +2877,30 @@
           "bGuidedFrontCoverageOfUnionBFront": "2/2",
           "records": [
             {
-              "id": "4664933f4b9e2bf0",
+              "id": "2869cff9451b3481",
               "discoveredBy": [
                 "A"
               ],
               "investments": {
-                "weapon": 6400,
+                "weapon": 4800,
                 "vitality": 16000,
                 "spirit": 4800
               },
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
-              "transactions": 37,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -2881,20 +2924,20 @@
                 }
               ],
               "A": {
-                "pathScore": 0.47636876478306084,
-                "endScore": 0.506679786387213,
-                "pathDamage": 0.3802488473698325,
-                "endDamage": 0.3635647155667309,
-                "pathSurvivability": 0.5724886821962892,
-                "endSurvivability": 0.649794857207695
+                "pathScore": 0.4759599394665237,
+                "endScore": 0.49584748712485194,
+                "pathDamage": 0.37965406980194777,
+                "endDamage": 0.34747194367174294,
+                "pathSurvivability": 0.5722658091310997,
+                "endSurvivability": 0.6442230305779609
               },
               "B": {
-                "pathScore": 0.42830880607644695,
-                "endScore": 0.43512225097697194,
-                "pathDamage": 0.3802488473698325,
-                "endDamage": 0.3635647155667309,
-                "pathSurvivability": 0.5724886821962892,
-                "endSurvivability": 0.649794857207695
+                "pathScore": 0.42780700463423593,
+                "endScore": 0.4216597153982974,
+                "pathDamage": 0.37965406980194777,
+                "endDamage": 0.34747194367174294,
+                "pathSurvivability": 0.5722658091310997,
+                "endSurvivability": 0.6442230305779609
               }
             },
             {
@@ -2910,15 +2953,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 38,
@@ -2989,15 +3032,15 @@
               "thresholds4800": {
                 "weapon": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "vitality": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 },
                 "spirit": {
                   "souls": null,
-                  "sequence": null
+                  "transaction": null
                 }
               },
               "transactions": 36,
