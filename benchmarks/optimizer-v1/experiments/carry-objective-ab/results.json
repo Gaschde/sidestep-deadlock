@@ -1,0 +1,3053 @@
+{
+  "schemaVersion": "optimizer-carry-objective-ab-v1",
+  "experiment": "carry-50-50-vs-75-25",
+  "sourceCommit": "8f5f9b438e3e8640ad5a8e48ee2a87cd63e88ee7",
+  "generatedAt": "2026-09-20T01:10:48.218Z",
+  "productionChanged": false,
+  "uiChanged": false,
+  "baselineA": {
+    "id": "carry-balanced-a-50-50",
+    "damageSurvival": {
+      "damage": 0.5,
+      "survival": 0.5
+    },
+    "focus": {
+      "weapon": {
+        "bullet": 0.7,
+        "spirit": 0.3
+      },
+      "spirit": {
+        "bullet": 0.3,
+        "spirit": 0.7
+      },
+      "hybrid": {
+        "bullet": 0.5,
+        "spirit": 0.5
+      }
+    },
+    "effective": {
+      "weapon": {
+        "bullet": 0.35,
+        "spirit": 0.15,
+        "survival": 0.5
+      },
+      "spirit": {
+        "bullet": 0.15,
+        "spirit": 0.35,
+        "survival": 0.5
+      },
+      "hybrid": {
+        "bullet": 0.25,
+        "spirit": 0.25,
+        "survival": 0.5
+      }
+    }
+  },
+  "experimentB": {
+    "id": "carry-damage-primary-b-75-25",
+    "damageSurvival": {
+      "damage": 0.75,
+      "survival": 0.25
+    },
+    "focus": {
+      "weapon": {
+        "bullet": 0.85,
+        "spirit": 0.15
+      },
+      "spirit": {
+        "bullet": 0.15,
+        "spirit": 0.85
+      },
+      "hybrid": {
+        "bullet": 0.5,
+        "spirit": 0.5
+      }
+    },
+    "effective": {
+      "weapon": {
+        "bullet": 0.6375,
+        "spirit": 0.1125,
+        "survival": 0.25
+      },
+      "spirit": {
+        "bullet": 0.1125,
+        "spirit": 0.6375,
+        "survival": 0.25
+      },
+      "hybrid": {
+        "bullet": 0.375,
+        "spirit": 0.375,
+        "survival": 0.25
+      }
+    }
+  },
+  "unchanged": [
+    "Path-AUC definition",
+    "Endbuild as separate Pareto objective",
+    "Multiobjective Pareto semantics",
+    "Beam widths",
+    "Lazy Pareto",
+    "Dedupe",
+    "Diversity",
+    "Save-to-40k",
+    "Terminalization",
+    "60s product budget",
+    "Reference methodology and frozen references",
+    "Canonical item and threshold data",
+    "Evaluator and Afterburn",
+    "Damage metric set including known duplicate 10s damage metrics"
+  ],
+  "stage1": {
+    "source": "stored 40k multiobjective-shadow paths; no new search",
+    "allReplayable": true,
+    "objectiveMoves": true,
+    "orderingSignal": true,
+    "plausibleForControlledSearch": true,
+    "gate": {
+      "rule": "Run Stage 2 only when all three stored Warden focus sets replay, B materially changes Path/End utility in every focus, and at least one Pareto-front or pairwise-dominance relation changes.",
+      "allReplayable": true,
+      "objectiveMoves": true,
+      "orderingSignal": true
+    },
+    "cases": [
+      {
+        "caseId": "production-40k-warden-carry-weapon",
+        "focus": "weapon",
+        "candidateCount": 2,
+        "candidateIdsHash": "dbfcb3fbbc5b636354c9e013ff222c8a922747e6e89b51f0fb4172b5ae4a9bc3",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-weapon",
+        "maxObjectiveScoreShift": 0.08062923627949986,
+        "dominanceRelationChanges": 1,
+        "paretoFrontChanged": true,
+        "paretoLayersA": [
+          [
+            "547ad5faf30cbcc2"
+          ],
+          [
+            "e3003a8463010e95"
+          ]
+        ],
+        "paretoLayersB": [
+          [
+            "547ad5faf30cbcc2",
+            "e3003a8463010e95"
+          ]
+        ],
+        "candidates": [
+          {
+            "id": "e3003a8463010e95",
+            "source": "production",
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_reinforcing_casings",
+              "upgrade_debuff_reducer",
+              "upgrade_blitz_bullets",
+              "upgrade_improved_bullet_armor",
+              "upgrade_magic_vulnerability",
+              "upgrade_magic_shield",
+              "upgrade_suppressor",
+              "upgrade_chonky",
+              "upgrade_pristine_emblem"
+            ],
+            "investments": {
+              "weapon": 8000,
+              "vitality": 11200,
+              "spirit": 4800
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 6000,
+                "sequence": 23
+              },
+              "vitality": {
+                "souls": 21600,
+                "sequence": 85
+              },
+              "spirit": {
+                "souls": 12400,
+                "sequence": 48
+              }
+            },
+            "transactions": 46,
+            "reacquisitions": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 4,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_close_range",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 4,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_health",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_close_range",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.4320771947608242,
+              "endScore": 0.4769834140990815,
+              "pathDamage": 0.38937314322071304,
+              "endDamage": 0.3484521654978297,
+              "pathSurvivability": 0.4747812463009356,
+              "endSurvivability": 0.6055146627003334
+            },
+            "B": {
+              "pathScore": 0.40677179974231337,
+              "endScore": 0.41215942454027665,
+              "pathDamage": 0.3841019842227728,
+              "endDamage": 0.3477076784869244,
+              "pathSurvivability": 0.4747812463009356,
+              "endSurvivability": 0.6055146627003334
+            },
+            "paretoLayerA": 2,
+            "paretoLayerB": 1
+          },
+          {
+            "id": "547ad5faf30cbcc2",
+            "source": "multiobjective-shadow",
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_titan_round",
+              "upgrade_blitz_bullets",
+              "upgrade_tech_purge",
+              "upgrade_magic_shield",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_suppressor",
+              "upgrade_fleetfoot_boots",
+              "upgrade_soaring_spirit",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_improved_bullet_armor",
+              "upgrade_reinforcing_casings"
+            ],
+            "investments": {
+              "weapon": 8000,
+              "vitality": 12800,
+              "spirit": 4800
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 14000,
+                "sequence": 53
+              },
+              "vitality": {
+                "souls": 10000,
+                "sequence": 38
+              },
+              "spirit": {
+                "souls": 21200,
+                "sequence": 80
+              }
+            },
+            "transactions": 36,
+            "reacquisitions": [
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_high_velocity_mag",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_blitz_bullets",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.46521382701659897,
+              "endScore": 0.4864864813801558,
+              "pathDamage": 0.36307559162427017,
+              "endDamage": 0.3437173087738687,
+              "pathSurvivability": 0.5673520624089274,
+              "endSurvivability": 0.6292556539864429
+            },
+            "B": {
+              "pathScore": 0.4085288878627258,
+              "endScore": 0.40585724510065596,
+              "pathDamage": 0.3555878296806584,
+              "endDamage": 0.33139110880539363,
+              "pathSurvivability": 0.5673520624089274,
+              "endSurvivability": 0.6292556539864429
+            },
+            "paretoLayerA": 1,
+            "paretoLayerB": 1
+          }
+        ]
+      },
+      {
+        "caseId": "production-40k-warden-carry-spirit",
+        "focus": "spirit",
+        "candidateCount": 3,
+        "candidateIdsHash": "946f9a1a6d63dc589bbfa54d53600de92302b00a4fa9e92352094322c442eb16",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-spirit",
+        "maxObjectiveScoreShift": 0.051182865448776704,
+        "dominanceRelationChanges": 1,
+        "paretoFrontChanged": true,
+        "paretoLayersA": [
+          [
+            "25be0d2745e49b32",
+            "450f5e3abf951bb7"
+          ],
+          [
+            "925987795838eef6"
+          ]
+        ],
+        "paretoLayersB": [
+          [
+            "450f5e3abf951bb7"
+          ],
+          [
+            "25be0d2745e49b32"
+          ],
+          [
+            "925987795838eef6"
+          ]
+        ],
+        "candidates": [
+          {
+            "id": "925987795838eef6",
+            "source": "production",
+            "inventory": [
+              "upgrade_magic_slow",
+              "upgrade_titan_round",
+              "upgrade_soaring_spirit",
+              "upgrade_magic_vulnerability",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_magic_shield",
+              "upgrade_improved_bullet_armor",
+              "upgrade_debuff_reducer",
+              "upgrade_chonky",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_suppressor",
+              "upgrade_tech_purge"
+            ],
+            "investments": {
+              "weapon": 1600,
+              "vitality": 14400,
+              "spirit": 8000
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 11200,
+                "sequence": 43
+              },
+              "vitality": {
+                "souls": 14400,
+                "sequence": 56
+              },
+              "spirit": {
+                "souls": 6000,
+                "sequence": 23
+              }
+            },
+            "transactions": 44,
+            "reacquisitions": [
+              {
+                "item": "upgrade_healing_booster",
+                "count": 3,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_magic_vulnerability",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_suppressor",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_clip_size",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_debuff_reducer",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_health",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_mystic_regeneration",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_vulnerability",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_suppressor",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_debuff_reducer",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_health",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.450626054800113,
+              "endScore": 0.5026466351154937,
+              "pathDamage": 0.35159398868714786,
+              "endDamage": 0.3620889957967164,
+              "pathSurvivability": 0.5496581209130785,
+              "endSurvivability": 0.643204274434271
+            },
+            "B": {
+              "pathScore": 0.41824956425745996,
+              "endScore": 0.4572832012659797,
+              "pathDamage": 0.3744467120389207,
+              "endDamage": 0.3953095102098826,
+              "pathSurvivability": 0.5496581209130785,
+              "endSurvivability": 0.643204274434271
+            },
+            "paretoLayerA": 2,
+            "paretoLayerB": 3
+          },
+          {
+            "id": "450f5e3abf951bb7",
+            "source": "multiobjective-shadow",
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_veil_walker",
+              "upgrade_reinforcing_casings",
+              "upgrade_suppressor",
+              "upgrade_magic_shield",
+              "upgrade_magic_vulnerability",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_titan_round",
+              "upgrade_tech_purge",
+              "upgrade_bullet_resist_shredder"
+            ],
+            "investments": {
+              "weapon": 4800,
+              "vitality": 16000,
+              "spirit": 6400
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 16800,
+                "sequence": 63
+              },
+              "vitality": {
+                "souls": 12800,
+                "sequence": 48
+              },
+              "spirit": {
+                "souls": 7200,
+                "sequence": 27
+              }
+            },
+            "transactions": 35,
+            "reacquisitions": [
+              {
+                "item": "upgrade_clip_size",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_magic_slow",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.4901369437082784,
+              "endScore": 0.5222445471972562,
+              "pathDamage": 0.40825649895497584,
+              "endDamage": 0.3853790602649524,
+              "pathSurvivability": 0.5720173884615817,
+              "endSurvivability": 0.65911003412956
+            },
+            "B": {
+              "pathScore": 0.46841095578977626,
+              "endScore": 0.4720660551461233,
+              "pathDamage": 0.4338754782325083,
+              "endDamage": 0.4097180621516444,
+              "pathSurvivability": 0.5720173884615817,
+              "endSurvivability": 0.65911003412956
+            },
+            "paretoLayerA": 1,
+            "paretoLayerB": 1
+          },
+          {
+            "id": "25be0d2745e49b32",
+            "source": "multiobjective-shadow",
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_veil_walker",
+              "upgrade_hollow_point_rounds",
+              "upgrade_suppressor",
+              "upgrade_magic_shield",
+              "upgrade_magic_vulnerability",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_titan_round",
+              "upgrade_tech_purge",
+              "upgrade_bullet_resist_shredder"
+            ],
+            "investments": {
+              "weapon": 4800,
+              "vitality": 16000,
+              "spirit": 6400
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 16800,
+                "sequence": 63
+              },
+              "vitality": {
+                "souls": 12800,
+                "sequence": 48
+              },
+              "spirit": {
+                "souls": 7200,
+                "sequence": 27
+              }
+            },
+            "transactions": 35,
+            "reacquisitions": [
+              {
+                "item": "upgrade_clip_size",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_magic_slow",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_pristine_emblem",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.49013495123538087,
+              "endScore": 0.5223257790480336,
+              "pathDamage": 0.40785888783520113,
+              "endDamage": 0.377669000486911,
+              "pathSurvivability": 0.5724110146355612,
+              "endSurvivability": 0.6669825576091561
+            },
+            "B": {
+              "pathScore": 0.46836025816335575,
+              "endScore": 0.47114291359925686,
+              "pathDamage": 0.4336766726726208,
+              "endDamage": 0.40586303226262377,
+              "pathSurvivability": 0.5724110146355612,
+              "endSurvivability": 0.6669825576091561
+            },
+            "paretoLayerA": 1,
+            "paretoLayerB": 2
+          }
+        ]
+      },
+      {
+        "caseId": "production-40k-warden-carry-hybrid",
+        "focus": "hybrid",
+        "candidateCount": 2,
+        "candidateIdsHash": "6d16034240d6d29fd6c922c4864270430e31426729f7fb42a8a320538f923e9c",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-hybrid",
+        "maxObjectiveScoreShift": 0.07418777172655455,
+        "dominanceRelationChanges": 0,
+        "paretoFrontChanged": false,
+        "paretoLayersA": [
+          [
+            "2869cff9451b3481"
+          ],
+          [
+            "4642b65d4b34eed0"
+          ]
+        ],
+        "paretoLayersB": [
+          [
+            "2869cff9451b3481"
+          ],
+          [
+            "4642b65d4b34eed0"
+          ]
+        ],
+        "candidates": [
+          {
+            "id": "4642b65d4b34eed0",
+            "source": "production",
+            "inventory": [
+              "upgrade_health",
+              "upgrade_melee_rebuttal",
+              "upgrade_withering_whip",
+              "upgrade_magic_shield",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_soaring_spirit",
+              "upgrade_titan_round",
+              "upgrade_mystic_regeneration",
+              "upgrade_headshot_booster",
+              "upgrade_grit",
+              "upgrade_suppressor",
+              "upgrade_endurance"
+            ],
+            "investments": {
+              "weapon": 2400,
+              "vitality": 6400,
+              "spirit": 4800
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 14400,
+                "sequence": 54
+              },
+              "vitality": {
+                "souls": 7200,
+                "sequence": 27
+              },
+              "spirit": {
+                "souls": 16000,
+                "sequence": 60
+              }
+            },
+            "transactions": 79,
+            "reacquisitions": [
+              {
+                "item": "upgrade_grit",
+                "count": 29,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_health_stimpak",
+                "count": 28,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_endurance",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_improved_spirit",
+                "count": 1,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_soaring_spirit",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_grit",
+                  "count": 29,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_health_stimpak",
+                  "count": 28,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.44051653718648986,
+              "endScore": 0.40412729777695033,
+              "pathDamage": 0.341885791798069,
+              "endDamage": 0.299708022191397,
+              "pathSurvivability": 0.5391472825749097,
+              "endSurvivability": 0.5085465733625036
+            },
+            "B": {
+              "pathScore": 0.39120116449227915,
+              "endScore": 0.3519176599841737,
+              "pathDamage": 0.341885791798069,
+              "endDamage": 0.299708022191397,
+              "pathSurvivability": 0.5391472825749097,
+              "endSurvivability": 0.5085465733625036
+            },
+            "paretoLayerA": 2,
+            "paretoLayerB": 2
+          },
+          {
+            "id": "2869cff9451b3481",
+            "source": "multiobjective-shadow",
+            "inventory": [
+              "upgrade_chonky",
+              "upgrade_soaring_spirit",
+              "upgrade_improved_bullet_armor",
+              "upgrade_magic_shield",
+              "upgrade_veil_walker",
+              "upgrade_tech_purge",
+              "upgrade_regenerating_bullet_shield",
+              "upgrade_bullet_resist_shredder",
+              "upgrade_suppressor",
+              "upgrade_titan_round",
+              "upgrade_pristine_emblem",
+              "upgrade_fleetfoot_boots"
+            ],
+            "investments": {
+              "weapon": 4800,
+              "vitality": 16000,
+              "spirit": 4800
+            },
+            "thresholds4800": {
+              "weapon": {
+                "souls": 17200,
+                "sequence": 65
+              },
+              "vitality": {
+                "souls": 8800,
+                "sequence": 33
+              },
+              "spirit": {
+                "souls": 13600,
+                "sequence": 51
+              }
+            },
+            "transactions": 35,
+            "reacquisitions": [
+              {
+                "item": "upgrade_clip_size",
+                "count": 2,
+                "totalCost": 800
+              },
+              {
+                "item": "upgrade_titan_round",
+                "count": 2,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_fleetfoot_boots",
+                "count": 1,
+                "totalCost": 1600
+              },
+              {
+                "item": "upgrade_headshot_booster2",
+                "count": 1,
+                "totalCost": 1600
+              }
+            ],
+            "churn": {
+              "sameSoulTransactionGroups": [],
+              "sellRebuys": [],
+              "replacementRebuys": [
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster2",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "upgradeBacktracks": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                }
+              ]
+            },
+            "A": {
+              "pathScore": 0.4759599394665237,
+              "endScore": 0.49584748712485194,
+              "pathDamage": 0.37965406980194777,
+              "endDamage": 0.34747194367174294,
+              "pathSurvivability": 0.5722658091310997,
+              "endSurvivability": 0.6442230305779609
+            },
+            "B": {
+              "pathScore": 0.42780700463423593,
+              "endScore": 0.4216597153982974,
+              "pathDamage": 0.37965406980194777,
+              "endDamage": 0.34747194367174294,
+              "pathSurvivability": 0.5722658091310997,
+              "endSurvivability": 0.6442230305779609
+            },
+            "paretoLayerA": 1,
+            "paretoLayerB": 1
+          }
+        ]
+      }
+    ]
+  },
+  "stage2": {
+    "executed": true,
+    "cases": [
+      {
+        "caseId": "production-40k-warden-carry-weapon",
+        "focus": "weapon",
+        "controls": {
+          "budget": 40000,
+          "timeBudgetMs": 60000,
+          "widths": [
+            4,
+            8,
+            16,
+            32
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceVersion": "baseline-v0:production-40k-warden-carry-weapon",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "scalarizationUsed": false
+        },
+        "A": {
+          "label": "A",
+          "objectiveConfigId": "carry-balanced-a-50-50",
+          "runtimeMs": 58634.815407,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 62007,
+          "generatedStates": 763337,
+          "searchGeneratedStates": 259543,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 41814.241672,
+              "evaluations": 40396,
+              "generatedStates": 191366,
+              "searchGeneratedStates": 175473,
+              "duplicateStates": 918,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 1838,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 16816.24846399999,
+              "evaluations": 21611,
+              "generatedStates": 571971,
+              "searchGeneratedStates": 84070,
+              "duplicateStates": 1163,
+              "maxNaturalReachedSouls": 23200,
+              "terminalCandidates": 9,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            }
+          ],
+          "front": [
+            {
+              "id": "d2def9aeebe6f992",
+              "source": "A",
+              "pathScore": 0.46549275243476096,
+              "endScore": 0.4995550105749605,
+              "pathDamage": 0.3632958727481676,
+              "endDamage": 0.3341409192345194,
+              "pathSurvivability": 0.5676896321213543,
+              "endSurvivability": 0.6649691019154016,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_titan_round",
+                "upgrade_blitz_bullets",
+                "upgrade_tech_purge",
+                "upgrade_magic_shield",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_suppressor",
+                "upgrade_fury_trance",
+                "upgrade_magic_vulnerability",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_improved_bullet_armor",
+                "upgrade_reinforcing_casings"
+              ],
+              "investments": {
+                "weapon": 6400,
+                "vitality": 16000,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 4,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 4,
+                "upgradeBacktracks": 2
+              }
+            }
+          ],
+          "summary": {
+            "count": 1,
+            "pathScore": {
+              "min": 0.46549275243476096,
+              "median": 0.46549275243476096,
+              "max": 0.46549275243476096
+            },
+            "endScore": {
+              "min": 0.4995550105749605,
+              "median": 0.4995550105749605,
+              "max": 0.4995550105749605
+            },
+            "pathDamage": {
+              "min": 0.3632958727481676,
+              "median": 0.3632958727481676,
+              "max": 0.3632958727481676
+            },
+            "endDamage": {
+              "min": 0.3341409192345194,
+              "median": 0.3341409192345194,
+              "max": 0.3341409192345194
+            },
+            "pathSurvivability": {
+              "min": 0.5676896321213543,
+              "median": 0.5676896321213543,
+              "max": 0.5676896321213543
+            },
+            "endSurvivability": {
+              "min": 0.6649691019154016,
+              "median": 0.6649691019154016,
+              "max": 0.6649691019154016
+            },
+            "investments": {
+              "weapon": {
+                "min": 6400,
+                "median": 6400,
+                "max": 6400
+              },
+              "vitality": {
+                "min": 16000,
+                "median": 16000,
+                "max": 16000
+              },
+              "spirit": {
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              }
+            },
+            "transactions": {
+              "min": 39,
+              "median": 39,
+              "max": 39
+            },
+            "reacquisitionCounts": {
+              "min": 6,
+              "median": 6,
+              "max": 6
+            }
+          }
+        },
+        "B": {
+          "label": "B",
+          "objectiveConfigId": "carry-damage-primary-b-75-25",
+          "runtimeMs": 59172.388768000004,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 60930,
+          "generatedStates": 573416,
+          "searchGeneratedStates": 267473,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 31131.93203099999,
+              "evaluations": 34196,
+              "generatedStates": 143512,
+              "searchGeneratedStates": 128771,
+              "duplicateStates": 2814,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 611,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 28037.76014900001,
+              "evaluations": 26734,
+              "generatedStates": 429904,
+              "searchGeneratedStates": 138702,
+              "duplicateStates": 6210,
+              "maxNaturalReachedSouls": 29600,
+              "terminalCandidates": 9,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            }
+          ],
+          "front": [
+            {
+              "id": "1f784a3fdbf1ccf4",
+              "source": "B",
+              "pathScore": 0.4422150184733982,
+              "endScore": 0.4445846741873105,
+              "pathDamage": 0.4231042639374484,
+              "endDamage": 0.3969082775363759,
+              "pathSurvivability": 0.49954728208124827,
+              "endSurvivability": 0.5876138641401143,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_pristine_emblem",
+                "upgrade_blitz_bullets",
+                "upgrade_reinforcing_casings",
+                "upgrade_chonky",
+                "upgrade_suppressor",
+                "upgrade_fury_trance",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_weighted_shots",
+                "upgrade_soaring_spirit",
+                "upgrade_tech_purge",
+                "upgrade_regenerating_bullet_shield"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 11200,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_health",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_debuff_reducer",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 6,
+                "upgradeBacktracks": 1
+              }
+            }
+          ],
+          "summary": {
+            "count": 1,
+            "pathScore": {
+              "min": 0.4422150184733982,
+              "median": 0.4422150184733982,
+              "max": 0.4422150184733982
+            },
+            "endScore": {
+              "min": 0.4445846741873105,
+              "median": 0.4445846741873105,
+              "max": 0.4445846741873105
+            },
+            "pathDamage": {
+              "min": 0.4231042639374484,
+              "median": 0.4231042639374484,
+              "max": 0.4231042639374484
+            },
+            "endDamage": {
+              "min": 0.3969082775363759,
+              "median": 0.3969082775363759,
+              "max": 0.3969082775363759
+            },
+            "pathSurvivability": {
+              "min": 0.49954728208124827,
+              "median": 0.49954728208124827,
+              "max": 0.49954728208124827
+            },
+            "endSurvivability": {
+              "min": 0.5876138641401143,
+              "median": 0.5876138641401143,
+              "max": 0.5876138641401143
+            },
+            "investments": {
+              "weapon": {
+                "min": 11200,
+                "median": 11200,
+                "max": 11200
+              },
+              "vitality": {
+                "min": 11200,
+                "median": 11200,
+                "max": 11200
+              },
+              "spirit": {
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              }
+            },
+            "transactions": {
+              "min": 39,
+              "median": 39,
+              "max": 39
+            },
+            "reacquisitionCounts": {
+              "min": 7,
+              "median": 7,
+              "max": 7
+            }
+          }
+        },
+        "crossScoredUnion": {
+          "unionCount": 2,
+          "discoveredOnlyA": [
+            "d2def9aeebe6f992"
+          ],
+          "discoveredOnlyB": [
+            "1f784a3fdbf1ccf4"
+          ],
+          "discoveredBoth": [],
+          "paretoFrontUnderA": [
+            "d2def9aeebe6f992"
+          ],
+          "paretoFrontUnderB": [
+            "1f784a3fdbf1ccf4"
+          ],
+          "aDiscoveredOnlyCandidatesOnBFront": [],
+          "bGuidedCandidatesDominatedUnderBByUnion": [],
+          "bGuidedFrontCoverageOfUnionBFront": "1/1",
+          "records": [
+            {
+              "id": "d2def9aeebe6f992",
+              "discoveredBy": [
+                "A"
+              ],
+              "investments": {
+                "weapon": 6400,
+                "vitality": 16000,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 4,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_soaring_spirit",
+                  "count": 3,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_high_velocity_mag",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_improved_spirit",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_blitz_bullets",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "A": {
+                "pathScore": 0.46549275243476096,
+                "endScore": 0.4995550105749605,
+                "pathDamage": 0.3632958727481676,
+                "endDamage": 0.3341409192345194,
+                "pathSurvivability": 0.5676896321213543,
+                "endSurvivability": 0.6649691019154016
+              },
+              "B": {
+                "pathScore": 0.409502169235592,
+                "endScore": 0.4164229034840403,
+                "pathDamage": 0.3567730149403377,
+                "endDamage": 0.3335741706735866,
+                "pathSurvivability": 0.5676896321213543,
+                "endSurvivability": 0.6649691019154016
+              }
+            },
+            {
+              "id": "1f784a3fdbf1ccf4",
+              "discoveredBy": [
+                "B"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 11200,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_health",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_debuff_reducer",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "A": {
+                "pathScore": 0.4560681201239942,
+                "endScore": 0.4914570170575656,
+                "pathDamage": 0.41258895816673985,
+                "endDamage": 0.39530016997501694,
+                "pathSurvivability": 0.49954728208124827,
+                "endSurvivability": 0.5876138641401143
+              },
+              "B": {
+                "pathScore": 0.4422150184733982,
+                "endScore": 0.4445846741873105,
+                "pathDamage": 0.4231042639374484,
+                "endDamage": 0.3969082775363759,
+                "pathSurvivability": 0.49954728208124827,
+                "endSurvivability": 0.5876138641401143
+              }
+            }
+          ]
+        }
+      },
+      {
+        "caseId": "production-40k-warden-carry-spirit",
+        "focus": "spirit",
+        "controls": {
+          "budget": 40000,
+          "timeBudgetMs": 60000,
+          "widths": [
+            4,
+            8,
+            16,
+            32
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceVersion": "baseline-v0:production-40k-warden-carry-spirit",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "scalarizationUsed": false
+        },
+        "A": {
+          "label": "A",
+          "objectiveConfigId": "carry-balanced-a-50-50",
+          "runtimeMs": 58958.55480900002,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 68640,
+          "generatedStates": 741849,
+          "searchGeneratedStates": 254053,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 39678.912121,
+              "evaluations": 47337,
+              "generatedStates": 173147,
+              "searchGeneratedStates": 157766,
+              "duplicateStates": 3107,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 1317,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 19276.60843999998,
+              "evaluations": 21303,
+              "generatedStates": 568702,
+              "searchGeneratedStates": 96287,
+              "duplicateStates": 2434,
+              "maxNaturalReachedSouls": 24400,
+              "terminalCandidates": 9,
+              "finalFrontSize": 4,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            }
+          ],
+          "front": [
+            {
+              "id": "7b45fd234c36707f",
+              "source": "A",
+              "pathScore": 0.4901369437082784,
+              "endScore": 0.5223257790480336,
+              "pathDamage": 0.40825649895497584,
+              "endDamage": 0.377669000486911,
+              "pathSurvivability": 0.5720173884615817,
+              "endSurvivability": 0.6669825576091561,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_soaring_spirit",
+                "upgrade_improved_bullet_armor",
+                "upgrade_veil_walker",
+                "upgrade_hollow_point_rounds",
+                "upgrade_suppressor",
+                "upgrade_magic_shield",
+                "upgrade_magic_vulnerability",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_titan_round",
+                "upgrade_tech_purge",
+                "upgrade_bullet_resist_shredder"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 16000,
+                "spirit": 6400
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 36,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 3,
+                "upgradeBacktracks": 1
+              }
+            }
+          ],
+          "summary": {
+            "count": 1,
+            "pathScore": {
+              "min": 0.4901369437082784,
+              "median": 0.4901369437082784,
+              "max": 0.4901369437082784
+            },
+            "endScore": {
+              "min": 0.5223257790480336,
+              "median": 0.5223257790480336,
+              "max": 0.5223257790480336
+            },
+            "pathDamage": {
+              "min": 0.40825649895497584,
+              "median": 0.40825649895497584,
+              "max": 0.40825649895497584
+            },
+            "endDamage": {
+              "min": 0.377669000486911,
+              "median": 0.377669000486911,
+              "max": 0.377669000486911
+            },
+            "pathSurvivability": {
+              "min": 0.5720173884615817,
+              "median": 0.5720173884615817,
+              "max": 0.5720173884615817
+            },
+            "endSurvivability": {
+              "min": 0.6669825576091561,
+              "median": 0.6669825576091561,
+              "max": 0.6669825576091561
+            },
+            "investments": {
+              "weapon": {
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
+              },
+              "vitality": {
+                "min": 16000,
+                "median": 16000,
+                "max": 16000
+              },
+              "spirit": {
+                "min": 6400,
+                "median": 6400,
+                "max": 6400
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              }
+            },
+            "transactions": {
+              "min": 36,
+              "median": 36,
+              "max": 36
+            },
+            "reacquisitionCounts": {
+              "min": 4,
+              "median": 4,
+              "max": 4
+            }
+          }
+        },
+        "B": {
+          "label": "B",
+          "objectiveConfigId": "carry-damage-primary-b-75-25",
+          "runtimeMs": 58994.525585999974,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 69972,
+          "generatedStates": 692077,
+          "searchGeneratedStates": 268975,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 37302.80426799998,
+              "evaluations": 46268,
+              "generatedStates": 167823,
+              "searchGeneratedStates": 152918,
+              "duplicateStates": 2076,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 856,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 21689.095197000017,
+              "evaluations": 23704,
+              "generatedStates": 524254,
+              "searchGeneratedStates": 116057,
+              "duplicateStates": 1792,
+              "maxNaturalReachedSouls": 25600,
+              "terminalCandidates": 9,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            }
+          ],
+          "front": [
+            {
+              "id": "91a15f82d90ff54d",
+              "source": "B",
+              "pathScore": 0.4750121884295562,
+              "endScore": 0.4929661243308595,
+              "pathDamage": 0.46288663858081425,
+              "endDamage": 0.48212330577764745,
+              "pathSurvivability": 0.511388837975781,
+              "endSurvivability": 0.5254945799904956,
+              "inventory": [
+                "upgrade_soaring_spirit",
+                "upgrade_chonky",
+                "upgrade_cooldown_reduction",
+                "upgrade_rupture",
+                "upgrade_veil_walker",
+                "upgrade_suppressor",
+                "upgrade_healbane",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_crackshot",
+                "upgrade_titan_round",
+                "upgrade_pristine_emblem"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 9600,
+                "spirit": 11200
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 5,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 5,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_melee_rebuttal",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_vulnerability",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 1,
+                "sellRebuys": 0,
+                "replacementRebuys": 5,
+                "upgradeBacktracks": 1
+              }
+            }
+          ],
+          "summary": {
+            "count": 1,
+            "pathScore": {
+              "min": 0.4750121884295562,
+              "median": 0.4750121884295562,
+              "max": 0.4750121884295562
+            },
+            "endScore": {
+              "min": 0.4929661243308595,
+              "median": 0.4929661243308595,
+              "max": 0.4929661243308595
+            },
+            "pathDamage": {
+              "min": 0.46288663858081425,
+              "median": 0.46288663858081425,
+              "max": 0.46288663858081425
+            },
+            "endDamage": {
+              "min": 0.48212330577764745,
+              "median": 0.48212330577764745,
+              "max": 0.48212330577764745
+            },
+            "pathSurvivability": {
+              "min": 0.511388837975781,
+              "median": 0.511388837975781,
+              "max": 0.511388837975781
+            },
+            "endSurvivability": {
+              "min": 0.5254945799904956,
+              "median": 0.5254945799904956,
+              "max": 0.5254945799904956
+            },
+            "investments": {
+              "weapon": {
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
+              },
+              "vitality": {
+                "min": 9600,
+                "median": 9600,
+                "max": 9600
+              },
+              "spirit": {
+                "min": 11200,
+                "median": 11200,
+                "max": 11200
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              }
+            },
+            "transactions": {
+              "min": 39,
+              "median": 39,
+              "max": 39
+            },
+            "reacquisitionCounts": {
+              "min": 6,
+              "median": 6,
+              "max": 6
+            }
+          }
+        },
+        "crossScoredUnion": {
+          "unionCount": 2,
+          "discoveredOnlyA": [
+            "7b45fd234c36707f"
+          ],
+          "discoveredOnlyB": [
+            "91a15f82d90ff54d"
+          ],
+          "discoveredBoth": [],
+          "paretoFrontUnderA": [
+            "7b45fd234c36707f"
+          ],
+          "paretoFrontUnderB": [
+            "91a15f82d90ff54d"
+          ],
+          "aDiscoveredOnlyCandidatesOnBFront": [],
+          "bGuidedCandidatesDominatedUnderBByUnion": [],
+          "bGuidedFrontCoverageOfUnionBFront": "1/1",
+          "records": [
+            {
+              "id": "7b45fd234c36707f",
+              "discoveredBy": [
+                "A"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 16000,
+                "spirit": 6400
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 36,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "A": {
+                "pathScore": 0.4901369437082784,
+                "endScore": 0.5223257790480336,
+                "pathDamage": 0.40825649895497584,
+                "endDamage": 0.377669000486911,
+                "pathSurvivability": 0.5720173884615817,
+                "endSurvivability": 0.6669825576091561
+              },
+              "B": {
+                "pathScore": 0.46841095578977626,
+                "endScore": 0.47114291359925686,
+                "pathDamage": 0.4338754782325083,
+                "endDamage": 0.40586303226262377,
+                "pathSurvivability": 0.5720173884615817,
+                "endSurvivability": 0.6669825576091561
+              }
+            },
+            {
+              "id": "91a15f82d90ff54d",
+              "discoveredBy": [
+                "B"
+              ],
+              "investments": {
+                "weapon": 4800,
+                "vitality": 9600,
+                "spirit": 11200
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 39,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 5,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 5,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_melee_rebuttal",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_vulnerability",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "A": {
+                "pathScore": 0.4723498449561137,
+                "endScore": 0.4840711966327016,
+                "pathDamage": 0.43331085193644703,
+                "endDamage": 0.4426478132749076,
+                "pathSurvivability": 0.511388837975781,
+                "endSurvivability": 0.5254945799904956
+              },
+              "B": {
+                "pathScore": 0.4750121884295562,
+                "endScore": 0.4929661243308595,
+                "pathDamage": 0.46288663858081425,
+                "endDamage": 0.48212330577764745,
+                "pathSurvivability": 0.511388837975781,
+                "endSurvivability": 0.5254945799904956
+              }
+            }
+          ]
+        }
+      },
+      {
+        "caseId": "production-40k-warden-carry-hybrid",
+        "focus": "hybrid",
+        "controls": {
+          "budget": 40000,
+          "timeBudgetMs": 60000,
+          "widths": [
+            4,
+            8,
+            16,
+            32
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceVersion": "baseline-v0:production-40k-warden-carry-hybrid",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "scalarizationUsed": false
+        },
+        "A": {
+          "label": "A",
+          "objectiveConfigId": "carry-balanced-a-50-50",
+          "runtimeMs": 58495.323501999956,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 59143,
+          "generatedStates": 679145,
+          "searchGeneratedStates": 274363,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 34729.937670000014,
+              "evaluations": 34035,
+              "generatedStates": 168721,
+              "searchGeneratedStates": 153958,
+              "duplicateStates": 1236,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 633,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 23762.831469999976,
+              "evaluations": 25108,
+              "generatedStates": 510424,
+              "searchGeneratedStates": 120405,
+              "duplicateStates": 1255,
+              "maxNaturalReachedSouls": 26400,
+              "terminalCandidates": 9,
+              "finalFrontSize": 1,
+              "objectiveConfigId": "carry-balanced-a-50-50"
+            }
+          ],
+          "front": [
+            {
+              "id": "4664933f4b9e2bf0",
+              "source": "A",
+              "pathScore": 0.47636876478306084,
+              "endScore": 0.506679786387213,
+              "pathDamage": 0.3802488473698325,
+              "endDamage": 0.3635647155667309,
+              "pathSurvivability": 0.5724886821962892,
+              "endSurvivability": 0.649794857207695,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_soaring_spirit",
+                "upgrade_improved_bullet_armor",
+                "upgrade_magic_shield",
+                "upgrade_veil_walker",
+                "upgrade_tech_purge",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_suppressor",
+                "upgrade_titan_round",
+                "upgrade_blitz_bullets",
+                "upgrade_reinforcing_casings"
+              ],
+              "investments": {
+                "weapon": 6400,
+                "vitality": 16000,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 37,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster2",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 3,
+                "upgradeBacktracks": 1
+              }
+            }
+          ],
+          "summary": {
+            "count": 1,
+            "pathScore": {
+              "min": 0.47636876478306084,
+              "median": 0.47636876478306084,
+              "max": 0.47636876478306084
+            },
+            "endScore": {
+              "min": 0.506679786387213,
+              "median": 0.506679786387213,
+              "max": 0.506679786387213
+            },
+            "pathDamage": {
+              "min": 0.3802488473698325,
+              "median": 0.3802488473698325,
+              "max": 0.3802488473698325
+            },
+            "endDamage": {
+              "min": 0.3635647155667309,
+              "median": 0.3635647155667309,
+              "max": 0.3635647155667309
+            },
+            "pathSurvivability": {
+              "min": 0.5724886821962892,
+              "median": 0.5724886821962892,
+              "max": 0.5724886821962892
+            },
+            "endSurvivability": {
+              "min": 0.649794857207695,
+              "median": 0.649794857207695,
+              "max": 0.649794857207695
+            },
+            "investments": {
+              "weapon": {
+                "min": 6400,
+                "median": 6400,
+                "max": 6400
+              },
+              "vitality": {
+                "min": 16000,
+                "median": 16000,
+                "max": 16000
+              },
+              "spirit": {
+                "min": 4800,
+                "median": 4800,
+                "max": 4800
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 1
+              }
+            },
+            "transactions": {
+              "min": 37,
+              "median": 37,
+              "max": 37
+            },
+            "reacquisitionCounts": {
+              "min": 4,
+              "median": 4,
+              "max": 4
+            }
+          }
+        },
+        "B": {
+          "label": "B",
+          "objectiveConfigId": "carry-damage-primary-b-75-25",
+          "runtimeMs": 59760.82971600001,
+          "timeBudgetMs": 60000,
+          "widthsStarted": [
+            4,
+            8
+          ],
+          "widthsCompleted": [
+            4
+          ],
+          "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
+          "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
+          "evaluations": 71808,
+          "generatedStates": 699292,
+          "searchGeneratedStates": 247583,
+          "maxNaturalReachedSouls": 40000,
+          "runs": [
+            {
+              "width": 4,
+              "searchComplete": true,
+              "runtimeMs": 39607.68598000001,
+              "evaluations": 46105,
+              "generatedStates": 168256,
+              "searchGeneratedStates": 152935,
+              "duplicateStates": 3110,
+              "maxNaturalReachedSouls": 40000,
+              "terminalCandidates": 1267,
+              "finalFrontSize": 2,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            },
+            {
+              "width": 8,
+              "searchComplete": false,
+              "runtimeMs": 20150.213373999984,
+              "evaluations": 25703,
+              "generatedStates": 531036,
+              "searchGeneratedStates": 94648,
+              "duplicateStates": 3017,
+              "maxNaturalReachedSouls": 24800,
+              "terminalCandidates": 9,
+              "finalFrontSize": 4,
+              "objectiveConfigId": "carry-damage-primary-b-75-25"
+            }
+          ],
+          "front": [
+            {
+              "id": "d26be905a9cf5b16",
+              "source": "B",
+              "pathScore": 0.44245865882663193,
+              "endScore": 0.44891480899894864,
+              "pathDamage": 0.4217006764644937,
+              "endDamage": 0.41901529602202353,
+              "pathSurvivability": 0.5047326059130464,
+              "endSurvivability": 0.538613347929724,
+              "inventory": [
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_chonky",
+                "upgrade_reinforcing_casings",
+                "upgrade_weighted_shots",
+                "upgrade_blitz_bullets",
+                "upgrade_pristine_emblem",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_rupture",
+                "upgrade_suppressor",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_veil_walker"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 8000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 38,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 1,
+                "sellRebuys": 0,
+                "replacementRebuys": 6,
+                "upgradeBacktracks": 1
+              }
+            },
+            {
+              "id": "c44f340dc288c59a",
+              "source": "B",
+              "pathScore": 0.44245865882663193,
+              "endScore": 0.44891480899894864,
+              "pathDamage": 0.4217006764644937,
+              "endDamage": 0.41901529602202353,
+              "pathSurvivability": 0.5047326059130464,
+              "endSurvivability": 0.538613347929724,
+              "inventory": [
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_chonky",
+                "upgrade_reinforcing_casings",
+                "upgrade_weighted_shots",
+                "upgrade_blitz_bullets",
+                "upgrade_pristine_emblem",
+                "upgrade_bullet_resist_shredder",
+                "upgrade_rupture",
+                "upgrade_suppressor",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_veil_walker"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 8000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 36,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 4,
+                "upgradeBacktracks": 1
+              }
+            }
+          ],
+          "summary": {
+            "count": 2,
+            "pathScore": {
+              "min": 0.44245865882663193,
+              "median": 0.44245865882663193,
+              "max": 0.44245865882663193
+            },
+            "endScore": {
+              "min": 0.44891480899894864,
+              "median": 0.44891480899894864,
+              "max": 0.44891480899894864
+            },
+            "pathDamage": {
+              "min": 0.4217006764644937,
+              "median": 0.4217006764644937,
+              "max": 0.4217006764644937
+            },
+            "endDamage": {
+              "min": 0.41901529602202353,
+              "median": 0.41901529602202353,
+              "max": 0.41901529602202353
+            },
+            "pathSurvivability": {
+              "min": 0.5047326059130464,
+              "median": 0.5047326059130464,
+              "max": 0.5047326059130464
+            },
+            "endSurvivability": {
+              "min": 0.538613347929724,
+              "median": 0.538613347929724,
+              "max": 0.538613347929724
+            },
+            "investments": {
+              "weapon": {
+                "min": 11200,
+                "median": 11200,
+                "max": 11200
+              },
+              "vitality": {
+                "min": 8000,
+                "median": 8000,
+                "max": 8000
+              },
+              "spirit": {
+                "min": 8000,
+                "median": 8000,
+                "max": 8000
+              }
+            },
+            "thresholds4800": {
+              "weapon": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 2
+              },
+              "vitality": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 2
+              },
+              "spirit": {
+                "min": null,
+                "median": null,
+                "max": null,
+                "nullCount": 2
+              }
+            },
+            "transactions": {
+              "min": 36,
+              "median": 37,
+              "max": 38
+            },
+            "reacquisitionCounts": {
+              "min": 5,
+              "median": 6,
+              "max": 7
+            }
+          }
+        },
+        "crossScoredUnion": {
+          "unionCount": 3,
+          "discoveredOnlyA": [
+            "4664933f4b9e2bf0"
+          ],
+          "discoveredOnlyB": [
+            "d26be905a9cf5b16",
+            "c44f340dc288c59a"
+          ],
+          "discoveredBoth": [],
+          "paretoFrontUnderA": [
+            "4664933f4b9e2bf0"
+          ],
+          "paretoFrontUnderB": [
+            "c44f340dc288c59a",
+            "d26be905a9cf5b16"
+          ],
+          "aDiscoveredOnlyCandidatesOnBFront": [],
+          "bGuidedCandidatesDominatedUnderBByUnion": [],
+          "bGuidedFrontCoverageOfUnionBFront": "2/2",
+          "records": [
+            {
+              "id": "4664933f4b9e2bf0",
+              "discoveredBy": [
+                "A"
+              ],
+              "investments": {
+                "weapon": 6400,
+                "vitality": 16000,
+                "spirit": 4800
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 37,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_fleetfoot_boots",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_headshot_booster2",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "A": {
+                "pathScore": 0.47636876478306084,
+                "endScore": 0.506679786387213,
+                "pathDamage": 0.3802488473698325,
+                "endDamage": 0.3635647155667309,
+                "pathSurvivability": 0.5724886821962892,
+                "endSurvivability": 0.649794857207695
+              },
+              "B": {
+                "pathScore": 0.42830880607644695,
+                "endScore": 0.43512225097697194,
+                "pathDamage": 0.3802488473698325,
+                "endDamage": 0.3635647155667309,
+                "pathSurvivability": 0.5724886821962892,
+                "endSurvivability": 0.649794857207695
+              }
+            },
+            {
+              "id": "d26be905a9cf5b16",
+              "discoveredBy": [
+                "B"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 8000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 38,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_regenerating_bullet_shield",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "A": {
+                "pathScore": 0.4632166411887699,
+                "endScore": 0.4788143219758738,
+                "pathDamage": 0.4217006764644937,
+                "endDamage": 0.41901529602202353,
+                "pathSurvivability": 0.5047326059130464,
+                "endSurvivability": 0.538613347929724
+              },
+              "B": {
+                "pathScore": 0.44245865882663193,
+                "endScore": 0.44891480899894864,
+                "pathDamage": 0.4217006764644937,
+                "endDamage": 0.41901529602202353,
+                "pathSurvivability": 0.5047326059130464,
+                "endSurvivability": 0.538613347929724
+              }
+            },
+            {
+              "id": "c44f340dc288c59a",
+              "discoveredBy": [
+                "B"
+              ],
+              "investments": {
+                "weapon": 11200,
+                "vitality": 8000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "vitality": {
+                  "souls": null,
+                  "sequence": null
+                },
+                "spirit": {
+                  "souls": null,
+                  "sequence": null
+                }
+              },
+              "transactions": 36,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_endurance",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_bullet_resist_shredder",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_healing_booster",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_mystic_regeneration",
+                  "count": 1,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_withering_whip",
+                  "count": 1,
+                  "totalCost": 800
+                }
+              ],
+              "A": {
+                "pathScore": 0.4632166411887699,
+                "endScore": 0.4788143219758738,
+                "pathDamage": 0.4217006764644937,
+                "endDamage": 0.41901529602202353,
+                "pathSurvivability": 0.5047326059130464,
+                "endSurvivability": 0.538613347929724
+              },
+              "B": {
+                "pathScore": 0.44245865882663193,
+                "endScore": 0.44891480899894864,
+                "pathDamage": 0.4217006764644937,
+                "endDamage": 0.41901529602202353,
+                "pathSurvivability": 0.5047326059130464,
+                "endSurvivability": 0.538613347929724
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
