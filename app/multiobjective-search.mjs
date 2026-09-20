@@ -255,6 +255,7 @@ export function runControlledMultiobjectiveBeamCarry({
   referenceTimeMs = 1500,
   heroId,
   damageFocus = "hybrid",
+  objectiveConfig = null,
   itemIds,
   budget,
   milestones = [],
@@ -378,7 +379,7 @@ export function runControlledMultiobjectiveBeamCarry({
     }
     profiler.count("vectorCacheMisses");
     const measured = profiler.time("trajectoryScoreMs", () =>
-      measureSoulAxisPath(nodePoints(node), activeReference, checkpoints, budget, damageFocus, profiler));
+      measureSoulAxisPath(nodePoints(node), activeReference, checkpoints, budget, damageFocus, profiler, objectiveConfig || undefined));
     vectorCache.set(node, {
       pathScore: measured.pathScore,
       endScore: measured.endScore,
@@ -704,6 +705,7 @@ export function runControlledMultiobjectiveBeamCarry({
         beamTruncation: "Pareto layers; partial layer uses Path/End extremes plus existing diversity"
       },
       scalarizationUsed: false,
+      objectiveConfigId: objectiveConfig?.id || "carry-balanced-a-50-50",
       partialVectorSemantics: "Path/End of the legal save-to-horizon completion of the current partial path",
       terminalCompletion: {
         mode: "retained_partial_nodes_legal_save_to_horizon",
