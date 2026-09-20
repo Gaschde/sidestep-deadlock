@@ -75,13 +75,13 @@ test("carry objective B exposes the requested 75/25 and 85/15, 15/85, 50/50 cont
   }
 });
 
-test("damage-primary B increases damage leverage and reduces pure-survival leverage without changing component metrics", () => {
+test("damage-primary B increases focused damage leverage and reduces pure-survival leverage", () => {
   const weaponDamage = metrics({ bullet: 100, spirit: 0, survival: 0 });
   const survivalOnly = metrics({ bullet: 0, spirit: 0, survival: 100 });
 
   const aDamage = measure(weaponDamage, "weapon", CARRY_OBJECTIVE_BASELINE_A);
   const bDamage = measure(weaponDamage, "weapon", CARRY_OBJECTIVE_DAMAGE_PRIMARY_B);
-  assert.equal(aDamage.pathDamage, bDamage.pathDamage);
+  assert.ok(bDamage.pathDamage > aDamage.pathDamage);
   assert.equal(aDamage.pathSurvivability, bDamage.pathSurvivability);
   assert.ok(bDamage.pathScore > aDamage.pathScore);
 
