@@ -2,12 +2,13 @@ const TIMER_KEYS = Object.freeze([
   "referenceMs", "beamSearchMs", "terminalAuditMs", "validationMs",
   "transitionMs", "saveGenerationMs", "purchaseGenerationMs", "upgradeGenerationMs", "replacementGenerationMs",
   "evaluationMs", "trajectoryScoreMs", "pathAucScoreMs", "endbuildScoreMs", "pathReconstructionMs", "continuationLookaheadMs",
-  "terminalCompletionMs", "dedupeMs", "paretoMs", "frontierMaintenanceMs", "diversityMs", "sortingMs"
+  "terminalCompletionMs", "dedupeMs", "retentionMs", "paretoMs", "frontierMaintenanceMs", "diversityMs", "sortingMs"
 ]);
 
 const COUNTER_KEYS = Object.freeze([
   "transitionCalls", "generatedStates", "uniqueStates", "duplicateStates", "evaluatedInventories",
   "metricCacheHits", "metricCacheMisses", "vectorCacheHits", "vectorCacheMisses", "pointsCacheHits", "pointsCacheMisses",
+  "commonHorizonVectorEvaluations", "commonHorizonVectorCacheHits", "commonHorizonVectorCacheMisses",
   "saveTransitions", "purchaseChecks", "upgradeChecks", "replacementChecks",
   "familyConflictChecks", "continuationLookaheadCalls", "paretoCandidates", "terminalNodes"
 ]);
@@ -49,7 +50,7 @@ export function createBeamProfiler(enabled = false) {
         ...extra,
         timerSemantics: {
           phases: "referenceMs, beamSearchMs and terminalAuditMs describe top-level execution regions. validationMs is nested where publication validates a candidate.",
-          operations: "Operation timers are diagnostic and may be nested inside phase timers and inside diversityMs/frontierMaintenanceMs. trajectoryScoreMs may contain pathAucScoreMs/endbuildScoreMs. Do not sum phase and operation timers to infer total runtime.",
+          operations: "Operation timers are diagnostic and may be nested inside phase timers and inside retentionMs/diversityMs/frontierMaintenanceMs. trajectoryScoreMs may contain pathAucScoreMs/endbuildScoreMs. Do not sum phase and operation timers to infer total runtime.",
           generation: "saveGenerationMs, purchaseGenerationMs, upgradeGenerationMs and replacementGenerationMs are nested inside transitionMs.",
           observerEffect: "Profiling does not change ranking, legality or objective code. Under a strict wall-clock deadline its measurement overhead can reduce completed work; compare work counters as well as time."
         }
