@@ -1,8 +1,8 @@
 {
   "schemaVersion": "optimizer-carry-objective-ab-v1",
   "experiment": "carry-50-50-vs-75-25",
-  "sourceCommit": "78ae29460e36c2bf6aad537578543a20e83dbb6d",
-  "generatedAt": "2026-09-20T01:20:18.878Z",
+  "sourceCommit": "7c2ba3f2088695974ce634c1955273a012cfcba6",
+  "generatedAt": "2026-09-20T01:30:08.505Z",
   "productionChanged": false,
   "uiChanged": false,
   "baselineA": {
@@ -1113,7 +1113,7 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58318.993894,
+          "runtimeMs": 58251.26599800002,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -1121,20 +1121,20 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 24684,
-          "generatedStates": 175371,
-          "searchGeneratedStates": 140376,
-          "maxNaturalReachedSouls": 37600,
+          "evaluations": 22402,
+          "generatedStates": 182123,
+          "searchGeneratedStates": 127808,
+          "maxNaturalReachedSouls": 35600,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58314.088034,
-              "evaluations": 24684,
-              "generatedStates": 175371,
-              "searchGeneratedStates": 140376,
-              "duplicateStates": 397,
-              "maxNaturalReachedSouls": 37600,
+              "runtimeMs": 58246.658792999995,
+              "evaluations": 22402,
+              "generatedStates": 182123,
+              "searchGeneratedStates": 127808,
+              "duplicateStates": 373,
+              "maxNaturalReachedSouls": 35600,
               "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-balanced-a-50-50"
@@ -1142,24 +1142,24 @@
           ],
           "front": [
             {
-              "id": "065241c520b83eb5",
+              "id": "50464bdc9e9884a2",
               "source": "A",
-              "pathScore": 0.46546264208976845,
-              "endScore": 0.48957545878916486,
-              "pathDamage": 0.362800810295443,
-              "endDamage": 0.3402401201523085,
-              "pathSurvivability": 0.5681244738840936,
-              "endSurvivability": 0.6389107974260213,
+              "pathScore": 0.4646802398227424,
+              "endScore": 0.4812098013283599,
+              "pathDamage": 0.36200841723655713,
+              "endDamage": 0.33316394867027693,
+              "pathSurvivability": 0.5673520624089274,
+              "endSurvivability": 0.6292556539864429,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_titan_round",
-                "upgrade_blitz_bullets",
+                "upgrade_pristine_emblem",
                 "upgrade_tech_purge",
                 "upgrade_magic_shield",
                 "upgrade_regenerating_bullet_shield",
                 "upgrade_suppressor",
                 "upgrade_fleetfoot_boots",
-                "upgrade_magic_vulnerability",
+                "upgrade_soaring_spirit",
                 "upgrade_bullet_resist_shredder",
                 "upgrade_improved_bullet_armor",
                 "upgrade_reinforcing_casings"
@@ -1171,19 +1171,19 @@
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 14000,
+                  "transaction": 18
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 10000,
+                  "transaction": 13
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 21200,
+                  "transaction": 27
                 }
               },
-              "transactions": 37,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_pristine_emblem",
@@ -1206,11 +1206,6 @@
                   "totalCost": 800
                 },
                 {
-                  "item": "upgrade_blitz_bullets",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
                   "item": "upgrade_mystic_regeneration",
                   "count": 1,
                   "totalCost": 800
@@ -1219,7 +1214,7 @@
               "churn": {
                 "sameSoulTransactionGroups": 0,
                 "sellRebuys": 0,
-                "replacementRebuys": 4,
+                "replacementRebuys": 3,
                 "upgradeBacktracks": 2
               }
             }
@@ -1227,34 +1222,34 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.46546264208976845,
-              "median": 0.46546264208976845,
-              "max": 0.46546264208976845
+              "min": 0.4646802398227424,
+              "median": 0.4646802398227424,
+              "max": 0.4646802398227424
             },
             "endScore": {
-              "min": 0.48957545878916486,
-              "median": 0.48957545878916486,
-              "max": 0.48957545878916486
+              "min": 0.4812098013283599,
+              "median": 0.4812098013283599,
+              "max": 0.4812098013283599
             },
             "pathDamage": {
-              "min": 0.362800810295443,
-              "median": 0.362800810295443,
-              "max": 0.362800810295443
+              "min": 0.36200841723655713,
+              "median": 0.36200841723655713,
+              "max": 0.36200841723655713
             },
             "endDamage": {
-              "min": 0.3402401201523085,
-              "median": 0.3402401201523085,
-              "max": 0.3402401201523085
+              "min": 0.33316394867027693,
+              "median": 0.33316394867027693,
+              "max": 0.33316394867027693
             },
             "pathSurvivability": {
-              "min": 0.5681244738840936,
-              "median": 0.5681244738840936,
-              "max": 0.5681244738840936
+              "min": 0.5673520624089274,
+              "median": 0.5673520624089274,
+              "max": 0.5673520624089274
             },
             "endSurvivability": {
-              "min": 0.6389107974260213,
-              "median": 0.6389107974260213,
-              "max": 0.6389107974260213
+              "min": 0.6292556539864429,
+              "median": 0.6292556539864429,
+              "max": 0.6292556539864429
             },
             "investments": {
               "weapon": {
@@ -1275,40 +1270,40 @@
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 14000,
+                "median": 14000,
+                "max": 14000,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 10000,
+                "median": 10000,
+                "max": 10000,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 21200,
+                "median": 21200,
+                "max": 21200,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 37,
-              "median": 37,
-              "max": 37
+              "min": 35,
+              "median": 35,
+              "max": 35
             },
             "reacquisitionCounts": {
-              "min": 6,
-              "median": 6,
-              "max": 6
+              "min": 5,
+              "median": 5,
+              "max": 5
             }
           }
         },
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 58679.56242,
+          "runtimeMs": 58359.131612,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -1316,20 +1311,20 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 33972,
-          "generatedStates": 142894,
-          "searchGeneratedStates": 128771,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 31680,
+          "generatedStates": 146076,
+          "searchGeneratedStates": 116343,
+          "maxNaturalReachedSouls": 38000,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58677.517328000016,
-              "evaluations": 33972,
-              "generatedStates": 142894,
-              "searchGeneratedStates": 128771,
-              "duplicateStates": 2814,
-              "maxNaturalReachedSouls": 40000,
+              "runtimeMs": 58357.295496999985,
+              "evaluations": 31680,
+              "generatedStates": 146076,
+              "searchGeneratedStates": 116343,
+              "duplicateStates": 2644,
+              "maxNaturalReachedSouls": 38000,
               "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
@@ -1337,14 +1332,14 @@
           ],
           "front": [
             {
-              "id": "1f784a3fdbf1ccf4",
+              "id": "87f6fcfaa61b1074",
               "source": "B",
-              "pathScore": 0.4422150184733982,
-              "endScore": 0.4445846741873105,
+              "pathScore": 0.44208749396963215,
+              "endScore": 0.4382084489989995,
               "pathDamage": 0.4231042639374484,
               "endDamage": 0.3969082775363759,
-              "pathSurvivability": 0.49954728208124827,
-              "endSurvivability": 0.5876138641401143,
+              "pathSurvivability": 0.49903718406618347,
+              "endSurvivability": 0.5621089633868703,
               "inventory": [
                 "upgrade_titan_round",
                 "upgrade_pristine_emblem",
@@ -1356,29 +1351,29 @@
                 "upgrade_bullet_resist_shredder",
                 "upgrade_weighted_shots",
                 "upgrade_soaring_spirit",
-                "upgrade_tech_purge",
+                "upgrade_magic_shield",
                 "upgrade_regenerating_bullet_shield"
               ],
               "investments": {
                 "weapon": 11200,
-                "vitality": 11200,
+                "vitality": 9600,
                 "spirit": 4800
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 5600,
+                  "transaction": 8
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 19200,
+                  "transaction": 26
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 27600,
+                  "transaction": 33
                 }
               },
-              "transactions": 39,
+              "transactions": 38,
               "reacquisitions": [
                 {
                   "item": "upgrade_endurance",
@@ -1427,14 +1422,14 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.4422150184733982,
-              "median": 0.4422150184733982,
-              "max": 0.4422150184733982
+              "min": 0.44208749396963215,
+              "median": 0.44208749396963215,
+              "max": 0.44208749396963215
             },
             "endScore": {
-              "min": 0.4445846741873105,
-              "median": 0.4445846741873105,
-              "max": 0.4445846741873105
+              "min": 0.4382084489989995,
+              "median": 0.4382084489989995,
+              "max": 0.4382084489989995
             },
             "pathDamage": {
               "min": 0.4231042639374484,
@@ -1447,14 +1442,14 @@
               "max": 0.3969082775363759
             },
             "pathSurvivability": {
-              "min": 0.49954728208124827,
-              "median": 0.49954728208124827,
-              "max": 0.49954728208124827
+              "min": 0.49903718406618347,
+              "median": 0.49903718406618347,
+              "max": 0.49903718406618347
             },
             "endSurvivability": {
-              "min": 0.5876138641401143,
-              "median": 0.5876138641401143,
-              "max": 0.5876138641401143
+              "min": 0.5621089633868703,
+              "median": 0.5621089633868703,
+              "max": 0.5621089633868703
             },
             "investments": {
               "weapon": {
@@ -1463,9 +1458,9 @@
                 "max": 11200
               },
               "vitality": {
-                "min": 11200,
-                "median": 11200,
-                "max": 11200
+                "min": 9600,
+                "median": 9600,
+                "max": 9600
               },
               "spirit": {
                 "min": 4800,
@@ -1475,28 +1470,28 @@
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 5600,
+                "median": 5600,
+                "max": 5600,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 19200,
+                "median": 19200,
+                "max": 19200,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 27600,
+                "median": 27600,
+                "max": 27600,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 39,
-              "median": 39,
-              "max": 39
+              "min": 38,
+              "median": 38,
+              "max": 38
             },
             "reacquisitionCounts": {
               "min": 7,
@@ -1508,18 +1503,17 @@
         "crossScoredUnion": {
           "unionCount": 2,
           "discoveredOnlyA": [
-            "065241c520b83eb5"
+            "50464bdc9e9884a2"
           ],
           "discoveredOnlyB": [
-            "1f784a3fdbf1ccf4"
+            "87f6fcfaa61b1074"
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "065241c520b83eb5",
-            "1f784a3fdbf1ccf4"
+            "50464bdc9e9884a2"
           ],
           "paretoFrontUnderB": [
-            "1f784a3fdbf1ccf4"
+            "87f6fcfaa61b1074"
           ],
           "aDiscoveredOnlyCandidatesOnBFront": [],
           "bGuidedCandidatesDominatedUnderBByUnion": [],
@@ -1546,7 +1540,7 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58354.49522900002,
+          "runtimeMs": 59281.46036899998,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -1554,41 +1548,41 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 34809,
-          "generatedStates": 157235,
-          "searchGeneratedStates": 134482,
-          "maxNaturalReachedSouls": 38800,
+          "evaluations": 32809,
+          "generatedStates": 165191,
+          "searchGeneratedStates": 121178,
+          "maxNaturalReachedSouls": 36800,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58352.49300800002,
-              "evaluations": 34809,
-              "generatedStates": 157235,
-              "searchGeneratedStates": 134482,
-              "duplicateStates": 2862,
-              "maxNaturalReachedSouls": 38800,
+              "runtimeMs": 59278.498049000016,
+              "evaluations": 32809,
+              "generatedStates": 165191,
+              "searchGeneratedStates": 121178,
+              "duplicateStates": 2338,
+              "maxNaturalReachedSouls": 36800,
               "terminalCandidates": 5,
-              "finalFrontSize": 2,
+              "finalFrontSize": 4,
               "objectiveConfigId": "carry-balanced-a-50-50"
             }
           ],
           "front": [
             {
-              "id": "450f5e3abf951bb7",
+              "id": "46c5b3b77c8d8703",
               "source": "A",
-              "pathScore": 0.4901369437082784,
-              "endScore": 0.5222445471972562,
-              "pathDamage": 0.40825649895497584,
-              "endDamage": 0.3853790602649524,
-              "pathSurvivability": 0.5720173884615817,
-              "endSurvivability": 0.65911003412956,
+              "pathScore": 0.48976105208170295,
+              "endScore": 0.5150439698380107,
+              "pathDamage": 0.40770859409206384,
+              "endDamage": 0.37505547335124556,
+              "pathSurvivability": 0.5718135100713423,
+              "endSurvivability": 0.655032466324776,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_soaring_spirit",
                 "upgrade_improved_bullet_armor",
                 "upgrade_veil_walker",
-                "upgrade_reinforcing_casings",
+                "upgrade_spirit_sap",
                 "upgrade_suppressor",
                 "upgrade_magic_shield",
                 "upgrade_magic_vulnerability",
@@ -1598,22 +1592,22 @@
                 "upgrade_bullet_resist_shredder"
               ],
               "investments": {
-                "weapon": 4800,
+                "weapon": 1600,
                 "vitality": 16000,
-                "spirit": 6400
+                "spirit": 8000
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 16800,
+                  "transaction": 21
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 12800,
+                  "transaction": 16
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 7200,
+                  "transaction": 9
                 }
               },
               "transactions": 35,
@@ -1647,20 +1641,20 @@
               }
             },
             {
-              "id": "25be0d2745e49b32",
+              "id": "8324e1b27c1b8184",
               "source": "A",
-              "pathScore": 0.49013495123538087,
-              "endScore": 0.5223257790480336,
-              "pathDamage": 0.40785888783520113,
-              "endDamage": 0.377669000486911,
-              "pathSurvivability": 0.5724110146355612,
-              "endSurvivability": 0.6669825576091561,
+              "pathScore": 0.48976105208170295,
+              "endScore": 0.5150439698380107,
+              "pathDamage": 0.40770859409206384,
+              "endDamage": 0.37505547335124556,
+              "pathSurvivability": 0.5718135100713423,
+              "endSurvivability": 0.655032466324776,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_soaring_spirit",
                 "upgrade_improved_bullet_armor",
                 "upgrade_veil_walker",
-                "upgrade_hollow_point_rounds",
+                "upgrade_magic_slow",
                 "upgrade_suppressor",
                 "upgrade_magic_shield",
                 "upgrade_magic_vulnerability",
@@ -1670,22 +1664,94 @@
                 "upgrade_bullet_resist_shredder"
               ],
               "investments": {
-                "weapon": 4800,
+                "weapon": 1600,
                 "vitality": 16000,
-                "spirit": 6400
+                "spirit": 8000
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 16800,
+                  "transaction": 21
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 12800,
+                  "transaction": 16
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 7200,
+                  "transaction": 9
+                }
+              },
+              "transactions": 34,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 3,
+                "upgradeBacktracks": 1
+              }
+            },
+            {
+              "id": "870d38942a806963",
+              "source": "A",
+              "pathScore": 0.48976105208170295,
+              "endScore": 0.5150439698380107,
+              "pathDamage": 0.40770859409206384,
+              "endDamage": 0.37505547335124556,
+              "pathSurvivability": 0.5718135100713423,
+              "endSurvivability": 0.655032466324776,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_soaring_spirit",
+                "upgrade_improved_bullet_armor",
+                "upgrade_veil_walker",
+                "upgrade_magic_slow",
+                "upgrade_suppressor",
+                "upgrade_magic_shield",
+                "upgrade_magic_vulnerability",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_titan_round",
+                "upgrade_tech_purge",
+                "upgrade_bullet_resist_shredder"
+              ],
+              "investments": {
+                "weapon": 1600,
+                "vitality": 16000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": 16800,
+                  "transaction": 21
+                },
+                "vitality": {
+                  "souls": 12800,
+                  "transaction": 16
+                },
+                "spirit": {
+                  "souls": 7200,
+                  "transaction": 9
                 }
               },
               "transactions": 35,
@@ -1703,6 +1769,78 @@
                 {
                   "item": "upgrade_titan_round",
                   "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_pristine_emblem",
+                  "count": 1,
+                  "totalCost": 1600
+                }
+              ],
+              "churn": {
+                "sameSoulTransactionGroups": 0,
+                "sellRebuys": 0,
+                "replacementRebuys": 3,
+                "upgradeBacktracks": 1
+              }
+            },
+            {
+              "id": "3275925fa6629a7f",
+              "source": "A",
+              "pathScore": 0.48976105208170295,
+              "endScore": 0.5150439698380107,
+              "pathDamage": 0.40770859409206384,
+              "endDamage": 0.37505547335124556,
+              "pathSurvivability": 0.5718135100713423,
+              "endSurvivability": 0.655032466324776,
+              "inventory": [
+                "upgrade_chonky",
+                "upgrade_soaring_spirit",
+                "upgrade_improved_bullet_armor",
+                "upgrade_veil_walker",
+                "upgrade_spirit_sap",
+                "upgrade_suppressor",
+                "upgrade_magic_shield",
+                "upgrade_magic_vulnerability",
+                "upgrade_regenerating_bullet_shield",
+                "upgrade_titan_round",
+                "upgrade_tech_purge",
+                "upgrade_bullet_resist_shredder"
+              ],
+              "investments": {
+                "weapon": 1600,
+                "vitality": 16000,
+                "spirit": 8000
+              },
+              "thresholds4800": {
+                "weapon": {
+                  "souls": 16800,
+                  "transaction": 21
+                },
+                "vitality": {
+                  "souls": 12800,
+                  "transaction": 16
+                },
+                "spirit": {
+                  "souls": 7200,
+                  "transaction": 9
+                }
+              },
+              "transactions": 34,
+              "reacquisitions": [
+                {
+                  "item": "upgrade_clip_size",
+                  "count": 2,
+                  "totalCost": 800
+                },
+                {
+                  "item": "upgrade_titan_round",
+                  "count": 2,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_magic_slow",
+                  "count": 1,
                   "totalCost": 1600
                 },
                 {
@@ -1720,42 +1858,42 @@
             }
           ],
           "summary": {
-            "count": 2,
+            "count": 4,
             "pathScore": {
-              "min": 0.49013495123538087,
-              "median": 0.49013594747182965,
-              "max": 0.4901369437082784
+              "min": 0.48976105208170295,
+              "median": 0.48976105208170295,
+              "max": 0.48976105208170295
             },
             "endScore": {
-              "min": 0.5222445471972562,
-              "median": 0.5222851631226448,
-              "max": 0.5223257790480336
+              "min": 0.5150439698380107,
+              "median": 0.5150439698380107,
+              "max": 0.5150439698380107
             },
             "pathDamage": {
-              "min": 0.40785888783520113,
-              "median": 0.40805769339508846,
-              "max": 0.40825649895497584
+              "min": 0.40770859409206384,
+              "median": 0.40770859409206384,
+              "max": 0.40770859409206384
             },
             "endDamage": {
-              "min": 0.377669000486911,
-              "median": 0.3815240303759317,
-              "max": 0.3853790602649524
+              "min": 0.37505547335124556,
+              "median": 0.37505547335124556,
+              "max": 0.37505547335124556
             },
             "pathSurvivability": {
-              "min": 0.5720173884615817,
-              "median": 0.5722142015485714,
-              "max": 0.5724110146355612
+              "min": 0.5718135100713423,
+              "median": 0.5718135100713423,
+              "max": 0.5718135100713423
             },
             "endSurvivability": {
-              "min": 0.65911003412956,
-              "median": 0.6630462958693581,
-              "max": 0.6669825576091561
+              "min": 0.655032466324776,
+              "median": 0.655032466324776,
+              "max": 0.655032466324776
             },
             "investments": {
               "weapon": {
-                "min": 4800,
-                "median": 4800,
-                "max": 4800
+                "min": 1600,
+                "median": 1600,
+                "max": 1600
               },
               "vitality": {
                 "min": 16000,
@@ -1763,34 +1901,34 @@
                 "max": 16000
               },
               "spirit": {
-                "min": 6400,
-                "median": 6400,
-                "max": 6400
+                "min": 8000,
+                "median": 8000,
+                "max": 8000
               }
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 16800,
+                "median": 16800,
+                "max": 16800,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 12800,
+                "median": 12800,
+                "max": 12800,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 7200,
+                "median": 7200,
+                "max": 7200,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 35,
-              "median": 35,
+              "min": 34,
+              "median": 34.5,
               "max": 35
             },
             "reacquisitionCounts": {
@@ -1803,7 +1941,7 @@
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 58281.85439200001,
+          "runtimeMs": 58524.64681399998,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -1811,35 +1949,35 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 34057,
-          "generatedStates": 151962,
-          "searchGeneratedStates": 136774,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 31830,
+          "generatedStates": 154921,
+          "searchGeneratedStates": 123010,
+          "maxNaturalReachedSouls": 37600,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58279.130297000025,
-              "evaluations": 34057,
-              "generatedStates": 151962,
-              "searchGeneratedStates": 136774,
-              "duplicateStates": 1586,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 6,
+              "runtimeMs": 58522.33511500002,
+              "evaluations": 31830,
+              "generatedStates": 154921,
+              "searchGeneratedStates": 123010,
+              "duplicateStates": 1480,
+              "maxNaturalReachedSouls": 37600,
+              "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
             }
           ],
           "front": [
             {
-              "id": "91a15f82d90ff54d",
+              "id": "c23336c9d4cab65a",
               "source": "B",
-              "pathScore": 0.4750121884295562,
-              "endScore": 0.4929661243308595,
+              "pathScore": 0.47489669869922346,
+              "endScore": 0.4900788810725352,
               "pathDamage": 0.46288663858081425,
               "endDamage": 0.48212330577764745,
-              "pathSurvivability": 0.511388837975781,
-              "endSurvivability": 0.5254945799904956,
+              "pathSurvivability": 0.5109268790544488,
+              "endSurvivability": 0.5139456069571986,
               "inventory": [
                 "upgrade_soaring_spirit",
                 "upgrade_chonky",
@@ -1848,7 +1986,7 @@
                 "upgrade_veil_walker",
                 "upgrade_suppressor",
                 "upgrade_healbane",
-                "upgrade_regenerating_bullet_shield",
+                "upgrade_melee_rebuttal",
                 "upgrade_bullet_resist_shredder",
                 "upgrade_crackshot",
                 "upgrade_titan_round",
@@ -1856,24 +1994,24 @@
               ],
               "investments": {
                 "weapon": 4800,
-                "vitality": 9600,
+                "vitality": 8800,
                 "spirit": 11200
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 22400,
+                  "transaction": 27
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 12000,
+                  "transaction": 15
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 7200,
+                  "transaction": 9
                 }
               },
-              "transactions": 39,
+              "transactions": 38,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -1891,17 +2029,17 @@
                   "totalCost": 800
                 },
                 {
-                  "item": "upgrade_regenerating_bullet_shield",
-                  "count": 2,
-                  "totalCost": 1600
-                },
-                {
                   "item": "upgrade_magic_shield",
                   "count": 1,
                   "totalCost": 1600
                 },
                 {
                   "item": "upgrade_magic_vulnerability",
+                  "count": 1,
+                  "totalCost": 1600
+                },
+                {
+                  "item": "upgrade_regenerating_bullet_shield",
                   "count": 1,
                   "totalCost": 1600
                 }
@@ -1917,14 +2055,14 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.4750121884295562,
-              "median": 0.4750121884295562,
-              "max": 0.4750121884295562
+              "min": 0.47489669869922346,
+              "median": 0.47489669869922346,
+              "max": 0.47489669869922346
             },
             "endScore": {
-              "min": 0.4929661243308595,
-              "median": 0.4929661243308595,
-              "max": 0.4929661243308595
+              "min": 0.4900788810725352,
+              "median": 0.4900788810725352,
+              "max": 0.4900788810725352
             },
             "pathDamage": {
               "min": 0.46288663858081425,
@@ -1937,14 +2075,14 @@
               "max": 0.48212330577764745
             },
             "pathSurvivability": {
-              "min": 0.511388837975781,
-              "median": 0.511388837975781,
-              "max": 0.511388837975781
+              "min": 0.5109268790544488,
+              "median": 0.5109268790544488,
+              "max": 0.5109268790544488
             },
             "endSurvivability": {
-              "min": 0.5254945799904956,
-              "median": 0.5254945799904956,
-              "max": 0.5254945799904956
+              "min": 0.5139456069571986,
+              "median": 0.5139456069571986,
+              "max": 0.5139456069571986
             },
             "investments": {
               "weapon": {
@@ -1953,9 +2091,9 @@
                 "max": 4800
               },
               "vitality": {
-                "min": 9600,
-                "median": 9600,
-                "max": 9600
+                "min": 8800,
+                "median": 8800,
+                "max": 8800
               },
               "spirit": {
                 "min": 11200,
@@ -1965,28 +2103,28 @@
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 22400,
+                "median": 22400,
+                "max": 22400,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 12000,
+                "median": 12000,
+                "max": 12000,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 7200,
+                "median": 7200,
+                "max": 7200,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 39,
-              "median": 39,
-              "max": 39
+              "min": 38,
+              "median": 38,
+              "max": 38
             },
             "reacquisitionCounts": {
               "min": 6,
@@ -1996,21 +2134,25 @@
           }
         },
         "crossScoredUnion": {
-          "unionCount": 3,
+          "unionCount": 5,
           "discoveredOnlyA": [
-            "450f5e3abf951bb7",
-            "25be0d2745e49b32"
+            "46c5b3b77c8d8703",
+            "8324e1b27c1b8184",
+            "870d38942a806963",
+            "3275925fa6629a7f"
           ],
           "discoveredOnlyB": [
-            "91a15f82d90ff54d"
+            "c23336c9d4cab65a"
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "450f5e3abf951bb7",
-            "25be0d2745e49b32"
+            "3275925fa6629a7f",
+            "46c5b3b77c8d8703",
+            "8324e1b27c1b8184",
+            "870d38942a806963"
           ],
           "paretoFrontUnderB": [
-            "91a15f82d90ff54d"
+            "c23336c9d4cab65a"
           ],
           "aDiscoveredOnlyCandidatesOnBFront": [],
           "bGuidedCandidatesDominatedUnderBByUnion": [],
@@ -2037,7 +2179,7 @@
         "A": {
           "label": "A",
           "objectiveConfigId": "carry-balanced-a-50-50",
-          "runtimeMs": 58730.53686500003,
+          "runtimeMs": 58330.570642000006,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -2045,20 +2187,20 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 31670,
-          "generatedStates": 173787,
-          "searchGeneratedStates": 138726,
-          "maxNaturalReachedSouls": 38000,
+          "evaluations": 30554,
+          "generatedStates": 177569,
+          "searchGeneratedStates": 123694,
+          "maxNaturalReachedSouls": 35600,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58728.67782599997,
-              "evaluations": 31670,
-              "generatedStates": 173787,
-              "searchGeneratedStates": 138726,
+              "runtimeMs": 58328.885485000035,
+              "evaluations": 30554,
+              "generatedStates": 177569,
+              "searchGeneratedStates": 123694,
               "duplicateStates": 1163,
-              "maxNaturalReachedSouls": 38000,
+              "maxNaturalReachedSouls": 35600,
               "terminalCandidates": 5,
               "finalFrontSize": 1,
               "objectiveConfigId": "carry-balanced-a-50-50"
@@ -2066,14 +2208,14 @@
           ],
           "front": [
             {
-              "id": "2869cff9451b3481",
+              "id": "3c32d96f3388aaab",
               "source": "A",
-              "pathScore": 0.4759599394665237,
-              "endScore": 0.49584748712485194,
-              "pathDamage": 0.37965406980194777,
-              "endDamage": 0.34747194367174294,
-              "pathSurvivability": 0.5722658091310997,
-              "endSurvivability": 0.6442230305779609,
+              "pathScore": 0.47595677460828945,
+              "endScore": 0.49583397628730075,
+              "pathDamage": 0.3793371737987674,
+              "endDamage": 0.344340643276997,
+              "pathSurvivability": 0.5725763754178114,
+              "endSurvivability": 0.6473273092976045,
               "inventory": [
                 "upgrade_chonky",
                 "upgrade_soaring_spirit",
@@ -2086,7 +2228,7 @@
                 "upgrade_suppressor",
                 "upgrade_titan_round",
                 "upgrade_pristine_emblem",
-                "upgrade_fleetfoot_boots"
+                "upgrade_headshot_booster2"
               ],
               "investments": {
                 "weapon": 4800,
@@ -2095,19 +2237,19 @@
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 17200,
+                  "transaction": 22
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 8800,
+                  "transaction": 11
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 13600,
+                  "transaction": 17
                 }
               },
-              "transactions": 35,
+              "transactions": 34,
               "reacquisitions": [
                 {
                   "item": "upgrade_clip_size",
@@ -2120,11 +2262,6 @@
                   "totalCost": 1600
                 },
                 {
-                  "item": "upgrade_fleetfoot_boots",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
                   "item": "upgrade_headshot_booster2",
                   "count": 1,
                   "totalCost": 1600
@@ -2133,7 +2270,7 @@
               "churn": {
                 "sameSoulTransactionGroups": 0,
                 "sellRebuys": 0,
-                "replacementRebuys": 3,
+                "replacementRebuys": 2,
                 "upgradeBacktracks": 1
               }
             }
@@ -2141,34 +2278,34 @@
           "summary": {
             "count": 1,
             "pathScore": {
-              "min": 0.4759599394665237,
-              "median": 0.4759599394665237,
-              "max": 0.4759599394665237
+              "min": 0.47595677460828945,
+              "median": 0.47595677460828945,
+              "max": 0.47595677460828945
             },
             "endScore": {
-              "min": 0.49584748712485194,
-              "median": 0.49584748712485194,
-              "max": 0.49584748712485194
+              "min": 0.49583397628730075,
+              "median": 0.49583397628730075,
+              "max": 0.49583397628730075
             },
             "pathDamage": {
-              "min": 0.37965406980194777,
-              "median": 0.37965406980194777,
-              "max": 0.37965406980194777
+              "min": 0.3793371737987674,
+              "median": 0.3793371737987674,
+              "max": 0.3793371737987674
             },
             "endDamage": {
-              "min": 0.34747194367174294,
-              "median": 0.34747194367174294,
-              "max": 0.34747194367174294
+              "min": 0.344340643276997,
+              "median": 0.344340643276997,
+              "max": 0.344340643276997
             },
             "pathSurvivability": {
-              "min": 0.5722658091310997,
-              "median": 0.5722658091310997,
-              "max": 0.5722658091310997
+              "min": 0.5725763754178114,
+              "median": 0.5725763754178114,
+              "max": 0.5725763754178114
             },
             "endSurvivability": {
-              "min": 0.6442230305779609,
-              "median": 0.6442230305779609,
-              "max": 0.6442230305779609
+              "min": 0.6473273092976045,
+              "median": 0.6473273092976045,
+              "max": 0.6473273092976045
             },
             "investments": {
               "weapon": {
@@ -2189,40 +2326,40 @@
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 17200,
+                "median": 17200,
+                "max": 17200,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 8800,
+                "median": 8800,
+                "max": 8800,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 1
+                "min": 13600,
+                "median": 13600,
+                "max": 13600,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 35,
-              "median": 35,
-              "max": 35
+              "min": 34,
+              "median": 34,
+              "max": 34
             },
             "reacquisitionCounts": {
-              "min": 4,
-              "median": 4,
-              "max": 4
+              "min": 3,
+              "median": 3,
+              "max": 3
             }
           }
         },
         "B": {
           "label": "B",
           "objectiveConfigId": "carry-damage-primary-b-75-25",
-          "runtimeMs": 58872.909525999974,
+          "runtimeMs": 58345.19337699999,
           "timeBudgetMs": 60000,
           "widthsStarted": [
             4
@@ -2230,35 +2367,35 @@
           "widthsCompleted": [],
           "itemCandidateSetHash": "c42d634ec4c76016a719f8c64475fd18376d03348541c99af2bec7b163c589a1",
           "referenceAxisHash": "79252276d3d21f5cf965fb18a977b089bc52ab99f4146c2ec997139a1773b1b3",
-          "evaluations": 38330,
-          "generatedStates": 149190,
-          "searchGeneratedStates": 134305,
-          "maxNaturalReachedSouls": 40000,
+          "evaluations": 35271,
+          "generatedStates": 155685,
+          "searchGeneratedStates": 118368,
+          "maxNaturalReachedSouls": 37600,
           "runs": [
             {
               "width": 4,
               "searchComplete": false,
-              "runtimeMs": 58871.08548000001,
-              "evaluations": 38330,
-              "generatedStates": 149190,
-              "searchGeneratedStates": 134305,
-              "duplicateStates": 3066,
-              "maxNaturalReachedSouls": 40000,
-              "terminalCandidates": 7,
-              "finalFrontSize": 2,
+              "runtimeMs": 58343.44889199996,
+              "evaluations": 35271,
+              "generatedStates": 155685,
+              "searchGeneratedStates": 118368,
+              "duplicateStates": 2940,
+              "maxNaturalReachedSouls": 37600,
+              "terminalCandidates": 5,
+              "finalFrontSize": 1,
               "objectiveConfigId": "carry-damage-primary-b-75-25"
             }
           ],
           "front": [
             {
-              "id": "d26be905a9cf5b16",
+              "id": "3a8c73ef23023b30",
               "source": "B",
-              "pathScore": 0.44245865882663193,
-              "endScore": 0.44891480899894864,
-              "pathDamage": 0.4217006764644937,
-              "endDamage": 0.41901529602202353,
-              "pathSurvivability": 0.5047326059130464,
-              "endSurvivability": 0.538613347929724,
+              "pathScore": 0.4420824965148303,
+              "endScore": 0.441398818565254,
+              "pathDamage": 0.42127206279380214,
+              "endDamage": 0.4104526970113027,
+              "pathSurvivability": 0.5045137976779155,
+              "endSurvivability": 0.5342371832271078,
               "inventory": [
                 "upgrade_soaring_spirit",
                 "upgrade_titan_round",
@@ -2271,115 +2408,28 @@
                 "upgrade_rupture",
                 "upgrade_suppressor",
                 "upgrade_regenerating_bullet_shield",
-                "upgrade_veil_walker"
+                "upgrade_magic_shield"
               ],
               "investments": {
                 "weapon": 11200,
-                "vitality": 8000,
+                "vitality": 6400,
                 "spirit": 8000
               },
               "thresholds4800": {
                 "weapon": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 8400,
+                  "transaction": 11
                 },
                 "vitality": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 17600,
+                  "transaction": 22
                 },
                 "spirit": {
-                  "souls": null,
-                  "transaction": null
+                  "souls": 12400,
+                  "transaction": 16
                 }
               },
-              "transactions": 38,
-              "reacquisitions": [
-                {
-                  "item": "upgrade_endurance",
-                  "count": 2,
-                  "totalCost": 800
-                },
-                {
-                  "item": "upgrade_bullet_resist_shredder",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
-                  "item": "upgrade_healing_booster",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
-                  "item": "upgrade_magic_shield",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
-                  "item": "upgrade_mystic_regeneration",
-                  "count": 1,
-                  "totalCost": 800
-                },
-                {
-                  "item": "upgrade_regenerating_bullet_shield",
-                  "count": 1,
-                  "totalCost": 1600
-                },
-                {
-                  "item": "upgrade_withering_whip",
-                  "count": 1,
-                  "totalCost": 800
-                }
-              ],
-              "churn": {
-                "sameSoulTransactionGroups": 1,
-                "sellRebuys": 0,
-                "replacementRebuys": 6,
-                "upgradeBacktracks": 1
-              }
-            },
-            {
-              "id": "c44f340dc288c59a",
-              "source": "B",
-              "pathScore": 0.44245865882663193,
-              "endScore": 0.44891480899894864,
-              "pathDamage": 0.4217006764644937,
-              "endDamage": 0.41901529602202353,
-              "pathSurvivability": 0.5047326059130464,
-              "endSurvivability": 0.538613347929724,
-              "inventory": [
-                "upgrade_soaring_spirit",
-                "upgrade_titan_round",
-                "upgrade_chonky",
-                "upgrade_reinforcing_casings",
-                "upgrade_weighted_shots",
-                "upgrade_blitz_bullets",
-                "upgrade_pristine_emblem",
-                "upgrade_bullet_resist_shredder",
-                "upgrade_rupture",
-                "upgrade_suppressor",
-                "upgrade_regenerating_bullet_shield",
-                "upgrade_veil_walker"
-              ],
-              "investments": {
-                "weapon": 11200,
-                "vitality": 8000,
-                "spirit": 8000
-              },
-              "thresholds4800": {
-                "weapon": {
-                  "souls": null,
-                  "transaction": null
-                },
-                "vitality": {
-                  "souls": null,
-                  "transaction": null
-                },
-                "spirit": {
-                  "souls": null,
-                  "transaction": null
-                }
-              },
-              "transactions": 36,
+              "transactions": 35,
               "reacquisitions": [
                 {
                   "item": "upgrade_endurance",
@@ -2416,36 +2466,36 @@
             }
           ],
           "summary": {
-            "count": 2,
+            "count": 1,
             "pathScore": {
-              "min": 0.44245865882663193,
-              "median": 0.44245865882663193,
-              "max": 0.44245865882663193
+              "min": 0.4420824965148303,
+              "median": 0.4420824965148303,
+              "max": 0.4420824965148303
             },
             "endScore": {
-              "min": 0.44891480899894864,
-              "median": 0.44891480899894864,
-              "max": 0.44891480899894864
+              "min": 0.441398818565254,
+              "median": 0.441398818565254,
+              "max": 0.441398818565254
             },
             "pathDamage": {
-              "min": 0.4217006764644937,
-              "median": 0.4217006764644937,
-              "max": 0.4217006764644937
+              "min": 0.42127206279380214,
+              "median": 0.42127206279380214,
+              "max": 0.42127206279380214
             },
             "endDamage": {
-              "min": 0.41901529602202353,
-              "median": 0.41901529602202353,
-              "max": 0.41901529602202353
+              "min": 0.4104526970113027,
+              "median": 0.4104526970113027,
+              "max": 0.4104526970113027
             },
             "pathSurvivability": {
-              "min": 0.5047326059130464,
-              "median": 0.5047326059130464,
-              "max": 0.5047326059130464
+              "min": 0.5045137976779155,
+              "median": 0.5045137976779155,
+              "max": 0.5045137976779155
             },
             "endSurvivability": {
-              "min": 0.538613347929724,
-              "median": 0.538613347929724,
-              "max": 0.538613347929724
+              "min": 0.5342371832271078,
+              "median": 0.5342371832271078,
+              "max": 0.5342371832271078
             },
             "investments": {
               "weapon": {
@@ -2454,9 +2504,9 @@
                 "max": 11200
               },
               "vitality": {
-                "min": 8000,
-                "median": 8000,
-                "max": 8000
+                "min": 6400,
+                "median": 6400,
+                "max": 6400
               },
               "spirit": {
                 "min": 8000,
@@ -2466,56 +2516,54 @@
             },
             "thresholds4800": {
               "weapon": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 8400,
+                "median": 8400,
+                "max": 8400,
+                "nullCount": 0
               },
               "vitality": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 17600,
+                "median": 17600,
+                "max": 17600,
+                "nullCount": 0
               },
               "spirit": {
-                "min": null,
-                "median": null,
-                "max": null,
-                "nullCount": 2
+                "min": 12400,
+                "median": 12400,
+                "max": 12400,
+                "nullCount": 0
               }
             },
             "transactions": {
-              "min": 36,
-              "median": 37,
-              "max": 38
+              "min": 35,
+              "median": 35,
+              "max": 35
             },
             "reacquisitionCounts": {
               "min": 5,
-              "median": 6,
-              "max": 7
+              "median": 5,
+              "max": 5
             }
           }
         },
         "crossScoredUnion": {
-          "unionCount": 3,
+          "unionCount": 2,
           "discoveredOnlyA": [
-            "2869cff9451b3481"
+            "3c32d96f3388aaab"
           ],
           "discoveredOnlyB": [
-            "d26be905a9cf5b16",
-            "c44f340dc288c59a"
+            "3a8c73ef23023b30"
           ],
           "discoveredBoth": [],
           "paretoFrontUnderA": [
-            "2869cff9451b3481"
+            "3c32d96f3388aaab"
           ],
           "paretoFrontUnderB": [
-            "c44f340dc288c59a",
-            "d26be905a9cf5b16"
+            "3a8c73ef23023b30"
           ],
           "aDiscoveredOnlyCandidatesOnBFront": [],
           "bGuidedCandidatesDominatedUnderBByUnion": [],
-          "bGuidedFrontCoverageOfUnionBFront": "2/2"
+          "bGuidedFrontCoverageOfUnionBFront": "1/1"
         }
       }
     ]
