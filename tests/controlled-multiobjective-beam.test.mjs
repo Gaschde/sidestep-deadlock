@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { parseCsv } from "../app/lib.mjs";
 import { buildOptimizerData } from "../app/optimizer.mjs";
+import { measureSoulAxisPath } from "../app/search-objective-v1.mjs";
 import {
   completeNodeBySaving,
   dedupeFuturePathHistory,
@@ -11,6 +12,7 @@ import {
   runControlledMultiobjectiveBeamCarry,
   selectPathEndParetoBeam,
   selectPathEndParetoBeamCommonHorizonShadow,
+  selectPathEndParetoBeamCommonHorizonScoreOnlyShadow,
   selectPathEndParetoBeamFullReferenceForTest
 } from "../benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs";
 
@@ -239,6 +241,96 @@ test("common-horizon shadow projects only lagging candidates and retains origina
   assert.equal(shadow.selected.some((entry) => entry.serial === "lagging|save:4000"), false);
   assert.equal(shadow.projectionEntries[0].originalNode, lagging);
   assert.equal(shadow.projectionEntries[0].projectedNode.state.earnedSouls, 4000);
+});
+
+test("score-only common-horizon is vector/retention equivalent to materialized shadow without virtual nodes", () => {
+  const make = (serial, earnedSouls, vector) => ({
+    serial,
+    state: { earnedSouls, cash: 0, inventory: [serial] },
+    parent: null,
+    event: null,
+    vector
+  });
+  const lagging = make("lagging", 3600, { pathScore: 0.30, endScore: 0.30 });
+  const nodes = [
+    lagging,
+    make("peer-a", 4000, { pathScore: 0.70, endScore: 0.70 }),
+    make("peer-b", 4000, { pathScore: 0.65, endScore: 0.65 }),
+    make("peer-c", 4000, { pathScore: 0.60, endScore: 0.60 }),
+    make("peer-d", 4000, { pathScore: 0.55, endScore: 0.55 })
+  ];
+  const projectedVector = { pathScore: 0.80, endScore: 0.80 };
+  let materializedSaveCalls = 0;
+  const saveTransitions = (node) => {
+    materializedSaveCalls += 1;
+    return [{
+      serial: node.serial + "|save:4000",
+      state: { ...node.state, earnedSouls: 4000, cash: node.state.cash + 400 },
+      parent: node,
+      event: { type: "save", earnedSouls: 4000 },
+      vector: projectedVector
+    }];
+  };
+  const vectorFor = (node) => node.vector;
+  const vectorForHorizon = (node, horizon) => {
+    assert.equal(horizon, 4000);
+    return node.serial.startsWith("lagging") ? projectedVector : node.vector;
+  };
+
+  const materialized = selectPathEndParetoBeamCommonHorizonShadow(
+    nodes, 4, vectorFor, vectorForHorizon, saveTransitions
+  );
+  const scoreOnlyA = selectPathEndParetoBeamCommonHorizonScoreOnlyShadow(
+    nodes, 4, vectorFor, vectorForHorizon
+  );
+  const scoreOnlyB = selectPathEndParetoBeamCommonHorizonScoreOnlyShadow(
+    nodes, 4, vectorFor, vectorForHorizon
+  );
+  const ids = (result) => result.selected.map((entry) => entry.serial);
+
+  assert.deepEqual(ids(scoreOnlyA), ids(materialized));
+  assert.deepEqual(ids(scoreOnlyB), ids(scoreOnlyA));
+  assert.equal(scoreOnlyA.selected.includes(lagging), true);
+  assert.equal(scoreOnlyA.selected.every((entry) => nodes.includes(entry)), true);
+  assert.equal(scoreOnlyA.projectionEntries.length, 0);
+  assert.equal(scoreOnlyA.shadowProjection.materializedProjectedNodes, 0);
+  assert.equal(scoreOnlyA.shadowProjection.saveTransitions, 0);
+  assert.equal(scoreOnlyA.shadowProjection.scoreOnlyProjections, 1);
+  assert.equal(materializedSaveCalls, 1);
+});
+
+test("piecewise-constant Path/End score is exactly unchanged by a duplicate-metrics save point at the horizon", () => {
+  const metrics = (value) => ({
+    sustainedBulletDps: value,
+    sustainedSpiritDps: value,
+    laneTradeBulletDps: value,
+    laneTradeSpiritDps: value,
+    farmBulletDps: value,
+    farmSpiritDps: value,
+    skirmishBulletDps: value,
+    skirmishSpiritDps: value,
+    teamfightBulletDps: value,
+    teamfightSpiritDps: value,
+    bulletEhp: value,
+    spiritEhp: value
+  });
+  const original = [
+    { earnedSouls: 0, metrics: metrics(10) },
+    { earnedSouls: 3600, metrics: metrics(20) }
+  ];
+  const materialized = [...original, { earnedSouls: 4000, metrics: metrics(20) }];
+  const reference = {
+    axis: [0, 3600, 4000],
+    values: [metrics(20), metrics(30), metrics(30)]
+  };
+  const a = measureSoulAxisPath(original, reference, [], 4000, "weapon");
+  const b = measureSoulAxisPath(materialized, reference, [], 4000, "weapon");
+  assert.equal(a.pathScore, b.pathScore);
+  assert.equal(a.endScore, b.endScore);
+  assert.equal(a.pathDamage, b.pathDamage);
+  assert.equal(a.endDamage, b.endDamage);
+  assert.equal(a.pathSurvivability, b.pathSurvivability);
+  assert.equal(a.endSurvivability, b.endSurvivability);
 });
 
 test("common-horizon shadow refuses ambiguous pools spanning more than the next present horizon", () => {
