@@ -169,17 +169,42 @@ function categoryInvestments(data, inventory) {
   return totals;
 }
 
-function thresholdTiming(data, snapshots) {
+function thresholdTiming(data, events) {
   const result = {
-    weapon: { souls: null, sequence: null },
-    vitality: { souls: null, sequence: null },
-    spirit: { souls: null, sequence: null }
+    weapon: { souls: null, transaction: null },
+    vitality: { souls: null, transaction: null },
+    spirit: { souls: null, transaction: null }
   };
-  for (const [sequence, snapshot] of (snapshots || []).entries()) {
-    const investment = categoryInvestments(data, snapshot.inventory);
+  let earnedSouls = 0;
+  let transaction = 0;
+  let inventory = [];
+
+  for (const event of events || []) {
+    if (event.type === "save") {
+      earnedSouls = Number(event.earnedSouls);
+      continue;
+    }
+    if (event.type === "purchase") {
+      inventory = [...inventory, event.item];
+    } else if (event.type === "upgrade" || event.type === "replacement") {
+      const index = inventory.indexOf(event.from);
+      if (index < 0) throw new Error("Threshold replay is missing owned item " + event.from);
+      inventory = [...inventory];
+      inventory.splice(index, 1, event.item);
+    } else if (event.type === "sell") {
+      const index = inventory.indexOf(event.from);
+      if (index < 0) throw new Error("Threshold replay is missing sold item " + event.from);
+      inventory = [...inventory];
+      inventory.splice(index, 1);
+    } else {
+      continue;
+    }
+
+    transaction += 1;
+    const investment = categoryInvestments(data, inventory);
     for (const category of Object.keys(result)) {
       if (result[category].souls === null && investment[category] >= 4800) {
-        result[category] = { souls: snapshot.earnedSouls, sequence };
+        result[category] = { souls: earnedSouls, transaction };
       }
     }
   }
@@ -211,7 +236,7 @@ function candidateRecord(data, definition, stored, state) {
     source: stored.source || "stored",
     inventory: [...state.inventory],
     investments: categoryInvestments(data, state.inventory),
-    thresholds4800: thresholdTiming(data, state.snapshots),
+    thresholds4800: thresholdTiming(data, state.events),
     transactions: observables.transactionCount,
     reacquisitions: observables.reacquiredItems,
     churn: {
