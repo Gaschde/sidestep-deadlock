@@ -1,6 +1,6 @@
 {
   "schemaVersion": "optimizer-common-horizon-retention-shadow-v1",
-  "sourceCommit": "3f2e50622c041f7d173397fd3a6dc07b7b3d7dd0",
+  "sourceCommit": "89c5cdc10a47cca2c34ffbc2af2c0ff4fbe4adf5",
   "caseId": "production-40k-warden-carry-weapon",
   "scope": {
     "hero": "warden",
@@ -60,7 +60,7 @@
       4000
     ],
     "baseline": {
-      "runtimeMs": 4.615854000000013,
+      "runtimeMs": 2.823532,
       "targetLayer": 15,
       "retainedPathIds": [
         "aa4d4665b9434b92",
@@ -79,7 +79,7 @@
       }
     },
     "shadow": {
-      "runtimeMs": 13.999641999999994,
+      "runtimeMs": 13.48933999999997,
       "enabled": true,
       "applied": true,
       "reason": "next-present-economic-horizon",
@@ -95,9 +95,9 @@
       "materializedProjectedNodes": 244,
       "saveTransitions": 244,
       "maxSaveStepsPerCandidate": 1,
-      "projectionRuntimeMs": 1.0166690000000926,
-      "materializationRuntimeMs": 1.0166690000000926,
-      "horizonScoreRuntimeMs": 11.420177999999623,
+      "projectionRuntimeMs": 0.9635009999999511,
+      "materializationRuntimeMs": 0.9635009999999511,
+      "horizonScoreRuntimeMs": 10.787071000001106,
       "horizonVectorRequests": 248,
       "targetLayer": 0,
       "retainedPathIds": [
@@ -5514,7 +5514,7 @@
   },
   "stage2": {
     "skipped": false,
-    "runtimeMs": 57109.232555,
+    "runtimeMs": 60023.742605,
     "steps": 128,
     "duplicateStates": 1397,
     "maxCandidatePool": 3469,
@@ -5557,7 +5557,7 @@
   },
   "stage3": {
     "baseline": {
-      "runtimeMs": 58125.791198,
+      "runtimeMs": 67063.483295,
       "evaluations": 29636,
       "generatedStates": 151978,
       "transitionCalls": 663,
@@ -5567,7 +5567,7 @@
       "finalFrontSize": 1
     },
     "shadow": {
-      "runtimeMs": 87970.98402099998,
+      "runtimeMs": 90734.50569199999,
       "evaluations": 43655,
       "generatedStates": 165683,
       "transitionCalls": 729,
@@ -5589,10 +5589,10 @@
         "horizonVectorCacheMisses": 59362,
         "horizonVectorRequests": 59362,
         "additionalCarryEvaluations": 0,
-        "projectionRuntimeMs": 976.7958930001769,
-        "materializationRuntimeMs": 976.8507970001228,
-        "horizonScoreRuntimeMs": 17329.007260997474,
-        "shadowRetentionRuntimeMs": 18828.69525100023,
+        "projectionRuntimeMs": 1127.022880000135,
+        "materializationRuntimeMs": 1127.097807000071,
+        "horizonScoreRuntimeMs": 17917.974476997668,
+        "shadowRetentionRuntimeMs": 19645.174075999937,
         "peakProjectedCandidates": 3113,
         "peakProjectionEntries": 3113,
         "maxSaveStepsPerCandidate": 1,
@@ -5671,8 +5671,8 @@
       }
     },
     "delta": {
-      "runtimeMs": 29845.192822999983,
-      "runtimeRatio": 1.5134586937721872,
+      "runtimeMs": 23671.022396999993,
+      "runtimeRatio": 1.352964403785522,
       "evaluations": 14019,
       "generatedStates": 13705,
       "transitionCalls": 66,
