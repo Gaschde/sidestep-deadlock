@@ -1,0 +1,45 @@
+name: optimizer common-horizon retention pool audit
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+    paths:
+      - app/multiobjective-search.mjs
+      - app/search-telemetry.mjs
+      - tests/controlled-multiobjective-beam.test.mjs
+      - tools/optimizer-common-horizon-retention-audit.mjs
+      - .github/workflows/optimizer-common-horizon-retention-audit.yml
+
+permissions:
+  contents: write
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript regression tests
+        run: npm test
+      - name: Run Warden weapon common-horizon retention pool audit
+        run: node tools/optimizer-common-horizon-retention-audit.mjs --output artifacts/common-horizon-retention-audit/results.json
+      - name: Upload retention audit artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-common-horizon-retention-audit
+          path: artifacts/common-horizon-retention-audit/results.json
+      - name: Record retention audit result on optimizer branch
+        run: |
+          mkdir -p benchmarks/optimizer-v1/experiments/common-horizon-retention-pool-audit
+          cp artifacts/common-horizon-retention-audit/results.json benchmarks/optimizer-v1/experiments/common-horizon-retention-pool-audit/results.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/experiments/common-horizon-retention-pool-audit/results.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data(benchmark): record common horizon retention audit [skip ci]"
+          git pull --rebase origin feature/optimizer-next
+          git push
