@@ -378,6 +378,13 @@ function searchCandidate(data, definition, entry, source) {
     definition.budget,
     new Map(data.items.map((item) => [item.item_id, Number(item.total_cost)]))
   );
+  const investments = categoryInvestments(data, entry.state.inventory);
+  const thresholds4800 = thresholdTiming(data, entry.state.events);
+  for (const category of Object.keys(investments)) {
+    if (investments[category] >= 4800 && thresholds4800[category].souls === null) {
+      throw new Error(definition.id + ": missing 4.8k threshold timing for " + category);
+    }
+  }
   return {
     id: pathId(entry.state.events),
     source,
@@ -389,8 +396,8 @@ function searchCandidate(data, definition, entry, source) {
     pathSurvivability: entry.measurement.pathSurvivability,
     endSurvivability: entry.measurement.endSurvivability,
     inventory: [...entry.state.inventory],
-    investments: categoryInvestments(data, entry.state.inventory),
-    thresholds4800: thresholdTiming(data, entry.state.snapshots),
+    investments,
+    thresholds4800,
     transactions: entry.transactions,
     reacquisitions: observables.reacquiredItems,
     churn: {
