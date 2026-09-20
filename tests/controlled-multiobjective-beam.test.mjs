@@ -483,6 +483,37 @@ test("baseline runner is unchanged when both common-horizon flags are omitted ve
   assert.equal(Object.hasOwn(explicit.telemetry, "commonHorizonShadow"), false);
 });
 
+test("common-horizon retention audit is restricted to score-only unlimited-time diagnostics", () => {
+  const data = canonicalData();
+  const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
+  const args = {
+    data,
+    heroId: "warden",
+    damageFocus: "weapon",
+    itemIds: ["upgrade_rapid_rounds"],
+    budget: 800,
+    milestones: [800],
+    slotUnlocks,
+    beamWidth: 4,
+    maxSteps: 10,
+    timeMs: Infinity,
+    referenceTimeMs: 100
+  };
+  assert.throws(
+    () => runControlledMultiobjectiveBeamCarry({ ...args, commonHorizonRetentionAudit: true }),
+    /benötigt den Score-only Shadow/
+  );
+  assert.throws(
+    () => runControlledMultiobjectiveBeamCarry({
+      ...args,
+      commonHorizonScoreOnlyShadow: true,
+      commonHorizonRetentionAudit: true,
+      timeMs: 1000
+    }),
+    /benötigt timeMs=Infinity/
+  );
+});
+
 test("shared browser-safe Multiobjective kernel reaches 40k for Warden focuses and Venator Weapon", () => {
   const data = canonicalData();
   const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
