@@ -8,6 +8,9 @@ on:
       - tools/optimizer-search-divergence-diagnosis.mjs
       - .github/workflows/optimizer-search-divergence-diagnosis.yml
 
+permissions:
+  contents: write
+
 jobs:
   diagnose:
     runs-on: ubuntu-latest
@@ -24,3 +27,13 @@ jobs:
         with:
           name: search-divergence-diagnosis
           path: artifacts/search-divergence-diagnosis/results.json
+      - name: Record diagnosis result on optimizer branch
+        run: |
+          mkdir -p benchmarks/optimizer-v1/experiments/search-divergence-diagnosis
+          cp artifacts/search-divergence-diagnosis/results.json benchmarks/optimizer-v1/experiments/search-divergence-diagnosis/results.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/experiments/search-divergence-diagnosis/results.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data(benchmark): record search divergence diagnosis [skip ci]"
+          git push
