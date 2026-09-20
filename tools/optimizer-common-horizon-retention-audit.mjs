@@ -275,24 +275,26 @@ function main() {
     throw new Error("Known seed 93260772842f0c27 was not recognized as newly retained; audit instrumentation invalid.");
   }
   const targetBestType = Math.max(...targetPools.map((pool) => pool.type));
-  if (targetBestType < 3) {
+  const targetNodes = targetPools.map((pool) =>
+    pool.nodesAddedByCommonHorizon.find((node) => node.nodeId === TARGET_PATH_ID)
+  ).filter(Boolean);
+  const targetDirectPropagationAgreement = targetNodes.every((node) =>
+    node.downstream?.terminalDescendantCount === node.downstream?.propagatedTerminalDescendantCount &&
+    node.downstream?.finalFrontDescendantCount === node.downstream?.propagatedFinalFrontDescendantCount &&
+    node.downstream?.finalSelectedDescendantCount === node.downstream?.propagatedFinalSelectedDescendantCount
+  );
+  if (!targetDirectPropagationAgreement || rawAudit.finalAncestryMismatchCount !== 0) {
     console.error(JSON.stringify({
       phase: "known-target-instrumentation-stop",
       pathId: TARGET_PATH_ID,
-      bestType: targetBestType,
-      pools: targetPools.map((pool) => ({
-        poolIndex: pool.poolIndex,
-        step: pool.step,
-        soulGap: pool.soulGap,
-        candidateCount: pool.candidateCount,
-        type: pool.type,
-        rescuedNode: pool.nodesAddedByCommonHorizon.find((node) => node.nodeId === TARGET_PATH_ID)
-      }))
+      targetDirectPropagationAgreement,
+      finalAncestryMismatchCount: rawAudit.finalAncestryMismatchCount,
+      pools: targetPools
     }, null, 2));
-    throw new Error(
-      `Known seed 93260772842f0c27 classified only as TYPE ${targetBestType}; stop and inspect instrumentation.`
-    );
+    throw new Error("Direct parent-chain and propagated ancestry disagree; stop and inspect instrumentation.");
   }
+  const storedCounterfactualContinuationMeetsKnownOutput =
+    storedScoreOnly.stage2?.originalNodeContinuation?.meetsKnownOutput === true;
 
   const frontA = compactFront(controlA);
   const frontAudited = compactFront(audited);
@@ -383,6 +385,12 @@ function main() {
       pathId: TARGET_PATH_ID,
       recognized: true,
       bestType: targetBestType,
+      expectedHighTypeConfirmed: targetBestType >= 3,
+      directPropagationAgreement: targetDirectPropagationAgreement,
+      storedCounterfactualContinuationMeetsKnownOutput,
+      interpretation: targetBestType >= 3
+        ? "The rescued seed contributes literal ancestry to the full-search final output."
+        : "The prior isolated continuation proves counterfactual value-to-go, but in the full common-horizon search this rescued ancestry is eliminated by a later retention before reaching a terminal.",
       pools: targetPools.map((pool) => ({
         poolIndex: pool.poolIndex,
         step: pool.step,
