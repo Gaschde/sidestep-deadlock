@@ -10,6 +10,7 @@ import {
   pathEndNonDominatedLayers,
   runControlledMultiobjectiveBeamCarry,
   selectPathEndParetoBeam,
+  selectPathEndParetoBeamCommonHorizonShadow,
   selectPathEndParetoBeamFullReferenceForTest
 } from "../benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs";
 
@@ -186,6 +187,80 @@ test("lazy retention stops before unused later Pareto layers", () => {
   assert.equal(result.metadata.unlayeredCandidates, 4);
 });
 
+
+test("common-horizon shadow projects only lagging candidates and retains original nodes", () => {
+  const make = (serial, earnedSouls, vector) => ({
+    serial,
+    state: { earnedSouls, cash: 0, inventory: [serial] },
+    parent: null,
+    event: null,
+    vector
+  });
+  const lagging = make("lagging", 3600, { pathScore: 0.30, endScore: 0.30 });
+  const peers = [
+    make("peer-a", 4000, { pathScore: 0.70, endScore: 0.70 }),
+    make("peer-b", 4000, { pathScore: 0.65, endScore: 0.65 }),
+    make("peer-c", 4000, { pathScore: 0.60, endScore: 0.60 }),
+    make("peer-d", 4000, { pathScore: 0.55, endScore: 0.55 })
+  ];
+  const nodes = [lagging, ...peers];
+  const projectedVector = { pathScore: 0.80, endScore: 0.80 };
+  let saveCalls = 0;
+  const saveTransitions = (node) => {
+    saveCalls += 1;
+    if (node.state.earnedSouls !== 3600) return [];
+    return [{
+      serial: node.serial + "|save:4000",
+      state: { ...node.state, earnedSouls: 4000, cash: node.state.cash + 400 },
+      parent: node,
+      event: { type: "save", earnedSouls: 4000 },
+      vector: projectedVector
+    }];
+  };
+  const vectorFor = (node) => node.vector;
+  const vectorForHorizon = (node, horizon) => {
+    assert.equal(horizon, 4000);
+    return node.serial.startsWith("lagging|save") ? projectedVector : node.vector;
+  };
+
+  const baseline = selectPathEndParetoBeam(nodes, 4, vectorFor);
+  assert.equal(baseline.selected.includes(lagging), false);
+
+  const shadow = selectPathEndParetoBeamCommonHorizonShadow(
+    nodes, 4, vectorFor, vectorForHorizon, saveTransitions
+  );
+  assert.equal(shadow.shadowProjection.applied, true);
+  assert.equal(shadow.shadowProjection.commonHorizon, 4000);
+  assert.equal(shadow.shadowProjection.projectedCandidates, 1);
+  assert.equal(shadow.shadowProjection.saveTransitions, 1);
+  assert.equal(shadow.shadowProjection.maxSaveStepsPerCandidate, 1);
+  assert.equal(saveCalls, 1);
+  assert.equal(shadow.selected.includes(lagging), true);
+  assert.equal(shadow.selected.some((entry) => entry.serial === "lagging|save:4000"), false);
+  assert.equal(shadow.projectionEntries[0].originalNode, lagging);
+  assert.equal(shadow.projectionEntries[0].projectedNode.state.earnedSouls, 4000);
+});
+
+test("common-horizon shadow refuses ambiguous pools spanning more than the next present horizon", () => {
+  const nodes = [3600, 4000, 4400].map((earnedSouls, index) => ({
+    serial: String(index),
+    state: { earnedSouls, cash: 0, inventory: [] },
+    vector: { pathScore: 1 - index * 0.1, endScore: 1 - index * 0.1 },
+    parent: null,
+    event: null
+  }));
+  let saveCalls = 0;
+  const result = selectPathEndParetoBeamCommonHorizonShadow(
+    nodes,
+    2,
+    (node) => node.vector,
+    (node) => node.vector,
+    () => { saveCalls += 1; return []; }
+  );
+  assert.equal(result.shadowProjection.applied, false);
+  assert.equal(result.shadowProjection.reason, "pool-spans-beyond-next-economic-horizon");
+  assert.equal(saveCalls, 0);
+});
 
 test("save-to-horizon completion follows only legal save successors and preserves inventory", () => {
   const makePartial = (serial, earnedSouls = 0, cash = 0, inventory = ["held"]) => ({
