@@ -1,0 +1,4125 @@
+{
+  "schemaVersion": "optimizer-value-to-go-diagnosis-v1",
+  "sourceCommit": "84e6768117007a1575b19249cb9856b0bde6b450",
+  "caseId": "production-40k-warden-carry-weapon",
+  "scope": {
+    "hero": "warden",
+    "focus": "weapon",
+    "budget": 40000,
+    "beamWidth": 4,
+    "objective": {
+      "id": "carry-sweet-70-30-spec-77_5-22_5",
+      "damageWeight": 0.7,
+      "survivalWeight": 0.3,
+      "damageFocusWeights": {
+        "weapon": {
+          "bullet": 0.775,
+          "spirit": 0.225
+        },
+        "spirit": {
+          "bullet": 0.225,
+          "spirit": 0.775
+        },
+        "hybrid": {
+          "bullet": 0.5,
+          "spirit": 0.5
+        }
+      }
+    },
+    "continuationStepBudget": 160,
+    "wallclockUsedAsBudget": false
+  },
+  "reference": {
+    "version": "baseline-v0:production-40k-warden-carry-weapon",
+    "source": "frozen supplied baseline-v0"
+  },
+  "sourceDiagnosis": {
+    "schemaVersion": "optimizer-search-divergence-diagnosis-v1",
+    "sourceCommit": "ec577d3710b68130695ee8ae789f2a5edae388b8",
+    "divergenceDepth": 14,
+    "divergenceSouls": 3600
+  },
+  "controls": {
+    "identicalContinuationSearch": true,
+    "prefixHistoryReplayedLegally": true,
+    "productionDedupeFunctionUsed": true,
+    "productionParetoRetentionFunctionUsed": true,
+    "deterministicStepBudget": true,
+    "noWallclockDeadline": true,
+    "saveTo40kMaterialized": true,
+    "continuationLookaheadApplicability": "Existing app/beam-search.mjs continuation lookahead is not part of this multiobjective path and only projects purchase->upgrade; the divergence event is replacement health->high_velocity_mag."
+  },
+  "runs": [
+    {
+      "seed": {
+        "label": "lost-high-velocity",
+        "pathId": "93260772842f0c27",
+        "earnedSouls": 3600,
+        "cash": 0,
+        "inventory": [
+          "upgrade_titan_round",
+          "upgrade_high_velocity_mag",
+          "upgrade_rapid_rounds"
+        ],
+        "history": [
+          {
+            "type": "save",
+            "earnedSouls": 400
+          },
+          {
+            "type": "save",
+            "earnedSouls": 800
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1200
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1600
+          },
+          {
+            "type": "upgrade",
+            "from": "upgrade_clip_size",
+            "item": "upgrade_titan_round",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2000
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2400
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_health",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3200
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_rapid_rounds",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3600
+          },
+          {
+            "type": "replacement",
+            "from": "upgrade_health",
+            "item": "upgrade_high_velocity_mag",
+            "payment": 400,
+            "saleProceeds": 400
+          }
+        ]
+      },
+      "continuation": {
+        "steps": 128,
+        "stepBudget": 160,
+        "stoppedByStepBudget": false,
+        "searchExhausted": true,
+        "maxReachedSouls": 40000,
+        "maxCandidatePool": 3469,
+        "duplicateStates": 1397,
+        "terminalCandidates": 8,
+        "counters": {
+          "transitionCalls": 872,
+          "generatedStates": 304188,
+          "evaluations": 30913
+        },
+        "reached40k": true
+      },
+      "finalFront": [
+        {
+          "id": "b5dc73df676543aa",
+          "earnedSouls": 40000,
+          "cash": 1600,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_suppressor",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754,
+          "pathDamage": 0.4180362244053125,
+          "endDamage": 0.3917641352470814,
+          "pathSurvival": 0.49715700805479685,
+          "endSurvival": 0.5722748268860353,
+          "transactions": 42,
+          "replacements": 23,
+          "reacquisitionEvents": 14,
+          "sources": [
+            "generated-terminal",
+            "retained-terminal"
+          ],
+          "history": [
+            {
+              "type": "save",
+              "earnedSouls": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_clip_size",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_clip_size",
+              "item": "upgrade_titan_round",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_blitz_bullets",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_medic_bullets",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_withering_whip",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_active_reload",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_endurance",
+              "item": "upgrade_magic_shield",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_pristine_emblem",
+              "item": "upgrade_regenerating_bullet_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18000
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_bullet_resist_shredder",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_fleetfoot_boots",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_withering_whip",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_suppressor",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_soaring_spirit",
+              "payment": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_suppressor",
+              "item": "upgrade_medic_bullets",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_active_reload",
+              "item": "upgrade_reinforcing_casings",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_crackshot",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_crackshot",
+              "item": "upgrade_weighted_shots",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_fleetfoot_boots",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_suppressor",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36000
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_health",
+              "item": "upgrade_chonky",
+              "payment": 2400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_improved_bullet_armor",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 40000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": {
+        "label": "sweet-retained-1",
+        "pathId": "aa4d4665b9434b92",
+        "earnedSouls": 4000,
+        "cash": 800,
+        "inventory": [
+          "upgrade_titan_round",
+          "upgrade_health",
+          "upgrade_improved_spirit"
+        ],
+        "history": [
+          {
+            "type": "save",
+            "earnedSouls": 400
+          },
+          {
+            "type": "save",
+            "earnedSouls": 800
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1200
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1600
+          },
+          {
+            "type": "upgrade",
+            "from": "upgrade_clip_size",
+            "item": "upgrade_titan_round",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2000
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2400
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_health",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3200
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_improved_spirit",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3600
+          },
+          {
+            "type": "save",
+            "earnedSouls": 4000
+          }
+        ]
+      },
+      "continuation": {
+        "steps": 129,
+        "stepBudget": 160,
+        "stoppedByStepBudget": false,
+        "searchExhausted": true,
+        "maxReachedSouls": 40000,
+        "maxCandidatePool": 3469,
+        "duplicateStates": 3446,
+        "terminalCandidates": 8,
+        "counters": {
+          "transitionCalls": 873,
+          "generatedStates": 361670,
+          "evaluations": 30179
+        },
+        "reached40k": true
+      },
+      "finalFront": [
+        {
+          "id": "266bb03a2ab9a153",
+          "earnedSouls": 40000,
+          "cash": 1200,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "pathScore": 0.44083968386617134,
+          "endScore": 0.44591734273876754,
+          "pathDamage": 0.4167168573118348,
+          "endDamage": 0.3917641352470814,
+          "pathSurvival": 0.49712627915962293,
+          "endSurvival": 0.5722748268860353,
+          "transactions": 43,
+          "replacements": 23,
+          "reacquisitionEvents": 15,
+          "sources": [
+            "generated-terminal",
+            "retained-terminal"
+          ],
+          "history": [
+            {
+              "type": "save",
+              "earnedSouls": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_clip_size",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_clip_size",
+              "item": "upgrade_titan_round",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_blitz_bullets",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_medic_bullets",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_withering_whip",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_active_reload",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_magic_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_pristine_emblem",
+              "item": "upgrade_regenerating_bullet_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_bullet_resist_shredder",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_fleetfoot_boots",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_withering_whip",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_suppressor",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_soaring_spirit",
+              "payment": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_suppressor",
+              "item": "upgrade_medic_bullets",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_active_reload",
+              "item": "upgrade_reinforcing_casings",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_crackshot",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_crackshot",
+              "item": "upgrade_weighted_shots",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_fleetfoot_boots",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_suppressor",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_health",
+              "item": "upgrade_chonky",
+              "payment": 2400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_improved_bullet_armor",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 40000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": {
+        "label": "sweet-retained-2",
+        "pathId": "d81825396d564903",
+        "earnedSouls": 3600,
+        "cash": 0,
+        "inventory": [
+          "upgrade_titan_round",
+          "upgrade_health",
+          "upgrade_improved_spirit"
+        ],
+        "history": [
+          {
+            "type": "save",
+            "earnedSouls": 400
+          },
+          {
+            "type": "save",
+            "earnedSouls": 800
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1200
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1600
+          },
+          {
+            "type": "upgrade",
+            "from": "upgrade_clip_size",
+            "item": "upgrade_titan_round",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2000
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2400
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_health",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3200
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_rapid_rounds",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3600
+          },
+          {
+            "type": "replacement",
+            "from": "upgrade_rapid_rounds",
+            "item": "upgrade_improved_spirit",
+            "payment": 400,
+            "saleProceeds": 400
+          }
+        ]
+      },
+      "continuation": {
+        "steps": 130,
+        "stepBudget": 160,
+        "stoppedByStepBudget": false,
+        "searchExhausted": true,
+        "maxReachedSouls": 40000,
+        "maxCandidatePool": 3469,
+        "duplicateStates": 3474,
+        "terminalCandidates": 8,
+        "counters": {
+          "transitionCalls": 880,
+          "generatedStates": 305858,
+          "evaluations": 29532
+        },
+        "reached40k": true
+      },
+      "finalFront": [
+        {
+          "id": "655a16a3d5d279dc",
+          "earnedSouls": 40000,
+          "cash": 800,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "pathScore": 0.4385141841819587,
+          "endScore": 0.44591734273876754,
+          "pathDamage": 0.41440655872122933,
+          "endDamage": 0.3917641352470814,
+          "pathSurvival": 0.4947653102569936,
+          "endSurvival": 0.5722748268860353,
+          "transactions": 44,
+          "replacements": 24,
+          "reacquisitionEvents": 16,
+          "sources": [
+            "generated-terminal",
+            "retained-terminal"
+          ],
+          "history": [
+            {
+              "type": "save",
+              "earnedSouls": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_clip_size",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_clip_size",
+              "item": "upgrade_titan_round",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_improved_spirit",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_blitz_bullets",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_medic_bullets",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_withering_whip",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_active_reload",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16000
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_magic_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_pristine_emblem",
+              "item": "upgrade_regenerating_bullet_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_bullet_resist_shredder",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_fleetfoot_boots",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_withering_whip",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_suppressor",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24000
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_soaring_spirit",
+              "payment": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_suppressor",
+              "item": "upgrade_medic_bullets",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_active_reload",
+              "item": "upgrade_reinforcing_casings",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_crackshot",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_crackshot",
+              "item": "upgrade_weighted_shots",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_fleetfoot_boots",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_suppressor",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_health",
+              "item": "upgrade_chonky",
+              "payment": 2400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_improved_bullet_armor",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 40000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": {
+        "label": "sweet-retained-3",
+        "pathId": "d58971bb584e3ba6",
+        "earnedSouls": 4000,
+        "cash": 800,
+        "inventory": [
+          "upgrade_titan_round",
+          "upgrade_health",
+          "upgrade_improved_spirit"
+        ],
+        "history": [
+          {
+            "type": "save",
+            "earnedSouls": 400
+          },
+          {
+            "type": "save",
+            "earnedSouls": 800
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1200
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1600
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_health",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2000
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2400
+          },
+          {
+            "type": "upgrade",
+            "from": "upgrade_clip_size",
+            "item": "upgrade_titan_round",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3200
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_improved_spirit",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3600
+          },
+          {
+            "type": "save",
+            "earnedSouls": 4000
+          }
+        ]
+      },
+      "continuation": {
+        "steps": 129,
+        "stepBudget": 160,
+        "stoppedByStepBudget": false,
+        "searchExhausted": true,
+        "maxReachedSouls": 40000,
+        "maxCandidatePool": 3469,
+        "duplicateStates": 3446,
+        "terminalCandidates": 8,
+        "counters": {
+          "transitionCalls": 873,
+          "generatedStates": 361670,
+          "evaluations": 30179
+        },
+        "reached40k": true
+      },
+      "finalFront": [
+        {
+          "id": "7dc82637ed4dbfaa",
+          "earnedSouls": 40000,
+          "cash": 1200,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "pathScore": 0.44063733012474743,
+          "endScore": 0.44591734273876754,
+          "pathDamage": 0.41576593104955656,
+          "endDamage": 0.3917641352470814,
+          "pathSurvival": 0.49867059463352553,
+          "endSurvival": 0.5722748268860353,
+          "transactions": 43,
+          "replacements": 23,
+          "reacquisitionEvents": 15,
+          "sources": [
+            "generated-terminal",
+            "retained-terminal"
+          ],
+          "history": [
+            {
+              "type": "save",
+              "earnedSouls": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_clip_size",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_clip_size",
+              "item": "upgrade_titan_round",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_blitz_bullets",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_medic_bullets",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_withering_whip",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_active_reload",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_magic_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_pristine_emblem",
+              "item": "upgrade_regenerating_bullet_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_bullet_resist_shredder",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_fleetfoot_boots",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_withering_whip",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_suppressor",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_soaring_spirit",
+              "payment": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_suppressor",
+              "item": "upgrade_medic_bullets",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_active_reload",
+              "item": "upgrade_reinforcing_casings",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_crackshot",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_crackshot",
+              "item": "upgrade_weighted_shots",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_fleetfoot_boots",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_suppressor",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_health",
+              "item": "upgrade_chonky",
+              "payment": 2400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_improved_bullet_armor",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 40000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "seed": {
+        "label": "sweet-retained-4",
+        "pathId": "725cc734448b5bd0",
+        "earnedSouls": 4000,
+        "cash": 800,
+        "inventory": [
+          "upgrade_health",
+          "upgrade_titan_round",
+          "upgrade_improved_spirit"
+        ],
+        "history": [
+          {
+            "type": "save",
+            "earnedSouls": 400
+          },
+          {
+            "type": "save",
+            "earnedSouls": 800
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_health",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1200
+          },
+          {
+            "type": "save",
+            "earnedSouls": 1600
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2000
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2400
+          },
+          {
+            "type": "upgrade",
+            "from": "upgrade_clip_size",
+            "item": "upgrade_titan_round",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 2800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3200
+          },
+          {
+            "type": "purchase",
+            "item": "upgrade_improved_spirit",
+            "payment": 800
+          },
+          {
+            "type": "save",
+            "earnedSouls": 3600
+          },
+          {
+            "type": "save",
+            "earnedSouls": 4000
+          }
+        ]
+      },
+      "continuation": {
+        "steps": 129,
+        "stepBudget": 160,
+        "stoppedByStepBudget": false,
+        "searchExhausted": true,
+        "maxReachedSouls": 40000,
+        "maxCandidatePool": 3469,
+        "duplicateStates": 3446,
+        "terminalCandidates": 8,
+        "counters": {
+          "transitionCalls": 873,
+          "generatedStates": 361670,
+          "evaluations": 30179
+        },
+        "reached40k": true
+      },
+      "finalFront": [
+        {
+          "id": "e4432321aadca374",
+          "earnedSouls": 40000,
+          "cash": 1200,
+          "inventory": [
+            "upgrade_suppressor",
+            "upgrade_titan_round",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "pathScore": 0.4402640941306335,
+          "endScore": 0.44591734273876754,
+          "pathDamage": 0.4145708872834355,
+          "endDamage": 0.3917641352470814,
+          "pathSurvival": 0.5002149101074282,
+          "endSurvival": 0.5722748268860353,
+          "transactions": 43,
+          "replacements": 23,
+          "reacquisitionEvents": 15,
+          "sources": [
+            "generated-terminal",
+            "retained-terminal"
+          ],
+          "history": [
+            {
+              "type": "save",
+              "earnedSouls": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 1600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_clip_size",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_clip_size",
+              "item": "upgrade_titan_round",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 2800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 3600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_rapid_rounds",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 4800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_rapid_rounds",
+              "item": "upgrade_blitz_bullets",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 5600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_health",
+              "item": "upgrade_medic_bullets",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_health",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 6800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7200
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_improved_spirit",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 7600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 8800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_withering_whip",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 9600
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10400
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 10800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11200
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 11600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_active_reload",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 12800
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 13600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14000
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_mystic_regeneration",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 14800
+            },
+            {
+              "type": "purchase",
+              "item": "upgrade_endurance",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 15600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_endurance",
+              "item": "upgrade_healing_booster",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_healing_booster",
+              "item": "upgrade_magic_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 16800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_pristine_emblem",
+              "item": "upgrade_regenerating_bullet_shield",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 17600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_high_velocity_mag",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_high_velocity_mag",
+              "item": "upgrade_pristine_emblem",
+              "payment": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 18800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_mystic_regeneration",
+              "item": "upgrade_headshot_booster",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 19600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_bullet_resist_shredder",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 20800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_headshot_booster",
+              "item": "upgrade_fleetfoot_boots",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 21600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_withering_whip",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 22800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_withering_whip",
+              "item": "upgrade_suppressor",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 23600
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_improved_spirit",
+              "item": "upgrade_soaring_spirit",
+              "payment": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_suppressor",
+              "item": "upgrade_medic_bullets",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 24800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 25600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 26800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27200
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_active_reload",
+              "item": "upgrade_reinforcing_casings",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 27600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_medic_bullets",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 400,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28400
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_crackshot",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 28800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 29600
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 30800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 31600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_crackshot",
+              "item": "upgrade_weighted_shots",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_fleetfoot_boots",
+              "item": "upgrade_melee_rebuttal",
+              "payment": 0,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 32800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_suppressor",
+              "payment": 800,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 33600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34000
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_melee_rebuttal",
+              "item": "upgrade_debuff_reducer",
+              "payment": 1200,
+              "saleProceeds": 400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 34800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 35600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36400
+            },
+            {
+              "type": "upgrade",
+              "from": "upgrade_health",
+              "item": "upgrade_chonky",
+              "payment": 2400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 36800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 37600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38000
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38400
+            },
+            {
+              "type": "save",
+              "earnedSouls": 38800
+            },
+            {
+              "type": "replacement",
+              "from": "upgrade_debuff_reducer",
+              "item": "upgrade_improved_bullet_armor",
+              "payment": 2400,
+              "saleProceeds": 800
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39200
+            },
+            {
+              "type": "save",
+              "earnedSouls": 39600
+            },
+            {
+              "type": "save",
+              "earnedSouls": 40000
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pairwiseTargetVsSweetRetained": [
+    {
+      "competitor": "sweet-retained-1",
+      "targetDominatesAllCompetitorFront": true,
+      "competitorDominatesAllTargetFront": false,
+      "unionFront": [
+        {
+          "id": "b5dc73df676543aa",
+          "sourceSeed": "target",
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754
+        }
+      ],
+      "targetUnionFrontCount": 1,
+      "competitorUnionFrontCount": 0
+    },
+    {
+      "competitor": "sweet-retained-2",
+      "targetDominatesAllCompetitorFront": true,
+      "competitorDominatesAllTargetFront": false,
+      "unionFront": [
+        {
+          "id": "b5dc73df676543aa",
+          "sourceSeed": "target",
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754
+        }
+      ],
+      "targetUnionFrontCount": 1,
+      "competitorUnionFrontCount": 0
+    },
+    {
+      "competitor": "sweet-retained-3",
+      "targetDominatesAllCompetitorFront": true,
+      "competitorDominatesAllTargetFront": false,
+      "unionFront": [
+        {
+          "id": "b5dc73df676543aa",
+          "sourceSeed": "target",
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754
+        }
+      ],
+      "targetUnionFrontCount": 1,
+      "competitorUnionFrontCount": 0
+    },
+    {
+      "competitor": "sweet-retained-4",
+      "targetDominatesAllCompetitorFront": true,
+      "competitorDominatesAllTargetFront": false,
+      "unionFront": [
+        {
+          "id": "b5dc73df676543aa",
+          "sourceSeed": "target",
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754
+        }
+      ],
+      "targetUnionFrontCount": 1,
+      "competitorUnionFrontCount": 0
+    }
+  ],
+  "globalUnionFront": [
+    {
+      "id": "b5dc73df676543aa",
+      "sourceSeed": "lost-high-velocity",
+      "pathScore": 0.4417724595001579,
+      "endScore": 0.44591734273876754,
+      "pathDamage": 0.4180362244053125,
+      "endDamage": 0.3917641352470814,
+      "pathSurvival": 0.49715700805479685,
+      "endSurvival": 0.5722748268860353
+    }
+  ],
+  "hypothesis": {
+    "H1": "The locally disfavored High Velocity branch has higher Sweet value-to-go than the four Sweet-retained seeds.",
+    "status": "SUPPORTED_STRONGLY",
+    "rationale": "Target continuation front dominates every competitor front under identical deterministic Sweet continuation search."
+  }
+}
