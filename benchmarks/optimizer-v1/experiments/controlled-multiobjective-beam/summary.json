@@ -1,0 +1,1285 @@
+{
+  "schemaVersion": "optimizer-controlled-multiobjective-beam-v1",
+  "experiment": "controlled-multiobjective-beam",
+  "sourceCommit": "69fd77fa1a1394775df227112554c837193df4a4",
+  "generatedAt": "2026-09-19T19:05:18.772Z",
+  "objectiveDimensions": [
+    "Path-AUC",
+    "Endbuild"
+  ],
+  "scalarizationUsed": false,
+  "productionChanged": false,
+  "controlledOnly": true,
+  "widths": [
+    8,
+    16,
+    32,
+    64
+  ],
+  "repeatCount": 2,
+  "partialVectorSemantics": "Path/End of legal save-to-horizon completion for each partial node",
+  "retention": "non-dominated layers first; if a layer exceeds capacity, preserve Path/End extremes and reuse existing category/family diversity",
+  "futureSafeDedupe": "futureKey + exact unrounded Path/End save-completion vector; objective-distinct path histories are not merged",
+  "terminalAudit": "one complete direct purchase/upgrade/replacement neighbourhood around the discovered terminal Pareto front",
+  "limitations": [
+    "This is a CONTROLLED research search, not the Production optimizer.",
+    "Pareto dominance between different future configurations is a retention priority, not a proof-safe global prune.",
+    "A dominated partial node may later lead to a Pareto-optimal terminal path; later Pareto layers are retained while capacity permits.",
+    "The fixed widths measure state growth without wall-clock truncation; runtime remains observational.",
+    "Frozen CONTROLLED fronts are reference fronts over the previously observed candidate union, not global optima."
+  ],
+  "cases": [
+    {
+      "caseId": "controlled-warden-carry-hybrid",
+      "hero": "warden",
+      "focus": "hybrid",
+      "budget": 8000,
+      "widths": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "frozenCandidateCount": 322,
+      "frozenFront": [
+        {
+          "id": "4750700aa2e5607b",
+          "pathScore": 0.43354234688699167,
+          "endScore": 0.4175317652347513,
+          "transactions": 9
+        },
+        {
+          "id": "d4d79e4664fc8b62",
+          "pathScore": 0.43808045389067224,
+          "endScore": 0.4145604488137512,
+          "transactions": 8
+        }
+      ],
+      "baseline": {
+        "runtimeMs": 250.196173,
+        "generatedStates": 6529,
+        "evaluations": 131,
+        "duplicateStates": 2007,
+        "widthsCompleted": [
+          8,
+          16
+        ],
+        "terminalAuditComplete": true,
+        "legallyPathVerified": true
+      },
+      "reproducibility": {
+        "identicalWidthFrontHashes": true,
+        "identicalCumulativeFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 8,
+            "first": "e8616ff5ef299a3e79ab0afe2e2f9e846cf1710ca54b72ab1b5a8e96a646693e",
+            "second": "e8616ff5ef299a3e79ab0afe2e2f9e846cf1710ca54b72ab1b5a8e96a646693e",
+            "identical": true
+          },
+          {
+            "width": 16,
+            "first": "1cbf7e1a08d66f0c85388486a0d35264cbd00c802317c126ffc278696c1c9ed2",
+            "second": "1cbf7e1a08d66f0c85388486a0d35264cbd00c802317c126ffc278696c1c9ed2",
+            "identical": true
+          },
+          {
+            "width": 32,
+            "first": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+            "second": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+            "identical": true
+          },
+          {
+            "width": 64,
+            "first": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+            "second": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+            "identical": true
+          }
+        ]
+      },
+      "firstWidthRecoveringAllFrozenVectors": null,
+      "firstWidthRepresentingOrDominatingAllFrozenVectors": 8,
+      "stages": [
+        {
+          "throughWidth": 8,
+          "widths": [
+            8
+          ],
+          "frontCount": 2,
+          "frontHash": "e8616ff5ef299a3e79ab0afe2e2f9e846cf1710ca54b72ab1b5a8e96a646693e",
+          "front": [
+            {
+              "id": "bc95cb6bdf1ca128",
+              "pathScore": 0.44358829120955295,
+              "endScore": 0.4145604488137512,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_soaring_spirit",
+                "upgrade_headshot_booster",
+                "upgrade_health_stimpak"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 6,
+                  "upgrade": 0,
+                  "replacement": 2,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7200,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  },
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  },
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            },
+            {
+              "id": "99fee116d645eb9f",
+              "pathScore": 0.4435785278571239,
+              "endScore": 0.4175317652347513,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_soaring_spirit",
+                "upgrade_vampire"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 5,
+                  "upgrade": 0,
+                  "replacement": 3,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7600,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  },
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  },
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "4750700aa2e5607b",
+                "pathScore": 0.43354234688699167,
+                "endScore": 0.4175317652347513,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "99fee116d645eb9f"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "d4d79e4664fc8b62",
+                "pathScore": 0.43808045389067224,
+                "endScore": 0.4145604488137512,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "bc95cb6bdf1ca128",
+                  "99fee116d645eb9f"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "bc95cb6bdf1ca128",
+                "pathScore": 0.44358829120955295,
+                "endScore": 0.4145604488137512
+              },
+              {
+                "id": "99fee116d645eb9f",
+                "pathScore": 0.4435785278571239,
+                "endScore": 0.4175317652347513
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 187.84920400000004,
+            "searchGeneratedStates": 1658,
+            "totalGeneratedStates": 1681,
+            "evaluations": 106,
+            "duplicateStates": 90,
+            "runtimeRatioVsBaseline": 0.7508076632331225,
+            "searchGeneratedRatioVsBaseline": 0.25394394241078266,
+            "evaluationRatioVsBaseline": 0.8091603053435115
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 2,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 23
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "99fee116d645eb9f",
+              "bc95cb6bdf1ca128"
+            ],
+            "longestSavingSpans": [
+              "99fee116d645eb9f",
+              "bc95cb6bdf1ca128"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [
+              "bc95cb6bdf1ca128",
+              "99fee116d645eb9f"
+            ],
+            "pathGainEndLossCandidates": [
+              "bc95cb6bdf1ca128"
+            ]
+          }
+        },
+        {
+          "throughWidth": 16,
+          "widths": [
+            8,
+            16
+          ],
+          "frontCount": 2,
+          "frontHash": "1cbf7e1a08d66f0c85388486a0d35264cbd00c802317c126ffc278696c1c9ed2",
+          "front": [
+            {
+              "id": "a7fd6a9a07751825",
+              "pathScore": 0.4445542159376113,
+              "endScore": 0.4145604488137512,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_headshot_booster",
+                "upgrade_health_stimpak"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 6,
+                  "upgrade": 0,
+                  "replacement": 2,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7200,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            },
+            {
+              "id": "1d3a3cf464752eb0",
+              "pathScore": 0.4445444525851822,
+              "endScore": 0.4175317652347513,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 5,
+                  "upgrade": 0,
+                  "replacement": 3,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7600,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_rapid_rounds",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "4750700aa2e5607b",
+                "pathScore": 0.43354234688699167,
+                "endScore": 0.4175317652347513,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "1d3a3cf464752eb0"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "d4d79e4664fc8b62",
+                "pathScore": 0.43808045389067224,
+                "endScore": 0.4145604488137512,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "a7fd6a9a07751825",
+                  "1d3a3cf464752eb0"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "a7fd6a9a07751825",
+                "pathScore": 0.4445542159376113,
+                "endScore": 0.4145604488137512
+              },
+              {
+                "id": "1d3a3cf464752eb0",
+                "pathScore": 0.4445444525851822,
+                "endScore": 0.4175317652347513
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 537.6328149999999,
+            "searchGeneratedStates": 6217,
+            "totalGeneratedStates": 6269,
+            "evaluations": 210,
+            "duplicateStates": 791,
+            "runtimeRatioVsBaseline": 2.1488450784576947,
+            "searchGeneratedRatioVsBaseline": 0.9522132026344003,
+            "evaluationRatioVsBaseline": 1.6030534351145038
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 6,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 225
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "1d3a3cf464752eb0",
+              "a7fd6a9a07751825"
+            ],
+            "longestSavingSpans": [
+              "1d3a3cf464752eb0",
+              "a7fd6a9a07751825"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [
+              "a7fd6a9a07751825",
+              "1d3a3cf464752eb0"
+            ],
+            "pathGainEndLossCandidates": [
+              "a7fd6a9a07751825"
+            ]
+          }
+        },
+        {
+          "throughWidth": 32,
+          "widths": [
+            8,
+            16,
+            32
+          ],
+          "frontCount": 1,
+          "frontHash": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+          "front": [
+            {
+              "id": "41683f0a4b2febc8",
+              "pathScore": 0.4491845488539729,
+              "endScore": 0.4271227934042353,
+              "transactions": 7,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_soaring_spirit",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire",
+                "upgrade_health_stimpak",
+                "upgrade_headshot_booster"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 7,
+                  "upgrade": 0,
+                  "replacement": 0,
+                  "sell": 0
+                },
+                "transactionCount": 7,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 8000,
+                "longestNoShopSoulSpan": 1600,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [],
+                "sellRebuys": [],
+                "replacementRebuys": [],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "4750700aa2e5607b",
+                "pathScore": 0.43354234688699167,
+                "endScore": 0.4175317652347513,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "41683f0a4b2febc8"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "d4d79e4664fc8b62",
+                "pathScore": 0.43808045389067224,
+                "endScore": 0.4145604488137512,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "41683f0a4b2febc8"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "41683f0a4b2febc8",
+                "pathScore": 0.4491845488539729,
+                "endScore": 0.4271227934042353
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 1329.1698549999999,
+            "searchGeneratedStates": 15705,
+            "totalGeneratedStates": 15782,
+            "evaluations": 328,
+            "duplicateStates": 2312,
+            "runtimeRatioVsBaseline": 5.312510735326075,
+            "searchGeneratedRatioVsBaseline": 2.405421963547251,
+            "evaluationRatioVsBaseline": 2.50381679389313
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 6,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 623
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "41683f0a4b2febc8"
+            ],
+            "longestSavingSpans": [
+              "41683f0a4b2febc8"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [],
+            "pathGainEndLossCandidates": []
+          }
+        },
+        {
+          "throughWidth": 64,
+          "widths": [
+            8,
+            16,
+            32,
+            64
+          ],
+          "frontCount": 1,
+          "frontHash": "6ff3056e0cb68ddaa02b0c9d6f3767bc7d55cca3928535cbcd8c6177ec2f7a1c",
+          "front": [
+            {
+              "id": "41683f0a4b2febc8",
+              "pathScore": 0.4491845488539729,
+              "endScore": 0.4271227934042353,
+              "transactions": 7,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_soaring_spirit",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire",
+                "upgrade_health_stimpak",
+                "upgrade_headshot_booster"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 7,
+                  "upgrade": 0,
+                  "replacement": 0,
+                  "sell": 0
+                },
+                "transactionCount": 7,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 8000,
+                "longestNoShopSoulSpan": 1600,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [],
+                "sellRebuys": [],
+                "replacementRebuys": [],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "4750700aa2e5607b",
+                "pathScore": 0.43354234688699167,
+                "endScore": 0.4175317652347513,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "41683f0a4b2febc8"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "d4d79e4664fc8b62",
+                "pathScore": 0.43808045389067224,
+                "endScore": 0.4145604488137512,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "41683f0a4b2febc8"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "41683f0a4b2febc8",
+                "pathScore": 0.4491845488539729,
+                "endScore": 0.4271227934042353
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 3419.8277849999995,
+            "searchGeneratedStates": 34426,
+            "totalGeneratedStates": 34528,
+            "evaluations": 449,
+            "duplicateStates": 5594,
+            "runtimeRatioVsBaseline": 13.668585510298751,
+            "searchGeneratedRatioVsBaseline": 5.272782968295298,
+            "evaluationRatioVsBaseline": 3.427480916030534
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 6,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 1405
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "41683f0a4b2febc8"
+            ],
+            "longestSavingSpans": [
+              "41683f0a4b2febc8"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [],
+            "pathGainEndLossCandidates": []
+          }
+        }
+      ]
+    },
+    {
+      "caseId": "controlled-infernus-carry-hybrid",
+      "hero": "infernus",
+      "focus": "hybrid",
+      "budget": 8000,
+      "widths": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "frozenCandidateCount": 361,
+      "frozenFront": [
+        {
+          "id": "97644bd71a4db681",
+          "pathScore": 0.4436881374617612,
+          "endScore": 0.43643174929955664,
+          "transactions": 8
+        },
+        {
+          "id": "8d81ce6c57d9c4da",
+          "pathScore": 0.4488478074638748,
+          "endScore": 0.4297886771767069,
+          "transactions": 9
+        }
+      ],
+      "baseline": {
+        "runtimeMs": 1211.5939759999992,
+        "generatedStates": 6930,
+        "evaluations": 117,
+        "duplicateStates": 2211,
+        "widthsCompleted": [
+          8,
+          16
+        ],
+        "terminalAuditComplete": true,
+        "legallyPathVerified": true
+      },
+      "reproducibility": {
+        "identicalWidthFrontHashes": true,
+        "identicalCumulativeFrontHashes": true,
+        "perWidth": [
+          {
+            "width": 8,
+            "first": "c8816e4df6cb0e378c0c2da2014224f4ce42f816e00b97b719b7c08846d7addf",
+            "second": "c8816e4df6cb0e378c0c2da2014224f4ce42f816e00b97b719b7c08846d7addf",
+            "identical": true
+          },
+          {
+            "width": 16,
+            "first": "d0004c915c188717e93b7a4ed60d78b50eaf622b8eff5654b71b9eaa974d6d64",
+            "second": "d0004c915c188717e93b7a4ed60d78b50eaf622b8eff5654b71b9eaa974d6d64",
+            "identical": true
+          },
+          {
+            "width": 32,
+            "first": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+            "second": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+            "identical": true
+          },
+          {
+            "width": 64,
+            "first": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+            "second": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+            "identical": true
+          }
+        ]
+      },
+      "firstWidthRecoveringAllFrozenVectors": null,
+      "firstWidthRepresentingOrDominatingAllFrozenVectors": 16,
+      "stages": [
+        {
+          "throughWidth": 8,
+          "widths": [
+            8
+          ],
+          "frontCount": 2,
+          "frontHash": "c8816e4df6cb0e378c0c2da2014224f4ce42f816e00b97b719b7c08846d7addf",
+          "front": [
+            {
+              "id": "9e8c1543c279160e",
+              "pathScore": 0.45196168818423377,
+              "endScore": 0.4297886771767069,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_headshot_booster",
+                "upgrade_health_stimpak"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 6,
+                  "upgrade": 0,
+                  "replacement": 2,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7200,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            },
+            {
+              "id": "0fe2da521a62127c",
+              "pathScore": 0.45188747987890915,
+              "endScore": 0.431496602109088,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 5,
+                  "upgrade": 0,
+                  "replacement": 3,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 7600,
+                "longestNoShopSoulSpan": 1200,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 2,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "97644bd71a4db681",
+                "pathScore": 0.4436881374617612,
+                "endScore": 0.43643174929955664,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [],
+                "status": "missed"
+              },
+              {
+                "id": "8d81ce6c57d9c4da",
+                "pathScore": 0.4488478074638748,
+                "endScore": 0.4297886771767069,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "9e8c1543c279160e",
+                  "0fe2da521a62127c"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 1,
+            "knownMissed": 1,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": false,
+            "additionalCombinedNondominated": [
+              {
+                "id": "9e8c1543c279160e",
+                "pathScore": 0.45196168818423377,
+                "endScore": 0.4297886771767069
+              },
+              {
+                "id": "0fe2da521a62127c",
+                "pathScore": 0.45188747987890915,
+                "endScore": 0.431496602109088
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 977.433266,
+            "searchGeneratedStates": 2229,
+            "totalGeneratedStates": 2258,
+            "evaluations": 97,
+            "duplicateStates": 280,
+            "runtimeRatioVsBaseline": 0.806733349093509,
+            "searchGeneratedRatioVsBaseline": 0.3216450216450216,
+            "evaluationRatioVsBaseline": 0.8290598290598291
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 3,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 90
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "0fe2da521a62127c",
+              "9e8c1543c279160e"
+            ],
+            "longestSavingSpans": [
+              "0fe2da521a62127c",
+              "9e8c1543c279160e"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [
+              "9e8c1543c279160e",
+              "0fe2da521a62127c"
+            ],
+            "pathGainEndLossCandidates": [
+              "9e8c1543c279160e",
+              "0fe2da521a62127c"
+            ]
+          }
+        },
+        {
+          "throughWidth": 16,
+          "widths": [
+            8,
+            16
+          ],
+          "frontCount": 1,
+          "frontHash": "d0004c915c188717e93b7a4ed60d78b50eaf622b8eff5654b71b9eaa974d6d64",
+          "front": [
+            {
+              "id": "fdfc3a9aa3e456a4",
+              "pathScore": 0.4529209436089503,
+              "endScore": 0.43643174929955664,
+              "transactions": 8,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire",
+                "upgrade_health_stimpak"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 6,
+                  "upgrade": 0,
+                  "replacement": 2,
+                  "sell": 0
+                },
+                "transactionCount": 8,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 8000,
+                "longestNoShopSoulSpan": 1600,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "sellRebuys": [],
+                "replacementRebuys": [
+                  {
+                    "item": "upgrade_headshot_booster",
+                    "count": 1,
+                    "totalCost": 800
+                  }
+                ],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "97644bd71a4db681",
+                "pathScore": 0.4436881374617612,
+                "endScore": 0.43643174929955664,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "fdfc3a9aa3e456a4"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "8d81ce6c57d9c4da",
+                "pathScore": 0.4488478074638748,
+                "endScore": 0.4297886771767069,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "fdfc3a9aa3e456a4"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "fdfc3a9aa3e456a4",
+                "pathScore": 0.4529209436089503,
+                "endScore": 0.43643174929955664
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 2182.367969000001,
+            "searchGeneratedStates": 6170,
+            "totalGeneratedStates": 6228,
+            "evaluations": 207,
+            "duplicateStates": 716,
+            "runtimeRatioVsBaseline": 1.801237058147937,
+            "searchGeneratedRatioVsBaseline": 0.8903318903318903,
+            "evaluationRatioVsBaseline": 1.7692307692307692
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 3,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 234
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "fdfc3a9aa3e456a4"
+            ],
+            "longestSavingSpans": [
+              "fdfc3a9aa3e456a4"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [
+              "fdfc3a9aa3e456a4"
+            ],
+            "pathGainEndLossCandidates": []
+          }
+        },
+        {
+          "throughWidth": 32,
+          "widths": [
+            8,
+            16,
+            32
+          ],
+          "frontCount": 1,
+          "frontHash": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+          "front": [
+            {
+              "id": "02bfdee893695775",
+              "pathScore": 0.4558585500568807,
+              "endScore": 0.44119841578933583,
+              "transactions": 7,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire",
+                "upgrade_health_stimpak",
+                "upgrade_headshot_booster"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 7,
+                  "upgrade": 0,
+                  "replacement": 0,
+                  "sell": 0
+                },
+                "transactionCount": 7,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 8000,
+                "longestNoShopSoulSpan": 1600,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [],
+                "sellRebuys": [],
+                "replacementRebuys": [],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "97644bd71a4db681",
+                "pathScore": 0.4436881374617612,
+                "endScore": 0.43643174929955664,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "02bfdee893695775"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "8d81ce6c57d9c4da",
+                "pathScore": 0.4488478074638748,
+                "endScore": 0.4297886771767069,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "02bfdee893695775"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "02bfdee893695775",
+                "pathScore": 0.4558585500568807,
+                "endScore": 0.44119841578933583
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 3967.102817000001,
+            "searchGeneratedStates": 15623,
+            "totalGeneratedStates": 15706,
+            "evaluations": 326,
+            "duplicateStates": 2226,
+            "runtimeRatioVsBaseline": 3.274284038698459,
+            "searchGeneratedRatioVsBaseline": 2.254401154401154,
+            "evaluationRatioVsBaseline": 2.786324786324786
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 3,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 632
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "02bfdee893695775"
+            ],
+            "longestSavingSpans": [
+              "02bfdee893695775"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [],
+            "pathGainEndLossCandidates": []
+          }
+        },
+        {
+          "throughWidth": 64,
+          "widths": [
+            8,
+            16,
+            32,
+            64
+          ],
+          "frontCount": 1,
+          "frontHash": "dc5bfb2a0d369c24c7b7f4f2880a21cbe7e116f4055fee90a84e444554ab4903",
+          "front": [
+            {
+              "id": "02bfdee893695775",
+              "pathScore": 0.4558585500568807,
+              "endScore": 0.44119841578933583,
+              "transactions": 7,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_soaring_spirit",
+                "upgrade_titan_round",
+                "upgrade_rapid_rounds",
+                "upgrade_vampire",
+                "upgrade_health_stimpak",
+                "upgrade_headshot_booster"
+              ],
+              "pathObservables": {
+                "counts": {
+                  "purchase": 7,
+                  "upgrade": 0,
+                  "replacement": 0,
+                  "sell": 0
+                },
+                "transactionCount": 7,
+                "firstTransactionSouls": 800,
+                "lastTransactionSouls": 8000,
+                "longestNoShopSoulSpan": 1600,
+                "sameSoulTransactionGroups": [],
+                "reacquiredItems": [],
+                "sellRebuys": [],
+                "replacementRebuys": [],
+                "upgradeBacktracks": []
+              }
+            }
+          ],
+          "comparison": {
+            "known": [
+              {
+                "id": "97644bd71a4db681",
+                "pathScore": 0.4436881374617612,
+                "endScore": 0.43643174929955664,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "02bfdee893695775"
+                ],
+                "status": "dominated-by-new"
+              },
+              {
+                "id": "8d81ce6c57d9c4da",
+                "pathScore": 0.4488478074638748,
+                "endScore": 0.4297886771767069,
+                "exactPathFound": false,
+                "vectorFound": false,
+                "vectorMatches": [],
+                "dominatedByNew": [
+                  "02bfdee893695775"
+                ],
+                "status": "dominated-by-new"
+              }
+            ],
+            "knownFound": 0,
+            "knownDominatedByNew": 2,
+            "knownMissed": 0,
+            "allKnownVectorsFound": false,
+            "allKnownRepresentedOrDominated": true,
+            "additionalCombinedNondominated": [
+              {
+                "id": "02bfdee893695775",
+                "pathScore": 0.4558585500568807,
+                "endScore": 0.44119841578933583
+              }
+            ]
+          },
+          "cost": {
+            "runtimeMs": 7201.431704000002,
+            "searchGeneratedStates": 34450,
+            "totalGeneratedStates": 34558,
+            "evaluations": 443,
+            "duplicateStates": 5703,
+            "runtimeRatioVsBaseline": 5.943766514732165,
+            "searchGeneratedRatioVsBaseline": 4.971139971139971,
+            "evaluationRatioVsBaseline": 3.786324786324786
+          },
+          "searchShape": {
+            "maxFirstFrontSize": 3,
+            "frontierOverflowSteps": 0,
+            "terminalCandidates": 1400
+          },
+          "pathologies": {
+            "highestTransactionCounts": [
+              "02bfdee893695775"
+            ],
+            "longestSavingSpans": [
+              "02bfdee893695775"
+            ],
+            "sameSoulTransactions": [],
+            "reacquisitionCandidates": [],
+            "pathGainEndLossCandidates": []
+          }
+        }
+      ]
+    }
+  ]
+}

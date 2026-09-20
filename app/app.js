@@ -1,7 +1,7 @@
 import { formatSouls, manifestsAreCompatible, parseCsv } from "./lib.mjs";
-import { buildOptimizerData, optimizeWeaponCarryFullBuild } from "./optimizer.mjs";
+import { buildOptimizerData } from "./optimizer.mjs";
 import { evaluateCarryPerformance } from "./warden-search.mjs";
-import { FAST_SEARCH_BUDGET } from "./search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS } from "./search-config.mjs";
 
 const paths = {
   coreManifest: "../data/core/manifest.json",
@@ -22,6 +22,8 @@ const paths = {
 
 const state = {
   build: null,
+  paretoBuilds: [],
+  selectedParetoIndex: 0,
   pickerMode: "hero",
   pickerSlot: null,
   selectedHeroId: "warden",
@@ -174,252 +176,223 @@ function renderAbilities() {
 }
 
 function renderBuildCard(event) {
-  if (event.purchase_type === "save") {
-    return `<article class="build-card"><span class="build-order">${String(event.step).padStart(2, "0")}</span><strong>Sparen</strong><small>Bis ${formatSouls(event.earnedSouls)} verdiente Souls</small></article>`;
-  }
-  const upgrade = event.upgradeFrom;
+  const itemName = event.item?.name || event.item_id || event.from || "Unbekanntes Item";
+  const tile = event.item
+    ? itemTile(event.item)
+    : `<span class="item-tile" aria-hidden="true"><span>?</span></span>`;
+  const actionLabel = {
+    purchase: "Kauf",
+    upgrade: "Upgrade",
+    replacement: "Replacement",
+    sell: "Sell"
+  }[event.purchase_type] || event.purchase_type;
+  const detail = event.purchase_type === "replacement"
+    ? `ersetzt ${event.upgradeFrom?.name || event.from || "unbekannt"}`
+    : event.purchase_type === "upgrade"
+    ? `von ${event.upgradeFrom?.name || event.from || "unbekannt"}`
+    : event.purchase_type === "sell"
+    ? itemName
+    : `${event.item?.category || "Item"} · T${event.item?.tier || "?"}`;
+  const money = event.purchase_type === "sell"
+    ? `Erlös ${formatSouls(event.saleProceeds || 0)}`
+    : Number.isFinite(event.cashCost)
+    ? `Kosten ${formatSouls(event.cashCost)}`
+    : "Kosten nicht separat ausgewiesen";
   return `<article class="build-card">
     <span class="build-order">${String(event.step).padStart(2, "0")}</span>
-    ${itemTile(event.item)}
-    <strong>${event.item.name}</strong>
-    <small>${event.purchase_type === "sell" ? "Verkaufen" : event.purchase_type === "replacement" ? `Ersetzt ${upgrade.name}` : upgrade ? `↑ ${upgrade.name}` : `${event.item.category} · T${event.item.tier}`}</small>
-    ${event.cashCost === undefined ? "" : `<small>${event.cashCost >= 0 ? `Zahlung ${formatSouls(event.cashCost)}` : `Verkauf ${formatSouls(-event.cashCost)}`}${event.saleProceeds ? ` · Erlös ${formatSouls(event.saleProceeds)}` : ""}</small>`}
-    ${event.earnedSouls === undefined ? "" : `<small>Bei ${event.earnedSouls.toLocaleString("de-CH")} verdienten Souls</small>`}
+    ${tile}
+    <strong>${itemName}</strong>
+    <small>${actionLabel} · ${detail}</small>
+    <small>bei ${formatSouls(event.earnedSouls || 0)} earned Souls</small>
+    <small>${money}</small>
   </article>`;
 }
 
-function buildPhaseGroups(events) {
-  // Diese Abschnitte erklären die Kaufreihenfolge visuell; sie steuern keine
-  // Optimizer-Regel und behaupten keine festen Spielzeit-Meilensteine.
-  const earlyEnd = Math.max(1, Math.ceil(events.length * 0.375));
-  const midEnd = Math.max(earlyEnd, Math.ceil(events.length * 0.6875));
-  return {
-    early: events.slice(0, earlyEnd),
-    mid: events.slice(earlyEnd, midEnd),
-    late: events.slice(midEnd)
-  };
+function clearBuildState() {
+  state.build = null;
+  state.paretoBuilds = [];
+  state.selectedParetoIndex = 0;
+}
+
+function profileIsExperimental(evaluation) {
+  const abilities = evaluation?.scenarios?.common?.spirit_mechanics?.abilities || [];
+  return abilities.length !== 4 || abilities.some((ability) => Boolean(ability.excluded));
+}
+
+function formatObjective(value) {
+  return Number.isFinite(value) ? value.toFixed(6) : "—";
 }
 
 function renderPhase() {
   const panel = $("#phase-panel");
   if (!state.build) {
-    panel.innerHTML = `<div class="empty-state"><span>✦</span><h2>Bereit für die Build-Prüfung</h2><p>Wähle einen kanonischen Helden, Carry und Weapon, Spirit oder Hybrid. Nicht separat validierte Heldenprofile sind experimentell; fehlende Basisdaten werden konkret gemeldet.</p></div>`;
+    panel.innerHTML = `<div class="empty-state"><span>✦</span><h2>Bereit für die Build-Prüfung</h2><p>Held, Carry und Weapon/Spirit/Hybrid wählen. Ein Klick startet den aktuellen experimentellen Multiobjective-Optimizer bis 40.000 Souls.</p></div>`;
     return;
   }
 
-  const labels = { early: "Early", mid: "Mid", late: "Late" };
-  const groups = buildPhaseGroups(state.build.events);
-  const isNewSearch = Boolean(state.build.search?.byMetric);
-  const combat = state.build.winner.evaluation.scenarios.common;
-  const combatInputs = state.build.winner.evaluation.scenarios.inputs;
-  const teamfight = state.build.winner.evaluation.scenarios.scenarios.find((scenario) => scenario.id === "teamfight");
-  const skirmish = state.build.winner.evaluation.scenarios.scenarios.find((scenario) => scenario.id === "skirmish");
-  const combo = skirmish?.active_combo;
-  const comboSummary = combo?.available
-    ? ` Slowing Hex → Binding Word: Erfolgszweig mit ${combo.locked_seconds.toFixed(2)}s Kontrollfenster bei höchstens ${combo.cooldown_limited_uses} Nutzung. Binding Word wird getrennt verglichen; ohne Treffer- oder Fluchtdaten zählt Hex mit 0 Zusatzschaden.`
-    : " Slowing Hex → Binding Word: nicht verfügbar; kein unbestätigter Combo-Zusatzwert angerechnet.";
-  const focusLabel = { weapon: "Weapon", spirit: "Spirit", hybrid: "Hybrid" }[$("#damage-focus").value] || "Schaden";
-  const scenarioSummary = `<p><strong>Baseline (offene Modellannahmen):</strong> ${combat.sustained_weapon_dps.toFixed(1)} Sustained Kampfschaden/s · ${combat.effective_health_bullet?.toFixed(0) || "?"} Bullet-EHP · ${combat.effective_health_spirit?.toFixed(0) || "?"} Spirit-EHP · 10s-Überlebenskapazität ${teamfight?.survival_capacity_bullet?.toFixed(0) || "?"}/${teamfight?.survival_capacity_spirit?.toFixed(0) || "?"}. ${combat.item_kit_synergies.length} belegte Item×Kit-/Range-Bezüge dokumentiert; bedingte Effekte sind nicht als Dauerbonus eingerechnet.${comboSummary}</p>`;
-  const spiritRows = combat.spirit_mechanics?.abilities || [];
-  const abilityNames = spiritRows.filter((row) => row.included).map((row) => row.abilityId).join(" · ") || "keine vollständig berechenbare aktive Fähigkeit";
-  const knownGaps = spiritRows.filter((row) => row.excluded).map((row) => `${row.abilityId}: ${row.excluded}`).join(" · ") || "Unklare Trigger, Treffer-, Tick- und Skillzustände zählen nicht als Schaden.";
-  const focusWeights = { weapon: "70 % Bullet / 30 % Spirit", spirit: "30 % Bullet / 70 % Spirit", hybrid: "50 % Bullet / 50 % Spirit" }[$("#damage-focus").value] || "50 % Bullet / 50 % Spirit";
-  const spiritSummary = `<p><strong>Gemeinsamer Kampfablauf (${focusLabel}):</strong> Weapon-Schaden, direkte aktive Fähigkeiten und belegte ausgelöste Effekte werden zusammen berechnet. ${combat.combat_strategy} Modellierte Fähigkeiten: ${abilityNames}. Für die Auswahl zählt innerhalb der unveränderten Schadenshälfte ${focusWeights}, jeweils gegen getrennte vergleichbare Referenzen; Überleben und der tatsächliche Schaden derselben Aktion bleiben unverändert. ${knownGaps}</p>`;
-  const afterburn = combat.afterburn_mechanics;
-  const afterburnSummary = afterburn?.applicable
-    ? `<p><strong>Afterburn:</strong> ${afterburn.included ? `Bei ${afterburn.triggerHits} belegten Weapon-Hits auf dasselbe Heldenziel entsteht der Brand; im 10-s-Fenster trägt er ${teamfight?.afterburn_damage?.toFixed(1) || "0.0"} Schaden bei. Der gemeinsame Ablauf kann diese Weapon-Hits in jedem Schwerpunkt erzeugen; Afterburn bleibt getrennt vom direkten Fähigkeitsschaden ausgewiesen.` : afterburn.treatment} ${afterburn.treatment}</p>`
+  const variant = state.build;
+  const telemetry = variant.search.telemetry;
+  const focusLabel = { weapon: "Weapon", spirit: "Spirit", hybrid: "Hybrid" }[$("#damage-focus").value] || $("#damage-focus").value;
+  const naturalReach = telemetry.terminalCompletion?.naturalSearchMaxReachedSouls ?? 0;
+  const searchStates = telemetry.searchGeneratedStates ?? telemetry.generatedStates ?? 0;
+  const terminalCandidates = telemetry.terminalCandidates ?? 0;
+  const paretoSize = state.paretoBuilds.length;
+  const experimentalHero = profileIsExperimental(variant.winner.evaluation);
+  const saveHint = variant.saveSteps > 0
+    ? `<p class="section-note"><strong>Save-to-40k:</strong> ${variant.saveSteps.toLocaleString("de-CH")} interne Save-Schritte wurden für die legale Completion verwendet. Sie sind keine Shop-Transaktionen und werden deshalb nicht einzeln dargestellt.</p>`
     : "";
-  const combatStateSummary = `<p><strong>Vergleichszustand:</strong> ${combatInputs.hero_level.value === null ? "Heldenlevel unbekannt – es gelten nur die kanonischen Basiswerte." : `Heldenlevel ${combatInputs.hero_level.value} ist angegeben, aber ohne verifizierte Level→Boon-Zuordnung nicht in Werte übersetzt.`} ${combatInputs.ability_levels.value === null ? "Skillzustand unbekannt – Fähigkeiten liefern keine stillschweigenden Kampfboni." : "Skillzustand ist angegeben, aber noch nicht in der gemeinsamen Item-/Skill-Suche berechnet."}</p>`;
-  const foundations = state.build.winner.evaluation.foundations;
-  const foundationSummary = state.build.search?.approximate
-    ? `<p><strong>Approximative Auswahl:</strong> 70 % Endstärke · 15 % schlimmster · 15 % durchschnittlicher Rückstand. Stichprobenreferenz, keine Optimalitätsgarantie. Schaden und Überleben werden als getrennte Gruppen gleich gewichtet; Endwerte x/(x+Referenz). Permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal sind eingerechnet. Komponenten erhalten zusätzlich einen allgemeinen Blick auf ihre legal erreichbare nächste Upgrade-Stufe. Modellierte Heldenfähigkeiten nutzen den gemeinsamen Kampfablauf; aktive Items und bedingte Effekte ohne belegte Uptime oder Trefferwirkung bleiben ausgeschlossen.</p>`
-    : isNewSearch
-    ? `<p><strong>Neue Suchauswertung:</strong> ${state.build.search.metrics.length} getrennte Szenario-/Leistungsziele; die vollständige Itemmenge wurde im Worker untersucht. Der ausgewählte Pfad ist nur ein repräsentativer Pareto-Pfad, kein Gesamtsieger.</p>`
-    : `<p><strong>Robuste Frühbasis:</strong> ${foundations.checkpoints.map((entry) => `${entry.budget.toLocaleString("de-CH")} Souls: ${entry.fulfilled ? "erfüllt" : "nicht erfüllt"}`).join(" · ")}. Schutz zählt nur als Vitality-Schutzitem oder dauerhafte Bullet-/Spirit-Resistenz; Heldenfähigkeiten ersetzen ohne Skill-Reihenfolge kein gekauftes Sustain-Item.</p>`;
-  const experimental = !["warden", "infernus"].includes(state.selectedHeroId);
-  const title = isNewSearch ? `${getHero(state.selectedHeroId).display_name}-Suchlauf im ausgewiesenen Modell` : "Bisheriger Warden-Weapon-Optimizer";
-  const eyebrow = state.build.search?.approximate ? `${experimental ? "Experimentelles Profil · " : ""}Bester geprüfter Build · approximative Suche` : isNewSearch ? "Gemeinsame Pareto-Suche · repräsentativer Pfad" : "Bisheriger Optimizer · bester geprüfter Pfad";
-  const experimentalNote = experimental ? `<p><strong>Experimentelles Heldenprofil:</strong> Der gemeinsame Suchkern nutzt vorhandene kanonische Basiswerte und Fähigkeitszeilen. Treffer, Skillstufen, Proc-Aufbau und nicht eindeutig modellierte Interaktionen bleiben offen.</p>` : "";
-  panel.innerHTML = `<div class="section-heading"><div><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div><span class="meta-chip">${state.build.inventory.length} / ${isNewSearch ? (state.build.search.slotLimit ?? state.data.slots.starting_slots.universal) : state.data.slots.item_limit} finale Slots</span></div><section aria-label="Finales Inventar"><h3>Finales Inventar</h3><p>${state.build.inventory.map((item) => item.name).join(" · ")}</p></section><div class="build-board">${Object.entries(labels).map(([phase, label]) => `<section class="build-phase build-phase-${phase}"><div class="build-phase-heading"><h3>${label}</h3><span>${groups[phase].length} Schritte</span></div><div class="build-card-row">${groups[phase].map(renderBuildCard).join("") || `<p class="empty-phase">Keine Käufe in dieser Phase.</p>`}</div></section>`).join("")}</div><div class="build-board-footer">${experimentalNote}${scenarioSummary}${spiritSummary}${afterburnSummary}${combatStateSummary}${foundationSummary}<p>${state.build.scope || state.build.search.scope}</p></div>`;
-}
+  const heroNote = experimentalHero
+    ? `<p class="section-note"><strong>Experimentelles Heldenprofil:</strong> Mindestens eine Ability/Interaction ist im aktuellen Modell nicht vollständig auswertbar. Der Build wird trotzdem mit den belegten Daten berechnet.</p>`
+    : "";
 
-async function createBuild() {
-  const role = $("#role").value;
-  const damageFocus = $("#damage-focus").value;
-  if (role !== "carry" || !["weapon", "spirit", "hybrid"].includes(damageFocus) || !["warden", "infernus"].includes(state.selectedHeroId)) {
-    state.build = null;
-    $("#result-summary").textContent = "Der bisherige Optimizer bleibt auf Warden oder Infernus · Carry · Weapon/Spirit/Hybrid begrenzt. Für alle kanonischen Helden bitte „Build erstellen · 40k“ verwenden.";
+  const statusRows = [
+    ["Hero", getHero(state.selectedHeroId).display_name],
+    ["Rolle", "Carry"],
+    ["Focus", focusLabel],
+    ["Horizon", formatSouls(FAST_SEARCH_BUDGET)],
+    ["Wallclock-Budget", `${Math.round(PRODUCT_SEARCH_TIME_MS / 1000)} s`],
+    ["Path-AUC", formatObjective(variant.pathScore)],
+    ["Endbuild", formatObjective(variant.endScore)],
+    ["Natural Reach", `${formatSouls(naturalReach)} / ${formatSouls(FAST_SEARCH_BUDGET)}`],
+    ["Search States", searchStates.toLocaleString("de-CH")],
+    ["Evaluations", (telemetry.evaluations ?? 0).toLocaleString("de-CH")],
+    ["Terminal / Pareto", `${terminalCandidates} / ${paretoSize}`],
+    ["legal replay verified", variant.validation?.valid === true ? "ja" : "nein"],
+    ["Status", "experimenteller Multiobjective-Optimizer"]
+  ];
+
+  const variantControls = paretoSize > 1
+    ? `<div class="pareto-switcher" aria-label="Pareto-Builds">${state.paretoBuilds.map((candidate, index) =>
+        `<button type="button" data-pareto-index="${index}" aria-current="${index === state.selectedParetoIndex ? "true" : "false"}">Build ${index + 1}<small>Path ${formatObjective(candidate.pathScore)} · End ${formatObjective(candidate.endScore)}</small></button>`
+      ).join("")}</div>`
+    : `<p class="section-note"><strong>Pareto-Front:</strong> 1 terminale Variante.</p>`;
+
+  panel.innerHTML = `
+    <div class="section-heading">
+      <div><p class="eyebrow">Multiobjective Preview · keine Scalarisierung</p><h2>${getHero(state.selectedHeroId).display_name} · Build ${state.selectedParetoIndex + 1} / ${paretoSize}</h2></div>
+      <span class="meta-chip">${variant.inventory.length} / ${state.data.slots.item_limit} finale Slots</span>
+    </div>
+    ${variantControls}
+    <div class="optimizer-status-grid">${statusRows.map(([label, value]) => `<article><small>${label}</small><strong>${value}</strong></article>`).join("")}</div>
+    <section class="final-inventory" aria-label="Finales Inventar"><h3>Finales Inventar</h3><p>${variant.inventory.map((item) => item?.name || "Unbekannt").join(" · ") || "leer"}</p></section>
+    <section class="chronological-build" aria-label="Chronologischer Kaufpfad">
+      <div class="build-phase-heading"><h3>Kompletter chronologischer Kaufpfad</h3><span>${variant.events.length} Shop-Transaktionen</span></div>
+      <div class="build-card-row">${variant.events.map(renderBuildCard).join("") || `<p class="empty-phase">Keine Shop-Transaktion vor dem 40k-Horizont.</p>`}</div>
+    </section>
+    ${saveHint}
+    ${heroNote}
+    <p class="section-note">Path-AUC und Endbuild bleiben getrennte Ziele. Die Reihenfolge der angezeigten Pareto-Varianten ist nur Darstellungsreihenfolge und keine Siegerauswahl.</p>`;
+
+  $$("[data-pareto-index]", panel).forEach((button) => button.addEventListener("click", () => {
+    const index = Number(button.dataset.paretoIndex);
+    if (!Number.isSafeInteger(index) || !state.paretoBuilds[index]) return;
+    state.selectedParetoIndex = index;
+    state.build = state.paretoBuilds[index];
     renderPhase();
-    return;
-  }
-  if (state.selectedHeroId !== "warden" || damageFocus !== "weapon") {
-    $("#result-summary").textContent = "Der bisherige Optimizer bleibt nur für Warden · Weapon verfügbar. Bitte „Build erstellen · 40k“ verwenden.";
-    return;
-  }
-  state.build = optimizeWeaponCarryFullBuild({ heroId: state.selectedHeroId, objective: "weapon_magazine_dps", maxTransactions: 28 }, state.data);
-  state.build = { ...state.build, events: state.build.winner.state.events, inventory: state.build.winner.state.inventory, spent: state.build.winner.state.spent };
-  $("#results").dataset.focus = damageFocus;
-  $("#result-summary").textContent = `${state.build.events.length} geprüfte Schritte · ${formatSouls(state.build.spent)} · bester geprüfter 12-Slot-Weapon-Carry-Build`;
-  renderPhase();
-  $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function cancelNewBuild() {
-  if (!activeOptimizerWorker) return;
-  activeOptimizerWorker.terminate();
-  activeOptimizerWorker = null;
-  $("#search-progress").textContent = "Neuer Suchlauf abgebrochen; der letzte vollständig geprüfte Zwischenstand bleibt sichtbar.";
-  $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-  $("#new-build-button").disabled = false;
-  $("#new-build-40k-button").disabled = false;
-  $("#build-button").disabled = false;
-  setFastControls(false);
+  }));
 }
 
 function setFastControls(running) {
-  $("#fast-build-button").textContent = running ? "Abbrechen · Build behalten" : "Build erstellen · 40k";
-  for (const id of ["build-button", "new-build-button", "new-build-40k-button", "hero-trigger", "role", "damage-focus"]) $("#" + id).disabled = running;
+  $("#fast-build-button").textContent = running ? "Suche läuft · 40k" : "Build erstellen · 40k";
+  for (const id of ["fast-build-button", "hero-trigger", "role", "damage-focus"]) $("#" + id).disabled = running;
 }
 
-function fastBuildSummary(result, inventory, telemetry) {
-  const categoryCount = (category) => inventory.filter((item) => item.category === category).length;
-  const active = inventory.filter((item) => Boolean(item.active_type)).length;
-  const slots = result.slotLimit;
-  const activeLimit = Number(state.data.slots.active_item_limit);
-  const totalSouls = result.state.earnedSouls - result.state.cash;
-  const evaluations = telemetry?.evaluations ?? result.searchTelemetry?.evaluations ?? result.telemetry?.evaluations ?? 0;
-  const completedPaths = telemetry?.completedPaths ?? result.searchTelemetry?.completedPaths ?? result.telemetry?.completedPaths ?? 0;
-  const runtimeMs = telemetry?.runtimeMs ?? result.searchTelemetry?.runtimeMs ?? result.telemetry?.runtimeMs ?? 0;
-  const audit = telemetry?.terminalAudit ?? result.searchTelemetry?.terminalAudit ?? result.telemetry?.terminalAudit;
-  const auditText = audit ? ` · Endgegenprobe ${audit.complete ? "vollständig" : "unterbrochen"} (${audit.checkedActions}/${audit.legalActions})` : "";
-  return `${inventory.length}/${slots} Slots · davon ${active}/${activeLimit} aktiv · ${categoryCount("Weapon")} Weapon · ${categoryCount("Vitality")} Vitality · ${categoryCount("Spirit")} Spirit · Ausgaben ${formatSouls(totalSouls)} · Rest ${formatSouls(result.state.cash)} · ${evaluations.toLocaleString("de-CH")} Inventare bewertet · ${completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade · ${(runtimeMs / 1000).toFixed(1)} s${auditText}`;
+function mapParetoVariant(entry, result, damageFocus) {
+  const itemMap = state.data.itemsById;
+  const allEvents = entry.state.events || [];
+  const snapshots = entry.state.snapshots || [];
+  const events = allEvents
+    .map((event, index) => ({ event, snapshot: snapshots[index + 1] }))
+    .filter(({ event }) => event.type !== "save")
+    .map(({ event, snapshot }, index) => ({
+      step: index + 1,
+      item: itemMap.get(event.type === "sell" ? event.from : event.item),
+      item_id: event.item,
+      from: event.from,
+      upgradeFrom: event.from ? itemMap.get(event.from) : null,
+      purchase_type: event.type,
+      earnedSouls: snapshot?.earnedSouls ?? event.earnedSouls ?? 0,
+      cashCost: event.payment,
+      saleProceeds: event.saleProceeds || 0
+    }));
+  const inventory = entry.state.inventory.map((id) => itemMap.get(id)).filter(Boolean);
+  const evaluation = evaluateCarryPerformance(entry.state, {
+    heroId: state.selectedHeroId,
+    damageFocus,
+    budget: FAST_SEARCH_BUDGET
+  }, state.data);
+  return {
+    events,
+    inventory,
+    spent: entry.state.earnedSouls - entry.state.cash,
+    saveSteps: allEvents.filter((event) => event.type === "save").length,
+    pathScore: entry.pathScore,
+    endScore: entry.endScore,
+    validation: entry.validation,
+    sources: entry.sources,
+    winner: { evaluation },
+    search: {
+      telemetry: result.telemetry,
+      frontSize: result.front.length,
+      scalarizationUsed: result.telemetry.scalarizationUsed
+    }
+  };
 }
 
 function startFastBuild() {
-  if (activeOptimizerWorker) { cancelNewBuild(); return; }
+  if (activeOptimizerWorker) return;
   if ($("#role").value !== "carry") {
     $("#search-progress").textContent = "Dieser Build-Lauf unterstützt derzeit nur Carry.";
     return;
   }
-  const started = performance.now();
-  let firstResultMs = null;
+
+  const damageFocus = $("#damage-focus").value;
+  clearBuildState();
   setFastControls(true);
-  $("#search-progress").textContent = "Suche läuft · alle Items zugelassen · 25 s Rechenbudget · Stichprobenreferenz wird vorbereitet.";
+  $("#search-progress").textContent = `Multiobjective (Path-AUC, Endbuild) läuft · ${Math.round(PRODUCT_SEARCH_TIME_MS / 1000)} s Wallclock-Budget · hero-/focus-passende Referenz wird vorbereitet.`;
   const worker = activeOptimizerWorker = new Worker("./optimizer-worker.mjs", { type: "module" });
   const finish = (text) => {
-    worker.terminate(); activeOptimizerWorker = null; setFastControls(false);
+    worker.terminate();
+    activeOptimizerWorker = null;
+    setFastControls(false);
     $("#search-progress").textContent = text;
   };
-  worker.onmessage = ({ data: message }) => {
-    if (message.type === "incumbent") {
-      const result = message.result;
-      firstResultMs ??= performance.now() - started;
-      const itemMap = state.data.itemsById;
-      const events = result.state.events.map((event, i) => ({ ...event, earnedSouls: result.state.snapshots[i + 1].earnedSouls }))
-        .filter((event) => event.type !== "save").map((event, i) => ({ step: i + 1, item: itemMap.get(event.type === "sell" ? event.from : event.item),
-          upgradeFrom: itemMap.get(event.from), purchase_type: event.type, earnedSouls: event.earnedSouls,
-          cashCost: event.payment, saleProceeds: event.saleProceeds || 0 }));
-      const inventory = result.state.inventory.map((id) => itemMap.get(id));
-      const damageFocus = $("#damage-focus").value;
-      const evaluation = evaluateCarryPerformance(result.state, { heroId: state.selectedHeroId, damageFocus, budget: FAST_SEARCH_BUDGET }, state.data);
-      const unavailableChargeItems = result.unavailableItemIds
-        .map((itemId) => state.data.itemsById.get(itemId)?.name || itemId)
-        .join(", ");
-      state.build = { events, inventory, spent: result.state.earnedSouls - result.state.cash, winner: { evaluation },
-        search: { ...result, byMetric: {}, metrics: Object.keys(result.state.snapshots[0].metrics),
-          scope: `Legaler Kaufpfad von 0 bis ${FAST_SEARCH_BUDGET.toLocaleString("de-CH")} verdienten Souls für ${getHero(state.selectedHeroId).display_name} · Carry · ${damageFocus}. Sparabschnitte sind über die Soul-Angaben der Transaktionen erkennbar. Nicht kaufbare Charge-Items sind ausgeschlossen: ${unavailableChargeItems || "keine"}. Approximative Suche auf dem ausgewiesenen Zahlungsraster; keine garantierte Güte zum globalen Optimum.` } };
-      $("#result-summary").textContent = fastBuildSummary(result, inventory, result.telemetry);
-      $("#search-progress").textContent = `Erstes Ergebnis nach ${(firstResultMs / 1000).toFixed(2)} s · Verbesserung läuft · Auswahlwert ${result.quality.score.toFixed(5)} (kein Optimalitätsprozentsatz).`;
-      renderPhase();
-    } else if (message.type === "anytime-complete") {
-      const telemetry = message.telemetry;
-      if (state.build?.search?.approximate) {
-        state.build.search.searchTelemetry = telemetry;
-        $("#result-summary").textContent = fastBuildSummary(state.build.search, state.build.inventory, telemetry);
-      }
-      const first = firstResultMs === null ? "kein Ergebnis" : `${(firstResultMs / 1000).toFixed(2)} s`;
-      finish(`Abgeschlossen · erstes Ergebnis: ${first} · Gesamtlaufzeit: ${(telemetry.runtimeMs / 1000).toFixed(1)} s · ${telemetry.evaluations.toLocaleString("de-CH")} Inventare bewertet · ${telemetry.completedPaths.toLocaleString("de-CH")} vollständige Kaufpfade geprüft.`);
-    } else if (message.type === "error") finish(`Suche fehlgeschlagen: ${message.message}`);
-  };
-  worker.onerror = (error) => finish(`Suche fehlgeschlagen: ${error.message}`);
-  worker.postMessage({ mode: "anytime", data: state.data, itemIds: state.data.items.map((item) => item.item_id), budget: FAST_SEARCH_BUDGET, heroId: state.selectedHeroId, damageFocus: $("#damage-focus").value });
-}
 
-function startNewBuild(budget = FAST_SEARCH_BUDGET) {
-  const role = $("#role").value;
-  const damageFocus = $("#damage-focus").value;
-  if (state.selectedHeroId !== "warden" || role !== "carry" || damageFocus !== "weapon") {
-    $("#search-progress").textContent = "Die vollständige Diagnose bleibt Warden · Carry · Weapon vorbehalten. Für alle Helden bitte „Build erstellen · 40k“ verwenden.";
-    return;
-  }
-  if (activeOptimizerWorker) {
-    cancelNewBuild();
-    return;
-  }
-  const itemIds = state.data.items.map((item) => item.item_id);
-  activeOptimizerWorker = new Worker("./optimizer-worker.mjs", { type: "module" });
-  $("#new-build-button").textContent = "Abbrechen";
-  $("#new-build-button").disabled = false;
-  $("#new-build-40k-button").disabled = true;
-  $("#build-button").disabled = true;
-  $("#search-progress").textContent = `Neue Suche gestartet: ${itemIds.length} Items, Horizont ${formatSouls(budget)} Souls.`;
-  activeOptimizerWorker.onmessage = (event) => {
-    const message = event.data;
+  worker.onmessage = ({ data: message }) => {
     if (message.type === "started") {
-      $("#search-progress").textContent = `Neue Suche läuft vollständig über ${message.itemCount} Items bis ${formatSouls(message.budget)} Souls …`;
+      $("#search-progress").textContent = `Multiobjective gestartet · ${message.itemCount} Items · ${formatSouls(message.budget)} Horizon · ${Math.round(message.timeBudgetMs / 1000)} s Wallclock.`;
     } else if (message.type === "progress") {
-      if (message.phase === "reference-cache") {
-        const labels = { hit: "Gespeicherte Referenz wiederverwendet.", miss: "Referenz wird neu berechnet.", stored: "Vollständige Referenz lokal gespeichert.", unavailable: "Referenzspeicher nicht verfügbar.", "write-failed": "Referenz berechnet; lokale Speicherung nicht möglich." };
-        $("#search-progress").textContent = labels[message.status];
-      } else if (message.phase === "direct-reference") {
-        $("#search-progress").textContent = `Referenz: ${message.telemetry.evaluatedInventories.toLocaleString("de-CH")} legale Inventare geprüft · ${(message.telemetry.runtimeMs / 1000).toFixed(1)} s · Abbruch möglich.`;
-      } else if (message.phase === "model-scope") {
-        $("#search-progress").textContent = `Diagnose auf ${message.resourceStep}-Souls-Raster · ${message.unsupportedUpgrades.length} nicht unterstützte Upgrade-Kanten · keine vollständige Spieloptimalität zugesichert.`;
-      } else if (message.phase === "reference-search" || message.phase === "trajectory-search") {
-        const t = message.telemetry;
-        const phase = message.phase === "reference-search" ? "Referenzberechnung" : "Gemeinsame Pfadsuche";
-        $("#search-progress").textContent = `${phase}: ${(t.runtimeMs / 1000).toFixed(1)} s · ${t.expandedStates.toLocaleString("de-CH")} Zustände geprüft · ${t.generatedStates.toLocaleString("de-CH")} Kandidaten erzeugt · ${t.queuedLabels.toLocaleString("de-CH")} in Warteschlange · Abbruch möglich. Modellgrenzen gelten.`;
-      } else {
-        $("#search-progress").textContent = `${message.paretoCount ?? "…"} Ergebnisvektoren · ${Math.round(message.telemetry?.runtimeMs || 0)} ms · Abbruch möglich.`;
+      if (message.phase === "sampled-reference") {
+        $("#search-progress").textContent = `Hero-/Focus-Referenz vorbereitet · ${(message.runtimeMs / 1000).toFixed(2)} s · ${message.evaluations.toLocaleString("de-CH")} Inventare bewertet.`;
+      } else if (message.phase === "multiobjective") {
+        $("#search-progress").textContent = `Multiobjective Width ${message.width} · Natural Reach ${formatSouls(message.maxReachedSouls)} · ${message.generatedStates.toLocaleString("de-CH")} Zustände · ${message.evaluations.toLocaleString("de-CH")} Evaluations · ${message.terminalCandidates} Terminalkandidaten.`;
       }
-    } else if (message.type === "complete") {
+    } else if (message.type === "search-complete") {
       const result = message.result;
-      const selected = result.byMetric.sustainedWeaponDps.pareto[0];
-      if (!selected) throw new Error("Die neue Suche lieferte keinen legalen Referenzpfad.");
-      const itemMap = state.data.itemsById;
-      const inventory = selected.state.inventory.map((id) => itemMap.get(id)).filter(Boolean);
-      const events = selected.state.events.map((event, index) => ({ step: index + 1, item: itemMap.get(event.type === "sell" ? event.from : event.item), upgradeFrom: event.from ? itemMap.get(event.from) : null, purchase_type: event.type, cash_cost: event.payment, item_id: event.item, earnedSouls: selected.state.snapshots[index + 1].earnedSouls }));
-      const request = { heroId: state.selectedHeroId, objective: "weapon_magazine_dps", budget };
-      const evaluation = evaluateWardenCarryPerformance({ inventory: selected.state.inventory }, request, state.data);
-      state.build = { status: "PASS_WITH_WARNINGS", search: result, winner: { state: { inventory, events }, evaluation }, events, inventory, spent: selected.state.earnedSouls };
-      $("#result-summary").textContent = `${events.length} geprüfte Schritte · neuer vollständiger Suchlauf · ${formatSouls(selected.state.earnedSouls)} Souls`;
-      $("#search-progress").textContent = `Abgeschlossen: gemeinsame Pareto-Suche über ${result.metrics.length} Leistungsmaße · ${result.pareto.length} Ergebnisvektoren · Raster ${result.resource.step} Souls · ${result.unsupportedUpgrades.length} nicht unterstützte Upgrade-Kanten. Keine vollständige Spieloptimalität zugesichert.`;
+      if (!Array.isArray(result.front) || result.front.length === 0) {
+        finish("Suche beendet, aber ohne terminale Pareto-Variante.");
+        return;
+      }
+      state.paretoBuilds = result.front.map((entry) => mapParetoVariant(entry, result, damageFocus));
+      state.selectedParetoIndex = 0;
+      state.build = state.paretoBuilds[0];
       $("#results").dataset.focus = damageFocus;
+      $("#result-summary").textContent = `${state.paretoBuilds.length} terminale Pareto-Variante${state.paretoBuilds.length === 1 ? "" : "n"} · Path-AUC und Endbuild getrennt · legal replay ${state.paretoBuilds.every((entry) => entry.validation?.valid === true) ? "verifiziert" : "nicht vollständig verifiziert"}`;
       renderPhase();
       $("#results").scrollIntoView({ behavior: "smooth", block: "start" });
-      activeOptimizerWorker.terminate();
-      activeOptimizerWorker = null;
-      $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-      $("#new-build-40k-button").disabled = false;
-      $("#build-button").disabled = false;
+      finish(`Abgeschlossen · Multiobjective · ${(result.telemetry.runtimeMs / 1000).toFixed(1)} s · ${result.telemetry.evaluations.toLocaleString("de-CH")} Evaluations · Pareto-Front ${result.front.length}.`);
     } else if (message.type === "error") {
-      $("#search-progress").textContent = `Neue Suche fehlgeschlagen: ${message.message}`;
-      activeOptimizerWorker.terminate();
-      activeOptimizerWorker = null;
-      $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-      $("#new-build-40k-button").disabled = false;
-      $("#build-button").disabled = false;
+      finish(`Suche fehlgeschlagen: ${message.message}`);
     }
   };
-  activeOptimizerWorker.onerror = (error) => {
-    $("#search-progress").textContent = `Worker-Fehler: ${error.message || "unbekannter Fehler"}`;
-    activeOptimizerWorker?.terminate();
-    activeOptimizerWorker = null;
-    $("#new-build-button").textContent = "⟳ Neuen vollständigen Suchlauf starten";
-    $("#new-build-40k-button").disabled = false;
-    $("#build-button").disabled = false;
-  };
-  activeOptimizerWorker.postMessage({ data: state.data, itemIds, budget, heroId: state.selectedHeroId, damageFocus });
+  worker.onerror = (error) => finish(`Worker-Fehler: ${error.message || "unbekannter Fehler"}`);
+  worker.postMessage({
+    data: state.data,
+    itemIds: state.data.items.map((item) => item.item_id),
+    budget: FAST_SEARCH_BUDGET,
+    heroId: state.selectedHeroId,
+    damageFocus
+  });
 }
 
 function renderPicker(filter = "") {
@@ -443,7 +416,7 @@ function openPicker(mode, slot = null) {
 
 function chooseHero(heroId) {
   state.selectedHeroId = heroId;
-  state.build = null;
+  clearBuildState();
   $("#result-summary").textContent = "Auswahl geändert · Build erneut prüfen";
   $("#picker-dialog").close();
   renderSelections();
@@ -456,16 +429,13 @@ function bindEvents() {
 
   $("#picker-search").addEventListener("input", (event) => renderPicker(event.target.value));
   $("#role").addEventListener("change", () => {
-    state.build = null;
+    clearBuildState();
     $("#results").dataset.focus = $("#damage-focus").value;
     $("#result-summary").textContent = "Auswahl geändert · Build erneut prüfen";
     renderPhase();
   });
   $("#damage-focus").addEventListener("change", () => $("#role").dispatchEvent(new Event("change")));
-  $("#build-button").addEventListener("click", createBuild);
   $("#fast-build-button").addEventListener("click", startFastBuild);
-  $("#new-build-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
-  $("#new-build-40k-button").addEventListener("click", () => startNewBuild(FAST_SEARCH_BUDGET));
 }
 
 async function init() {
@@ -480,7 +450,7 @@ async function init() {
     const notice = $("#data-error");
     notice.hidden = false;
     notice.textContent = `Die lokalen Daten konnten nicht geladen werden: ${error.message}. Bitte die App über den lokalen Server öffnen.`;
-    $("#build-button").disabled = true;
+    $("#fast-build-button").disabled = true;
     console.error(error);
   }
 }

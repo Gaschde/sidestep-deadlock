@@ -1,0 +1,24 @@
+name: optimizer-next tests
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python regression baseline (advisory)
+        continue-on-error: true
+        run: python -m unittest discover -s tests -p "test_*.py"

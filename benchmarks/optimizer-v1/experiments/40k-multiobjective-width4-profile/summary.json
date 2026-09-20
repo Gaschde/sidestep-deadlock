@@ -1,0 +1,4367 @@
+{
+  "schemaVersion": "optimizer-width4-profile-v1",
+  "experiment": "40k-multiobjective-width4-profiling",
+  "sourceCommit": "daa2389ff46f69916907db460171d74c73a87d4b",
+  "generatedAt": "2026-09-19T20:42:16.380Z",
+  "hardware": {
+    "platform": "linux",
+    "arch": "x64",
+    "nodeVersion": "v22.23.2",
+    "cpuModel": "AMD EPYC 9V74 80-Core Processor",
+    "cpuCount": 4
+  },
+  "width": 4,
+  "productTimeBudgetMs": 60000,
+  "auditReserveMs": 2000,
+  "semanticsChanged": false,
+  "profilingPolicy": {
+    "controlRun": "profile=false under the same wall-clock budget",
+    "profiledRun": "profile=true under the same wall-clock budget",
+    "timerSemantics": "inclusive/nested diagnostic timers; do not add timers into a runtime percentage",
+    "objective": "unchanged",
+    "retention": "unchanged",
+    "domain": "unchanged"
+  },
+  "cases": [
+    {
+      "caseId": "production-40k-warden-carry-hybrid",
+      "hero": "warden",
+      "focus": "hybrid",
+      "budget": 40000,
+      "width": 4,
+      "timeBudgetMs": 60000,
+      "auditReserveMs": 2000,
+      "production": {
+        "control": {
+          "wallMs": 23664.650150999998,
+          "terminalReached": true,
+          "pathVerified": true,
+          "transactions": 79,
+          "summary": {
+            "runtimeMs": 23650.052727,
+            "generatedStates": 88760,
+            "searchGeneratedStates": 88760,
+            "evaluations": 16791,
+            "transitionCalls": null,
+            "duplicateStates": 2270,
+            "maxCandidatePool": 829,
+            "widthsStarted": [
+              4
+            ],
+            "widthsCompleted": [
+              4
+            ],
+            "searchComplete": null,
+            "steps": null,
+            "maxReachedSouls": 0,
+            "terminalCandidates": null,
+            "terminalAudit": {
+              "complete": true,
+              "rounds": 1,
+              "legalActions": 158,
+              "checkedActions": 158,
+              "improvements": 0,
+              "neighbourhood": "purchase|upgrade|replacement",
+              "incumbentScore": 0.40412729777695033
+            },
+            "timers": null,
+            "counters": null,
+            "traceLength": 0,
+            "firstProgress": null,
+            "lastProgress": null,
+            "thresholds": {
+              "firstCandidate": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [],
+            "progressTail": []
+          }
+        },
+        "profiled": {
+          "wallMs": 25052.970407000004,
+          "terminalReached": true,
+          "pathVerified": true,
+          "transactions": 79,
+          "summary": {
+            "runtimeMs": 25052.396707,
+            "generatedStates": 88760,
+            "searchGeneratedStates": 88760,
+            "evaluations": 16791,
+            "transitionCalls": 8162,
+            "duplicateStates": 2270,
+            "maxCandidatePool": 829,
+            "widthsStarted": [
+              4
+            ],
+            "widthsCompleted": [
+              4
+            ],
+            "searchComplete": null,
+            "steps": null,
+            "maxReachedSouls": 40000,
+            "terminalCandidates": null,
+            "terminalAudit": {
+              "complete": true,
+              "rounds": 1,
+              "legalActions": 158,
+              "checkedActions": 158,
+              "improvements": 0,
+              "neighbourhood": "purchase|upgrade|replacement",
+              "incumbentScore": 0.40412729777695033
+            },
+            "timers": {
+              "referenceMs": 1.2316460000001825,
+              "beamSearchMs": 25004.917756000003,
+              "terminalAuditMs": 43.4237060000014,
+              "validationMs": 188.97267599999395,
+              "transitionMs": 3151.803443999819,
+              "saveGenerationMs": 9.297927999872627,
+              "purchaseGenerationMs": 229.43576000000758,
+              "upgradeGenerationMs": 54.395257000058336,
+              "replacementGenerationMs": 2845.0575920003757,
+              "evaluationMs": 5612.352378000058,
+              "trajectoryScoreMs": 17785.721464999693,
+              "pathAucScoreMs": 0,
+              "endbuildScoreMs": 0,
+              "pathReconstructionMs": 0.15536599999541068,
+              "continuationLookaheadMs": 4475.782282999651,
+              "terminalCompletionMs": 28.506695000000036,
+              "dedupeMs": 17648.567170999984,
+              "paretoMs": 37.24529999998049,
+              "frontierMaintenanceMs": 0,
+              "diversityMs": 6996.704592000024,
+              "sortingMs": 6432.01888499991
+            },
+            "counters": {
+              "transitionCalls": 8162,
+              "generatedStates": 2196249,
+              "uniqueStates": 86490,
+              "duplicateStates": 2270,
+              "evaluatedInventories": 16791,
+              "metricCacheHits": 9104563,
+              "metricCacheMisses": 16791,
+              "vectorCacheHits": 0,
+              "vectorCacheMisses": 0,
+              "pointsCacheHits": 0,
+              "pointsCacheMisses": 0,
+              "saveTransitions": 8161,
+              "purchaseChecks": 1248786,
+              "upgradeChecks": 481558,
+              "replacementChecks": 8369253,
+              "familyConflictChecks": 2285550,
+              "continuationLookaheadCalls": 86488,
+              "paretoCandidates": 0,
+              "terminalNodes": 0
+            },
+            "traceLength": 187,
+            "firstProgress": {
+              "engine": "production",
+              "width": 4,
+              "depth": 0,
+              "runtimeMs": 4.410392999998294,
+              "candidates": 1,
+              "unique": 1,
+              "retained": 1,
+              "candidateSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "uniqueSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "retainedSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "lastProgress": {
+              "engine": "production",
+              "width": 4,
+              "depth": 186,
+              "runtimeMs": 25008.750754,
+              "candidates": 40,
+              "unique": 38,
+              "retained": 4,
+              "candidateSouls": {
+                "min": 39600,
+                "max": 40000,
+                "counts": {
+                  "39600": 36,
+                  "40000": 4
+                }
+              },
+              "uniqueSouls": {
+                "min": 39600,
+                "max": 40000,
+                "counts": {
+                  "39600": 34,
+                  "40000": 4
+                }
+              },
+              "retainedSouls": {
+                "min": 40000,
+                "max": 40000,
+                "counts": {
+                  "40000": 4
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 4
+                },
+                "unique": {
+                  "40000": 4
+                },
+                "retained": {
+                  "40000": 4
+                }
+              }
+            },
+            "thresholds": {
+              "firstCandidate": {
+                "5000": {
+                  "depth": 17,
+                  "runtimeMs": 966.0634959999988
+                },
+                "10000": {
+                  "depth": 35,
+                  "runtimeMs": 3098.3166859999983
+                },
+                "15000": {
+                  "depth": 55,
+                  "runtimeMs": 7372.093325999998
+                },
+                "20000": {
+                  "depth": 76,
+                  "runtimeMs": 10674.426223000002
+                },
+                "25000": {
+                  "depth": 96,
+                  "runtimeMs": 13149.223985999997
+                },
+                "30000": {
+                  "depth": 114,
+                  "runtimeMs": 15039.397481
+                },
+                "35000": {
+                  "depth": 133,
+                  "runtimeMs": 17480.318346
+                },
+                "40000": {
+                  "depth": 151,
+                  "runtimeMs": 20109.741627000003
+                }
+              },
+              "firstRetained": {
+                "5000": {
+                  "depth": 18,
+                  "runtimeMs": 997.2405319999998
+                },
+                "10000": {
+                  "depth": 36,
+                  "runtimeMs": 3319.5652919999993
+                },
+                "15000": {
+                  "depth": 55,
+                  "runtimeMs": 7372.093325999998
+                },
+                "20000": {
+                  "depth": 77,
+                  "runtimeMs": 10768.168416
+                },
+                "25000": {
+                  "depth": 96,
+                  "runtimeMs": 13149.223985999997
+                },
+                "30000": {
+                  "depth": 114,
+                  "runtimeMs": 15039.397481
+                },
+                "35000": {
+                  "depth": 134,
+                  "runtimeMs": 17576.062117
+                },
+                "40000": {
+                  "depth": 152,
+                  "runtimeMs": 20217.001963000002
+                }
+              }
+            },
+            "progressHead": [
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 0,
+                "runtimeMs": 4.410392999998294,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "candidateSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 1,
+                "runtimeMs": 60.53144099999918,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 2,
+                "runtimeMs": 120.99471999999878,
+                "candidates": 23,
+                "unique": 23,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 22,
+                    "1200": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 22,
+                    "1200": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 3,
+                    "1200": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 3,
+                "runtimeMs": 141.6389909999998,
+                "candidates": 29,
+                "unique": 24,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1600,
+                  "counts": {
+                    "800": 3,
+                    "1200": 25,
+                    "1600": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1600,
+                  "counts": {
+                    "800": 1,
+                    "1200": 22,
+                    "1600": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1200,
+                  "counts": {
+                    "1200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 4,
+                "runtimeMs": 144.06138199999987,
+                "candidates": 92,
+                "unique": 27,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 88,
+                    "1600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 23,
+                    "1600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 2,
+                    "1600": 2
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ],
+            "progressTail": [
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 175,
+                "runtimeMs": 23696.308527,
+                "candidates": 460,
+                "unique": 436,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38000,
+                  "max": 39600,
+                  "counts": {
+                    "38000": 57,
+                    "38400": 1,
+                    "38800": 59,
+                    "39200": 341,
+                    "39600": 2
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38000,
+                  "max": 39600,
+                  "counts": {
+                    "38000": 57,
+                    "38400": 1,
+                    "38800": 59,
+                    "39200": 317,
+                    "39600": 2
+                  }
+                },
+                "retainedSouls": {
+                  "min": 38400,
+                  "max": 39200,
+                  "counts": {
+                    "38400": 1,
+                    "39200": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 176,
+                "runtimeMs": 23836.027824999997,
+                "candidates": 462,
+                "unique": 456,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38400,
+                  "max": 39600,
+                  "counts": {
+                    "38400": 153,
+                    "38800": 1,
+                    "39200": 305,
+                    "39600": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38400,
+                  "max": 39600,
+                  "counts": {
+                    "38400": 153,
+                    "38800": 1,
+                    "39200": 299,
+                    "39600": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 38400,
+                  "max": 39600,
+                  "counts": {
+                    "38400": 1,
+                    "39200": 1,
+                    "39600": 2
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 177,
+                "runtimeMs": 23984.758575,
+                "candidates": 460,
+                "unique": 436,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38400,
+                  "max": 40000,
+                  "counts": {
+                    "38400": 57,
+                    "38800": 1,
+                    "39200": 59,
+                    "39600": 341,
+                    "40000": 2
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38400,
+                  "max": 40000,
+                  "counts": {
+                    "38400": 57,
+                    "38800": 1,
+                    "39200": 59,
+                    "39600": 317,
+                    "40000": 2
+                  }
+                },
+                "retainedSouls": {
+                  "min": 38800,
+                  "max": 39600,
+                  "counts": {
+                    "38800": 1,
+                    "39600": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 2
+                  },
+                  "unique": {
+                    "40000": 2
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 178,
+                "runtimeMs": 24130.85054,
+                "candidates": 462,
+                "unique": 456,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 153,
+                    "39200": 1,
+                    "39600": 305,
+                    "40000": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 153,
+                    "39200": 1,
+                    "39600": 299,
+                    "40000": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 1,
+                    "39600": 1,
+                    "40000": 2
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 3
+                  },
+                  "unique": {
+                    "40000": 3
+                  },
+                  "retained": {
+                    "40000": 2
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 179,
+                "runtimeMs": 24246.482872,
+                "candidates": 118,
+                "unique": 118,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 57,
+                    "39200": 1,
+                    "39600": 59,
+                    "40000": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 57,
+                    "39200": 1,
+                    "39600": 59,
+                    "40000": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 1,
+                    "39200": 1,
+                    "39600": 1,
+                    "40000": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 1
+                  },
+                  "unique": {
+                    "40000": 1
+                  },
+                  "retained": {
+                    "40000": 1
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 180,
+                "runtimeMs": 24375.470692000003,
+                "candidates": 242,
+                "unique": 241,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 39,
+                    "39200": 154,
+                    "39600": 48,
+                    "40000": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 38800,
+                  "max": 40000,
+                  "counts": {
+                    "38800": 39,
+                    "39200": 153,
+                    "39600": 48,
+                    "40000": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 3,
+                    "40000": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 1
+                  },
+                  "unique": {
+                    "40000": 1
+                  },
+                  "retained": {
+                    "40000": 1
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 181,
+                "runtimeMs": 24439.674313000003,
+                "candidates": 174,
+                "unique": 163,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 171,
+                    "39600": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 160,
+                    "39600": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 1,
+                    "39600": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 182,
+                "runtimeMs": 24609.424496,
+                "candidates": 502,
+                "unique": 444,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 39,
+                    "39600": 460,
+                    "40000": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 39,
+                    "39600": 402,
+                    "40000": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 1,
+                    "39600": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 3
+                  },
+                  "unique": {
+                    "40000": 3
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 183,
+                "runtimeMs": 24707.296098,
+                "candidates": 198,
+                "unique": 194,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 23,
+                    "39600": 172,
+                    "40000": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 23,
+                    "39600": 168,
+                    "40000": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 1,
+                    "40000": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 3
+                  },
+                  "unique": {
+                    "40000": 3
+                  },
+                  "retained": {
+                    "40000": 3
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 184,
+                "runtimeMs": 24712.929666999997,
+                "candidates": 10,
+                "unique": 10,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 9,
+                    "39600": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 9,
+                    "39600": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39200,
+                  "max": 39600,
+                  "counts": {
+                    "39200": 3,
+                    "39600": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 185,
+                "runtimeMs": 24989.377313999998,
+                "candidates": 490,
+                "unique": 430,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 360,
+                    "39600": 129,
+                    "40000": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39200,
+                  "max": 40000,
+                  "counts": {
+                    "39200": 303,
+                    "39600": 126,
+                    "40000": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 39600,
+                  "max": 39600,
+                  "counts": {
+                    "39600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 1
+                  },
+                  "unique": {
+                    "40000": 1
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 186,
+                "runtimeMs": 25008.750754,
+                "candidates": 40,
+                "unique": 38,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 39600,
+                  "max": 40000,
+                  "counts": {
+                    "39600": 36,
+                    "40000": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 39600,
+                  "max": 40000,
+                  "counts": {
+                    "39600": 34,
+                    "40000": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 40000,
+                  "max": 40000,
+                  "counts": {
+                    "40000": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 4
+                  },
+                  "unique": {
+                    "40000": 4
+                  },
+                  "retained": {
+                    "40000": 4
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "multiobjective": {
+        "control": {
+          "wallMs": 58907.262690999996,
+          "terminalReached": false,
+          "frontCount": 0,
+          "summary": {
+            "runtimeMs": 58906.281174,
+            "generatedStates": 133738,
+            "searchGeneratedStates": 133738,
+            "evaluations": 31506,
+            "transitionCalls": 503,
+            "duplicateStates": 1163,
+            "maxCandidatePool": 4532,
+            "widthsStarted": null,
+            "widthsCompleted": null,
+            "searchComplete": false,
+            "steps": 128,
+            "maxReachedSouls": 37200,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            },
+            "timers": null,
+            "counters": null,
+            "traceLength": 0,
+            "firstProgress": null,
+            "lastProgress": null,
+            "thresholds": {
+              "firstCandidate": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [],
+            "progressTail": []
+          }
+        },
+        "profiled": {
+          "wallMs": 58027.74506500001,
+          "terminalReached": false,
+          "frontCount": 0,
+          "summary": {
+            "runtimeMs": 58027.13949999999,
+            "generatedStates": 122262,
+            "searchGeneratedStates": 122262,
+            "evaluations": 30254,
+            "transitionCalls": 479,
+            "duplicateStates": 1163,
+            "maxCandidatePool": 4532,
+            "widthsStarted": null,
+            "widthsCompleted": null,
+            "searchComplete": false,
+            "steps": 122,
+            "maxReachedSouls": 35600,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            },
+            "timers": {
+              "referenceMs": 0,
+              "beamSearchMs": 58022.97568300001,
+              "terminalAuditMs": 0.0009710000013001263,
+              "validationMs": 0,
+              "transitionMs": 331.54843800007075,
+              "saveGenerationMs": 1.0548989998496836,
+              "purchaseGenerationMs": 5.887651999684749,
+              "upgradeGenerationMs": 3.669269000121858,
+              "replacementGenerationMs": 252.38352599999052,
+              "evaluationMs": 11020.493521999902,
+              "trajectoryScoreMs": 55255.39762599989,
+              "pathAucScoreMs": 11801.485421958612,
+              "endbuildScoreMs": 114.21472200655262,
+              "pathReconstructionMs": 25134.83447999775,
+              "continuationLookaheadMs": 0,
+              "terminalCompletionMs": 0,
+              "dedupeMs": 55911.70002899994,
+              "paretoMs": 1676.7698230000242,
+              "frontierMaintenanceMs": 1727.7397889999847,
+              "diversityMs": 1.906855000066571,
+              "sortingMs": 3.767814000166254
+            },
+            "counters": {
+              "transitionCalls": 479,
+              "generatedStates": 122262,
+              "uniqueStates": 121099,
+              "duplicateStates": 1163,
+              "evaluatedInventories": 30254,
+              "metricCacheHits": 10806848,
+              "metricCacheMisses": 30254,
+              "vectorCacheHits": 121099,
+              "vectorCacheMisses": 122262,
+              "pointsCacheHits": 0,
+              "pointsCacheMisses": 122262,
+              "saveTransitions": 479,
+              "purchaseChecks": 73287,
+              "upgradeChecks": 28261,
+              "replacementChecks": 682074,
+              "familyConflictChecks": 127898,
+              "continuationLookaheadCalls": 0,
+              "paretoCandidates": 121099,
+              "terminalNodes": 0
+            },
+            "traceLength": 122,
+            "firstProgress": {
+              "engine": "multiobjective",
+              "width": 4,
+              "depth": 0,
+              "runtimeMs": 5.520427999988897,
+              "candidates": 1,
+              "unique": 1,
+              "retained": 1,
+              "firstFrontSize": 1,
+              "layerSizes": [
+                1
+              ],
+              "candidateSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "uniqueSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "retainedSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "lastProgress": {
+              "engine": "multiobjective",
+              "width": 4,
+              "depth": 121,
+              "runtimeMs": 58025.64009199999,
+              "candidates": 4532,
+              "unique": 4532,
+              "retained": 4,
+              "firstFrontSize": 1,
+              "layerSizes": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "candidateSouls": {
+                "min": 35200,
+                "max": 35600,
+                "counts": {
+                  "35200": 4528,
+                  "35600": 4
+                }
+              },
+              "uniqueSouls": {
+                "min": 35200,
+                "max": 35600,
+                "counts": {
+                  "35200": 4528,
+                  "35600": 4
+                }
+              },
+              "retainedSouls": {
+                "min": 35200,
+                "max": 35200,
+                "counts": {
+                  "35200": 4
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "thresholds": {
+              "firstCandidate": {
+                "5000": {
+                  "depth": 17,
+                  "runtimeMs": 789.5908909999998
+                },
+                "10000": {
+                  "depth": 35,
+                  "runtimeMs": 3435.3905379999924
+                },
+                "15000": {
+                  "depth": 55,
+                  "runtimeMs": 7831.635037999993
+                },
+                "20000": {
+                  "depth": 72,
+                  "runtimeMs": 14580.648128999994
+                },
+                "25000": {
+                  "depth": 89,
+                  "runtimeMs": 24530.834811000008
+                },
+                "30000": {
+                  "depth": 104,
+                  "runtimeMs": 37559.022326999984
+                },
+                "35000": {
+                  "depth": 120,
+                  "runtimeMs": 55774.55482399999
+                },
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": {
+                  "depth": 18,
+                  "runtimeMs": 826.9466169999941
+                },
+                "10000": {
+                  "depth": 36,
+                  "runtimeMs": 3540.730814999988
+                },
+                "15000": {
+                  "depth": 56,
+                  "runtimeMs": 7972.293702999988
+                },
+                "20000": {
+                  "depth": 73,
+                  "runtimeMs": 14873.257465999995
+                },
+                "25000": {
+                  "depth": 89,
+                  "runtimeMs": 24530.834811000008
+                },
+                "30000": {
+                  "depth": 105,
+                  "runtimeMs": 38406.163788999984
+                },
+                "35000": {
+                  "depth": 120,
+                  "runtimeMs": 55774.55482399999
+                },
+                "40000": null
+              }
+            },
+            "progressHead": [
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 0,
+                "runtimeMs": 5.520427999988897,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 1,
+                "runtimeMs": 5.955505999998422,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 2,
+                "runtimeMs": 17.85231499999645,
+                "candidates": 23,
+                "unique": 23,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 22,
+                    "1200": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 22,
+                    "1200": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 3,
+                "runtimeMs": 19.754520999995293,
+                "candidates": 8,
+                "unique": 5,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 4,
+                    "1200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 1,
+                    "1200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1200,
+                  "counts": {
+                    "1200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 4,
+                "runtimeMs": 39.95377500000177,
+                "candidates": 92,
+                "unique": 92,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 88,
+                    "1600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 88,
+                    "1600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 3,
+                    "1600": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ],
+            "progressTail": [
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 110,
+                "runtimeMs": 43263.329020000005,
+                "candidates": 2554,
+                "unique": 2554,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 31200,
+                  "max": 32000,
+                  "counts": {
+                    "31200": 1848,
+                    "31600": 705,
+                    "32000": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 31200,
+                  "max": 32000,
+                  "counts": {
+                    "31200": 1848,
+                    "31600": 705,
+                    "32000": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 31600,
+                  "max": 31600,
+                  "counts": {
+                    "31600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 111,
+                "runtimeMs": 44410.694713000004,
+                "candidates": 2468,
+                "unique": 2468,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 31600,
+                  "max": 32000,
+                  "counts": {
+                    "31600": 2464,
+                    "32000": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 31600,
+                  "max": 32000,
+                  "counts": {
+                    "31600": 2464,
+                    "32000": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 32000,
+                  "max": 32000,
+                  "counts": {
+                    "32000": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 112,
+                "runtimeMs": 45721.75800599999,
+                "candidates": 2812,
+                "unique": 2812,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 32000,
+                  "max": 32400,
+                  "counts": {
+                    "32000": 2808,
+                    "32400": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 32000,
+                  "max": 32400,
+                  "counts": {
+                    "32000": 2808,
+                    "32400": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 32400,
+                  "max": 32400,
+                  "counts": {
+                    "32400": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 113,
+                "runtimeMs": 46965.51798099998,
+                "candidates": 2812,
+                "unique": 2812,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 32400,
+                  "max": 32800,
+                  "counts": {
+                    "32400": 2808,
+                    "32800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 32400,
+                  "max": 32800,
+                  "counts": {
+                    "32400": 2808,
+                    "32800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 32800,
+                  "max": 32800,
+                  "counts": {
+                    "32800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 114,
+                "runtimeMs": 49181.903843999986,
+                "candidates": 4532,
+                "unique": 4532,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 32800,
+                  "max": 33200,
+                  "counts": {
+                    "32800": 4528,
+                    "33200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 32800,
+                  "max": 33200,
+                  "counts": {
+                    "32800": 4528,
+                    "33200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 32800,
+                  "max": 32800,
+                  "counts": {
+                    "32800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 115,
+                "runtimeMs": 49898.377588,
+                "candidates": 1328,
+                "unique": 1328,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 32800,
+                  "max": 33200,
+                  "counts": {
+                    "32800": 1324,
+                    "33200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 32800,
+                  "max": 33200,
+                  "counts": {
+                    "32800": 1324,
+                    "33200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 33200,
+                  "max": 33200,
+                  "counts": {
+                    "33200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 116,
+                "runtimeMs": 50481.895141999994,
+                "candidates": 1328,
+                "unique": 1328,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 33200,
+                  "max": 33600,
+                  "counts": {
+                    "33200": 1324,
+                    "33600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 33200,
+                  "max": 33600,
+                  "counts": {
+                    "33200": 1324,
+                    "33600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 33600,
+                  "max": 33600,
+                  "counts": {
+                    "33600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 117,
+                "runtimeMs": 51737.95636499999,
+                "candidates": 2516,
+                "unique": 2516,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 33600,
+                  "max": 34000,
+                  "counts": {
+                    "33600": 2512,
+                    "34000": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 33600,
+                  "max": 34000,
+                  "counts": {
+                    "33600": 2512,
+                    "34000": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 34000,
+                  "max": 34000,
+                  "counts": {
+                    "34000": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 118,
+                "runtimeMs": 52885.587197999994,
+                "candidates": 2516,
+                "unique": 2516,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 34000,
+                  "max": 34400,
+                  "counts": {
+                    "34000": 2512,
+                    "34400": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 34000,
+                  "max": 34400,
+                  "counts": {
+                    "34000": 2512,
+                    "34400": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 34400,
+                  "max": 34400,
+                  "counts": {
+                    "34400": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 119,
+                "runtimeMs": 54342.333031999995,
+                "candidates": 3020,
+                "unique": 3020,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 34400,
+                  "max": 34800,
+                  "counts": {
+                    "34400": 3016,
+                    "34800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 34400,
+                  "max": 34800,
+                  "counts": {
+                    "34400": 3016,
+                    "34800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 34800,
+                  "max": 34800,
+                  "counts": {
+                    "34800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 120,
+                "runtimeMs": 55774.55482399999,
+                "candidates": 3020,
+                "unique": 3020,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 34800,
+                  "max": 35200,
+                  "counts": {
+                    "34800": 3016,
+                    "35200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 34800,
+                  "max": 35200,
+                  "counts": {
+                    "34800": 3016,
+                    "35200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 35200,
+                  "max": 35200,
+                  "counts": {
+                    "35200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 121,
+                "runtimeMs": 58025.64009199999,
+                "candidates": 4532,
+                "unique": 4532,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 35200,
+                  "max": 35600,
+                  "counts": {
+                    "35200": 4528,
+                    "35600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 35200,
+                  "max": 35600,
+                  "counts": {
+                    "35200": 4528,
+                    "35600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 35200,
+                  "max": 35200,
+                  "counts": {
+                    "35200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "caseId": "production-40k-infernus-carry-hybrid",
+      "hero": "infernus",
+      "focus": "hybrid",
+      "budget": 40000,
+      "width": 4,
+      "timeBudgetMs": 60000,
+      "auditReserveMs": 2000,
+      "production": {
+        "control": {
+          "wallMs": 60016.569991,
+          "terminalReached": true,
+          "pathVerified": true,
+          "transactions": 1,
+          "summary": {
+            "runtimeMs": 60014.68669200002,
+            "generatedStates": 7571,
+            "searchGeneratedStates": 7571,
+            "evaluations": 4304,
+            "transitionCalls": null,
+            "duplicateStates": 317,
+            "maxCandidatePool": 624,
+            "widthsStarted": [
+              4
+            ],
+            "widthsCompleted": [
+              4
+            ],
+            "searchComplete": null,
+            "steps": null,
+            "maxReachedSouls": 0,
+            "terminalCandidates": null,
+            "terminalAudit": {
+              "complete": false,
+              "rounds": 1,
+              "legalActions": 156,
+              "checkedActions": 21,
+              "improvements": 1,
+              "neighbourhood": "purchase|upgrade|replacement",
+              "incumbentScore": 0.3237533073396234
+            },
+            "timers": null,
+            "counters": null,
+            "traceLength": 0,
+            "firstProgress": null,
+            "lastProgress": null,
+            "thresholds": {
+              "firstCandidate": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [],
+            "progressTail": []
+          }
+        },
+        "profiled": {
+          "wallMs": 61052.73952700003,
+          "terminalReached": true,
+          "pathVerified": true,
+          "transactions": 0,
+          "summary": {
+            "runtimeMs": 61052.17319200002,
+            "generatedStates": 8142,
+            "searchGeneratedStates": 8142,
+            "evaluations": 4669,
+            "transitionCalls": 3686,
+            "duplicateStates": 319,
+            "maxCandidatePool": 624,
+            "widthsStarted": [
+              4
+            ],
+            "widthsCompleted": [
+              4
+            ],
+            "searchComplete": null,
+            "steps": null,
+            "maxReachedSouls": 9600,
+            "terminalCandidates": null,
+            "terminalAudit": {
+              "complete": false,
+              "rounds": 0,
+              "legalActions": 0,
+              "checkedActions": 0,
+              "improvements": 0,
+              "neighbourhood": "purchase|upgrade|replacement",
+              "incumbentScore": 0.3237533073396234
+            },
+            "timers": {
+              "referenceMs": 11.21209899999667,
+              "beamSearchMs": 61038.56167799997,
+              "terminalAuditMs": 0.0019730000058189034,
+              "validationMs": 10.83002100000158,
+              "transitionMs": 770.4434510014253,
+              "saveGenerationMs": 4.378038000082597,
+              "purchaseGenerationMs": 101.84308700016118,
+              "upgradeGenerationMs": 25.906015001412015,
+              "replacementGenerationMs": 631.6945139975287,
+              "evaluationMs": 59334.505730998964,
+              "trajectoryScoreMs": 59791.503904998215,
+              "pathAucScoreMs": 0,
+              "endbuildScoreMs": 0,
+              "pathReconstructionMs": 0.026119999994989485,
+              "continuationLookaheadMs": 8330.95291299923,
+              "terminalCompletionMs": 10.209523999976227,
+              "dedupeMs": 52596.553263000096,
+              "paretoMs": 3.241887000040151,
+              "frontierMaintenanceMs": 0,
+              "diversityMs": 8410.595700999955,
+              "sortingMs": 8372.395911999978
+            },
+            "counters": {
+              "transitionCalls": 3686,
+              "generatedStates": 726651,
+              "uniqueStates": 7823,
+              "duplicateStates": 319,
+              "evaluatedInventories": 4669,
+              "metricCacheHits": 212580,
+              "metricCacheMisses": 4669,
+              "vectorCacheHits": 0,
+              "vectorCacheMisses": 0,
+              "pointsCacheHits": 0,
+              "pointsCacheMisses": 0,
+              "saveTransitions": 3686,
+              "purchaseChecks": 575016,
+              "upgradeChecks": 221160,
+              "replacementChecks": 2320656,
+              "familyConflictChecks": 741569,
+              "continuationLookaheadCalls": 7821,
+              "paretoCandidates": 0,
+              "terminalNodes": 0
+            },
+            "traceLength": 35,
+            "firstProgress": {
+              "engine": "production",
+              "width": 4,
+              "depth": 0,
+              "runtimeMs": 13.720107999979518,
+              "candidates": 1,
+              "unique": 1,
+              "retained": 1,
+              "candidateSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "uniqueSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "retainedSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "lastProgress": {
+              "engine": "production",
+              "width": 4,
+              "depth": 34,
+              "runtimeMs": 61051.91607400001,
+              "candidates": 571,
+              "unique": 569,
+              "retained": 4,
+              "candidateSouls": {
+                "min": 8800,
+                "max": 9600,
+                "counts": {
+                  "8800": 282,
+                  "9200": 288,
+                  "9600": 1
+                }
+              },
+              "uniqueSouls": {
+                "min": 8800,
+                "max": 9600,
+                "counts": {
+                  "8800": 282,
+                  "9200": 286,
+                  "9600": 1
+                }
+              },
+              "retainedSouls": {
+                "min": 8800,
+                "max": 9200,
+                "counts": {
+                  "8800": 1,
+                  "9200": 3
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "thresholds": {
+              "firstCandidate": {
+                "5000": {
+                  "depth": 18,
+                  "runtimeMs": 14716.214888999995
+                },
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": {
+                  "depth": 18,
+                  "runtimeMs": 14716.214888999995
+                },
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 0,
+                "runtimeMs": 13.720107999979518,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "candidateSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 1,
+                "runtimeMs": 34.99095199999283,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 2,
+                "runtimeMs": 695.9866639999964,
+                "candidates": 24,
+                "unique": 24,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 23,
+                    "1200": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 23,
+                    "1200": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 3,
+                    "1200": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 3,
+                "runtimeMs": 709.9646119999816,
+                "candidates": 30,
+                "unique": 25,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1600,
+                  "counts": {
+                    "800": 3,
+                    "1200": 26,
+                    "1600": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1600,
+                  "counts": {
+                    "800": 1,
+                    "1200": 23,
+                    "1600": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1200,
+                  "counts": {
+                    "1200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 4,
+                "runtimeMs": 711.1831119999988,
+                "candidates": 96,
+                "unique": 28,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 92,
+                    "1600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 24,
+                    "1600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 2,
+                    "1600": 2
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ],
+            "progressTail": [
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 23,
+                "runtimeMs": 26375.104731999978,
+                "candidates": 178,
+                "unique": 175,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 6000,
+                  "max": 6400,
+                  "counts": {
+                    "6000": 174,
+                    "6400": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 6000,
+                  "max": 6400,
+                  "counts": {
+                    "6000": 171,
+                    "6400": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 6000,
+                  "max": 6400,
+                  "counts": {
+                    "6000": 1,
+                    "6400": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 24,
+                "runtimeMs": 27443.37810999999,
+                "candidates": 308,
+                "unique": 307,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 6000,
+                  "max": 6800,
+                  "counts": {
+                    "6000": 24,
+                    "6400": 281,
+                    "6800": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 6000,
+                  "max": 6800,
+                  "counts": {
+                    "6000": 24,
+                    "6400": 280,
+                    "6800": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 6400,
+                  "max": 6800,
+                  "counts": {
+                    "6400": 1,
+                    "6800": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 25,
+                "runtimeMs": 32968.91550599999,
+                "candidates": 624,
+                "unique": 623,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 6400,
+                  "max": 7200,
+                  "counts": {
+                    "6400": 43,
+                    "6800": 578,
+                    "7200": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 6400,
+                  "max": 7200,
+                  "counts": {
+                    "6400": 43,
+                    "6800": 577,
+                    "7200": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 6800,
+                  "max": 6800,
+                  "counts": {
+                    "6800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 26,
+                "runtimeMs": 35251.13045199998,
+                "candidates": 216,
+                "unique": 216,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 6800,
+                  "max": 7200,
+                  "counts": {
+                    "6800": 212,
+                    "7200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 6800,
+                  "max": 7200,
+                  "counts": {
+                    "6800": 212,
+                    "7200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 6800,
+                  "max": 7200,
+                  "counts": {
+                    "6800": 1,
+                    "7200": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 27,
+                "runtimeMs": 36935.317922999966,
+                "candidates": 336,
+                "unique": 335,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 6800,
+                  "max": 7600,
+                  "counts": {
+                    "6800": 24,
+                    "7200": 309,
+                    "7600": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 6800,
+                  "max": 7600,
+                  "counts": {
+                    "6800": 24,
+                    "7200": 308,
+                    "7600": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 7200,
+                  "max": 7600,
+                  "counts": {
+                    "7200": 2,
+                    "7600": 2
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 28,
+                "runtimeMs": 41764.63178599998,
+                "candidates": 521,
+                "unique": 518,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 7200,
+                  "max": 8000,
+                  "counts": {
+                    "7200": 84,
+                    "7600": 435,
+                    "8000": 2
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 7200,
+                  "max": 8000,
+                  "counts": {
+                    "7200": 81,
+                    "7600": 435,
+                    "8000": 2
+                  }
+                },
+                "retainedSouls": {
+                  "min": 7600,
+                  "max": 7600,
+                  "counts": {
+                    "7600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 29,
+                "runtimeMs": 44224.072331,
+                "candidates": 214,
+                "unique": 207,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 7600,
+                  "max": 8000,
+                  "counts": {
+                    "7600": 210,
+                    "8000": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 7600,
+                  "max": 8000,
+                  "counts": {
+                    "7600": 203,
+                    "8000": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 7600,
+                  "max": 8000,
+                  "counts": {
+                    "7600": 1,
+                    "8000": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 30,
+                "runtimeMs": 45996.969900999975,
+                "candidates": 390,
+                "unique": 367,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 7600,
+                  "max": 8400,
+                  "counts": {
+                    "7600": 62,
+                    "8000": 325,
+                    "8400": 3
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 7600,
+                  "max": 8400,
+                  "counts": {
+                    "7600": 62,
+                    "8000": 302,
+                    "8400": 3
+                  }
+                },
+                "retainedSouls": {
+                  "min": 8000,
+                  "max": 8400,
+                  "counts": {
+                    "8000": 3,
+                    "8400": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 31,
+                "runtimeMs": 50191.221341,
+                "candidates": 463,
+                "unique": 457,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 8000,
+                  "max": 8800,
+                  "counts": {
+                    "8000": 186,
+                    "8400": 276,
+                    "8800": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 8000,
+                  "max": 8800,
+                  "counts": {
+                    "8000": 181,
+                    "8400": 275,
+                    "8800": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 8400,
+                  "max": 8400,
+                  "counts": {
+                    "8400": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 32,
+                "runtimeMs": 53958.64216300001,
+                "candidates": 364,
+                "unique": 350,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 8400,
+                  "max": 8800,
+                  "counts": {
+                    "8400": 360,
+                    "8800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 8400,
+                  "max": 8800,
+                  "counts": {
+                    "8400": 346,
+                    "8800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 8400,
+                  "max": 8800,
+                  "counts": {
+                    "8400": 3,
+                    "8800": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 33,
+                "runtimeMs": 55924.564199000015,
+                "candidates": 260,
+                "unique": 254,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 8400,
+                  "max": 9200,
+                  "counts": {
+                    "8400": 144,
+                    "8800": 115,
+                    "9200": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 8400,
+                  "max": 9200,
+                  "counts": {
+                    "8400": 140,
+                    "8800": 113,
+                    "9200": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 8800,
+                  "max": 9200,
+                  "counts": {
+                    "8800": 3,
+                    "9200": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "production",
+                "width": 4,
+                "depth": 34,
+                "runtimeMs": 61051.91607400001,
+                "candidates": 571,
+                "unique": 569,
+                "retained": 4,
+                "candidateSouls": {
+                  "min": 8800,
+                  "max": 9600,
+                  "counts": {
+                    "8800": 282,
+                    "9200": 288,
+                    "9600": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 8800,
+                  "max": 9600,
+                  "counts": {
+                    "8800": 282,
+                    "9200": 286,
+                    "9600": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 8800,
+                  "max": 9200,
+                  "counts": {
+                    "8800": 1,
+                    "9200": 3
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "multiobjective": {
+        "control": {
+          "wallMs": 63158.52451300004,
+          "terminalReached": false,
+          "frontCount": 0,
+          "summary": {
+            "runtimeMs": 63157.93722600001,
+            "generatedStates": 21929,
+            "searchGeneratedStates": 21929,
+            "evaluations": 4267,
+            "transitionCalls": 195,
+            "duplicateStates": 33,
+            "maxCandidatePool": 1452,
+            "widthsStarted": null,
+            "widthsCompleted": null,
+            "searchComplete": false,
+            "steps": 51,
+            "maxReachedSouls": 14000,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            },
+            "timers": null,
+            "counters": null,
+            "traceLength": 0,
+            "firstProgress": null,
+            "lastProgress": null,
+            "thresholds": {
+              "firstCandidate": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": null,
+                "10000": null,
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [],
+            "progressTail": []
+          }
+        },
+        "profiled": {
+          "wallMs": 58061.47415600001,
+          "terminalReached": false,
+          "frontCount": 0,
+          "summary": {
+            "runtimeMs": 58061.057048000046,
+            "generatedStates": 20477,
+            "searchGeneratedStates": 20477,
+            "evaluations": 3898,
+            "transitionCalls": 191,
+            "duplicateStates": 33,
+            "maxCandidatePool": 1300,
+            "widthsStarted": null,
+            "widthsCompleted": null,
+            "searchComplete": false,
+            "steps": 50,
+            "maxReachedSouls": 13600,
+            "terminalCandidates": 0,
+            "terminalAudit": {
+              "depth": 1,
+              "completeDirectNeighbourhood": false,
+              "checkedActions": 0
+            },
+            "timers": {
+              "referenceMs": 0,
+              "beamSearchMs": 58057.97994300001,
+              "terminalAuditMs": 0.0004010000266134739,
+              "validationMs": 0,
+              "transitionMs": 55.93393100029789,
+              "saveGenerationMs": 0.38961500074947253,
+              "purchaseGenerationMs": 3.5827539995661937,
+              "upgradeGenerationMs": 1.3318490001838654,
+              "replacementGenerationMs": 40.31862799974624,
+              "evaluationMs": 52627.83342999924,
+              "trajectoryScoreMs": 57748.22391700267,
+              "pathAucScoreMs": 1912.7719010017463,
+              "endbuildScoreMs": 18.336987000191584,
+              "pathReconstructionMs": 53345.99017799378,
+              "continuationLookaheadMs": 0,
+              "terminalCompletionMs": 0,
+              "dedupeMs": 57863.686576000124,
+              "paretoMs": 121.17623799998546,
+              "frontierMaintenanceMs": 128.58391700009815,
+              "diversityMs": 0,
+              "sortingMs": 0.3089789997320622
+            },
+            "counters": {
+              "transitionCalls": 191,
+              "generatedStates": 20477,
+              "uniqueStates": 20444,
+              "duplicateStates": 33,
+              "evaluatedInventories": 3898,
+              "metricCacheHits": 714461,
+              "metricCacheMisses": 3898,
+              "vectorCacheHits": 20444,
+              "vectorCacheMisses": 20477,
+              "pointsCacheHits": 0,
+              "pointsCacheMisses": 20477,
+              "saveTransitions": 191,
+              "purchaseChecks": 29796,
+              "upgradeChecks": 11460,
+              "replacementChecks": 169884,
+              "familyConflictChecks": 20849,
+              "continuationLookaheadCalls": 0,
+              "paretoCandidates": 20444,
+              "terminalNodes": 0
+            },
+            "traceLength": 50,
+            "firstProgress": {
+              "engine": "multiobjective",
+              "width": 4,
+              "depth": 0,
+              "runtimeMs": 14.17266100004781,
+              "candidates": 1,
+              "unique": 1,
+              "retained": 1,
+              "firstFrontSize": 1,
+              "layerSizes": [
+                1
+              ],
+              "candidateSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "uniqueSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "retainedSouls": {
+                "min": 400,
+                "max": 400,
+                "counts": {
+                  "400": 1
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "lastProgress": {
+              "engine": "multiobjective",
+              "width": 4,
+              "depth": 49,
+              "runtimeMs": 58060.83428100002,
+              "candidates": 628,
+              "unique": 628,
+              "retained": 4,
+              "firstFrontSize": 1,
+              "layerSizes": [
+                1,
+                1,
+                2
+              ],
+              "candidateSouls": {
+                "min": 13200,
+                "max": 13600,
+                "counts": {
+                  "13200": 624,
+                  "13600": 4
+                }
+              },
+              "uniqueSouls": {
+                "min": 13200,
+                "max": 13600,
+                "counts": {
+                  "13200": 624,
+                  "13600": 4
+                }
+              },
+              "retainedSouls": {
+                "min": 13600,
+                "max": 13600,
+                "counts": {
+                  "13600": 4
+                }
+              },
+              "checkpointCounts": {
+                "candidates": {
+                  "40000": 0
+                },
+                "unique": {
+                  "40000": 0
+                },
+                "retained": {
+                  "40000": 0
+                }
+              }
+            },
+            "thresholds": {
+              "firstCandidate": {
+                "5000": {
+                  "depth": 17,
+                  "runtimeMs": 10560.704556000012
+                },
+                "10000": {
+                  "depth": 35,
+                  "runtimeMs": 30321.27347200003
+                },
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              },
+              "firstRetained": {
+                "5000": {
+                  "depth": 18,
+                  "runtimeMs": 10798.454591000045
+                },
+                "10000": {
+                  "depth": 36,
+                  "runtimeMs": 30848.278900000034
+                },
+                "15000": null,
+                "20000": null,
+                "25000": null,
+                "30000": null,
+                "35000": null,
+                "40000": null
+              }
+            },
+            "progressHead": [
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 0,
+                "runtimeMs": 14.17266100004781,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 400,
+                  "max": 400,
+                  "counts": {
+                    "400": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 1,
+                "runtimeMs": 14.42035400000168,
+                "candidates": 1,
+                "unique": 1,
+                "retained": 1,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 2,
+                "runtimeMs": 265.77037899999414,
+                "candidates": 24,
+                "unique": 24,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 23,
+                    "1200": 1
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 23,
+                    "1200": 1
+                  }
+                },
+                "retainedSouls": {
+                  "min": 800,
+                  "max": 800,
+                  "counts": {
+                    "800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 3,
+                "runtimeMs": 267.3766530000139,
+                "candidates": 8,
+                "unique": 5,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 4,
+                    "1200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 800,
+                  "max": 1200,
+                  "counts": {
+                    "800": 1,
+                    "1200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1200,
+                  "counts": {
+                    "1200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 4,
+                "runtimeMs": 286.2161470000283,
+                "candidates": 96,
+                "unique": 96,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 92,
+                    "1600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 92,
+                    "1600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 1200,
+                  "max": 1600,
+                  "counts": {
+                    "1200": 3,
+                    "1600": 1
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ],
+            "progressTail": [
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 38,
+                "runtimeMs": 34043.132293,
+                "candidates": 1092,
+                "unique": 1092,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 10400,
+                  "max": 10800,
+                  "counts": {
+                    "10400": 1088,
+                    "10800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 10400,
+                  "max": 10800,
+                  "counts": {
+                    "10400": 1088,
+                    "10800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 10400,
+                  "max": 10400,
+                  "counts": {
+                    "10400": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 39,
+                "runtimeMs": 34657.67957200005,
+                "candidates": 304,
+                "unique": 304,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 10400,
+                  "max": 10800,
+                  "counts": {
+                    "10400": 300,
+                    "10800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 10400,
+                  "max": 10800,
+                  "counts": {
+                    "10400": 300,
+                    "10800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 10800,
+                  "max": 10800,
+                  "counts": {
+                    "10800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 40,
+                "runtimeMs": 35821.58103400003,
+                "candidates": 560,
+                "unique": 560,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "candidateSouls": {
+                  "min": 10800,
+                  "max": 11200,
+                  "counts": {
+                    "10800": 556,
+                    "11200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 10800,
+                  "max": 11200,
+                  "counts": {
+                    "10800": 556,
+                    "11200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 11200,
+                  "max": 11200,
+                  "counts": {
+                    "11200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 41,
+                "runtimeMs": 38664.94088500005,
+                "candidates": 1248,
+                "unique": 1248,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 11200,
+                  "max": 11600,
+                  "counts": {
+                    "11200": 1244,
+                    "11600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 11200,
+                  "max": 11600,
+                  "counts": {
+                    "11200": 1244,
+                    "11600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 11200,
+                  "max": 11200,
+                  "counts": {
+                    "11200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 42,
+                "runtimeMs": 40156.390850000025,
+                "candidates": 316,
+                "unique": 298,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 11200,
+                  "max": 11600,
+                  "counts": {
+                    "11200": 312,
+                    "11600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 11200,
+                  "max": 11600,
+                  "counts": {
+                    "11200": 294,
+                    "11600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 11600,
+                  "max": 11600,
+                  "counts": {
+                    "11600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 43,
+                "runtimeMs": 42214.935084,
+                "candidates": 588,
+                "unique": 588,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 11600,
+                  "max": 12000,
+                  "counts": {
+                    "11600": 584,
+                    "12000": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 11600,
+                  "max": 12000,
+                  "counts": {
+                    "11600": 584,
+                    "12000": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 12000,
+                  "max": 12000,
+                  "counts": {
+                    "12000": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 44,
+                "runtimeMs": 45951.772367,
+                "candidates": 1280,
+                "unique": 1280,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 12000,
+                  "max": 12400,
+                  "counts": {
+                    "12000": 1276,
+                    "12400": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 12000,
+                  "max": 12400,
+                  "counts": {
+                    "12000": 1276,
+                    "12400": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 12000,
+                  "max": 12000,
+                  "counts": {
+                    "12000": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 45,
+                "runtimeMs": 47395.98610400001,
+                "candidates": 304,
+                "unique": 304,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 12000,
+                  "max": 12400,
+                  "counts": {
+                    "12000": 300,
+                    "12400": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 12000,
+                  "max": 12400,
+                  "counts": {
+                    "12000": 300,
+                    "12400": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 12400,
+                  "max": 12400,
+                  "counts": {
+                    "12400": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 46,
+                "runtimeMs": 49530.06014300004,
+                "candidates": 624,
+                "unique": 624,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 12400,
+                  "max": 12800,
+                  "counts": {
+                    "12400": 620,
+                    "12800": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 12400,
+                  "max": 12800,
+                  "counts": {
+                    "12400": 620,
+                    "12800": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 12800,
+                  "max": 12800,
+                  "counts": {
+                    "12800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 47,
+                "runtimeMs": 54081.45785200002,
+                "candidates": 1300,
+                "unique": 1300,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 12800,
+                  "max": 13200,
+                  "counts": {
+                    "12800": 1296,
+                    "13200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 12800,
+                  "max": 13200,
+                  "counts": {
+                    "12800": 1296,
+                    "13200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 12800,
+                  "max": 12800,
+                  "counts": {
+                    "12800": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 48,
+                "runtimeMs": 55809.647368000005,
+                "candidates": 372,
+                "unique": 372,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 12800,
+                  "max": 13200,
+                  "counts": {
+                    "12800": 368,
+                    "13200": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 12800,
+                  "max": 13200,
+                  "counts": {
+                    "12800": 368,
+                    "13200": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 13200,
+                  "max": 13200,
+                  "counts": {
+                    "13200": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              },
+              {
+                "engine": "multiobjective",
+                "width": 4,
+                "depth": 49,
+                "runtimeMs": 58060.83428100002,
+                "candidates": 628,
+                "unique": 628,
+                "retained": 4,
+                "firstFrontSize": 1,
+                "layerSizes": [
+                  1,
+                  1,
+                  2
+                ],
+                "candidateSouls": {
+                  "min": 13200,
+                  "max": 13600,
+                  "counts": {
+                    "13200": 624,
+                    "13600": 4
+                  }
+                },
+                "uniqueSouls": {
+                  "min": 13200,
+                  "max": 13600,
+                  "counts": {
+                    "13200": 624,
+                    "13600": 4
+                  }
+                },
+                "retainedSouls": {
+                  "min": 13600,
+                  "max": 13600,
+                  "counts": {
+                    "13600": 4
+                  }
+                },
+                "checkpointCounts": {
+                  "candidates": {
+                    "40000": 0
+                  },
+                  "unique": {
+                    "40000": 0
+                  },
+                  "retained": {
+                    "40000": 0
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+name: optimizer 40k multiobjective shadow experiment
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  shadow-40k:
+    if: contains(github.event.head_commit.message, '[40k-shadow]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run 60s 40k multiobjective shadow experiment
+        run: node tools/optimizer-40k-multiobjective-shadow.mjs --output artifacts/40k-multiobjective-shadow/results.json
+      - name: Upload experiment artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-40k-multiobjective-shadow
+          path: artifacts/40k-multiobjective-shadow/
+          if-no-files-found: error
+      - name: Store experiment on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/40k-multiobjective-shadow"
+          mkdir -p "$target"
+          cp artifacts/40k-multiobjective-shadow/results.json "$target/results.json"
+          cp artifacts/40k-multiobjective-shadow/summary.json "$target/summary.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git commit -m "data(benchmark): record 60s 40k multiobjective shadow experiment"
+          git push origin HEAD:feature/optimizer-next

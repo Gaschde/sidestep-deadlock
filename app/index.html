@@ -54,12 +54,11 @@
           <section class="setup-step build-step">
             <h2><span class="step-seal">4</span> Vorschau</h2>
             <button id="fast-build-button" class="primary-button" type="button">Build erstellen · 40k</button>
-            <small>70 % Endstärke · 30 % Verlauf. Rechenbudget 25 s, Abbruch jederzeit.</small>
-            <button id="build-button" class="primary-button" type="button"><span aria-hidden="true">✦</span> Bisherigen Optimizer prüfen</button>
-            <button id="new-build-button" class="secondary-button" type="button"><span aria-hidden="true">⟳</span> Neuen vollständigen Suchlauf starten</button>
-            <button id="new-build-40k-button" class="secondary-button" type="button"><span aria-hidden="true">◌</span> Neuer 40k-Testlauf (Diagnose)</button>
+            <small>Aktueller Multiobjective-Stand · Path-AUC + Endbuild · 60 s Wallclock.</small>
           </section>
         </div>
+
+
 
       </header>
 
@@ -71,12 +70,12 @@
             <p id="result-summary">Noch keine Build-Prüfung gestartet</p>
             <p id="search-progress" aria-live="polite"></p>
           </div>
-          <div class="test-label"><strong>OPTIMIZER-SLICE</strong><span>38 öffentliche Helden · Carry · Weapon/Spirit/Hybrid</span></div>
+          <div class="test-label"><strong>MULTIOBJECTIVE PREVIEW</strong><span>38 öffentliche Helden · Carry · Weapon/Spirit/Hybrid</span></div>
         </div>
 
         <div class="truth-banner" role="note">
           <span class="truth-icon">i</span>
-          <div><strong>Transparenzhinweis</strong><p>„Build erstellen“ liefert einen besten geprüften Kaufpfad mit approximativer Suche bis 40.000 Souls: 70 % Endstärke, 15 % schlimmster und 15 % durchschnittlicher Rückstand gegenüber einer Stichprobenreferenz. Schaden und Überleben bilden getrennte, gleich gewichtete Gruppen; Endwerte werden mit x/(x+Referenz) normiert. Keine Optimalitätsgarantie. Testszenario: zwölf Slots ab Beginn verfügbar. Belegte permanente Resistenz, Regeneration und permanenter Bullet-Lifesteal fließen in die Überlebenskapazität ein. Binding Word und Hex → Binding Word werden getrennt gezeigt; ohne Treffer-, Flucht- oder Skillzustand zählt Hex nicht mit einem erfundenen Zusatzwert. Andere aktive Effekte, Trigger und Combos bleiben ohne belegte Uptime oder Trefferwirkung sichtbar, aber ausgeschlossen.</p></div>
+          <div><strong>Transparenzhinweis</strong><p>„Build erstellen · 40k“ startet den aktuellen experimentellen Multiobjective-Suchkern mit getrennten Zielen Path-AUC und Endbuild. Es gibt keine Backend-Auswahl und keine versteckte Scalarisierung. Wenn mehrere terminale Builds nicht-dominiert sind, werden alle als umschaltbare Pareto-Varianten gezeigt. Der Pfad wird legal bis 40.000 Souls wiedergegeben; reine interne Save-Schritte werden nur als Completion-Hinweis zusammengefasst. 60 Sekunden Wallclock sind das feste Suchbudget. Das Ergebnis ist ein bester geprüfter Pareto-Satz innerhalb des modellierten Suchraums, kein globaler Optimalitätsbeweis.</p></div>
         </div>
 
         <section id="phase-panel" class="phase-panel panel" aria-live="polite"></section>

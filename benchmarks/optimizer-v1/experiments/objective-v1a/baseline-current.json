@@ -1,0 +1,3411 @@
+{
+  "schemaVersion": "optimizer-benchmark-v1",
+  "baselineId": "baseline-v0",
+  "objectiveVersion": "baseline-v0",
+  "timestamp": "2026-09-19T17:50:28.808Z",
+  "sourceCommit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+  "records": [
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "small-exact-warden-carry-weapon",
+        "level": "small-exact",
+        "hero": "warden",
+        "role": "carry",
+        "focus": "weapon",
+        "backend": "iterative-diverse-beam",
+        "budget": 800,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_rapid_rounds",
+          "upgrade_health"
+        ],
+        "timeBudgetMs": 5000,
+        "milestones": [
+          800
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:small-exact-warden-carry-weapon",
+        "searchBudget": {
+          "timeMs": 5000,
+          "initialBeamWidth": 64,
+          "maxBeamWidth": 64,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "78bbff7a6a56d2953f6ffb41b75553bf51e4e50e03ce6d7ce1d9f51dbb0928e9"
+      },
+      "resultScore": 0.48586289386770964,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 55.970666666666666,
+        "laneTradeWindowDps": 90.94503462799999,
+        "farmWindowDps": 90.94503462799999,
+        "skirmishWindowDps": 106.39981937499999,
+        "teamfightWindowDps": 90.94503462799999,
+        "bulletEhp": 1126.3500000000001,
+        "spiritEhp": 1126.3500000000001,
+        "sustainedBulletDps": 39.303999999999995,
+        "sustainedSpiritDps": 16.666666666666668,
+        "laneTradeBulletDps": 31.94503462799999,
+        "laneTradeSpiritDps": 59,
+        "farmBulletDps": 31.94503462799999,
+        "farmSpiritDps": 59,
+        "skirmishBulletDps": 28.899819375,
+        "skirmishSpiritDps": 77.5,
+        "teamfightBulletDps": 31.94503462799999,
+        "teamfightSpiritDps": 59
+      },
+      "trajectoryMetrics": {
+        "score": 0.48586289386770964,
+        "damage": 0.4717257877354193,
+        "survivability": 0.5,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 800,
+            "sourceEarnedSouls": 800,
+            "metrics": {
+              "sustainedWeaponDps": 55.970666666666666,
+              "laneTradeWindowDps": 90.94503462799999,
+              "farmWindowDps": 90.94503462799999,
+              "skirmishWindowDps": 106.39981937499999,
+              "teamfightWindowDps": 90.94503462799999,
+              "bulletEhp": 1126.3500000000001,
+              "spiritEhp": 1126.3500000000001,
+              "sustainedBulletDps": 39.303999999999995,
+              "sustainedSpiritDps": 16.666666666666668,
+              "laneTradeBulletDps": 31.94503462799999,
+              "laneTradeSpiritDps": 59,
+              "farmBulletDps": 31.94503462799999,
+              "farmSpiritDps": 59,
+              "skirmishBulletDps": 28.899819375,
+              "skirmishSpiritDps": 77.5,
+              "teamfightBulletDps": 31.94503462799999,
+              "teamfightSpiritDps": 59
+            },
+            "damage": 0.4717257877354193,
+            "survivability": 0.5,
+            "score": 0.48586289386770964
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.5,
+        "endScore": 0.48586289386770964,
+        "combinedScore": 0.4928807634041471,
+        "pathDamage": 0.5,
+        "endDamage": 0.4717257877354193,
+        "pathSurvivability": 0.5,
+        "endSurvivability": 0.5
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 1,
+          "upgrade": 0,
+          "replacement": 0,
+          "sell": 0
+        },
+        "transactionCount": 1,
+        "firstTransactionSouls": 800,
+        "lastTransactionSouls": 800,
+        "longestNoShopSoulSpan": 800,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 800,
+            "item": "upgrade_health",
+            "from": null,
+            "payment": 800
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_health"
+      ],
+      "cash": 0,
+      "transactions": 1,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": true,
+      "optimal": true,
+      "exact": {
+        "exactScore": 0.48586289386770964,
+        "expandedStates": 7,
+        "generatedStates": 7,
+        "terminalStates": 5,
+        "candidateScore": 0.48586289386770964,
+        "absoluteGap": 0,
+        "relativeGap": 0
+      },
+      "searchTelemetry": {
+        "runtimeMs": 9.806058000000007,
+        "evaluations": 3,
+        "generatedStates": 2,
+        "duplicateStates": 0,
+        "maxCandidatePool": 1,
+        "widthsStarted": [
+          64
+        ],
+        "widthsCompleted": [
+          64
+        ],
+        "publishedImprovements": 2,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 2,
+          "legalActions": 2,
+          "checkedActions": 2,
+          "improvements": 1,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.44725500702014254
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "controlled-warden-carry-hybrid",
+        "level": "controlled-medium",
+        "hero": "warden",
+        "role": "carry",
+        "focus": "hybrid",
+        "backend": "iterative-diverse-beam",
+        "budget": 8000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_rapid_rounds",
+          "upgrade_headshot_booster",
+          "upgrade_health",
+          "upgrade_health_stimpak",
+          "upgrade_titan_round",
+          "upgrade_vampire",
+          "upgrade_weighted_shots",
+          "upgrade_improved_bullet_armor",
+          "upgrade_soaring_spirit"
+        ],
+        "timeBudgetMs": 5000,
+        "milestones": [
+          8000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:controlled-warden-carry-hybrid",
+        "searchBudget": {
+          "timeMs": 5000,
+          "initialBeamWidth": 8,
+          "maxBeamWidth": 16,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "baf0c7ae5c207cac083348c52345cf020156f765fcf78af49e609989189759c0"
+      },
+      "resultScore": 0.4175317652347513,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 95.63643099215318,
+        "laneTradeWindowDps": 166.5685376,
+        "farmWindowDps": 166.5685376,
+        "skirmishWindowDps": 162.31771759943751,
+        "teamfightWindowDps": 166.5685376,
+        "bulletEhp": 1286.119212,
+        "spiritEhp": 1187.25,
+        "sustainedBulletDps": 71.01666512548651,
+        "sustainedSpiritDps": 24.61976586666667,
+        "laneTradeBulletDps": 76.05324,
+        "laneTradeSpiritDps": 90.51529760000001,
+        "farmBulletDps": 76.05324,
+        "farmSpiritDps": 90.51529760000001,
+        "skirmishBulletDps": 43.72947359943751,
+        "skirmishSpiritDps": 118.588244,
+        "teamfightBulletDps": 76.05324,
+        "teamfightSpiritDps": 90.51529760000001
+      },
+      "trajectoryMetrics": {
+        "score": 0.4175317652347513,
+        "damage": 0.43111342462638313,
+        "survivability": 0.4039501058431194,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 8000,
+            "sourceEarnedSouls": 8000,
+            "metrics": {
+              "sustainedWeaponDps": 95.63643099215318,
+              "laneTradeWindowDps": 166.5685376,
+              "farmWindowDps": 166.5685376,
+              "skirmishWindowDps": 162.31771759943751,
+              "teamfightWindowDps": 166.5685376,
+              "bulletEhp": 1286.119212,
+              "spiritEhp": 1187.25,
+              "sustainedBulletDps": 71.01666512548651,
+              "sustainedSpiritDps": 24.61976586666667,
+              "laneTradeBulletDps": 76.05324,
+              "laneTradeSpiritDps": 90.51529760000001,
+              "farmBulletDps": 76.05324,
+              "farmSpiritDps": 90.51529760000001,
+              "skirmishBulletDps": 43.72947359943751,
+              "skirmishSpiritDps": 118.588244,
+              "teamfightBulletDps": 76.05324,
+              "teamfightSpiritDps": 90.51529760000001
+            },
+            "damage": 0.43111342462638313,
+            "survivability": 0.4039501058431194,
+            "score": 0.4175317652347513
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.43354234688699167,
+        "endScore": 0.4175317652347513,
+        "combinedScore": 0.42546175080698206,
+        "pathDamage": 0.4355528301988994,
+        "endDamage": 0.43111342462638313,
+        "pathSurvivability": 0.43153186357508394,
+        "endSurvivability": 0.4039501058431194
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 6,
+          "upgrade": 0,
+          "replacement": 2,
+          "sell": 1
+        },
+        "transactionCount": 9,
+        "firstTransactionSouls": 1600,
+        "lastTransactionSouls": 7600,
+        "longestNoShopSoulSpan": 1600,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 1600,
+            "item": "upgrade_soaring_spirit",
+            "from": null,
+            "payment": 1600
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 2400,
+            "item": "upgrade_headshot_booster",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 3200,
+            "item": "upgrade_health",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 4000,
+            "item": "upgrade_health_stimpak",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 4800,
+            "item": "upgrade_rapid_rounds",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 6000,
+            "item": "upgrade_vampire",
+            "from": "upgrade_headshot_booster",
+            "payment": 1200
+          },
+          {
+            "type": "sell",
+            "earnedSouls": 6800,
+            "item": null,
+            "from": "upgrade_rapid_rounds",
+            "payment": -400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 6800,
+            "item": "upgrade_titan_round",
+            "from": "upgrade_health_stimpak",
+            "payment": 1200
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 7600,
+            "item": "upgrade_rapid_rounds",
+            "from": null,
+            "payment": 800
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_soaring_spirit",
+        "upgrade_vampire",
+        "upgrade_health",
+        "upgrade_titan_round",
+        "upgrade_rapid_rounds"
+      ],
+      "cash": 400,
+      "transactions": 9,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 230.130608,
+        "evaluations": 131,
+        "generatedStates": 6529,
+        "duplicateStates": 2007,
+        "maxCandidatePool": 185,
+        "widthsStarted": [
+          8,
+          16
+        ],
+        "widthsCompleted": [
+          8,
+          16
+        ],
+        "publishedImprovements": 3,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 1,
+          "legalActions": 10,
+          "checkedActions": 10,
+          "improvements": 0,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.4175317652347513
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "controlled-infernus-carry-hybrid",
+        "level": "controlled-medium",
+        "hero": "infernus",
+        "role": "carry",
+        "focus": "hybrid",
+        "backend": "iterative-diverse-beam",
+        "budget": 8000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_rapid_rounds",
+          "upgrade_headshot_booster",
+          "upgrade_health",
+          "upgrade_health_stimpak",
+          "upgrade_titan_round",
+          "upgrade_vampire",
+          "upgrade_weighted_shots",
+          "upgrade_improved_bullet_armor",
+          "upgrade_soaring_spirit"
+        ],
+        "timeBudgetMs": 5000,
+        "milestones": [
+          8000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:controlled-infernus-carry-hybrid",
+        "searchBudget": {
+          "timeMs": 5000,
+          "initialBeamWidth": 8,
+          "maxBeamWidth": 16,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "41a03f24bef95da2ac9f1a681570f213c319713f041c46d2fcb5588dda5a56b6"
+      },
+      "resultScore": 0.43643174929955664,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 93.5738867,
+        "laneTradeWindowDps": 117.54064390005001,
+        "farmWindowDps": 117.54064390005001,
+        "skirmishWindowDps": 175.09212522825004,
+        "teamfightWindowDps": 117.54064390005001,
+        "bulletEhp": 1339.332720810065,
+        "spiritEhp": 1268,
+        "sustainedBulletDps": 51.08400000000001,
+        "sustainedSpiritDps": 42.48988670000001,
+        "laneTradeBulletDps": 54.871323700050006,
+        "laneTradeSpiritDps": 62.669320199999994,
+        "farmBulletDps": 54.871323700050006,
+        "farmSpiritDps": 62.669320199999994,
+        "skirmishBulletDps": 68.12882472825002,
+        "skirmishSpiritDps": 106.9633005,
+        "teamfightBulletDps": 54.871323700050006,
+        "teamfightSpiritDps": 62.669320199999994
+      },
+      "trajectoryMetrics": {
+        "score": 0.43643174929955664,
+        "damage": 0.44724770642201844,
+        "survivability": 0.4256157921770948,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 8000,
+            "sourceEarnedSouls": 8000,
+            "metrics": {
+              "sustainedWeaponDps": 93.5738867,
+              "laneTradeWindowDps": 117.54064390005001,
+              "farmWindowDps": 117.54064390005001,
+              "skirmishWindowDps": 175.09212522825004,
+              "teamfightWindowDps": 117.54064390005001,
+              "bulletEhp": 1339.332720810065,
+              "spiritEhp": 1268,
+              "sustainedBulletDps": 51.08400000000001,
+              "sustainedSpiritDps": 42.48988670000001,
+              "laneTradeBulletDps": 54.871323700050006,
+              "laneTradeSpiritDps": 62.669320199999994,
+              "farmBulletDps": 54.871323700050006,
+              "farmSpiritDps": 62.669320199999994,
+              "skirmishBulletDps": 68.12882472825002,
+              "skirmishSpiritDps": 106.9633005,
+              "teamfightBulletDps": 54.871323700050006,
+              "teamfightSpiritDps": 62.669320199999994
+            },
+            "damage": 0.44724770642201844,
+            "survivability": 0.4256157921770948,
+            "score": 0.43643174929955664
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.4436881374617612,
+        "endScore": 0.43643174929955664,
+        "combinedScore": 0.44004498630923927,
+        "pathDamage": 0.4533149190185543,
+        "endDamage": 0.44724770642201844,
+        "pathSurvivability": 0.4340613559049684,
+        "endSurvivability": 0.4256157921770948
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 6,
+          "upgrade": 0,
+          "replacement": 2,
+          "sell": 0
+        },
+        "transactionCount": 8,
+        "firstTransactionSouls": 1600,
+        "lastTransactionSouls": 8000,
+        "longestNoShopSoulSpan": 1600,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 1600,
+            "item": "upgrade_soaring_spirit",
+            "from": null,
+            "payment": 1600
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 2400,
+            "item": "upgrade_headshot_booster",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 3200,
+            "item": "upgrade_health",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 4000,
+            "item": "upgrade_health_stimpak",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 4800,
+            "item": "upgrade_rapid_rounds",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 6000,
+            "item": "upgrade_titan_round",
+            "from": "upgrade_health_stimpak",
+            "payment": 1200
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 6800,
+            "item": "upgrade_health_stimpak",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 8000,
+            "item": "upgrade_vampire",
+            "from": "upgrade_headshot_booster",
+            "payment": 1200
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_soaring_spirit",
+        "upgrade_vampire",
+        "upgrade_health",
+        "upgrade_titan_round",
+        "upgrade_rapid_rounds",
+        "upgrade_health_stimpak"
+      ],
+      "cash": 0,
+      "transactions": 8,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 1131.730621,
+        "evaluations": 117,
+        "generatedStates": 6930,
+        "duplicateStates": 2211,
+        "maxCandidatePool": 185,
+        "widthsStarted": [
+          8,
+          16
+        ],
+        "widthsCompleted": [
+          8,
+          16
+        ],
+        "publishedImprovements": 3,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 2,
+          "legalActions": 9,
+          "checkedActions": 9,
+          "improvements": 1,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.4297886771767069
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-warden-carry-weapon",
+        "level": "production-40k",
+        "hero": "warden",
+        "role": "carry",
+        "focus": "weapon",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-weapon",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "a8ea5778adec6287b5087cd559a1c7a8a94a8b2ce7cf2b0584c2720abe3cc025"
+      },
+      "resultScore": 0.5190887433487682,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 195.03270134086662,
+        "laneTradeWindowDps": 311.54797279999997,
+        "farmWindowDps": 311.54797279999997,
+        "skirmishWindowDps": 295.904348425,
+        "teamfightWindowDps": 311.54797279999997,
+        "bulletEhp": 5094.1263865546225,
+        "spiritEhp": 3765.714285714286,
+        "sustainedBulletDps": 154.50673707419998,
+        "sustainedSpiritDps": 40.52596426666667,
+        "laneTradeBulletDps": 158.00207999999998,
+        "laneTradeSpiritDps": 153.5458928,
+        "farmBulletDps": 158.00207999999998,
+        "farmSpiritDps": 153.5458928,
+        "skirmishBulletDps": 95.139616425,
+        "skirmishSpiritDps": 200.764732,
+        "teamfightBulletDps": 158.00207999999998,
+        "teamfightSpiritDps": 153.5458928
+      },
+      "trajectoryMetrics": {
+        "score": 0.5190887433487682,
+        "damage": 0.37273580483408275,
+        "survivability": 0.6654416818634536,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 195.03270134086662,
+              "laneTradeWindowDps": 311.54797279999997,
+              "farmWindowDps": 311.54797279999997,
+              "skirmishWindowDps": 295.904348425,
+              "teamfightWindowDps": 311.54797279999997,
+              "bulletEhp": 5094.1263865546225,
+              "spiritEhp": 3765.714285714286,
+              "sustainedBulletDps": 154.50673707419998,
+              "sustainedSpiritDps": 40.52596426666667,
+              "laneTradeBulletDps": 158.00207999999998,
+              "laneTradeSpiritDps": 153.5458928,
+              "farmBulletDps": 158.00207999999998,
+              "farmSpiritDps": 153.5458928,
+              "skirmishBulletDps": 95.139616425,
+              "skirmishSpiritDps": 200.764732,
+              "teamfightBulletDps": 158.00207999999998,
+              "teamfightSpiritDps": 153.5458928
+            },
+            "damage": 0.37273580483408275,
+            "survivability": 0.6654416818634536,
+            "score": 0.5190887433487682
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.2701128675738873,
+        "endScore": 0.5190887433487682,
+        "combinedScore": 0.37444966149171693,
+        "pathDamage": 0.21432437188657805,
+        "endDamage": 0.37273580483408275,
+        "pathSurvivability": 0.32590136326119645,
+        "endSurvivability": 0.6654416818634536
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 8,
+          "upgrade": 0,
+          "replacement": 1,
+          "sell": 0
+        },
+        "transactionCount": 9,
+        "firstTransactionSouls": 40000,
+        "lastTransactionSouls": 40000,
+        "longestNoShopSoulSpan": 40000,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_damage_recycler",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_glass_cannon",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_chonky",
+            "from": null,
+            "payment": 3200
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_boundless_spirit",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_titan_round",
+            "from": null,
+            "payment": 1600
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_cheat_death",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_absorbing_armor",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_improved_bullet_armor",
+            "from": null,
+            "payment": 3200
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 40000,
+            "item": "upgrade_tech_purge",
+            "from": "upgrade_absorbing_armor",
+            "payment": 0
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_damage_recycler",
+        "upgrade_glass_cannon",
+        "upgrade_chonky",
+        "upgrade_boundless_spirit",
+        "upgrade_titan_round",
+        "upgrade_cheat_death",
+        "upgrade_tech_purge",
+        "upgrade_improved_bullet_armor"
+      ],
+      "cash": 0,
+      "transactions": 9,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 24440.934891,
+        "evaluations": 42023,
+        "generatedStates": 100724,
+        "duplicateStates": 1453,
+        "maxCandidatePool": 2583,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [
+          4
+        ],
+        "publishedImprovements": 10,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 10,
+          "legalActions": 6311,
+          "checkedActions": 6311,
+          "improvements": 9,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.20960555619876722
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-warden-carry-spirit",
+        "level": "production-40k",
+        "hero": "warden",
+        "role": "carry",
+        "focus": "spirit",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-spirit",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "f285cb9a9ee787e07b714fabe95d7da532e453cee1a99c47e72d033d71a3fda7"
+      },
+      "resultScore": 0.5435156958493336,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 129.48637386666667,
+        "laneTradeWindowDps": 262.120090791092,
+        "farmWindowDps": 262.120090791092,
+        "skirmishWindowDps": 310.69871161187507,
+        "teamfightWindowDps": 262.120090791092,
+        "bulletEhp": 5789.757566987252,
+        "spiritEhp": 3707.6923076923076,
+        "sustainedBulletDps": 81.5558,
+        "sustainedSpiritDps": 47.93057386666666,
+        "laneTradeBulletDps": 79.232369191092,
+        "laneTradeSpiritDps": 182.88772160000002,
+        "farmBulletDps": 79.232369191092,
+        "farmSpiritDps": 182.88772160000002,
+        "skirmishBulletDps": 71.679407611875,
+        "skirmishSpiritDps": 239.01930400000003,
+        "teamfightBulletDps": 79.232369191092,
+        "teamfightSpiritDps": 182.88772160000002
+      },
+      "trajectoryMetrics": {
+        "score": 0.5435156958493336,
+        "damage": 0.4096482554315227,
+        "survivability": 0.6773831362671444,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 129.48637386666667,
+              "laneTradeWindowDps": 262.120090791092,
+              "farmWindowDps": 262.120090791092,
+              "skirmishWindowDps": 310.69871161187507,
+              "teamfightWindowDps": 262.120090791092,
+              "bulletEhp": 5789.757566987252,
+              "spiritEhp": 3707.6923076923076,
+              "sustainedBulletDps": 81.5558,
+              "sustainedSpiritDps": 47.93057386666666,
+              "laneTradeBulletDps": 79.232369191092,
+              "laneTradeSpiritDps": 182.88772160000002,
+              "farmBulletDps": 79.232369191092,
+              "farmSpiritDps": 182.88772160000002,
+              "skirmishBulletDps": 71.679407611875,
+              "skirmishSpiritDps": 239.01930400000003,
+              "teamfightBulletDps": 79.232369191092,
+              "teamfightSpiritDps": 182.88772160000002
+            },
+            "damage": 0.4096482554315227,
+            "survivability": 0.6773831362671444,
+            "score": 0.5435156958493336
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.29161383063621377,
+        "endScore": 0.5435156958493336,
+        "combinedScore": 0.3981164328152399,
+        "pathDamage": 0.2573262980112315,
+        "endDamage": 0.4096482554315227,
+        "pathSurvivability": 0.32590136326119645,
+        "endSurvivability": 0.6773831362671444
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 8,
+          "upgrade": 0,
+          "replacement": 0,
+          "sell": 0
+        },
+        "transactionCount": 8,
+        "firstTransactionSouls": 40000,
+        "lastTransactionSouls": 40000,
+        "longestNoShopSoulSpan": 40000,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_damage_recycler",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_boundless_spirit",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_chonky",
+            "from": null,
+            "payment": 3200
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_cheat_death",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_absorbing_armor",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_fervor",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_improved_bullet_armor",
+            "from": null,
+            "payment": 3200
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_suppressor",
+            "from": null,
+            "payment": 1600
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_damage_recycler",
+        "upgrade_boundless_spirit",
+        "upgrade_chonky",
+        "upgrade_cheat_death",
+        "upgrade_absorbing_armor",
+        "upgrade_fervor",
+        "upgrade_improved_bullet_armor",
+        "upgrade_suppressor"
+      ],
+      "cash": 0,
+      "transactions": 8,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 24378.523766,
+        "evaluations": 41743,
+        "generatedStates": 99647,
+        "duplicateStates": 1292,
+        "maxCandidatePool": 2543,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [
+          4
+        ],
+        "publishedImprovements": 9,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 9,
+          "legalActions": 5457,
+          "checkedActions": 5457,
+          "improvements": 8,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.2365954631715697
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-warden-carry-hybrid",
+        "level": "production-40k",
+        "hero": "warden",
+        "role": "carry",
+        "focus": "hybrid",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-warden-carry-hybrid",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "eaab863124418ed0b0eeb7e9b80a9a65af3b5df078c2eb708f4230e7c6709553"
+      },
+      "resultScore": 0.40412729777695033,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 104.06740185051667,
+        "laneTradeWindowDps": 202.43077280000003,
+        "farmWindowDps": 202.43077280000003,
+        "skirmishWindowDps": 208.69208174375,
+        "teamfightWindowDps": 202.43077280000003,
+        "bulletEhp": 2374.867444326617,
+        "spiritEhp": 2184.8780487804875,
+        "sustainedBulletDps": 70.39755758385,
+        "sustainedSpiritDps": 33.669844266666665,
+        "laneTradeBulletDps": 76.05324,
+        "laneTradeSpiritDps": 126.37753280000001,
+        "farmBulletDps": 76.05324,
+        "farmSpiritDps": 126.37753280000001,
+        "skirmishBulletDps": 43.34824974375,
+        "skirmishSpiritDps": 165.34383200000002,
+        "teamfightBulletDps": 76.05324,
+        "teamfightSpiritDps": 126.37753280000001
+      },
+      "trajectoryMetrics": {
+        "score": 0.40412729777695033,
+        "damage": 0.299708022191397,
+        "survivability": 0.5085465733625036,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 104.06740185051667,
+              "laneTradeWindowDps": 202.43077280000003,
+              "farmWindowDps": 202.43077280000003,
+              "skirmishWindowDps": 208.69208174375,
+              "teamfightWindowDps": 202.43077280000003,
+              "bulletEhp": 2374.867444326617,
+              "spiritEhp": 2184.8780487804875,
+              "sustainedBulletDps": 70.39755758385,
+              "sustainedSpiritDps": 33.669844266666665,
+              "laneTradeBulletDps": 76.05324,
+              "laneTradeSpiritDps": 126.37753280000001,
+              "farmBulletDps": 76.05324,
+              "farmSpiritDps": 126.37753280000001,
+              "skirmishBulletDps": 43.34824974375,
+              "skirmishSpiritDps": 165.34383200000002,
+              "teamfightBulletDps": 76.05324,
+              "teamfightSpiritDps": 126.37753280000001
+            },
+            "damage": 0.299708022191397,
+            "survivability": 0.5085465733625036,
+            "score": 0.40412729777695033
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.44051653718648986,
+        "endScore": 0.40412729777695033,
+        "combinedScore": 0.421929801980419,
+        "pathDamage": 0.341885791798069,
+        "endDamage": 0.299708022191397,
+        "pathSurvivability": 0.5391472825749097,
+        "endSurvivability": 0.5085465733625036
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 12,
+          "upgrade": 5,
+          "replacement": 62,
+          "sell": 0
+        },
+        "transactionCount": 79,
+        "firstTransactionSouls": 800,
+        "lastTransactionSouls": 39600,
+        "longestNoShopSoulSpan": 800,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 800,
+            "item": "upgrade_health",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 1600,
+            "item": "upgrade_melee_rebuttal",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 2400,
+            "item": "upgrade_withering_whip",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 3200,
+            "item": "upgrade_endurance",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "upgrade",
+            "earnedSouls": 4000,
+            "item": "upgrade_healing_booster",
+            "from": "upgrade_endurance",
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 4800,
+            "item": "upgrade_magic_shield",
+            "from": "upgrade_healing_booster",
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 5600,
+            "item": "upgrade_improved_spirit",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "upgrade",
+            "earnedSouls": 6400,
+            "item": "upgrade_soaring_spirit",
+            "from": "upgrade_improved_spirit",
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 7200,
+            "item": "upgrade_regenerating_bullet_shield",
+            "from": "upgrade_soaring_spirit",
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 8000,
+            "item": "upgrade_improved_spirit",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "upgrade",
+            "earnedSouls": 8800,
+            "item": "upgrade_soaring_spirit",
+            "from": "upgrade_improved_spirit",
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 9600,
+            "item": "upgrade_clip_size",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 10400,
+            "item": "upgrade_mystic_regeneration",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "upgrade",
+            "earnedSouls": 11200,
+            "item": "upgrade_titan_round",
+            "from": "upgrade_clip_size",
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 12000,
+            "item": "upgrade_headshot_booster",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 12800,
+            "item": "upgrade_rapid_rounds",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 13600,
+            "item": "upgrade_high_velocity_mag",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "upgrade",
+            "earnedSouls": 14400,
+            "item": "upgrade_pristine_emblem",
+            "from": "upgrade_high_velocity_mag",
+            "payment": 800
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 15200,
+            "item": "upgrade_endurance",
+            "from": null,
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 16000,
+            "item": "upgrade_suppressor",
+            "from": "upgrade_pristine_emblem",
+            "payment": 800
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 16400,
+            "item": "upgrade_grit",
+            "from": "upgrade_rapid_rounds",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 16800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 17200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 17600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 18000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 18400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 18800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 19200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 19600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 20000,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 20400,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 20800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 21200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 21600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 22000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 22400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 22800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 23200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 23600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 24000,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 24400,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 24800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 25200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 25600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 26000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 26400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 26800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 27200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 27600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 28000,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 28400,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 28800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 29200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 29600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 30000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 30400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 30800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 31200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 31600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 32000,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 32400,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 32800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 33200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 33600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 34000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 34400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 34800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 35200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 35600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 36000,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 36400,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 36800,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 37200,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 37600,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 38000,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 38400,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 38800,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 39200,
+            "item": "upgrade_health_stimpak",
+            "from": "upgrade_grit",
+            "payment": 400
+          },
+          {
+            "type": "replacement",
+            "earnedSouls": 39600,
+            "item": "upgrade_grit",
+            "from": "upgrade_health_stimpak",
+            "payment": 400
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_health",
+        "upgrade_melee_rebuttal",
+        "upgrade_withering_whip",
+        "upgrade_magic_shield",
+        "upgrade_regenerating_bullet_shield",
+        "upgrade_soaring_spirit",
+        "upgrade_titan_round",
+        "upgrade_mystic_regeneration",
+        "upgrade_headshot_booster",
+        "upgrade_grit",
+        "upgrade_suppressor",
+        "upgrade_endurance"
+      ],
+      "cash": 400,
+      "transactions": 79,
+      "legallyPathVerified": true,
+      "locallyVerified": true,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 23065.351628999997,
+        "evaluations": 26406,
+        "generatedStates": 115133,
+        "duplicateStates": 4484,
+        "maxCandidatePool": 1538,
+        "widthsStarted": [
+          4,
+          8
+        ],
+        "widthsCompleted": [
+          4,
+          8
+        ],
+        "publishedImprovements": 3,
+        "terminalAudit": {
+          "complete": true,
+          "rounds": 1,
+          "legalActions": 158,
+          "checkedActions": 158,
+          "improvements": 0,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.40412729777695033
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-infernus-carry-weapon",
+        "level": "production-40k",
+        "hero": "infernus",
+        "role": "carry",
+        "focus": "weapon",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-infernus-carry-weapon",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "436e1bbb09b1ce29c800448d35551b89a0d322696f832533d695e2b52fd15137"
+      },
+      "resultScore": 0.5063513613982673,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 113.69939289999999,
+        "laneTradeWindowDps": 133.0313574,
+        "farmWindowDps": 133.0313574,
+        "skirmishWindowDps": 194.13964349999998,
+        "teamfightWindowDps": 133.0313574,
+        "bulletEhp": 1806.0851648351647,
+        "spiritEhp": 1454.1999999999998,
+        "sustainedBulletDps": 75.73499999999999,
+        "sustainedSpiritDps": 37.9643929,
+        "laneTradeBulletDps": 75.73499999999999,
+        "laneTradeSpiritDps": 57.29635739999999,
+        "farmBulletDps": 75.73499999999999,
+        "farmSpiritDps": 57.29635739999999,
+        "skirmishBulletDps": 94.66874999999999,
+        "skirmishSpiritDps": 99.47089349999999,
+        "teamfightBulletDps": 75.73499999999999,
+        "teamfightSpiritDps": 57.29635739999999
+      },
+      "trajectoryMetrics": {
+        "score": 0.5063513613982673,
+        "damage": 0.5216428759536487,
+        "survivability": 0.49105984684288584,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 113.69939289999999,
+              "laneTradeWindowDps": 133.0313574,
+              "farmWindowDps": 133.0313574,
+              "skirmishWindowDps": 194.13964349999998,
+              "teamfightWindowDps": 133.0313574,
+              "bulletEhp": 1806.0851648351647,
+              "spiritEhp": 1454.1999999999998,
+              "sustainedBulletDps": 75.73499999999999,
+              "sustainedSpiritDps": 37.9643929,
+              "laneTradeBulletDps": 75.73499999999999,
+              "laneTradeSpiritDps": 57.29635739999999,
+              "farmBulletDps": 75.73499999999999,
+              "farmSpiritDps": 57.29635739999999,
+              "skirmishBulletDps": 94.66874999999999,
+              "skirmishSpiritDps": 99.47089349999999,
+              "teamfightBulletDps": 75.73499999999999,
+              "teamfightSpiritDps": 57.29635739999999
+            },
+            "damage": 0.5216428759536487,
+            "survivability": 0.49105984684288584,
+            "score": 0.5063513613982673
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.3442884462943994,
+        "endScore": 0.5063513613982673,
+        "combinedScore": 0.4175295480500313,
+        "pathDamage": 0.34150925577629476,
+        "endDamage": 0.5216428759536487,
+        "pathSurvivability": 0.347067636812504,
+        "endSurvivability": 0.49105984684288584
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 3,
+          "upgrade": 0,
+          "replacement": 0,
+          "sell": 0
+        },
+        "transactionCount": 3,
+        "firstTransactionSouls": 40000,
+        "lastTransactionSouls": 40000,
+        "longestNoShopSoulSpan": 40000,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_damage_recycler",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_glass_cannon",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_bullet_resist_shredder",
+            "from": null,
+            "payment": 1600
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_damage_recycler",
+        "upgrade_glass_cannon",
+        "upgrade_bullet_resist_shredder"
+      ],
+      "cash": 25600,
+      "transactions": 3,
+      "legallyPathVerified": true,
+      "locallyVerified": false,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 25015.578580999994,
+        "evaluations": 3038,
+        "generatedStates": 5235,
+        "duplicateStates": 385,
+        "maxCandidatePool": 404,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [
+          4
+        ],
+        "publishedImprovements": 4,
+        "terminalAudit": {
+          "complete": false,
+          "rounds": 3,
+          "legalActions": 922,
+          "checkedActions": 478,
+          "improvements": 3,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.3342447313162031
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-infernus-carry-spirit",
+        "level": "production-40k",
+        "hero": "infernus",
+        "role": "carry",
+        "focus": "spirit",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-infernus-carry-spirit",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "c18a9925293b91c40bcd990e1a57d59abd4ff91cf0fabb70545b0e1d279f0cd9"
+      },
+      "resultScore": 0.49274426745015903,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 119.50032676666666,
+        "laneTradeWindowDps": 147.87196060000002,
+        "farmWindowDps": 147.87196060000002,
+        "skirmishWindowDps": 220.9699015,
+        "teamfightWindowDps": 147.87196060000002,
+        "bulletEhp": 1729.06,
+        "spiritEhp": 1645.8999999999999,
+        "sustainedBulletDps": 33.264,
+        "sustainedSpiritDps": 86.23632676666666,
+        "laneTradeBulletDps": 33.263999999999996,
+        "laneTradeSpiritDps": 114.6079606,
+        "farmBulletDps": 33.263999999999996,
+        "farmSpiritDps": 114.6079606,
+        "skirmishBulletDps": 41.58,
+        "skirmishSpiritDps": 179.3899015,
+        "teamfightBulletDps": 33.263999999999996,
+        "teamfightSpiritDps": 114.6079606
+      },
+      "trajectoryMetrics": {
+        "score": 0.49274426745015903,
+        "damage": 0.48440988521466233,
+        "survivability": 0.5010786496856557,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 119.50032676666666,
+              "laneTradeWindowDps": 147.87196060000002,
+              "farmWindowDps": 147.87196060000002,
+              "skirmishWindowDps": 220.9699015,
+              "teamfightWindowDps": 147.87196060000002,
+              "bulletEhp": 1729.06,
+              "spiritEhp": 1645.8999999999999,
+              "sustainedBulletDps": 33.264,
+              "sustainedSpiritDps": 86.23632676666666,
+              "laneTradeBulletDps": 33.263999999999996,
+              "laneTradeSpiritDps": 114.6079606,
+              "farmBulletDps": 33.263999999999996,
+              "farmSpiritDps": 114.6079606,
+              "skirmishBulletDps": 41.58,
+              "skirmishSpiritDps": 179.3899015,
+              "teamfightBulletDps": 33.263999999999996,
+              "teamfightSpiritDps": 114.6079606
+            },
+            "damage": 0.48440988521466233,
+            "survivability": 0.5010786496856557,
+            "score": 0.49274426745015903
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.32664941617961146,
+        "endScore": 0.49274426745015903,
+        "combinedScore": 0.4011915094919692,
+        "pathDamage": 0.3062311955467198,
+        "endDamage": 0.48440988521466233,
+        "pathSurvivability": 0.347067636812504,
+        "endSurvivability": 0.5010786496856557
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 3,
+          "upgrade": 0,
+          "replacement": 0,
+          "sell": 0
+        },
+        "transactionCount": 3,
+        "firstTransactionSouls": 40000,
+        "lastTransactionSouls": 40000,
+        "longestNoShopSoulSpan": 40000,
+        "timeline": [
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_boundless_spirit",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_damage_recycler",
+            "from": null,
+            "payment": 6400
+          },
+          {
+            "type": "purchase",
+            "earnedSouls": 40000,
+            "item": "upgrade_withering_whip",
+            "from": null,
+            "payment": 800
+          }
+        ]
+      },
+      "inventory": [
+        "upgrade_boundless_spirit",
+        "upgrade_damage_recycler",
+        "upgrade_withering_whip"
+      ],
+      "cash": 26400,
+      "transactions": 3,
+      "legallyPathVerified": true,
+      "locallyVerified": false,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 25011.278162000002,
+        "evaluations": 3197,
+        "generatedStates": 5581,
+        "duplicateStates": 286,
+        "maxCandidatePool": 477,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [
+          4
+        ],
+        "publishedImprovements": 4,
+        "terminalAudit": {
+          "complete": false,
+          "rounds": 3,
+          "legalActions": 918,
+          "checkedActions": 471,
+          "improvements": 3,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.3132618833630436
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    },
+    {
+      "metadata": {
+        "schemaVersion": "optimizer-benchmark-v1",
+        "timestamp": "2026-09-19T17:50:28.808Z",
+        "commit": "89fdc2e77821699bc259454c2c730bee91facbf2",
+        "caseId": "production-40k-infernus-carry-hybrid",
+        "level": "production-40k",
+        "hero": "infernus",
+        "role": "carry",
+        "focus": "hybrid",
+        "backend": "iterative-diverse-beam",
+        "budget": 40000,
+        "slots": 12,
+        "itemIds": [
+          "upgrade_extra_charge",
+          "upgrade_improved_spirit",
+          "upgrade_goose_egg",
+          "upgrade_magic_burst",
+          "upgrade_magic_reach",
+          "upgrade_mystic_regeneration",
+          "upgrade_withering_whip",
+          "upgrade_acolytes_glove",
+          "upgrade_arcane_surge",
+          "upgrade_bullet_resist_shredder",
+          "upgrade_cold_front",
+          "upgrade_magic_tempo",
+          "upgrade_arcane_extension",
+          "upgrade_soaring_spirit",
+          "upgrade_magic_slow",
+          "upgrade_magic_vulnerability",
+          "upgrade_quick_silver",
+          "upgrade_containment",
+          "upgrade_spirit_sap",
+          "upgrade_suppressor",
+          "upgrade_rupture",
+          "upgrade_greater_withering_whip",
+          "upgrade_tech_range",
+          "upgrade_target_stun",
+          "upgrade_resonant_healing",
+          "upgrade_rapid_recharge",
+          "upgrade_targeted_silence",
+          "upgrade_spirit_snatch",
+          "upgrade_cooldown_reduction",
+          "upgrade_imbued_duration_extender",
+          "upgrade_magic_storm",
+          "upgrade_magic_shock",
+          "upgrade_tech_damage_pulse",
+          "upgrade_arctic_blast",
+          "upgrade_boundless_spirit",
+          "upgrade_glitch",
+          "upgrade_ability_power_shard",
+          "upgrade_escalating_exposure",
+          "upgrade_self_bubble",
+          "upgrade_focus_lens",
+          "upgrade_ultimate_burst",
+          "upgrade_magic_carpet",
+          "upgrade_ethereal_bullets",
+          "upgrade_mystic_reverb",
+          "upgrade_ability_refresher",
+          "upgrade_discord",
+          "upgrade_spirit_burn",
+          "upgrade_transcendent_cooldown",
+          "upgrade_aoe_root",
+          "upgrade_health",
+          "upgrade_endurance",
+          "upgrade_improved_stamina",
+          "upgrade_grit",
+          "upgrade_health_stimpak",
+          "upgrade_lifestrike_gauntlets",
+          "upgrade_melee_rebuttal",
+          "upgrade_sprint_booster",
+          "upgrade_regenerating_bullet_shield",
+          "upgrade_vampire",
+          "upgrade_debuff_reducer",
+          "upgrade_magic_shield",
+          "upgrade_cardio_calibrator",
+          "upgrade_guardian_ward",
+          "upgrade_healbane",
+          "upgrade_healing_booster",
+          "upgrade_vex_barrier",
+          "upgrade_restorative_locket",
+          "upgrade_return_fire",
+          "upgrade_health_stealing_magic",
+          "upgrade_spirit_bubble",
+          "upgrade_trophy_collector",
+          "upgrade_weapon_shielding",
+          "upgrade_improved_bullet_armor",
+          "upgrade_counterspell",
+          "upgrade_reduce_debuff_duration",
+          "upgrade_chonky",
+          "upgrade_fury_trance",
+          "upgrade_health_nova",
+          "upgrade_boxing_glove",
+          "upgrade_rocket_booster",
+          "upgrade_metal_skin",
+          "upgrade_rescue_beam",
+          "upgrade_tech_purge",
+          "upgrade_superior_stamina",
+          "upgrade_veil_walker",
+          "upgrade_warp_stone",
+          "upgrade_cheat_death",
+          "upgrade_colossus",
+          "upgrade_divine_barrier",
+          "upgrade_diviners_kevlar",
+          "upgrade_healbuff",
+          "upgrade_auto_cleanse",
+          "upgrade_infuser",
+          "upgrade_inhibitor",
+          "upgrade_juggernaut",
+          "upgrade_damage_recycler",
+          "upgrade_phantom_strike",
+          "upgrade_deflecting_armor",
+          "upgrade_siphon_bullets",
+          "upgrade_spellbreaker",
+          "upgrade_unstoppable",
+          "upgrade_surging_power",
+          "upgrade_absorbing_armor",
+          "upgrade_close_range",
+          "upgrade_clip_size",
+          "upgrade_headshot_booster",
+          "upgrade_high_velocity_mag",
+          "upgrade_non_player_bonus",
+          "upgrade_rapid_rounds",
+          "upgrade_medic_bullets",
+          "upgrade_active_reload",
+          "upgrade_fleetfoot_boots",
+          "upgrade_intensifying_clip",
+          "upgrade_kinetic_sash",
+          "upgrade_long_range",
+          "upgrade_melee_charge",
+          "upgrade_crackshot",
+          "upgrade_pristine_emblem",
+          "upgrade_rechargingbullets",
+          "upgrade_slowing_bullets",
+          "upgrade_tech_defense_shredders",
+          "upgrade_split_shot",
+          "upgrade_weapon_backstabber",
+          "upgrade_blitz_bullets",
+          "upgrade_titan_round",
+          "upgrade_headshot_booster2",
+          "upgrade_thermal_detonator",
+          "upgrade_bulletshredimbue",
+          "upgrade_berserker",
+          "upgrade_blood_tribute",
+          "upgrade_burst_fire",
+          "upgrade_non_player_bonus_sacrifice",
+          "upgrade_reinforcing_casings",
+          "upgrade_express_shot",
+          "upgrade_headhunter",
+          "upgrade_dps_aura",
+          "upgrade_hollow_point_rounds",
+          "upgrade_bullet_armor_reduction_aura",
+          "upgrade_close_quarter_combat",
+          "upgrade_cloaking_device_active",
+          "upgrade_sharpshooter",
+          "upgrade_spellslinger_headshots",
+          "upgrade_chain_lightning",
+          "upgrade_toxic_bullets",
+          "upgrade_weighted_shots",
+          "upgrade_aprounds",
+          "upgrade_capacitor",
+          "upgrade_banshee_slugs",
+          "upgrade_crushing_fists",
+          "upgrade_fervor",
+          "upgrade_glass_cannon",
+          "upgrade_critshot",
+          "upgrade_ricochet",
+          "upgrade_proc_silence",
+          "upgrade_enchanted_holsters",
+          "upgrade_tech_overflow"
+        ],
+        "timeBudgetMs": 25000,
+        "milestones": [
+          40000
+        ],
+        "opponentResistances": {
+          "bullet": 0,
+          "spirit": 0
+        },
+        "objectiveVersion": "baseline-v0",
+        "referenceSource": "current-beam-sampled-reference",
+        "referenceVersion": "baseline-v0:production-40k-infernus-carry-hybrid",
+        "searchBudget": {
+          "timeMs": 25000,
+          "initialBeamWidth": 4,
+          "maxBeamWidth": 32,
+          "widenFactor": 2
+        },
+        "dataset": {
+          "core": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "itemCount": 156
+          },
+          "heroes": {
+            "dataAsOf": "2026-08-22",
+            "patch": "Minor Update - 08-22-2026",
+            "schemaVersion": "0.1.0-research",
+            "heroCount": 60
+          }
+        },
+        "hardware": {
+          "platform": "linux",
+          "arch": "x64",
+          "nodeVersion": "v22.23.2",
+          "cpuModel": "Intel(R) Xeon(R) 6973P-C",
+          "cpuCount": 4
+        },
+        "comparisonKey": "6825c822991619846304a6f4f474e0ad2df6d1ae3760f89e559f1d6d707514b2"
+      },
+      "resultScore": 0.3237533073396234,
+      "endbuildMetrics": {
+        "sustainedWeaponDps": 50.31666666666667,
+        "laneTradeWindowDps": 66.4,
+        "farmWindowDps": 66.4,
+        "skirmishWindowDps": 107.875,
+        "teamfightWindowDps": 66.4,
+        "bulletEhp": 850,
+        "spiritEhp": 850,
+        "sustainedBulletDps": 29.7,
+        "sustainedSpiritDps": 20.616666666666667,
+        "laneTradeBulletDps": 29.7,
+        "laneTradeSpiritDps": 36.7,
+        "farmBulletDps": 29.7,
+        "farmSpiritDps": 36.7,
+        "skirmishBulletDps": 37.125,
+        "skirmishSpiritDps": 70.75,
+        "teamfightBulletDps": 29.7,
+        "teamfightSpiritDps": 36.7
+      },
+      "trajectoryMetrics": {
+        "score": 0.3237533073396234,
+        "damage": 0.3114469925986177,
+        "survivability": 0.33605962208062906,
+        "pathScore": null,
+        "endScore": null,
+        "milestones": [
+          {
+            "earnedSouls": 40000,
+            "sourceEarnedSouls": 40000,
+            "metrics": {
+              "sustainedWeaponDps": 50.31666666666667,
+              "laneTradeWindowDps": 66.4,
+              "farmWindowDps": 66.4,
+              "skirmishWindowDps": 107.875,
+              "teamfightWindowDps": 66.4,
+              "bulletEhp": 850,
+              "spiritEhp": 850,
+              "sustainedBulletDps": 29.7,
+              "sustainedSpiritDps": 20.616666666666667,
+              "laneTradeBulletDps": 29.7,
+              "laneTradeSpiritDps": 36.7,
+              "farmBulletDps": 29.7,
+              "farmSpiritDps": 36.7,
+              "skirmishBulletDps": 37.125,
+              "skirmishSpiritDps": 70.75,
+              "teamfightBulletDps": 29.7,
+              "teamfightSpiritDps": 36.7
+            },
+            "damage": 0.3114469925986177,
+            "survivability": 0.33605962208062906,
+            "score": 0.3237533073396234
+          }
+        ]
+      },
+      "commonPathMetrics": {
+        "pathScore": 0.33546893123700633,
+        "endScore": 0.3237533073396234,
+        "combinedScore": 0.32955906298821386,
+        "pathDamage": 0.32387022566150697,
+        "endDamage": 0.3114469925986177,
+        "pathSurvivability": 0.347067636812504,
+        "endSurvivability": 0.33605962208062906
+      },
+      "pathObservables": {
+        "counts": {
+          "purchase": 0,
+          "upgrade": 0,
+          "replacement": 0,
+          "sell": 0
+        },
+        "transactionCount": 0,
+        "firstTransactionSouls": null,
+        "lastTransactionSouls": null,
+        "longestNoShopSoulSpan": 40000,
+        "timeline": []
+      },
+      "inventory": [],
+      "cash": 40000,
+      "transactions": 0,
+      "legallyPathVerified": true,
+      "locallyVerified": false,
+      "bounded": false,
+      "optimal": false,
+      "exact": null,
+      "searchTelemetry": {
+        "runtimeMs": 25107.767277999985,
+        "evaluations": 3202,
+        "generatedStates": 5880,
+        "duplicateStates": 261,
+        "maxCandidatePool": 624,
+        "widthsStarted": [
+          4
+        ],
+        "widthsCompleted": [
+          4
+        ],
+        "publishedImprovements": 1,
+        "terminalAudit": {
+          "complete": false,
+          "rounds": 0,
+          "legalActions": 0,
+          "checkedActions": 0,
+          "improvements": 0,
+          "neighbourhood": "purchase|upgrade|replacement",
+          "incumbentScore": 0.3237533073396234
+        },
+        "pruning": {
+          "exactFutureHistoryDedupe": true,
+          "paretoDominancePruning": false,
+          "beamTruncation": "heuristic_budgeted"
+        }
+      },
+      "profilingRun": null
+    }
+  ]
+}

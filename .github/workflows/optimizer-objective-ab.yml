@@ -1,0 +1,47 @@
+name: optimizer objective A-B
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  objective-ab:
+    if: contains(github.event.head_commit.message, '[objective-ab]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run baseline-v0 on current code
+        run: node tools/optimizer-benchmark.mjs --suite all --no-profile --objective baseline-v0 --references benchmarks/optimizer-v1/references/baseline-v0.json --output-dir artifacts/objective-ab/baseline
+      - name: Run Objective V1A
+        run: node tools/optimizer-benchmark.mjs --suite all --no-profile --objective objective-v1a-soul-auc-terminal-gmean --references benchmarks/optimizer-v1/references/baseline-v0.json --output-dir artifacts/objective-ab/v1
+      - name: Compare shared observables
+        run: node tools/optimizer-objective-compare.mjs artifacts/objective-ab/baseline/baseline-v0.json artifacts/objective-ab/v1/objective-v1a-soul-auc-terminal-gmean.json artifacts/objective-ab/comparison.json
+      - name: Upload A-B artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-objective-ab
+          path: artifacts/objective-ab/
+          if-no-files-found: error
+      - name: Store objective experiment on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/objective-v1a"
+          mkdir -p "$target"
+          cp artifacts/objective-ab/baseline/baseline-v0.json "$target/baseline-current.json"
+          cp artifacts/objective-ab/v1/objective-v1a-soul-auc-terminal-gmean.json "$target/objective-v1a.json"
+          cp artifacts/objective-ab/comparison.json "$target/comparison.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          git commit -m "data(benchmark): record objective v1a A-B results"
+          git push origin HEAD:feature/optimizer-next

@@ -8,6 +8,7 @@ import { runWardenWeaponPareto, runWardenCarryVectorPareto, runWardenCarryPareto
 import { directReference } from "../app/direct-reference.mjs";
 import { validateSearchPath } from "../app/validate-search-path.mjs";
 import { runAnytimeWarden, scoreAnytimePath, preferPublishedCandidate, ANYTIME_POLICY, ANYTIME_METRIC_GROUPS, DAMAGE_FOCUS_WEIGHTS } from "../app/anytime-search.mjs";
+import { runIterativeDiverseBeamCarry, scoreMilestonePath } from "../app/beam-search.mjs";
 import { buildOptimizerData, evaluateAfterburnMechanics, evaluateSpiritMechanics, evaluateWeaponMechanics, heroCanPurchaseItem } from "../app/optimizer.mjs";
 import { parseCsv } from "../app/lib.mjs";
 import { readFileSync } from "node:fs";
@@ -328,6 +329,32 @@ test("Globale Ability-Cooldown-Reduktion und Wardens Last Stand folgen den beleg
   assert.deepEqual(compactHybrid.metrics, fullHybrid.metrics);
 });
 
+test("Weapon-Damage-Fähigkeiten laufen durch Bullet Resist statt Spirit Resist", () => {
+  const data = canonicalWardenData();
+  const venator = evaluateSpiritMechanics({ inventory: [] }, { heroId: "venator" }, data);
+  const gutshot = venator.abilities.find((ability) => ability.abilityId === "venator_gutshot");
+  assert.ok(gutshot?.included);
+  assert.ok(gutshot.bulletDamageAt(4) > 0);
+  assert.equal(gutshot.spiritDamageAt(4), 0);
+
+  const isolated = {
+    ...data,
+    abilities: data.abilities.filter((ability) => ability.ability_id === "venator_gutshot"),
+    abilityMechanics: data.abilityMechanics.filter((effect) => effect.ability_id === "venator_gutshot")
+  };
+  const request = { heroId: "venator", damageFocus: "weapon", budget: 40000 };
+  const neutral = evaluateCarryPerformance({ inventory: [] }, request, isolated);
+  const bulletArmored = evaluateCarryPerformance({ inventory: [] }, { ...request, opponentBulletResist: 50 }, isolated);
+  const spiritArmored = evaluateCarryPerformance({ inventory: [] }, { ...request, opponentSpiritResist: 50 }, isolated);
+  const scenario = (result) => result.scenarios.scenarios.find((entry) => entry.id === "skirmish");
+  const neutralSkirmish = scenario(neutral);
+  const bulletSkirmish = scenario(bulletArmored);
+  const spiritSkirmish = scenario(spiritArmored);
+  assert.ok(neutralSkirmish.direct_ability_damage > 0);
+  assert.ok(Math.abs(bulletSkirmish.direct_ability_damage - neutralSkirmish.direct_ability_damage * 0.5) < 1e-9);
+  assert.equal(spiritSkirmish.direct_ability_damage, neutralSkirmish.direct_ability_damage);
+});
+
 test("Infernus Afterburn benötigt Weapon-Hits, tickt nach Build-up und bleibt in Suchmetriken gleich", () => {
   const data = canonicalWardenData();
   const request = { heroId: "infernus", damageFocus: "weapon", budget: 60000 };
@@ -404,7 +431,7 @@ test("Anytime output is legal, improves monotonically and compares with an exact
     const reference = { axis, values: axis.map((_, i) => Object.fromEntries(names.map((m) => [m, ref.byMetric[m][i].metrics[m]]))) };
     const options = { data, itemIds, budget, slotUnlocks, soulAxis: axis, metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics };
     const oracle = createDeadlockDomain(options).enumerate().states.filter((e) => e.state.earnedSouls === budget);
-    const exact = Math.max(...oracle.map((e) => scoreAnytimePath(e.state.snapshots, reference, budget, "weapon").score));
+    const exact = Math.max(...oracle.map((e) => scoreMilestonePath(e.state.snapshots, reference, [budget], budget, "weapon").score));
     const outputs = [];
     const result = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 2000, maxRollouts: 5, onResult: (r) => outputs.push(r) });
     assert.ok(result.validation.valid);
@@ -416,7 +443,9 @@ test("Anytime output is legal, improves monotonically and compares with an exact
     assert.equal(result.slotLimit, 9 + (slotUnlocks[0]?.slots || 0));
     assert.ok(Math.abs(exact - result.quality.score) < 1e-12, `small-case score gap: ${exact - result.quality.score}`);
     for (let i = 1; i < outputs.length; i++) assert.ok(outputs[i].quality.score > outputs[i - 1].quality.score);
-    assert.equal(result.policy.end, 0.7);
+    assert.equal(result.policy.milestoneWeights, "equal");
+    assert.deepEqual(result.quality.milestones.map((entry) => entry.earnedSouls), [budget]);
+    assert.equal(result.legacyPolicy.end, 0.7);
     assert.equal(ANYTIME_POLICY.worst + ANYTIME_POLICY.integrated, 0.3);
     assert.deepEqual(result.reference, reference);
   }
@@ -491,7 +520,7 @@ test("Lokale Gegenprobe bleibt exakt und hält reale Upgradeübergänge im Suchr
     .states.filter((entry) => entry.state.earnedSouls === budget);
   assert.ok(oracle.some((entry) => entry.state.events.some((event) => event.type === "upgrade" && event.item === "upgrade_titan_round")),
     "der exakte Vergleich enthält weiterhin den legalen Komponenten→Upgrade-Übergang");
-  const exact = Math.max(...oracle.map((entry) => scoreAnytimePath(entry.state.snapshots, reference, budget, "weapon").score));
+  const exact = Math.max(...oracle.map((entry) => scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
   const before = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1, localRefinement: false });
   const after = runAnytimeWarden({ data, itemIds, budget, slotUnlocks, reference, timeMs: 1000, maxRollouts: 1 });
 
@@ -704,4 +733,128 @@ test("History-free reference traversal preserves reachable configurations and sn
   const keys = (domain, result) => new Set(result.labels.map(({ state, label }) => `${domain.futureKey(state)}:${JSON.stringify(label)}`));
   assert.deepEqual(keys(regular, left), keys(lean, right));
   assert.ok(right.labels.every(({ state }) => state.events.length === 0 && state.snapshots.length === 0));
+});
+
+
+test("Iterative Diverse Beam bleibt im kleinen exakten Raum legal und erreicht das Milestone-Oracle", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const domain = createDeadlockDomain({ data, itemIds, budget, soulAxis: axis, slotUnlocks,
+    metrics: (state) => evaluateWardenCarryPerformance(state, { heroId: "warden", budget }, data).metrics });
+  // search-core is exact here because full state identity is also the future
+  // identity: no two distinct path histories may dominate/prune each other.
+  const oracle = searchLabels({
+    initialState: domain.initial,
+    expand: domain.transitions,
+    stateKey: domain.stateKey,
+    futureKey: domain.stateKey,
+    label: () => ({ reachable: 1 })
+  });
+  const terminal = oracle.labels.filter((entry) => entry.state.earnedSouls === budget);
+  const exact = Math.max(...terminal.map((entry) =>
+    scoreMilestonePath(entry.state.snapshots, reference, [budget], budget, "weapon").score));
+  const outputs = [];
+  const result = runIterativeDiverseBeamCarry({ data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 1500, initialBeamWidth: 64, maxBeamWidth: 64, onResult: (value) => outputs.push(value) });
+  assert.equal(result.validation.valid, true);
+  assert.equal(result.semantics.legallyPathVerified, true);
+  assert.equal(result.semantics.bounded, false);
+  assert.equal(result.semantics.optimal, false);
+  assert.equal(result.backend, "iterative-diverse-beam");
+  assert.ok(Math.abs(result.quality.score - exact) < 1e-12, `small beam oracle gap: ${exact - result.quality.score}`);
+  assert.deepEqual(result.milestones.configured, [budget]);
+  assert.equal(result.telemetry.pruning.paretoDominancePruning, false);
+  assert.ok(oracle.expandedStates > 0);
+  assert.ok(terminal.length > 0);
+  for (let index = 1; index < outputs.length; index++) assert.ok(outputs[index].quality.score >= outputs[index - 1].quality.score);
+});
+
+test("Anytime fallback accepts the same explicit opponent scenario and milestone reporting contract", () => {
+  const data = canonicalWardenData();
+  const result = runAnytimeWarden({ data, itemIds: ["upgrade_rapid_rounds"], budget: 800, timeMs: 500,
+    maxRollouts: 1, milestones: [400], opponentBulletResist: 25, opponentSpiritResist: 10 });
+  assert.equal(result.validation.valid, true);
+  assert.equal(result.backend, "anytime");
+  assert.deepEqual(result.milestones.configured, [400, 800]);
+  assert.deepEqual(result.quality.milestones.map((entry) => entry.earnedSouls), [400, 800]);
+  assert.equal(result.policy.milestoneWeights, "equal");
+  assert.equal(result.scenario.opponentBulletResist, 25);
+  assert.equal(result.semantics.optimal, false);
+});
+
+
+test("Beam profiling is opt-in, preserves a completed small-space result and exposes plausible counters", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const options = { data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 5000, initialBeamWidth: 64, maxBeamWidth: 64 };
+  const normal = runIterativeDiverseBeamCarry(options);
+  const profiled = runIterativeDiverseBeamCarry({ ...options, profile: true });
+  assert.equal(profiled.quality.score, normal.quality.score);
+  assert.deepEqual(profiled.state.inventory, normal.state.inventory);
+  assert.deepEqual(profiled.reference, reference);
+  assert.equal(normal.searchTelemetry.profile, undefined);
+  const p = profiled.searchTelemetry.profile;
+  for (const key of ["referenceMs", "beamSearchMs", "terminalAuditMs", "validationMs", "transitionMs",
+    "purchaseGenerationMs", "upgradeGenerationMs", "replacementGenerationMs", "evaluationMs",
+    "trajectoryScoreMs", "pathReconstructionMs", "continuationLookaheadMs", "dedupeMs", "paretoMs",
+    "diversityMs", "sortingMs"]) assert.ok(Number.isFinite(p.timers[key]) && p.timers[key] >= 0, key);
+  assert.ok(p.counters.transitionCalls > 0);
+  assert.ok(p.counters.generatedStates >= p.counters.uniqueStates);
+  assert.equal(p.counters.metricCacheMisses, p.counters.evaluatedInventories);
+  assert.ok(p.counters.purchaseChecks > 0);
+  assert.ok(p.counters.familyConflictChecks > 0);
+  assert.ok(p.perWidth.length >= 1);
+  assert.ok(p.candidatePoolSizes.length >= 1);
+});
+
+test("Passive terminal observer leaves completed Beam search and audit decisions unchanged", () => {
+  const data = canonicalWardenData();
+  const itemIds = ["upgrade_rapid_rounds", "upgrade_health"];
+  const budget = 800, slotUnlocks = [];
+  const ref = computeWardenReference({ data, itemIds, budget, slotUnlocks });
+  const axis = ref.byMetric.sustainedWeaponDps.map((point) => point.earnedSouls);
+  const names = Object.keys(ref.byMetric);
+  const reference = { axis, values: axis.map((_, index) =>
+    Object.fromEntries(names.map((metric) => [metric, ref.byMetric[metric][index].metrics[metric]]))) };
+  const options = { data, itemIds, budget, slotUnlocks, reference, milestones: [budget],
+    timeMs: 5000, initialBeamWidth: 64, maxBeamWidth: 64 };
+  const normal = runIterativeDiverseBeamCarry(options);
+  const terminals = [];
+  const observed = runIterativeDiverseBeamCarry({ ...options, onTerminalCandidate: (candidate) => terminals.push(candidate) });
+
+  assert.equal(observed.quality.score, normal.quality.score);
+  assert.deepEqual(observed.state.inventory, normal.state.inventory);
+  assert.deepEqual(observed.state.events, normal.state.events);
+  assert.deepEqual(observed.searchTelemetry.widthsCompleted, normal.searchTelemetry.widthsCompleted);
+  assert.equal(observed.searchTelemetry.generatedStates, normal.searchTelemetry.generatedStates);
+  assert.equal(observed.searchTelemetry.evaluations, normal.searchTelemetry.evaluations);
+  assert.deepEqual(observed.searchTelemetry.terminalAudit, normal.searchTelemetry.terminalAudit);
+  assert.ok(terminals.length > 0);
+  assert.ok(terminals.every((candidate) => candidate.state.earnedSouls === budget));
+});
+
+test("Baseline compact Carry metrics keep the three current ten-second damage rows mathematically identical", () => {
+  const data = canonicalWardenData();
+  const result = evaluateCarryPerformance({ inventory: ["upgrade_rapid_rounds"] },
+    { heroId: "warden", damageFocus: "weapon", budget: 40000, metricsOnly: true }, data);
+  assert.equal(result.valid, true);
+  assert.equal(result.metrics.laneTradeWindowDps, result.metrics.farmWindowDps);
+  assert.equal(result.metrics.farmWindowDps, result.metrics.teamfightWindowDps);
+  assert.equal(result.metrics.laneTradeBulletDps, result.metrics.farmBulletDps);
+  assert.equal(result.metrics.farmBulletDps, result.metrics.teamfightBulletDps);
+  assert.equal(result.metrics.laneTradeSpiritDps, result.metrics.farmSpiritDps);
+  assert.equal(result.metrics.farmSpiritDps, result.metrics.teamfightSpiritDps);
 });

@@ -8,15 +8,37 @@ import { createSmallDomain } from "../app/small-domain.mjs";
 import { calculateTrajectoryObjectives } from "../app/trajectory-objectives.mjs";
 import { createDeadlockDomain } from "../app/deadlock-domain.mjs";
 import { buildOptimizerData } from "../app/optimizer.mjs";
-import { FAST_SEARCH_BUDGET } from "../app/search-config.mjs";
+import { FAST_SEARCH_BUDGET, PRODUCT_SEARCH_TIME_MS, PRODUCTION_SEARCH_BACKEND } from "../app/search-config.mjs";
 
-test("Schneller Browserlauf und Worker teilen den 40k-Produkthorizont", () => {
+test("Browser-Worker nutzt den aktuellen 40k/60s-Multiobjective-Kern", () => {
   assert.equal(FAST_SEARCH_BUDGET, 40000);
+  assert.equal(PRODUCT_SEARCH_TIME_MS, 60000);
+  assert.equal(PRODUCTION_SEARCH_BACKEND, "beam");
   const app = readFileSync("app/app.js", "utf8");
   const worker = readFileSync("app/optimizer-worker.mjs", "utf8");
-  assert.match(app, /budget: FAST_SEARCH_BUDGET/);
-  assert.match(worker, /effectiveBudget = event\.data\.mode === "anytime" \? FAST_SEARCH_BUDGET/);
-  assert.doesNotMatch(app, /budget: 60000/);
+  const benchmarkBridge = readFileSync("benchmarks/optimizer-v1/controlled-multiobjective-beam.mjs", "utf8");
+  assert.match(worker, /runControlledMultiobjectiveBeamCarry.*\.\/multiobjective-search\.mjs/);
+  assert.match(worker, /beamWidth:\s*CURRENT_MULTI_OBJECTIVE_WIDTH/);
+  assert.match(worker, /timeMs:\s*PRODUCT_SEARCH_TIME_MS/);
+  assert.match(worker, /auditReserveMs:\s*AUDIT_RESERVE_MS/);
+  assert.match(worker, /damageFocus:\s*event\.data\.damageFocus/);
+  assert.doesNotMatch(worker, /runIterativeDiverseBeamCarry|runAnytimeCarry/);
+  assert.match(benchmarkBridge, /export \* from "\.\.\/\.\.\/app\/multiobjective-search\.mjs"/);
+  assert.match(app, /result\.front\.map\(\(entry\) => mapParetoVariant/);
+  assert.match(app, /legal replay verified/);
+});
+
+test("Browser zeigt genau einen Build-Button ohne Backend-Auswahl oder 25-s-Text", () => {
+  const html = readFileSync("app/index.html", "utf8");
+  const app = readFileSync("app/app.js", "utf8");
+  assert.match(html, /id="fast-build-button"/);
+  assert.doesNotMatch(html, /id="(?:build-button|new-build-button|new-build-40k-button|search-backend)"/);
+  assert.doesNotMatch(html, /25\s*s|Anytime|Iterative Diverse Beam/);
+  assert.match(html, /MULTIOBJECTIVE PREVIEW/);
+  assert.match(app, /\$\("#fast-build-button"\)\.addEventListener\("click", startFastBuild\)/);
+  assert.match(app, /data-pareto-index/);
+  assert.match(app, /Kompletter chronologischer Kaufpfad/);
+  assert.doesNotMatch(app, /buildPhaseGroups|Math\.sqrt\(.*path/i);
 });
 
 test("Browserauswahl beschränkt sich auf den kanonisch öffentlichen 38-Helden-Roster und hat Karten-Fallbacks", () => {

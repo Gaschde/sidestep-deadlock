@@ -1,0 +1,39 @@
+name: optimizer measurement baseline
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  baseline:
+    if: contains(github.event.head_commit.message, '[baseline]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run optimizer V1 measurement baseline
+        run: npm run benchmark:optimizer-v1 -- --suite all --output-dir artifacts/optimizer-v1
+      - name: Upload measurement artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-v1-baseline
+          path: artifacts/optimizer-v1/
+          if-no-files-found: error
+      - name: Store BASELINE V0 on the measurement branch
+        shell: bash
+        run: |
+          mkdir -p benchmarks/optimizer-v1/references benchmarks/optimizer-v1/baselines
+          cp artifacts/optimizer-v1/references-baseline-v0.json benchmarks/optimizer-v1/references/baseline-v0.json
+          cp artifacts/optimizer-v1/baseline-v0.json benchmarks/optimizer-v1/baselines/baseline-v0.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/references/baseline-v0.json benchmarks/optimizer-v1/baselines/baseline-v0.json
+          git commit -m "data(benchmark): record optimizer baseline v0"
+          git push origin HEAD:feature/optimizer-next

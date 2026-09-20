@@ -1,0 +1,19 @@
+name: optimizer runtime investigation
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+jobs:
+  investigate:
+    if: contains(github.event.head_commit.message, '[runtime-investigation]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run runtime and search-quality investigation
+        run: node tools/optimizer-runtime-investigation.mjs
