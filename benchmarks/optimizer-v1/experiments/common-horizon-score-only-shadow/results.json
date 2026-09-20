@@ -1,0 +1,5120 @@
+{
+  "schemaVersion": "optimizer-common-horizon-score-only-shadow-v1",
+  "sourceCommit": "41a68cbba43eb4e67f044980c74f2ca59212d970",
+  "caseId": "production-40k-warden-carry-weapon",
+  "scope": {
+    "hero": "warden",
+    "role": "carry",
+    "focus": "weapon",
+    "budget": 40000,
+    "beamWidth": 4,
+    "objective": {
+      "id": "carry-sweet-70-30-spec-77_5-22_5",
+      "damageWeight": 0.7,
+      "survivalWeight": 0.3,
+      "damageFocusWeights": {
+        "weapon": {
+          "bullet": 0.775,
+          "spirit": 0.225
+        },
+        "spirit": {
+          "bullet": 0.225,
+          "spirit": 0.775
+        },
+        "hybrid": {
+          "bullet": 0.5,
+          "spirit": 0.5
+        }
+      }
+    },
+    "reference": "baseline-v0:production-40k-warden-carry-weapon"
+  },
+  "sourceMaterializedResult": {
+    "schemaVersion": "optimizer-common-horizon-retention-shadow-v1",
+    "sourceCommit": "7d0bbec934d72464b531130cc45afbbfa49f5de2",
+    "baselineRuntimeMs": 49416.596171,
+    "materializedRuntimeMs": 72496.77058899999
+  },
+  "exactEquivalenceRationale": "measureSoulAxisPath integrates a piecewise-constant actual path on the union of path/reference changes plus H. Pure save projection preserves inventory metrics, so a materialized save point at H (and any intermediate save points) only repeats the same metrics. Evaluating the original prefix directly with budget=H therefore yields identical Path-AUC and Endbuild.",
+  "productionChanged": false,
+  "uiChanged": false,
+  "canonicalDataChanged": false,
+  "invariants": {
+    "objectiveWeightsChanged": false,
+    "pathAucChanged": false,
+    "endbuildGoalChanged": false,
+    "beamWidthChanged": false,
+    "lazyParetoChanged": false,
+    "paretoSemanticsChanged": false,
+    "dedupeChanged": false,
+    "diversityChanged": false,
+    "candidateGenerationChanged": false,
+    "itemDataChanged": false,
+    "thresholdsChanged": false,
+    "saveTo40kChanged": false,
+    "terminalizationChanged": false,
+    "churnSemanticsChanged": false,
+    "baselineDefaultChanged": false
+  },
+  "stage1": {
+    "candidateCount": 248,
+    "tolerance": 1e-12,
+    "commonHorizon": 4000,
+    "maxAbsPathDifference": 0,
+    "maxAbsEndDifference": 0,
+    "vectorMismatchesAboveTolerance": 0,
+    "paretoLayerMismatches": 0,
+    "retentionIdentical": true,
+    "materializedRetainedPathIds": [
+      "93260772842f0c27",
+      "aa4d4665b9434b92",
+      "edacb6626090f0a7",
+      "d81825396d564903"
+    ],
+    "scoreOnlyRetainedPathIds": [
+      "93260772842f0c27",
+      "aa4d4665b9434b92",
+      "edacb6626090f0a7",
+      "d81825396d564903"
+    ],
+    "selectedOriginalOnly": true,
+    "baseline": {
+      "targetLayer": 15,
+      "targetRetained": false
+    },
+    "materialized": {
+      "targetLayer": 0,
+      "targetRetained": true,
+      "targetVector": {
+        "pathScore": 0.47666070914450004,
+        "endScore": 0.4786434445650398,
+        "pathDamage": 0.488275442294055,
+        "endDamage": 0.5273980085686202,
+        "pathSurvival": 0.44955966512887185,
+        "endSurvival": 0.3648827952233525
+      },
+      "projectedCandidates": 244,
+      "materializedProjectedNodes": 244,
+      "saveTransitions": 244,
+      "projectionRuntimeMs": 0.9978160000000571,
+      "horizonScoreRuntimeMs": 19.750870999999506,
+      "counterDelta": {
+        "evaluations": 0,
+        "transitionCalls": 0,
+        "generatedStates": 0,
+        "projectionSaveTransitions": 244,
+        "horizonVectorEvaluations": 248,
+        "horizonVectorCacheHits": 0,
+        "horizonVectorCacheMisses": 248
+      }
+    },
+    "scoreOnly": {
+      "targetLayer": 0,
+      "targetRetained": true,
+      "targetVector": {
+        "pathScore": 0.47666070914450004,
+        "endScore": 0.4786434445650398,
+        "pathDamage": 0.488275442294055,
+        "endDamage": 0.5273980085686202,
+        "pathSurvival": 0.44955966512887185,
+        "endSurvival": 0.3648827952233525
+      },
+      "scoreOnlyProjections": 244,
+      "materializedProjectedNodes": 0,
+      "saveTransitions": 0,
+      "projectionRuntimeMs": 8.58145499999955,
+      "horizonScoreRuntimeMs": 8.562659999999482,
+      "counterDelta": {
+        "evaluations": 0,
+        "transitionCalls": 0,
+        "generatedStates": 0,
+        "projectionSaveTransitions": 0,
+        "horizonVectorEvaluations": 244,
+        "horizonVectorCacheHits": 4,
+        "horizonVectorCacheMisses": 244
+      }
+    },
+    "storedMaterializedTargetMatches": true,
+    "comparisons": [
+      {
+        "pathId": "aa4d4665b9434b92",
+        "earnedSouls": 4000,
+        "materialized": {
+          "pathScore": 0.4765249738842243,
+          "endScore": 0.4759052333958103,
+          "layer": 1
+        },
+        "scoreOnly": {
+          "pathScore": 0.4765249738842243,
+          "endScore": 0.4759052333958103,
+          "layer": 1
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "86bfad373a0f39b1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "3e8c490f59aa87ff",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "100ef82e75a69c8a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6a3ee8af092530a8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46982754288005285,
+          "endScore": 0.40893092335409564,
+          "layer": 51
+        },
+        "scoreOnly": {
+          "pathScore": 0.46982754288005285,
+          "endScore": 0.40893092335409564,
+          "layer": 51
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "854d89f81689bc46",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4698958300820956,
+          "endScore": 0.40961379537452325,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.4698958300820956,
+          "endScore": 0.40961379537452325,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "40ccde09e5bdc748",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694773922465175,
+          "endScore": 0.4054294170187423,
+          "layer": 54
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6aa2e4a98e3364e3",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46951962754123233,
+          "endScore": 0.4058517699658905,
+          "layer": 53
+        },
+        "scoreOnly": {
+          "pathScore": 0.46951962754123233,
+          "endScore": 0.4058517699658905,
+          "layer": 53
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "868cf76dcb6326bd",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a989ff75552bba59",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "56323105562ab639",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "50d7f954b20b99ff",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fdb632852a8326fb",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46988235072876033,
+          "endScore": 0.4094790018411706,
+          "layer": 50
+        },
+        "scoreOnly": {
+          "pathScore": 0.46988235072876033,
+          "endScore": 0.4094790018411706,
+          "layer": 50
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ff3cbd1b0b546971",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936095191466426,
+          "endScore": 0.4042650137002099,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7ff9a04864446ba4",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47025465306974223,
+          "endScore": 0.41320202525098904,
+          "layer": 46
+        },
+        "scoreOnly": {
+          "pathScore": 0.47025465306974223,
+          "endScore": 0.41320202525098904,
+          "layer": 46
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4a6a67d7699d29f7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47295977211360457,
+          "endScore": 0.4402532156896128,
+          "layer": 35
+        },
+        "scoreOnly": {
+          "pathScore": 0.47295977211360457,
+          "endScore": 0.4402532156896128,
+          "layer": 35
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "bf8163c35109a298",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4704665083369703,
+          "endScore": 0.4153205779232696,
+          "layer": 44
+        },
+        "scoreOnly": {
+          "pathScore": 0.4704665083369703,
+          "endScore": 0.4153205779232696,
+          "layer": 44
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c52db7a7a7620843",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4711677842771468,
+          "endScore": 0.4223333373250347,
+          "layer": 39
+        },
+        "scoreOnly": {
+          "pathScore": 0.4711677842771468,
+          "endScore": 0.4223333373250347,
+          "layer": 39
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ce71e25390f2fe2b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47025465306974223,
+          "endScore": 0.41320202525098904,
+          "layer": 46
+        },
+        "scoreOnly": {
+          "pathScore": 0.47025465306974223,
+          "endScore": 0.41320202525098904,
+          "layer": 46
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0ff4a54a00b9c625",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47134502193497624,
+          "endScore": 0.4241057139033291,
+          "layer": 37
+        },
+        "scoreOnly": {
+          "pathScore": 0.47134502193497624,
+          "endScore": 0.4241057139033291,
+          "layer": 37
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "738156821b180653",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4709442492650771,
+          "endScore": 0.420097987204338,
+          "layer": 40
+        },
+        "scoreOnly": {
+          "pathScore": 0.4709442492650771,
+          "endScore": 0.420097987204338,
+          "layer": 40
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e773f3a2e9062277",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46916350264923606,
+          "endScore": 0.4022905210459278,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.46916350264923606,
+          "endScore": 0.4022905210459278,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8033ac933c184b2f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "33e31c811a9d7925",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "5d52a2d02b836177",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a2c815c01f610cd8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.475036489018751,
+          "endScore": 0.4610203847410771,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.475036489018751,
+          "endScore": 0.4610203847410771,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fafdc6317322995a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47511680474831075,
+          "endScore": 0.46182354203667425,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.47511680474831075,
+          "endScore": 0.46182354203667425,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d925849383516bba",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.47462425370626077,
+          "endScore": 0.4568980316161746,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "86b8dd714a6d81ee",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47507143117961936,
+          "endScore": 0.46136980634976055,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47507143117961936,
+          "endScore": 0.46136980634976055,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "08a09b378d8180b1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a83f01e0791a1ae3",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "87df9bbedf453687",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b7c3f8ad2cbc86e6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0688af42ff9babc6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47550063322900293,
+          "endScore": 0.4656618268435962,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.47550063322900293,
+          "endScore": 0.4656618268435962,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7a4f0282f20fad5d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47487573131269245,
+          "endScore": 0.45941280768049103,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f9735cb5105e3ede",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47460295144697673,
+          "endScore": 0.45668500902333364,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47460295144697673,
+          "endScore": 0.45668500902333364,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "82358304d1061478",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47485245187661396,
+          "endScore": 0.45918001331970637,
+          "layer": 29
+        },
+        "scoreOnly": {
+          "pathScore": 0.47485245187661396,
+          "endScore": 0.45918001331970637,
+          "layer": 29
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f0dd9af046651a0a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47541748707360193,
+          "endScore": 0.4648303652895862,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.47541748707360193,
+          "endScore": 0.4648303652895862,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8544612b54b8b711",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47460295144697673,
+          "endScore": 0.45668500902333364,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47460295144697673,
+          "endScore": 0.45668500902333364,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d9667d0d94c61b69",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4757633841658201,
+          "endScore": 0.4682893362117675,
+          "layer": 11
+        },
+        "scoreOnly": {
+          "pathScore": 0.4757633841658201,
+          "endScore": 0.4682893362117675,
+          "layer": 11
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e9f12ccd511a3edb",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47521854042374995,
+          "endScore": 0.46284089879106655,
+          "layer": 21
+        },
+        "scoreOnly": {
+          "pathScore": 0.47521854042374995,
+          "endScore": 0.46284089879106655,
+          "layer": 21
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1780cae14fb59ef3",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4742841492155478,
+          "endScore": 0.4534969867090451,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.4742841492155478,
+          "endScore": 0.4534969867090451,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8cfecc5245f7693c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "898672d068500cf6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4c5bce20a78bdd4f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fa4605112a5c621a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4760238693125796,
+          "endScore": 0.4708941876793631,
+          "layer": 7
+        },
+        "scoreOnly": {
+          "pathScore": 0.4760238693125796,
+          "endScore": 0.4708941876793631,
+          "layer": 7
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "3a22ee3fe340a110",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4760921565146224,
+          "endScore": 0.4715770596997907,
+          "layer": 6
+        },
+        "scoreOnly": {
+          "pathScore": 0.4760921565146224,
+          "endScore": 0.4715770596997907,
+          "layer": 6
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ac171fd5713ca742",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4756737186790443,
+          "endScore": 0.46739268134400974,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0df209673953f18d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4753810342103726,
+          "endScore": 0.46446583665729313,
+          "layer": 17
+        },
+        "scoreOnly": {
+          "pathScore": 0.4753810342103726,
+          "endScore": 0.46446583665729313,
+          "layer": 17
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ab0ae015eff37058",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f27c140936ec6275",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "10988f8f78ecf4c5",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8bd156bc3443e684",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "84e4bb5623895cd0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47574375739790065,
+          "endScore": 0.4680930685325732,
+          "layer": 12
+        },
+        "scoreOnly": {
+          "pathScore": 0.47574375739790065,
+          "endScore": 0.4680930685325732,
+          "layer": 12
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1ef7b2311ab91ff1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.47522235858380457,
+          "endScore": 0.4628790803916125,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "bd65fb1a94a0bb51",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4753436754642718,
+          "endScore": 0.4640922491962853,
+          "layer": 18
+        },
+        "scoreOnly": {
+          "pathScore": 0.4753436754642718,
+          "endScore": 0.4640922491962853,
+          "layer": 18
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "343a2aaf9f46bfa7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4755555307314999,
+          "endScore": 0.4662108018685659,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.4755555307314999,
+          "endScore": 0.4662108018685659,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6b58f45840df1601",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47615871185780756,
+          "endScore": 0.4722426131316424,
+          "layer": 5
+        },
+        "scoreOnly": {
+          "pathScore": 0.47615871185780756,
+          "endScore": 0.4722426131316424,
+          "layer": 5
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4aa8a87601c6c337",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4753436754642718,
+          "endScore": 0.4640922491962853,
+          "layer": 18
+        },
+        "scoreOnly": {
+          "pathScore": 0.4753436754642718,
+          "endScore": 0.4640922491962853,
+          "layer": 18
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8eb5da93ccf72391",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47638688802757706,
+          "endScore": 0.4745243748293378,
+          "layer": 3
+        },
+        "scoreOnly": {
+          "pathScore": 0.47638688802757706,
+          "endScore": 0.4745243748293378,
+          "layer": 3
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7541e5840cfed0e3",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4759595641750547,
+          "endScore": 0.4702511363041138,
+          "layer": 8
+        },
+        "scoreOnly": {
+          "pathScore": 0.4759595641750547,
+          "endScore": 0.4702511363041138,
+          "layer": 8
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0ad2ff69a8fc571f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750249093183763,
+          "endScore": 0.4609045877373304,
+          "layer": 26
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750249093183763,
+          "endScore": 0.4609045877373304,
+          "layer": 26
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d58971bb584e3ba6",
+        "earnedSouls": 4000,
+        "materialized": {
+          "pathScore": 0.47450143646998433,
+          "endScore": 0.4759052333958103,
+          "layer": 3
+        },
+        "scoreOnly": {
+          "pathScore": 0.47450143646998433,
+          "endScore": 0.4759052333958103,
+          "layer": 3
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0e811bfa70094722",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4ba6daaa000c06a2",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "96a6f54e19e7a35f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "726830739e5ccc48",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4678040054658129,
+          "endScore": 0.40893092335409564,
+          "layer": 52
+        },
+        "scoreOnly": {
+          "pathScore": 0.4678040054658129,
+          "endScore": 0.40893092335409564,
+          "layer": 52
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f680bb2a6c641597",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4678722926678557,
+          "endScore": 0.40961379537452325,
+          "layer": 50
+        },
+        "scoreOnly": {
+          "pathScore": 0.4678722926678557,
+          "endScore": 0.40961379537452325,
+          "layer": 50
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1c703e0b9e818183",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.4674538548322776,
+          "endScore": 0.4054294170187423,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ba868b8f8b6d4b4e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4674960901269924,
+          "endScore": 0.4058517699658905,
+          "layer": 54
+        },
+        "scoreOnly": {
+          "pathScore": 0.4674960901269924,
+          "endScore": 0.4058517699658905,
+          "layer": 54
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d1924d0bdd7da95f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "58c457bf9da58726",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "aac7017153ec6539",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b06a70f99c92fac1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8912e86b299e2590",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4678588133145204,
+          "endScore": 0.4094790018411706,
+          "layer": 51
+        },
+        "scoreOnly": {
+          "pathScore": 0.4678588133145204,
+          "endScore": 0.4094790018411706,
+          "layer": 51
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6d277393865013e0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.4673374145004243,
+          "endScore": 0.4042650137002099,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e469cf44c451f4cb",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46823111565550224,
+          "endScore": 0.41320202525098904,
+          "layer": 47
+        },
+        "scoreOnly": {
+          "pathScore": 0.46823111565550224,
+          "endScore": 0.41320202525098904,
+          "layer": 47
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "22b5702de41ac32a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47093623469936463,
+          "endScore": 0.4402532156896128,
+          "layer": 36
+        },
+        "scoreOnly": {
+          "pathScore": 0.47093623469936463,
+          "endScore": 0.4402532156896128,
+          "layer": 36
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f64358260a2e82fe",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4684429709227303,
+          "endScore": 0.4153205779232696,
+          "layer": 45
+        },
+        "scoreOnly": {
+          "pathScore": 0.4684429709227303,
+          "endScore": 0.4153205779232696,
+          "layer": 45
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a103bd15f3c1b302",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691442468629068,
+          "endScore": 0.4223333373250347,
+          "layer": 40
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691442468629068,
+          "endScore": 0.4223333373250347,
+          "layer": 40
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "832d17b506ad665e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46823111565550224,
+          "endScore": 0.41320202525098904,
+          "layer": 47
+        },
+        "scoreOnly": {
+          "pathScore": 0.46823111565550224,
+          "endScore": 0.41320202525098904,
+          "layer": 47
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "01c0065706dac00b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46932148452073624,
+          "endScore": 0.4241057139033291,
+          "layer": 39
+        },
+        "scoreOnly": {
+          "pathScore": 0.46932148452073624,
+          "endScore": 0.4241057139033291,
+          "layer": 39
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "697819c2f62a8e19",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46892071185083717,
+          "endScore": 0.420097987204338,
+          "layer": 41
+        },
+        "scoreOnly": {
+          "pathScore": 0.46892071185083717,
+          "endScore": 0.420097987204338,
+          "layer": 41
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "5fd0d9809d81dfa4",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4671399652349961,
+          "endScore": 0.4022905210459278,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.4671399652349961,
+          "endScore": 0.4022905210459278,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "634efc96e0018e30",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "19dd7feb26b405e8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d477b96fbdc776ec",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "460ada85b8bc8f28",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47301295160451107,
+          "endScore": 0.4610203847410771,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47301295160451107,
+          "endScore": 0.4610203847410771,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b510c2d157dcf93c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4730932673340708,
+          "endScore": 0.46182354203667425,
+          "layer": 26
+        },
+        "scoreOnly": {
+          "pathScore": 0.4730932673340708,
+          "endScore": 0.46182354203667425,
+          "layer": 26
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7d19350e9f1a5105",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.47260071629202083,
+          "endScore": 0.4568980316161746,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2968e96dabd67d3a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4730478937653794,
+          "endScore": 0.46136980634976055,
+          "layer": 27
+        },
+        "scoreOnly": {
+          "pathScore": 0.4730478937653794,
+          "endScore": 0.46136980634976055,
+          "layer": 27
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a552a0fe3aabbd9a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "24b7ee72c1da6d75",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "972aae6032cb2937",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2f46ee0d7c06ecb9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f3b81f63084746cb",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47347709581476294,
+          "endScore": 0.4656618268435962,
+          "layer": 17
+        },
+        "scoreOnly": {
+          "pathScore": 0.47347709581476294,
+          "endScore": 0.4656618268435962,
+          "layer": 17
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6e1bcd544c7c66f2",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.47285219389845246,
+          "endScore": 0.45941280768049103,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "15404dabbe36124d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47257941403273673,
+          "endScore": 0.45668500902333364,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.47257941403273673,
+          "endScore": 0.45668500902333364,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "47ca9e6788f49fc8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47282891446237396,
+          "endScore": 0.45918001331970637,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.47282891446237396,
+          "endScore": 0.45918001331970637,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6195712a7bdbf71c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.473393949659362,
+          "endScore": 0.4648303652895862,
+          "layer": 18
+        },
+        "scoreOnly": {
+          "pathScore": 0.473393949659362,
+          "endScore": 0.4648303652895862,
+          "layer": 18
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "eb63244efbf1bd4a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47257941403273673,
+          "endScore": 0.45668500902333364,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.47257941403273673,
+          "endScore": 0.45668500902333364,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "49eee9dcd62d4b91",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4737398467515801,
+          "endScore": 0.4682893362117675,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4737398467515801,
+          "endScore": 0.4682893362117675,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "56b26d9005993dd1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319500300951,
+          "endScore": 0.46284089879106655,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319500300951,
+          "endScore": 0.46284089879106655,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8161678f2caf3e48",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47226061180130785,
+          "endScore": 0.4534969867090451,
+          "layer": 34
+        },
+        "scoreOnly": {
+          "pathScore": 0.47226061180130785,
+          "endScore": 0.4534969867090451,
+          "layer": 34
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "df7e3cb70579c7b2",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c9611e47b05c27a9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ed02ffa76e22ccc5",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "055b9de4460bc5ed",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4740003318983397,
+          "endScore": 0.4708941876793631,
+          "layer": 10
+        },
+        "scoreOnly": {
+          "pathScore": 0.4740003318983397,
+          "endScore": 0.4708941876793631,
+          "layer": 10
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "3e6ddc756cfb5437",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4740686191003824,
+          "endScore": 0.4715770596997907,
+          "layer": 8
+        },
+        "scoreOnly": {
+          "pathScore": 0.4740686191003824,
+          "endScore": 0.4715770596997907,
+          "layer": 8
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fc26782e533b8270",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.4736501812648043,
+          "endScore": 0.46739268134400974,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "284be40990bd2a12",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47335749679613265,
+          "endScore": 0.46446583665729313,
+          "layer": 19
+        },
+        "scoreOnly": {
+          "pathScore": 0.47335749679613265,
+          "endScore": 0.46446583665729313,
+          "layer": 19
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c6565c3500c85dae",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6e97fe3323c782d9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e3735c9f7c14eea4",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c694432f7b96493b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ad2cac4b968fe0d5",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4737202199836607,
+          "endScore": 0.4680930685325732,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.4737202199836607,
+          "endScore": 0.4680930685325732,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2937fa9875d54832",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "scoreOnly": {
+          "pathScore": 0.47319882116956463,
+          "endScore": 0.4628790803916125,
+          "layer": 24
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d37fb3b136f70561",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47332013805003187,
+          "endScore": 0.4640922491962853,
+          "layer": 21
+        },
+        "scoreOnly": {
+          "pathScore": 0.47332013805003187,
+          "endScore": 0.4640922491962853,
+          "layer": 21
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f32ee3cc48b5ee8b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4735319933172599,
+          "endScore": 0.4662108018685659,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.4735319933172599,
+          "endScore": 0.4662108018685659,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c018ea915467b2b0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47413517444356756,
+          "endScore": 0.4722426131316424,
+          "layer": 7
+        },
+        "scoreOnly": {
+          "pathScore": 0.47413517444356756,
+          "endScore": 0.4722426131316424,
+          "layer": 7
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "45fe82d4fd28698a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47332013805003187,
+          "endScore": 0.4640922491962853,
+          "layer": 21
+        },
+        "scoreOnly": {
+          "pathScore": 0.47332013805003187,
+          "endScore": 0.4640922491962853,
+          "layer": 21
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "570c4e58aa164764",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4743633506133371,
+          "endScore": 0.4745243748293378,
+          "layer": 5
+        },
+        "scoreOnly": {
+          "pathScore": 0.4743633506133371,
+          "endScore": 0.4745243748293378,
+          "layer": 5
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1c9e8a784fb6ef9b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47393602676081475,
+          "endScore": 0.4702511363041138,
+          "layer": 11
+        },
+        "scoreOnly": {
+          "pathScore": 0.47393602676081475,
+          "endScore": 0.4702511363041138,
+          "layer": 11
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a0d0b8e136f09b26",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4730013719041364,
+          "endScore": 0.4609045877373304,
+          "layer": 29
+        },
+        "scoreOnly": {
+          "pathScore": 0.4730013719041364,
+          "endScore": 0.4609045877373304,
+          "layer": 29
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "725cc734448b5bd0",
+        "earnedSouls": 4000,
+        "materialized": {
+          "pathScore": 0.47076907652884503,
+          "endScore": 0.4759052333958103,
+          "layer": 4
+        },
+        "scoreOnly": {
+          "pathScore": 0.47076907652884503,
+          "endScore": 0.4759052333958103,
+          "layer": 4
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "405669d2dd5ad94b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "df63eec68b23767b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0e2280aa0eda102c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ec2fdacc86f7182d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4692805916633717,
+          "endScore": 0.4610203847410771,
+          "layer": 29
+        },
+        "scoreOnly": {
+          "pathScore": 0.4692805916633717,
+          "endScore": 0.4610203847410771,
+          "layer": 29
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e19df2ba05068e6d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46936090739293146,
+          "endScore": 0.46182354203667425,
+          "layer": 27
+        },
+        "scoreOnly": {
+          "pathScore": 0.46936090739293146,
+          "endScore": 0.46182354203667425,
+          "layer": 27
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "13f5b6dacc96e677",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688683563508815,
+          "endScore": 0.4568980316161746,
+          "layer": 33
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a4c2f44b1156bde6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46931553382424007,
+          "endScore": 0.46136980634976055,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.46931553382424007,
+          "endScore": 0.46136980634976055,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "63197e0603d8f803",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f27e66c8730c08da",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fa4a1f18a8b0277a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "85b9c576243385c1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d1a278123cbf66b7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4697447358736236,
+          "endScore": 0.4656618268435962,
+          "layer": 18
+        },
+        "scoreOnly": {
+          "pathScore": 0.4697447358736236,
+          "endScore": 0.4656618268435962,
+          "layer": 18
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1e2990cb701cd667",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4691198339573131,
+          "endScore": 0.45941280768049103,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "852e4fcbcef2d4a7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688470540915973,
+          "endScore": 0.45668500902333364,
+          "layer": 34
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688470540915973,
+          "endScore": 0.45668500902333364,
+          "layer": 34
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "51f98b5c93e87142",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4690965545212346,
+          "endScore": 0.45918001331970637,
+          "layer": 32
+        },
+        "scoreOnly": {
+          "pathScore": 0.4690965545212346,
+          "endScore": 0.45918001331970637,
+          "layer": 32
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "dd3d4128587ea203",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46966158971822264,
+          "endScore": 0.4648303652895862,
+          "layer": 19
+        },
+        "scoreOnly": {
+          "pathScore": 0.46966158971822264,
+          "endScore": 0.4648303652895862,
+          "layer": 19
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f2c1aad4d961a623",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4688470540915973,
+          "endScore": 0.45668500902333364,
+          "layer": 34
+        },
+        "scoreOnly": {
+          "pathScore": 0.4688470540915973,
+          "endScore": 0.45668500902333364,
+          "layer": 34
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "da94a356245e1e6c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47000748681044074,
+          "endScore": 0.4682893362117675,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.47000748681044074,
+          "endScore": 0.4682893362117675,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "04451070b293b1b1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46946264306837066,
+          "endScore": 0.46284089879106655,
+          "layer": 26
+        },
+        "scoreOnly": {
+          "pathScore": 0.46946264306837066,
+          "endScore": 0.46284089879106655,
+          "layer": 26
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fde8fcb01d275f55",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4685282518601685,
+          "endScore": 0.4534969867090451,
+          "layer": 35
+        },
+        "scoreOnly": {
+          "pathScore": 0.4685282518601685,
+          "endScore": 0.4534969867090451,
+          "layer": 35
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "9b49f56fb9a62ecf",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "54c080c4b583273f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2035d67f956672b0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "bd25240e2aa0520f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46407164552467356,
+          "endScore": 0.40893092335409564,
+          "layer": 53
+        },
+        "scoreOnly": {
+          "pathScore": 0.46407164552467356,
+          "endScore": 0.40893092335409564,
+          "layer": 53
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "5264758984727122",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46413993272671633,
+          "endScore": 0.40961379537452325,
+          "layer": 51
+        },
+        "scoreOnly": {
+          "pathScore": 0.46413993272671633,
+          "endScore": 0.40961379537452325,
+          "layer": 51
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "19faeba69efc7b95",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "scoreOnly": {
+          "pathScore": 0.46372149489113823,
+          "endScore": 0.4054294170187423,
+          "layer": 56
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6259ba9c4ceb899a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46376373018585304,
+          "endScore": 0.4058517699658905,
+          "layer": 55
+        },
+        "scoreOnly": {
+          "pathScore": 0.46376373018585304,
+          "endScore": 0.4058517699658905,
+          "layer": 55
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "31a75ec56c25905a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "04e27a80aeddb806",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c0c1fdb957fbfea9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "78d46d43bfd54d29",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0905dc2d52cb81cc",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4641264533733811,
+          "endScore": 0.4094790018411706,
+          "layer": 52
+        },
+        "scoreOnly": {
+          "pathScore": 0.4641264533733811,
+          "endScore": 0.4094790018411706,
+          "layer": 52
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "85a3a28320b1bada",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "scoreOnly": {
+          "pathScore": 0.463605054559285,
+          "endScore": 0.4042650137002099,
+          "layer": 57
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "61874d1888977388",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4644987557143629,
+          "endScore": 0.41320202525098904,
+          "layer": 48
+        },
+        "scoreOnly": {
+          "pathScore": 0.4644987557143629,
+          "endScore": 0.41320202525098904,
+          "layer": 48
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "979b265e29e4715c",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4672038747582253,
+          "endScore": 0.4402532156896128,
+          "layer": 37
+        },
+        "scoreOnly": {
+          "pathScore": 0.4672038747582253,
+          "endScore": 0.4402532156896128,
+          "layer": 37
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "66960007b0765d44",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46471061098159094,
+          "endScore": 0.4153205779232696,
+          "layer": 46
+        },
+        "scoreOnly": {
+          "pathScore": 0.46471061098159094,
+          "endScore": 0.4153205779232696,
+          "layer": 46
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "14b2066fcd073b6a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46541188692176744,
+          "endScore": 0.4223333373250347,
+          "layer": 41
+        },
+        "scoreOnly": {
+          "pathScore": 0.46541188692176744,
+          "endScore": 0.4223333373250347,
+          "layer": 41
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0558f0488f48c4d4",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4644987557143629,
+          "endScore": 0.41320202525098904,
+          "layer": 48
+        },
+        "scoreOnly": {
+          "pathScore": 0.4644987557143629,
+          "endScore": 0.41320202525098904,
+          "layer": 48
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c3a7d3b38f6c5b34",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4655891245795969,
+          "endScore": 0.4241057139033291,
+          "layer": 40
+        },
+        "scoreOnly": {
+          "pathScore": 0.4655891245795969,
+          "endScore": 0.4241057139033291,
+          "layer": 40
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "353d72aacbb207a1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4651883519096978,
+          "endScore": 0.420097987204338,
+          "layer": 42
+        },
+        "scoreOnly": {
+          "pathScore": 0.4651883519096978,
+          "endScore": 0.420097987204338,
+          "layer": 42
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c11b2cfb188756c1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4634076052938568,
+          "endScore": 0.4022905210459278,
+          "layer": 58
+        },
+        "scoreOnly": {
+          "pathScore": 0.4634076052938568,
+          "endScore": 0.4022905210459278,
+          "layer": 58
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "e8c4c99184bb806a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7d5eeff978fc294f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "081c2f68d9a1b398",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "496c40e7e810df2d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4702679719572003,
+          "endScore": 0.4708941876793631,
+          "layer": 11
+        },
+        "scoreOnly": {
+          "pathScore": 0.4702679719572003,
+          "endScore": 0.4708941876793631,
+          "layer": 11
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "99f1b2ffa862cb72",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4703362591592431,
+          "endScore": 0.4715770596997907,
+          "layer": 9
+        },
+        "scoreOnly": {
+          "pathScore": 0.4703362591592431,
+          "endScore": 0.4715770596997907,
+          "layer": 9
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "63fa5bdfb6203b9b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "scoreOnly": {
+          "pathScore": 0.46991782132366494,
+          "endScore": 0.46739268134400974,
+          "layer": 16
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "bd2c54a78b6d4568",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4696251368549933,
+          "endScore": 0.46446583665729313,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.4696251368549933,
+          "endScore": 0.46446583665729313,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8e2af8ae59cc317e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "de6c65e7d050c403",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c9fdf69721f5f034",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c497ea7ae85179d3",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "7046d7b87c16c1d9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46998786004252135,
+          "endScore": 0.4680930685325732,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.46998786004252135,
+          "endScore": 0.4680930685325732,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2f39620dc255bf7e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "scoreOnly": {
+          "pathScore": 0.4694664612284253,
+          "endScore": 0.4628790803916125,
+          "layer": 25
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8dd271a574c9b58e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4695877781088925,
+          "endScore": 0.4640922491962853,
+          "layer": 22
+        },
+        "scoreOnly": {
+          "pathScore": 0.4695877781088925,
+          "endScore": 0.4640922491962853,
+          "layer": 22
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "212544d14d5b6f1f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4697996333761206,
+          "endScore": 0.4662108018685659,
+          "layer": 17
+        },
+        "scoreOnly": {
+          "pathScore": 0.4697996333761206,
+          "endScore": 0.4662108018685659,
+          "layer": 17
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0bcf58eca3494df7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4704028145024282,
+          "endScore": 0.4722426131316424,
+          "layer": 8
+        },
+        "scoreOnly": {
+          "pathScore": 0.4704028145024282,
+          "endScore": 0.4722426131316424,
+          "layer": 8
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "89faf2d1ebd5a5fc",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4695877781088925,
+          "endScore": 0.4640922491962853,
+          "layer": 22
+        },
+        "scoreOnly": {
+          "pathScore": 0.4695877781088925,
+          "endScore": 0.4640922491962853,
+          "layer": 22
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "50f89eb89a71d688",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47063099067219777,
+          "endScore": 0.4745243748293378,
+          "layer": 6
+        },
+        "scoreOnly": {
+          "pathScore": 0.47063099067219777,
+          "endScore": 0.4745243748293378,
+          "layer": 6
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c3bfb946e3a8ae11",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4702036668196754,
+          "endScore": 0.4702511363041138,
+          "layer": 12
+        },
+        "scoreOnly": {
+          "pathScore": 0.4702036668196754,
+          "endScore": 0.4702511363041138,
+          "layer": 12
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "0c2072ab608e31a9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46926901196299703,
+          "endScore": 0.4609045877373304,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.46926901196299703,
+          "endScore": 0.4609045877373304,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "05139713809be903",
+        "earnedSouls": 4000,
+        "materialized": {
+          "pathScore": 0.4762488021709298,
+          "endScore": 0.4745243748293378,
+          "layer": 4
+        },
+        "scoreOnly": {
+          "pathScore": 0.4762488021709298,
+          "endScore": 0.4745243748293378,
+          "layer": 4
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2925aa7031e7bcba",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.471206936078329,
+          "endScore": 0.4241057139033291,
+          "layer": 38
+        },
+        "scoreOnly": {
+          "pathScore": 0.471206936078329,
+          "endScore": 0.4241057139033291,
+          "layer": 38
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "9ffd23208fab4cb4",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "scoreOnly": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2812fb32bd958200",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "scoreOnly": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4566ee80f4240705",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "scoreOnly": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "a10f2d236a527176",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47065102645286283,
+          "endScore": 0.41854661764866774,
+          "layer": 42
+        },
+        "scoreOnly": {
+          "pathScore": 0.47065102645286283,
+          "endScore": 0.41854661764866774,
+          "layer": 42
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "068d598e1d35f525",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4707193136549056,
+          "endScore": 0.41922948966909535,
+          "layer": 41
+        },
+        "scoreOnly": {
+          "pathScore": 0.4707193136549056,
+          "endScore": 0.41922948966909535,
+          "layer": 41
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "13de8fc64feb95ef",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "scoreOnly": {
+          "pathScore": 0.47030087581932756,
+          "endScore": 0.4150451113133144,
+          "layer": 45
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ba8a3d01464c0dae",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4699699649265333,
+          "endScore": 0.41173600238537245,
+          "layer": 47
+        },
+        "scoreOnly": {
+          "pathScore": 0.4699699649265333,
+          "endScore": 0.41173600238537245,
+          "layer": 47
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "590e1de60ba87907",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "eaeaea03a223860b",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fa82ae07f65709d8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "dd5780c18ea3e9b1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "571b7e7b008db22f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47033268811406126,
+          "endScore": 0.4153632342606525,
+          "layer": 44
+        },
+        "scoreOnly": {
+          "pathScore": 0.47033268811406126,
+          "endScore": 0.4153632342606525,
+          "layer": 44
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "cb1313d0934630b0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "scoreOnly": {
+          "pathScore": 0.46981128929996524,
+          "endScore": 0.41014924611969183,
+          "layer": 49
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "068e779d886eea77",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4699653166058295,
+          "endScore": 0.41168951917833446,
+          "layer": 48
+        },
+        "scoreOnly": {
+          "pathScore": 0.4699653166058295,
+          "endScore": 0.41168951917833446,
+          "layer": 48
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "9e88d18273215939",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4722970224987149,
+          "endScore": 0.4350065781071887,
+          "layer": 36
+        },
+        "scoreOnly": {
+          "pathScore": 0.4722970224987149,
+          "endScore": 0.4350065781071887,
+          "layer": 36
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "5a3718a4bde13ae0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4701771718730575,
+          "endScore": 0.4138080718506151,
+          "layer": 46
+        },
+        "scoreOnly": {
+          "pathScore": 0.4701771718730575,
+          "endScore": 0.4138080718506151,
+          "layer": 46
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "64b3ac813b88198e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4708666206686557,
+          "endScore": 0.42070255980659615,
+          "layer": 40
+        },
+        "scoreOnly": {
+          "pathScore": 0.4708666206686557,
+          "endScore": 0.42070255980659615,
+          "layer": 40
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "50344b1064697541",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4699653166058295,
+          "endScore": 0.41168951917833446,
+          "layer": 48
+        },
+        "scoreOnly": {
+          "pathScore": 0.4699653166058295,
+          "endScore": 0.41168951917833446,
+          "layer": 48
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "be2b7074f2ec6530",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47064604323685794,
+          "endScore": 0.4184967854886193,
+          "layer": 43
+        },
+        "scoreOnly": {
+          "pathScore": 0.47064604323685794,
+          "endScore": 0.4184967854886193,
+          "layer": 43
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ece99022aa90334a",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.46961384003453704,
+          "endScore": 0.4081747534654097,
+          "layer": 52
+        },
+        "scoreOnly": {
+          "pathScore": 0.46961384003453704,
+          "endScore": 0.4081747534654097,
+          "layer": 52
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "c58e6a6444e46c91",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47562529830917283,
+          "endScore": 0.4682893362117675,
+          "layer": 12
+        },
+        "scoreOnly": {
+          "pathScore": 0.47562529830917283,
+          "endScore": 0.4682893362117675,
+          "layer": 12
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1cc0e42b03821da0",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "49b5357805f7f9a8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1b9336cf69dd80b6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ef3702ca2122206f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47511808910635717,
+          "endScore": 0.4632172441836111,
+          "layer": 22
+        },
+        "scoreOnly": {
+          "pathScore": 0.47511808910635717,
+          "endScore": 0.4632172441836111,
+          "layer": 22
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b63127feec642e63",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4751984048359169,
+          "endScore": 0.4640204014792082,
+          "layer": 21
+        },
+        "scoreOnly": {
+          "pathScore": 0.4751984048359169,
+          "endScore": 0.4640204014792082,
+          "layer": 21
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d8dba5e420cefa78",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "scoreOnly": {
+          "pathScore": 0.4747058537938669,
+          "endScore": 0.45909489105870854,
+          "layer": 30
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4eaacc4f5f85797e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47479525946632484,
+          "endScore": 0.459988947783288,
+          "layer": 28
+        },
+        "scoreOnly": {
+          "pathScore": 0.47479525946632484,
+          "endScore": 0.459988947783288,
+          "layer": 28
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "5fd007b10c540acc",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "49e2bae94b26ceef",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "1c296032359c8c76",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "cc2a0d67d1a98860",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fc7532926528ad76",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4752244615157084,
+          "endScore": 0.4642809682771237,
+          "layer": 19
+        },
+        "scoreOnly": {
+          "pathScore": 0.4752244615157084,
+          "endScore": 0.4642809682771237,
+          "layer": 19
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "4ebcc38734330dd7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "scoreOnly": {
+          "pathScore": 0.4745995595993979,
+          "endScore": 0.4580319491140185,
+          "layer": 31
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "77698c9452be64db",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47588757200793086,
+          "endScore": 0.47091207319934847,
+          "layer": 8
+        },
+        "scoreOnly": {
+          "pathScore": 0.47588757200793086,
+          "endScore": 0.47091207319934847,
+          "layer": 8
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "ea9160ef93f7812e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4761370724375682,
+          "endScore": 0.4734070774957212,
+          "layer": 5
+        },
+        "scoreOnly": {
+          "pathScore": 0.4761370724375682,
+          "endScore": 0.4734070774957212,
+          "layer": 5
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "93260772842f0c27",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47666070914450004,
+          "endScore": 0.4786434445650398,
+          "layer": 0
+        },
+        "scoreOnly": {
+          "pathScore": 0.47666070914450004,
+          "endScore": 0.4786434445650398,
+          "layer": 0
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "dcae77c2b6ce50b1",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47588757200793086,
+          "endScore": 0.47091207319934847,
+          "layer": 8
+        },
+        "scoreOnly": {
+          "pathScore": 0.47588757200793086,
+          "endScore": 0.47091207319934847,
+          "layer": 8
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "edacb6626090f0a7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4764721906440951,
+          "endScore": 0.4767582595609898,
+          "layer": 1
+        },
+        "scoreOnly": {
+          "pathScore": 0.4764721906440951,
+          "endScore": 0.4767582595609898,
+          "layer": 1
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "61a6e475f867cf6d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4740079775022533,
+          "endScore": 0.45211612814257257,
+          "layer": 34
+        },
+        "scoreOnly": {
+          "pathScore": 0.4740079775022533,
+          "endScore": 0.45211612814257257,
+          "layer": 34
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "d81825396d564903",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47638688802757706,
+          "endScore": 0.4759052333958103,
+          "layer": 2
+        },
+        "scoreOnly": {
+          "pathScore": 0.47638688802757706,
+          "endScore": 0.4759052333958103,
+          "layer": 2
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "3e1d7afcf1b783dc",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "fd60971a5aba51b7",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "46e118734e9bdee6",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "889e9b5b1f06898e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47588578345593235,
+          "endScore": 0.4708941876793631,
+          "layer": 9
+        },
+        "scoreOnly": {
+          "pathScore": 0.47588578345593235,
+          "endScore": 0.4708941876793631,
+          "layer": 9
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "01c85d6d03810963",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4759540706579751,
+          "endScore": 0.4715770596997907,
+          "layer": 7
+        },
+        "scoreOnly": {
+          "pathScore": 0.4759540706579751,
+          "endScore": 0.4715770596997907,
+          "layer": 7
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6f430e3997d5cf87",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "scoreOnly": {
+          "pathScore": 0.475535632822397,
+          "endScore": 0.46739268134400974,
+          "layer": 14
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "74e24bf717d926aa",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4752429483537254,
+          "endScore": 0.46446583665729313,
+          "layer": 18
+        },
+        "scoreOnly": {
+          "pathScore": 0.4752429483537254,
+          "endScore": 0.46446583665729313,
+          "layer": 18
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "36c2cfa321f03737",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "9cbbdb3aa2d62c72",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "9271f01aecb67b5d",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "26f5ce1ba44deaf9",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "2c7a428756c156cd",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4756056715412534,
+          "endScore": 0.4680930685325732,
+          "layer": 13
+        },
+        "scoreOnly": {
+          "pathScore": 0.4756056715412534,
+          "endScore": 0.4680930685325732,
+          "layer": 13
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "49f36c0a73e1969e",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "scoreOnly": {
+          "pathScore": 0.4750842727271573,
+          "endScore": 0.4628790803916125,
+          "layer": 23
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "96b1a0261f722652",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4752055896076246,
+          "endScore": 0.4640922491962853,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.4752055896076246,
+          "endScore": 0.4640922491962853,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "f2d3495ee80cf787",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47541744487485266,
+          "endScore": 0.4662108018685659,
+          "layer": 15
+        },
+        "scoreOnly": {
+          "pathScore": 0.47541744487485266,
+          "endScore": 0.4662108018685659,
+          "layer": 15
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "8be434af5259a3b8",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4760206260011603,
+          "endScore": 0.4722426131316424,
+          "layer": 6
+        },
+        "scoreOnly": {
+          "pathScore": 0.4760206260011603,
+          "endScore": 0.4722426131316424,
+          "layer": 6
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "6481a036ae7d725f",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.4752055896076246,
+          "endScore": 0.4640922491962853,
+          "layer": 20
+        },
+        "scoreOnly": {
+          "pathScore": 0.4752055896076246,
+          "endScore": 0.4640922491962853,
+          "layer": 20
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b7c65773191ea209",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47582147831840743,
+          "endScore": 0.4702511363041138,
+          "layer": 10
+        },
+        "scoreOnly": {
+          "pathScore": 0.47582147831840743,
+          "endScore": 0.4702511363041138,
+          "layer": 10
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      },
+      {
+        "pathId": "b7e582e5fc642f60",
+        "earnedSouls": 3600,
+        "materialized": {
+          "pathScore": 0.47488682346172906,
+          "endScore": 0.4609045877373304,
+          "layer": 27
+        },
+        "scoreOnly": {
+          "pathScore": 0.47488682346172906,
+          "endScore": 0.4609045877373304,
+          "layer": 27
+        },
+        "absDifference": {
+          "pathScore": 0,
+          "endScore": 0
+        }
+      }
+    ]
+  },
+  "stage2": {
+    "originalNodeContinuation": {
+      "runtimeMs": 60303.345055000005,
+      "steps": 128,
+      "duplicateStates": 1397,
+      "maxCandidatePool": 3469,
+      "terminalCandidates": 8,
+      "frontSize": 1,
+      "reached40k": true,
+      "meetsKnownOutput": true,
+      "qualifying": [
+        {
+          "id": "b5dc73df676543aa",
+          "pathScore": 0.4417724595001579,
+          "endScore": 0.44591734273876754
+        }
+      ],
+      "counterDelta": {
+        "evaluations": 30816,
+        "transitionCalls": 872,
+        "generatedStates": 304188,
+        "projectionSaveTransitions": 0,
+        "horizonVectorEvaluations": 0,
+        "horizonVectorCacheHits": 0,
+        "horizonVectorCacheMisses": 0
+      }
+    },
+    "fullScoreOnlyKnownPath": true,
+    "materializedVsScoreOnlyFullSearchEquivalent": true
+  },
+  "stage3": {
+    "baseline": {
+      "wallclockTotalMs": 70366.02674999999,
+      "searchRuntimeMs": 69914.82009000001,
+      "retentionRuntimeMs": 1302.0145649999977,
+      "frontierMaintenanceRuntimeMs": 1300.802371999991,
+      "paretoRuntimeMs": 1536.9652579999602,
+      "trajectoryScoreRuntimeMs": 67624.85928800015,
+      "evaluationRuntimeMs": 13281.710110000044,
+      "transitionRuntimeMs": 428.1483709999229,
+      "pathReconstructionRuntimeMs": 33098.79919900048,
+      "dedupeRuntimeMs": 68141.70694100003,
+      "terminalCompletionRuntimeMs": 24.584269000006316,
+      "evaluations": 29636,
+      "generatedStates": 151978,
+      "searchGeneratedStates": 137238,
+      "normalTransitionCalls": 663,
+      "retentionPools": 143,
+      "paretoCandidates": 133869,
+      "duplicateStates": 3369,
+      "steps": 143,
+      "maxCandidatePool": 3469,
+      "searchComplete": true,
+      "finalFront": [
+        {
+          "id": "266bb03a2ab9a153",
+          "pathScore": 0.44083968386617134,
+          "endScore": 0.44591734273876754,
+          "earnedSouls": 40000,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_improved_bullet_armor",
+            "upgrade_magic_shield"
+          ],
+          "transactions": 43
+        }
+      ],
+      "cacheCounters": {
+        "metricHits": 13629305,
+        "metricMisses": 29636,
+        "vectorHits": 133879,
+        "vectorMisses": 137844,
+        "pointsHits": 1,
+        "pointsMisses": 137844,
+        "commonHorizonVectorEvaluations": 0,
+        "commonHorizonVectorCacheHits": 0,
+        "commonHorizonVectorCacheMisses": 0
+      },
+      "commonHorizon": null
+    },
+    "materialized": {
+      "wallclockTotalMs": 103834.153945,
+      "searchRuntimeMs": 103419.61606599999,
+      "retentionRuntimeMs": 22230.245609999954,
+      "frontierMaintenanceRuntimeMs": 22157.96277600003,
+      "paretoRuntimeMs": 1783.936239999748,
+      "trajectoryScoreRuntimeMs": 100634.64145100821,
+      "evaluationRuntimeMs": 18661.413792996667,
+      "transitionRuntimeMs": 448.8234439996304,
+      "pathReconstructionRuntimeMs": 51608.761878985795,
+      "dedupeRuntimeMs": 80689.97196400014,
+      "terminalCompletionRuntimeMs": 20.511598000011873,
+      "evaluations": 43655,
+      "generatedStates": 165683,
+      "searchGeneratedStates": 150931,
+      "normalTransitionCalls": 729,
+      "retentionPools": 180,
+      "paretoCandidates": 149343,
+      "duplicateStates": 1588,
+      "steps": 180,
+      "maxCandidatePool": 3469,
+      "searchComplete": true,
+      "finalFront": [
+        {
+          "id": "7de40e21ca580f98",
+          "pathScore": 0.4459787376449376,
+          "endScore": 0.4537125453440384,
+          "earnedSouls": 40000,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_improved_bullet_armor",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_tech_purge"
+          ],
+          "transactions": 39
+        }
+      ],
+      "cacheCounters": {
+        "metricHits": 22373871,
+        "metricMisses": 43655,
+        "vectorHits": 90155,
+        "vectorMisses": 151549,
+        "pointsHits": 363,
+        "pointsMisses": 210549,
+        "commonHorizonVectorEvaluations": 59362,
+        "commonHorizonVectorCacheHits": 0,
+        "commonHorizonVectorCacheMisses": 59362
+      },
+      "commonHorizon": {
+        "enabled": true,
+        "mode": "materialized",
+        "appliedPools": 111,
+        "skippedPools": 69,
+        "projectedCandidates": 59000,
+        "scoreOnlyProjections": 0,
+        "materializedProjectedNodes": 59000,
+        "saveTransitions": 59000,
+        "horizonVectorEvaluations": 59362,
+        "horizonVectorCacheHits": 0,
+        "horizonVectorCacheMisses": 59362,
+        "horizonVectorRequests": 59362,
+        "additionalCarryEvaluations": 0,
+        "projectionRuntimeMs": 1055.0409299999883,
+        "materializationRuntimeMs": 1055.0995239998156,
+        "horizonScoreRuntimeMs": 20596.37701100181,
+        "shadowRetentionRuntimeMs": 22230.619138000213,
+        "peakProjectedCandidates": 3113,
+        "peakProjectionEntries": 3113,
+        "maxSaveStepsPerCandidate": 1,
+        "horizons": {
+          "1200": 2,
+          "1600": 1,
+          "2000": 1,
+          "2400": 1,
+          "2800": 1,
+          "3200": 1,
+          "3600": 1,
+          "4000": 1,
+          "4400": 1,
+          "4800": 2,
+          "5200": 1,
+          "5600": 1,
+          "6000": 2,
+          "6400": 1,
+          "6800": 1,
+          "7200": 1,
+          "7600": 1,
+          "8000": 1,
+          "8400": 1,
+          "8800": 1,
+          "9200": 1,
+          "9600": 1,
+          "10000": 1,
+          "10400": 1,
+          "10800": 1,
+          "11200": 1,
+          "11600": 1,
+          "12000": 1,
+          "12400": 1,
+          "12800": 1,
+          "13200": 1,
+          "13600": 2,
+          "14000": 1,
+          "14400": 1,
+          "14800": 1,
+          "15200": 1,
+          "15600": 1,
+          "16400": 1,
+          "16800": 1,
+          "17200": 1,
+          "17600": 2,
+          "18000": 1,
+          "18800": 1,
+          "19200": 1,
+          "20000": 1,
+          "20800": 1,
+          "21200": 1,
+          "22000": 1,
+          "22400": 1,
+          "25200": 1,
+          "25600": 1,
+          "26400": 1,
+          "26800": 1,
+          "30000": 1,
+          "30800": 1,
+          "31200": 1,
+          "32400": 1,
+          "34400": 1,
+          "36800": 1,
+          "37200": 1,
+          "37600": 1,
+          "38000": 1,
+          "38400": 1,
+          "39200": 1,
+          "39600": 1,
+          "40000": 41
+        },
+        "skippedReasons": {
+          "single-economic-horizon": 3,
+          "pool-spans-beyond-next-economic-horizon": 66
+        }
+      }
+    },
+    "scoreOnly": {
+      "wallclockTotalMs": 91617.88843200004,
+      "searchRuntimeMs": 91208.74959299999,
+      "retentionRuntimeMs": 12194.76759600034,
+      "frontierMaintenanceRuntimeMs": 12182.898974000302,
+      "paretoRuntimeMs": 1733.7962590006064,
+      "trajectoryScoreRuntimeMs": 88604.53346398086,
+      "evaluationRuntimeMs": 17762.11127099546,
+      "transitionRuntimeMs": 430.4638820000109,
+      "pathReconstructionRuntimeMs": 40759.056158999185,
+      "dedupeRuntimeMs": 78532.82948599997,
+      "terminalCompletionRuntimeMs": 11.379119999997783,
+      "evaluations": 43655,
+      "generatedStates": 165683,
+      "searchGeneratedStates": 150931,
+      "normalTransitionCalls": 729,
+      "retentionPools": 180,
+      "paretoCandidates": 149343,
+      "duplicateStates": 1588,
+      "steps": 180,
+      "maxCandidatePool": 3469,
+      "searchComplete": true,
+      "finalFront": [
+        {
+          "id": "7de40e21ca580f98",
+          "pathScore": 0.4459787376449376,
+          "endScore": 0.4537125453440384,
+          "earnedSouls": 40000,
+          "inventory": [
+            "upgrade_titan_round",
+            "upgrade_suppressor",
+            "upgrade_regenerating_bullet_shield",
+            "upgrade_blitz_bullets",
+            "upgrade_chonky",
+            "upgrade_soaring_spirit",
+            "upgrade_weighted_shots",
+            "upgrade_improved_bullet_armor",
+            "upgrade_pristine_emblem",
+            "upgrade_reinforcing_casings",
+            "upgrade_bullet_resist_shredder",
+            "upgrade_tech_purge"
+          ],
+          "transactions": 39
+        }
+      ],
+      "cacheCounters": {
+        "metricHits": 15831533,
+        "metricMisses": 43655,
+        "vectorHits": 90155,
+        "vectorMisses": 151549,
+        "pointsHits": 59363,
+        "pointsMisses": 151549,
+        "commonHorizonVectorEvaluations": 59362,
+        "commonHorizonVectorCacheHits": 0,
+        "commonHorizonVectorCacheMisses": 59362
+      },
+      "commonHorizon": {
+        "enabled": true,
+        "mode": "score-only",
+        "appliedPools": 111,
+        "skippedPools": 69,
+        "projectedCandidates": 59000,
+        "scoreOnlyProjections": 59000,
+        "materializedProjectedNodes": 0,
+        "saveTransitions": 0,
+        "horizonVectorEvaluations": 59362,
+        "horizonVectorCacheHits": 0,
+        "horizonVectorCacheMisses": 59362,
+        "horizonVectorRequests": 59362,
+        "additionalCarryEvaluations": 0,
+        "projectionRuntimeMs": 10678.954943001183,
+        "materializationRuntimeMs": 0,
+        "horizonScoreRuntimeMs": 10672.066733001411,
+        "shadowRetentionRuntimeMs": 12195.067309999693,
+        "peakProjectedCandidates": 3113,
+        "peakProjectionEntries": 0,
+        "maxSaveStepsPerCandidate": 0,
+        "horizons": {
+          "1200": 2,
+          "1600": 1,
+          "2000": 1,
+          "2400": 1,
+          "2800": 1,
+          "3200": 1,
+          "3600": 1,
+          "4000": 1,
+          "4400": 1,
+          "4800": 2,
+          "5200": 1,
+          "5600": 1,
+          "6000": 2,
+          "6400": 1,
+          "6800": 1,
+          "7200": 1,
+          "7600": 1,
+          "8000": 1,
+          "8400": 1,
+          "8800": 1,
+          "9200": 1,
+          "9600": 1,
+          "10000": 1,
+          "10400": 1,
+          "10800": 1,
+          "11200": 1,
+          "11600": 1,
+          "12000": 1,
+          "12400": 1,
+          "12800": 1,
+          "13200": 1,
+          "13600": 2,
+          "14000": 1,
+          "14400": 1,
+          "14800": 1,
+          "15200": 1,
+          "15600": 1,
+          "16400": 1,
+          "16800": 1,
+          "17200": 1,
+          "17600": 2,
+          "18000": 1,
+          "18800": 1,
+          "19200": 1,
+          "20000": 1,
+          "20800": 1,
+          "21200": 1,
+          "22000": 1,
+          "22400": 1,
+          "25200": 1,
+          "25600": 1,
+          "26400": 1,
+          "26800": 1,
+          "30000": 1,
+          "30800": 1,
+          "31200": 1,
+          "32400": 1,
+          "34400": 1,
+          "36800": 1,
+          "37200": 1,
+          "37600": 1,
+          "38000": 1,
+          "38400": 1,
+          "39200": 1,
+          "39600": 1,
+          "40000": 41
+        },
+        "skippedReasons": {
+          "single-economic-horizon": 3,
+          "pool-spans-beyond-next-economic-horizon": 66
+        }
+      }
+    },
+    "deltas": {
+      "materializedVsBaseline": {
+        "wallclockTotalMs": 33468.12719500001,
+        "searchRuntimeMs": 33504.79597599998,
+        "retentionRuntimeMs": 20928.231044999957,
+        "frontierMaintenanceRuntimeMs": 20857.16040400004,
+        "paretoRuntimeMs": 246.9709819997879,
+        "trajectoryScoreRuntimeMs": 33009.78216300806,
+        "evaluationRuntimeMs": 5379.703682996624,
+        "transitionRuntimeMs": 20.67507299970748,
+        "pathReconstructionRuntimeMs": 18509.962679985314,
+        "dedupeRuntimeMs": 12548.265023000116,
+        "terminalCompletionRuntimeMs": -4.072670999994443,
+        "evaluations": 14019,
+        "generatedStates": 13705,
+        "searchGeneratedStates": 13693,
+        "normalTransitionCalls": 66,
+        "retentionPools": 37,
+        "paretoCandidates": 15474,
+        "duplicateStates": -1781,
+        "steps": 37,
+        "maxCandidatePool": 0
+      },
+      "scoreOnlyVsBaseline": {
+        "wallclockTotalMs": 21251.861682000046,
+        "searchRuntimeMs": 21293.929502999978,
+        "retentionRuntimeMs": 10892.753031000342,
+        "frontierMaintenanceRuntimeMs": 10882.09660200031,
+        "paretoRuntimeMs": 196.8310010006462,
+        "trajectoryScoreRuntimeMs": 20979.674175980705,
+        "evaluationRuntimeMs": 4480.401160995418,
+        "transitionRuntimeMs": 2.3155110000880086,
+        "pathReconstructionRuntimeMs": 7660.256959998704,
+        "dedupeRuntimeMs": 10391.122544999947,
+        "terminalCompletionRuntimeMs": -13.205149000008532,
+        "evaluations": 14019,
+        "generatedStates": 13705,
+        "searchGeneratedStates": 13693,
+        "normalTransitionCalls": 66,
+        "retentionPools": 37,
+        "paretoCandidates": 15474,
+        "duplicateStates": -1781,
+        "steps": 37,
+        "maxCandidatePool": 0
+      },
+      "scoreOnlyVsMaterialized": {
+        "wallclockTotalMs": -12216.265512999962,
+        "searchRuntimeMs": -12210.866473000002,
+        "retentionRuntimeMs": -10035.478013999615,
+        "frontierMaintenanceRuntimeMs": -9975.063801999728,
+        "paretoRuntimeMs": -50.1399809991417,
+        "trajectoryScoreRuntimeMs": -12030.107987027353,
+        "evaluationRuntimeMs": -899.302522001206,
+        "transitionRuntimeMs": -18.359561999619473,
+        "pathReconstructionRuntimeMs": -10849.70571998661,
+        "dedupeRuntimeMs": -2157.142478000169,
+        "terminalCompletionRuntimeMs": -9.132478000014089,
+        "evaluations": 0,
+        "generatedStates": 0,
+        "searchGeneratedStates": 0,
+        "normalTransitionCalls": 0,
+        "retentionPools": 0,
+        "paretoCandidates": 0,
+        "duplicateStates": 0,
+        "steps": 0,
+        "maxCandidatePool": 0
+      }
+    },
+    "semanticSearchCheck": {
+      "normalizedSelectionTraceEqual": true,
+      "workShapeEqual": true,
+      "finalFrontEqual": true,
+      "workShapeKeys": [
+        "evaluations",
+        "generatedStates",
+        "searchGeneratedStates",
+        "normalTransitionCalls",
+        "retentionPools",
+        "paretoCandidates",
+        "duplicateStates",
+        "steps",
+        "maxCandidatePool"
+      ]
+    },
+    "costDecomposition": {
+      "directProjectionAndScore": {
+        "materializedMs": 21651.476535001624,
+        "materializedNodeCreationMs": 1055.0995239998156,
+        "materializedHorizonScoreMs": 20596.37701100181,
+        "scoreOnlyMs": 10678.954943001183,
+        "scoreOnlyMaterializedNodeCreationMs": 0,
+        "scoreOnlyHorizonScoreMs": 10672.066733001411,
+        "deltaScoreOnlyMinusMaterializedMs": -10972.521592000441
+      },
+      "additionalParetoRetentionVsBaseline": {
+        "materializedRetentionMs": 20928.231044999957,
+        "scoreOnlyRetentionMs": 10892.753031000342,
+        "materializedParetoMs": 246.9709819997879,
+        "scoreOnlyParetoMs": 196.8310010006462,
+        "materializedFrontierMaintenanceMs": 20857.16040400004,
+        "scoreOnlyFrontierMaintenanceMs": 10882.09660200031
+      },
+      "changedSearchTreeVsBaseline": {
+        "scoreOnlyTotalOverheadMs": 21251.861682000046,
+        "scoreOnlySearchRuntimeOverheadMs": 21293.929502999978,
+        "extraEvaluations": 14019,
+        "extraGeneratedStates": 13705,
+        "extraSearchGeneratedStates": 13693,
+        "extraTransitionCalls": 66,
+        "extraRetentionPools": 37,
+        "extraParetoCandidates": 15474,
+        "evaluationRuntimeDeltaMs": 4480.401160995418,
+        "transitionRuntimeDeltaMs": 2.3155110000880086,
+        "trajectoryScoreRuntimeDeltaMs": 20979.674175980705
+      },
+      "materializationImplementationCost": {
+        "totalRuntimeDifferenceMaterializedMinusScoreOnlyMs": 12216.265512999962,
+        "retentionRuntimeDifferenceMaterializedMinusScoreOnlyMs": 10035.478013999615,
+        "pathReconstructionDifferenceMaterializedMinusScoreOnlyMs": 10849.70571998661,
+        "trajectoryScoreDifferenceMaterializedMinusScoreOnlyMs": 12030.107987027353
+      }
+    }
+  },
+  "warnings": []
+}
