@@ -1,0 +1,26 @@
+name: optimizer search divergence diagnosis
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+    paths:
+      - tools/optimizer-search-divergence-diagnosis.mjs
+      - .github/workflows/optimizer-search-divergence-diagnosis.yml
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run focused Warden weapon divergence trace
+        run: node tools/optimizer-search-divergence-diagnosis.mjs --output artifacts/search-divergence-diagnosis/results.json
+      - name: Upload diagnosis artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: search-divergence-diagnosis
+          path: artifacts/search-divergence-diagnosis/results.json
