@@ -1,0 +1,45 @@
+name: optimizer carry objective calibration
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  carry-objective-calibration:
+    if: contains(github.event.head_commit.message, '[carry-objective-calibration]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run fixed-candidate carry objective calibration grid
+        run: node tools/optimizer-carry-objective-calibration.mjs --output artifacts/carry-objective-calibration/results.json
+      - name: Upload calibration artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-carry-objective-calibration
+          path: artifacts/carry-objective-calibration/results.json
+          if-no-files-found: error
+      - name: Store calibration evidence on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/carry-objective-calibration"
+          mkdir -p "$target"
+          cp artifacts/carry-objective-calibration/results.json "$target/results.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          if git diff --cached --quiet; then
+            echo "No calibration changes to commit."
+          else
+            git commit -m "data(benchmark): record carry objective calibration results"
+            git push origin HEAD:feature/optimizer-next
+          fi
