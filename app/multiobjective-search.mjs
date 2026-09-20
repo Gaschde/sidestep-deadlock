@@ -1071,7 +1071,9 @@ export function runControlledMultiobjectiveBeamCarry({
       };
       if (retentionAudit && shadow.applied) {
         const auditStartedAt = performance.now();
+        const baselineRetentionStartedAt = performance.now();
         const baselineSelection = selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey);
+        const baselineAuditRetentionRuntimeMs = performance.now() - baselineRetentionStartedAt;
         const baselineSet = new Set(baselineSelection.selected);
         const commonSet = new Set(selection.selected);
         const added = selection.selected.filter((node) => !baselineSet.has(node));
@@ -1079,12 +1081,14 @@ export function runControlledMultiobjectiveBeamCarry({
         const overlapCount = baselineSelection.selected.reduce(
           (sum, node) => sum + Number(commonSet.has(node)), 0
         );
+        const exactLayerStartedAt = performance.now();
         const baselineLayers = exactPathEndLayerIndices(unique, nodeVector);
         const commonLayers = exactPathEndLayerIndices(unique, (node) => {
           const vector = auditHorizonVectors.get(node);
           if (!vector) throw new Error("Audit horizon vector missing for applied pool.");
           return vector;
         });
+        const exactLayerRuntimeMs = performance.now() - exactLayerStartedAt;
         const describe = (node) => {
           const baselineVector = nodeVector(node);
           const commonVector = auditHorizonVectors.get(node);
@@ -1121,13 +1125,12 @@ export function runControlledMultiobjectiveBeamCarry({
           horizonVectorRequests: shadow.horizonVectorRequests || 0,
           horizonScoringRuntimeMs: shadow.horizonScoreRuntimeMs || 0,
           retentionRuntimeMs: shadowRetentionRuntimeMs,
-          baselineAuditRetentionRuntimeMs: null,
+          baselineAuditRetentionRuntimeMs,
+          exactLayerRuntimeMs,
           baselineLayerSizes: baselineSelection.metadata.layerSizes,
           commonHorizonLayerSizes: selection.metadata.layerSizes,
           originKeys: []
         };
-        const baselineAuditFinishedAt = performance.now();
-        pool.baselineAuditRetentionRuntimeMs = baselineAuditFinishedAt - auditStartedAt;
         retentionAudit.pools.push(pool);
         for (const node of added) {
           pool.originKeys.push(registerAuditOrigin(node, poolIndex, steps));
