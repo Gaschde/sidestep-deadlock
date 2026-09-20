@@ -456,7 +456,7 @@ test("baseline runner is unchanged when both common-horizon flags are omitted ve
     data,
     heroId: "warden",
     damageFocus: "weapon",
-    itemIds: [],
+    itemIds: ["upgrade_rapid_rounds"],
     budget: 800,
     milestones: [800],
     slotUnlocks,
