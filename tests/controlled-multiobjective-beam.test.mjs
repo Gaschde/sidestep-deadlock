@@ -449,6 +449,40 @@ function canonicalData() {
   });
 }
 
+test("baseline runner is unchanged when both common-horizon flags are omitted versus explicitly off", () => {
+  const data = canonicalData();
+  const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
+  const args = {
+    data,
+    heroId: "warden",
+    damageFocus: "weapon",
+    itemIds: [],
+    budget: 800,
+    milestones: [800],
+    slotUnlocks,
+    beamWidth: 4,
+    maxSteps: 10,
+    timeMs: Infinity,
+    referenceTimeMs: 100
+  };
+  const implicit = runControlledMultiobjectiveBeamCarry(args);
+  const explicit = runControlledMultiobjectiveBeamCarry({
+    ...args,
+    commonHorizonShadow: false,
+    commonHorizonScoreOnlyShadow: false
+  });
+  const compact = (result) => result.front.map((entry) => ({
+    pathScore: entry.pathScore,
+    endScore: entry.endScore,
+    earnedSouls: entry.state.earnedSouls,
+    inventory: entry.state.inventory,
+    events: entry.state.events
+  }));
+  assert.deepEqual(compact(implicit), compact(explicit));
+  assert.equal(Object.hasOwn(implicit.telemetry, "commonHorizonShadow"), false);
+  assert.equal(Object.hasOwn(explicit.telemetry, "commonHorizonShadow"), false);
+});
+
 test("shared browser-safe Multiobjective kernel reaches 40k for Warden focuses and Venator Weapon", () => {
   const data = canonicalData();
   const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
