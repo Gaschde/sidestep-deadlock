@@ -719,6 +719,7 @@ export function runControlledMultiobjectiveBeamCarry({
     pools: [],
     origins: new Map(),
     lineages: new WeakMap(),
+    originKeysByNode: new WeakMap(),
     comparisonRuntimeMs: 0,
     classificationRuntimeMs: 0
   } : null;
@@ -729,6 +730,9 @@ export function runControlledMultiobjectiveBeamCarry({
     const lineage = existing ? new Set(existing) : new Set();
     lineage.add(key);
     retentionAudit.lineages.set(node, lineage);
+    const directKeys = retentionAudit.originKeysByNode.get(node) || new Set();
+    directKeys.add(key);
+    retentionAudit.originKeysByNode.set(node, directKeys);
     retentionAudit.origins.set(key, {
       key,
       poolIndex,
@@ -1240,7 +1244,26 @@ export function runControlledMultiobjectiveBeamCarry({
   let finalizedRetentionAudit = null;
   if (retentionAudit) {
     const classifyStartedAt = performance.now();
+    const directTerminalCounts = new Map();
+    const directFinalFrontCounts = new Map();
+    const directSelectedCounts = new Map();
+    const collectDirectAncestors = (node, counts) => {
+      const seen = new Set();
+      for (let current = node; current; current = current.parent) {
+        const keys = retentionAudit.originKeysByNode.get(current);
+        if (!keys?.size) continue;
+        for (const key of keys) {
+          if (seen.has(key)) continue;
+          counts.set(key, (counts.get(key) || 0) + 1);
+          seen.add(key);
+        }
+      }
+    };
+
+    for (const node of terminalNodes.values()) collectDirectAncestors(node, directTerminalCounts);
+
     for (const entry of finalEntries) {
+      collectDirectAncestors(entry.node, directFinalFrontCounts);
       const lineage = retentionAudit.lineages.get(entry.node);
       if (!lineage?.size) continue;
       for (const key of lineage) {
@@ -1248,14 +1271,27 @@ export function runControlledMultiobjectiveBeamCarry({
         if (origin) origin.finalFrontDescendantCount += 1;
       }
     }
+
     const type4Distinguishable = finalEntries.length === 1;
     if (type4Distinguishable) {
+      collectDirectAncestors(finalEntries[0].node, directSelectedCounts);
       const lineage = retentionAudit.lineages.get(finalEntries[0].node);
       if (lineage?.size) {
         for (const key of lineage) {
           const origin = retentionAudit.origins.get(key);
           if (origin) origin.finalSelectedDescendantCount += 1;
         }
+      }
+    }
+
+    let finalAncestryMismatchCount = 0;
+    for (const [key, origin] of retentionAudit.origins) {
+      origin.directTerminalDescendantCount = directTerminalCounts.get(key) || 0;
+      origin.directFinalFrontDescendantCount = directFinalFrontCounts.get(key) || 0;
+      origin.directFinalSelectedDescendantCount = directSelectedCounts.get(key) || 0;
+      if (origin.directFinalFrontDescendantCount !== origin.finalFrontDescendantCount ||
+          origin.directFinalSelectedDescendantCount !== origin.finalSelectedDescendantCount) {
+        finalAncestryMismatchCount += 1;
       }
     }
 
@@ -1270,16 +1306,19 @@ export function runControlledMultiobjectiveBeamCarry({
             maxDescendantDepth: Math.max(0, origin.maxGeneratedSearchStep - origin.originStep),
             generatedDescendantCount: origin.generatedDescendantCount,
             maxReachedSouls: origin.maxReachedSouls,
-            terminalDescendantCount: origin.terminalDescendantCount,
-            finalFrontDescendantCount: origin.finalFrontDescendantCount,
-            finalSelectedDescendantCount: origin.finalSelectedDescendantCount
+            terminalDescendantCount: origin.directTerminalDescendantCount,
+            propagatedTerminalDescendantCount: origin.terminalDescendantCount,
+            finalFrontDescendantCount: origin.directFinalFrontDescendantCount,
+            propagatedFinalFrontDescendantCount: origin.finalFrontDescendantCount,
+            finalSelectedDescendantCount: origin.directFinalSelectedDescendantCount,
+            propagatedFinalSelectedDescendantCount: origin.finalSelectedDescendantCount
           } : null
         };
       });
       let type = 0;
       if (pool.selectionChanged) {
-        if (type4Distinguishable && origins.some((origin) => origin.finalSelectedDescendantCount > 0)) type = 4;
-        else if (origins.some((origin) => origin.finalFrontDescendantCount > 0)) type = 3;
+        if (type4Distinguishable && origins.some((origin) => origin.directFinalSelectedDescendantCount > 0)) type = 4;
+        else if (origins.some((origin) => origin.directFinalFrontDescendantCount > 0)) type = 3;
         else if (origins.some((origin) => origin.maxRetainedSearchStep - origin.originStep >= 2)) type = 2;
         else type = 1;
       }
@@ -1295,6 +1334,8 @@ export function runControlledMultiobjectiveBeamCarry({
       finalFrontSize: finalEntries.length,
       comparisonRuntimeMs: retentionAudit.comparisonRuntimeMs,
       classificationRuntimeMs: retentionAudit.classificationRuntimeMs,
+      finalAncestryMismatchCount,
+      finalAncestryAuthority: "direct original-node parent-chain traversal; propagated lineage is diagnostic only",
       classificationSemantics: {
         type0: "common horizon applied but retained node set is identical to baseline",
         type1: "retention changed but no newly retained ancestry survives at least two later retention rounds or reaches final front",
