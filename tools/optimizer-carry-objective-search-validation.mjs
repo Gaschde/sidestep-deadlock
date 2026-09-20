@@ -499,9 +499,23 @@ function runCase(data, references, focus) {
 
   const aSearches = [];
   const bSearches = [];
+  const executionOrderByRepeat = [];
   for (let repeat = 1; repeat <= REPEATS; repeat += 1) {
-    const a = runSingleSearch(data, definition, reference, "A", OBJECTIVES.A, repeat);
-    const b = runSingleSearch(data, definition, reference, "B", OBJECTIVES.B, repeat);
+    const order = repeat % 2 === 1 ? ["A", "B"] : ["B", "A"];
+    executionOrderByRepeat.push({ repeat, order });
+    const results = {};
+    for (const label of order) {
+      results[label] = runSingleSearch(
+        data,
+        definition,
+        reference,
+        label,
+        OBJECTIVES[label],
+        repeat
+      );
+    }
+    const a = results.A;
+    const b = results.B;
     if (a.itemCandidateSetHash !== b.itemCandidateSetHash || a.referenceAxisHash !== b.referenceAxisHash) {
       throw new Error(definition.id + ": A/B controls diverged in repeat " + repeat);
     }
@@ -526,7 +540,7 @@ function runCase(data, references, focus) {
       referenceIdenticalAcrossAAndB: true,
       referenceSource: "frozen supplied baseline-v0",
       scalarizationUsed: false,
-      searchOrder: "A then B within each repeat"
+      executionOrderByRepeat
     },
     A: aggregateObjective(aSearches),
     B: aggregateObjective(bSearches),
