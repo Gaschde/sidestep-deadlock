@@ -1,0 +1,46 @@
+name: optimizer carry objective search validation
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+
+permissions:
+  contents: write
+
+jobs:
+  carry-objective-search-validation:
+    if: contains(github.event.head_commit.message, '[carry-objective-search-validation]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run controlled sweet-vs-aggressive search validation
+        run: node tools/optimizer-carry-objective-search-validation.mjs --output artifacts/carry-objective-search-validation/results.json
+      - name: Upload validation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-carry-objective-search-validation
+          path: artifacts/carry-objective-search-validation
+          if-no-files-found: error
+      - name: Store validation evidence on branch
+        shell: bash
+        run: |
+          target="benchmarks/optimizer-v1/experiments/carry-objective-search-validation"
+          mkdir -p "$target"
+          cp artifacts/carry-objective-search-validation/results.json "$target/results.json"
+          cp artifacts/carry-objective-search-validation/summary.json "$target/summary.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$target"
+          if git diff --cached --quiet; then
+            echo "No validation changes to commit."
+          else
+            git commit -m "data(benchmark): record carry objective search validation"
+            git push origin HEAD:feature/optimizer-next
+          fi
