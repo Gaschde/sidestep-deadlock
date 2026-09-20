@@ -1,0 +1,3059 @@
+{
+  "schemaVersion": "optimizer-crossover-horizon-test-v1",
+  "sourceCommit": "e0b4f6384b15b865f7887addf28d27df9db81a5e",
+  "caseId": "production-40k-warden-carry-weapon",
+  "scope": {
+    "hero": "warden",
+    "role": "carry",
+    "focus": "weapon",
+    "divergenceSouls": 3600,
+    "beamWidth": 4,
+    "objective": {
+      "id": "carry-sweet-70-30-spec-77_5-22_5",
+      "damageWeight": 0.7,
+      "survivalWeight": 0.3,
+      "damageFocusWeights": {
+        "weapon": {
+          "bullet": 0.775,
+          "spirit": 0.225
+        },
+        "spirit": {
+          "bullet": 0.225,
+          "spirit": 0.775
+        },
+        "hybrid": {
+          "bullet": 0.5,
+          "spirit": 0.5
+        }
+      }
+    },
+    "deterministicStepBudget": 160,
+    "wallclockUsedAsBudget": false
+  },
+  "reference": {
+    "version": "baseline-v0:production-40k-warden-carry-weapon",
+    "source": "frozen supplied baseline-v0"
+  },
+  "seedSource": {
+    "schemaVersion": "optimizer-value-to-go-diagnosis-v1",
+    "sourceCommit": "84e6768117007a1575b19249cb9856b0bde6b450",
+    "path": "benchmarks/optimizer-v1/experiments/value-to-go-diagnosis/results.json",
+    "labels": [
+      "lost-high-velocity",
+      "sweet-retained-1",
+      "sweet-retained-2",
+      "sweet-retained-3",
+      "sweet-retained-4"
+    ],
+    "pathIds": [
+      {
+        "label": "lost-high-velocity",
+        "pathId": "93260772842f0c27"
+      },
+      {
+        "label": "sweet-retained-1",
+        "pathId": "aa4d4665b9434b92"
+      },
+      {
+        "label": "sweet-retained-2",
+        "pathId": "d81825396d564903"
+      },
+      {
+        "label": "sweet-retained-3",
+        "pathId": "d58971bb584e3ba6"
+      },
+      {
+        "label": "sweet-retained-4",
+        "pathId": "725cc734448b5bd0"
+      }
+    ]
+  },
+  "method": {
+    "horizonMeaning": "Each tested horizon is the Sweet evaluation/search horizon. Path AUC and terminal utility are measured only through that Soul value.",
+    "searchSemantics": "Per-seed deterministic Width-4 continuation using production future+path-history dedupe and production Pareto retention primitives.",
+    "noWallclockDeadline": true,
+    "adaptiveRule": "4000/4400/5200/6800 first; 10000 if needed; then +6400 coarse steps only when some crossover has begun but not all requested crossover types are known.",
+    "scoreCrossoverDefinition": "lost-high-velocity representative Sweet Path Score >= sweet-retained-1 representative Sweet Path Score",
+    "paretoCrossoverDefinition": "at least one lost-high-velocity frontier candidate survives the pairwise Path/End Pareto union against sweet-retained-1",
+    "retentionCrossoverDefinition": "at least one lost-high-velocity frontier candidate survives actual Width-4 retention over the pooled five-seed frontier candidates"
+  },
+  "horizons": [
+    {
+      "horizon": 4000,
+      "additionalSouls": 400,
+      "runs": [
+        {
+          "seed": "lost-high-velocity",
+          "reachedSouls": 4000,
+          "continuationComplete": true,
+          "searchSteps": 7,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 378,
+          "transitionCalls": 17,
+          "evaluations": 145,
+          "duplicateStates": 73,
+          "terminalCandidates": 14,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 0,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "85228d01fd4a2f4d"
+          ],
+          "pathRankRelativeToFiveSeeds": 1,
+          "representative": {
+            "id": "85228d01fd4a2f4d",
+            "earnedSouls": 4000,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47666070914450004,
+            "endScore": 0.4786434445650398,
+            "pathDamage": 0.488275442294055,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.44955966512887185,
+            "endSurvival": 0.3648827952233525,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              }
+            ],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "85228d01fd4a2f4d",
+              "earnedSouls": 4000,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47666070914450004,
+              "endScore": 0.4786434445650398,
+              "pathDamage": 0.488275442294055,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.44955966512887185,
+              "endSurvival": 0.3648827952233525,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                }
+              ],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-1",
+          "reachedSouls": 4000,
+          "continuationComplete": true,
+          "searchSteps": 0,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 0,
+          "transitionCalls": 0,
+          "evaluations": 5,
+          "duplicateStates": 0,
+          "terminalCandidates": 1,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 1,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "aa4d4665b9434b92"
+          ],
+          "pathRankRelativeToFiveSeeds": 2,
+          "representative": {
+            "id": "aa4d4665b9434b92",
+            "earnedSouls": 4000,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit"
+            ],
+            "pathScore": 0.4765249738842243,
+            "endScore": 0.4759052333958103,
+            "pathDamage": 0.48488035668126606,
+            "endDamage": 0.49147449734577053,
+            "pathSurvival": 0.45702908069112697,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "retained-terminal"
+            ],
+            "continuationEvents": [],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "aa4d4665b9434b92",
+              "earnedSouls": 4000,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit"
+              ],
+              "pathScore": 0.4765249738842243,
+              "endScore": 0.4759052333958103,
+              "pathDamage": 0.48488035668126606,
+              "endDamage": 0.49147449734577053,
+              "pathSurvival": 0.45702908069112697,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "retained-terminal"
+              ],
+              "continuationEvents": [],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-2",
+          "reachedSouls": 4000,
+          "continuationComplete": true,
+          "searchSteps": 7,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 334,
+          "transitionCalls": 16,
+          "evaluations": 108,
+          "duplicateStates": 50,
+          "terminalCandidates": 13,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 2,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "ba90360befe16550"
+          ],
+          "pathRankRelativeToFiveSeeds": 3,
+          "representative": {
+            "id": "ba90360befe16550",
+            "earnedSouls": 4000,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit"
+            ],
+            "pathScore": 0.47638688802757706,
+            "endScore": 0.4759052333958103,
+            "pathDamage": 0.48468309117177,
+            "endDamage": 0.49147449734577053,
+            "pathSurvival": 0.45702908069112697,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              }
+            ],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "ba90360befe16550",
+              "earnedSouls": 4000,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit"
+              ],
+              "pathScore": 0.47638688802757706,
+              "endScore": 0.4759052333958103,
+              "pathDamage": 0.48468309117177,
+              "endDamage": 0.49147449734577053,
+              "pathSurvival": 0.45702908069112697,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                }
+              ],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-3",
+          "reachedSouls": 4000,
+          "continuationComplete": true,
+          "searchSteps": 0,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 0,
+          "transitionCalls": 0,
+          "evaluations": 5,
+          "duplicateStates": 0,
+          "terminalCandidates": 1,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 3,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "d58971bb584e3ba6"
+          ],
+          "pathRankRelativeToFiveSeeds": 4,
+          "representative": {
+            "id": "d58971bb584e3ba6",
+            "earnedSouls": 4000,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit"
+            ],
+            "pathScore": 0.47450143646998433,
+            "endScore": 0.4759052333958103,
+            "pathDamage": 0.47537109405848316,
+            "endDamage": 0.49147449734577053,
+            "pathSurvival": 0.47247223543015376,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "retained-terminal"
+            ],
+            "continuationEvents": [],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "d58971bb584e3ba6",
+              "earnedSouls": 4000,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit"
+              ],
+              "pathScore": 0.47450143646998433,
+              "endScore": 0.4759052333958103,
+              "pathDamage": 0.47537109405848316,
+              "endDamage": 0.49147449734577053,
+              "pathSurvival": 0.47247223543015376,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "retained-terminal"
+              ],
+              "continuationEvents": [],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-4",
+          "reachedSouls": 4000,
+          "continuationComplete": true,
+          "searchSteps": 0,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 0,
+          "transitionCalls": 0,
+          "evaluations": 5,
+          "duplicateStates": 0,
+          "terminalCandidates": 1,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 4,
+          "retainedAtWidth4": false,
+          "retainedCandidateIds": [],
+          "pathRankRelativeToFiveSeeds": 5,
+          "representative": {
+            "id": "725cc734448b5bd0",
+            "earnedSouls": 4000,
+            "cash": 800,
+            "inventory": [
+              "upgrade_health",
+              "upgrade_titan_round",
+              "upgrade_improved_spirit"
+            ],
+            "pathScore": 0.47076907652884503,
+            "endScore": 0.4759052333958103,
+            "pathDamage": 0.4634206563972726,
+            "endDamage": 0.49147449734577053,
+            "pathSurvival": 0.4879153901691807,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "retained-terminal"
+            ],
+            "continuationEvents": [],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "725cc734448b5bd0",
+              "earnedSouls": 4000,
+              "cash": 800,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_improved_spirit"
+              ],
+              "pathScore": 0.47076907652884503,
+              "endScore": 0.4759052333958103,
+              "pathDamage": 0.4634206563972726,
+              "endDamage": 0.49147449734577053,
+              "pathSurvival": 0.4879153901691807,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "retained-terminal"
+              ],
+              "continuationEvents": [],
+              "continuationTransactions": []
+            }
+          ]
+        }
+      ],
+      "centralComparison": {
+        "target": "lost-high-velocity",
+        "competitor": "sweet-retained-1",
+        "targetPathScore": 0.47666070914450004,
+        "sweet1PathScore": 0.4765249738842243,
+        "pathScoreDelta": 0.00013573526027571559,
+        "targetEndScore": 0.4786434445650398,
+        "sweet1EndScore": 0.4759052333958103,
+        "endScoreDelta": 0.0027382111692295097,
+        "scoreDefinition": "Sweet Path Score to the tested horizon",
+        "scoreCrossover": true,
+        "paretoCrossover": true,
+        "retentionCrossover": true,
+        "pairwise": {
+          "targetOnPairwiseFront": true,
+          "sweetOnPairwiseFront": false,
+          "targetDominatesAllSweet": true,
+          "sweetDominatesAllTarget": false,
+          "relation": "target-dominates-sweet-1"
+        },
+        "targetParetoLayer": 0,
+        "sweet1ParetoLayer": 1,
+        "targetRetainedAtWidth4": true,
+        "sweet1RetainedAtWidth4": true
+      },
+      "pooledParetoLayerSizes": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "horizon": 4400,
+      "additionalSouls": 800,
+      "runs": [
+        {
+          "seed": "lost-high-velocity",
+          "reachedSouls": 4400,
+          "continuationComplete": true,
+          "searchSteps": 9,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 889,
+          "transitionCalls": 26,
+          "evaluations": 255,
+          "duplicateStates": 77,
+          "terminalCandidates": 18,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 1,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "61b9115fd88d9fbe"
+          ],
+          "pathRankRelativeToFiveSeeds": 2,
+          "representative": {
+            "id": "61b9115fd88d9fbe",
+            "earnedSouls": 4400,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.4768409578190946,
+            "endScore": 0.4786434445650398,
+            "pathDamage": 0.4918320392281064,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.44186176786473375,
+            "endSurvival": 0.3648827952233525,
+            "sources": [
+              "generated-terminal",
+              "retained-save-completion-early",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              }
+            ],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "61b9115fd88d9fbe",
+              "earnedSouls": 4400,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.4768409578190946,
+              "endScore": 0.4786434445650398,
+              "pathDamage": 0.4918320392281064,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.44186176786473375,
+              "endSurvival": 0.3648827952233525,
+              "sources": [
+                "generated-terminal",
+                "retained-save-completion-early",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                }
+              ],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-1",
+          "reachedSouls": 4400,
+          "continuationComplete": true,
+          "searchSteps": 2,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 354,
+          "transitionCalls": 9,
+          "evaluations": 201,
+          "duplicateStates": 5,
+          "terminalCandidates": 5,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 0,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "e613bcb7e703b831"
+          ],
+          "pathRankRelativeToFiveSeeds": 1,
+          "representative": {
+            "id": "e613bcb7e703b831",
+            "earnedSouls": 4400,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47781339288552505,
+            "endScore": 0.4906975828985327,
+            "pathDamage": 0.4874009083654057,
+            "endDamage": 0.5126064252068026,
+            "pathSurvival": 0.45544252343247027,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-save-completion-early",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "e613bcb7e703b831",
+              "earnedSouls": 4400,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47781339288552505,
+              "endScore": 0.4906975828985327,
+              "pathDamage": 0.4874009083654057,
+              "endDamage": 0.5126064252068026,
+              "pathSurvival": 0.45544252343247027,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-save-completion-early",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-2",
+          "reachedSouls": 4400,
+          "continuationComplete": true,
+          "searchSteps": 9,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 889,
+          "transitionCalls": 26,
+          "evaluations": 236,
+          "duplicateStates": 78,
+          "terminalCandidates": 18,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 2,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "ee766485ad68484d"
+          ],
+          "pathRankRelativeToFiveSeeds": 3,
+          "representative": {
+            "id": "ee766485ad68484d",
+            "earnedSouls": 4400,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit"
+            ],
+            "pathScore": 0.476343101242871,
+            "endScore": 0.4759052333958103,
+            "pathDamage": 0.4853004917330428,
+            "endDamage": 0.49147449734577053,
+            "pathSurvival": 0.45544252343247027,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-save-completion-early",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              }
+            ],
+            "continuationTransactions": []
+          },
+          "front": [
+            {
+              "id": "ee766485ad68484d",
+              "earnedSouls": 4400,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit"
+              ],
+              "pathScore": 0.476343101242871,
+              "endScore": 0.4759052333958103,
+              "pathDamage": 0.4853004917330428,
+              "endDamage": 0.49147449734577053,
+              "pathSurvival": 0.45544252343247027,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-save-completion-early",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                }
+              ],
+              "continuationTransactions": []
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-3",
+          "reachedSouls": 4400,
+          "continuationComplete": true,
+          "searchSteps": 2,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 354,
+          "transitionCalls": 9,
+          "evaluations": 201,
+          "duplicateStates": 5,
+          "terminalCandidates": 5,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 1,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "1a87c9a1a09e9f47"
+          ],
+          "pathRankRelativeToFiveSeeds": 4,
+          "representative": {
+            "id": "1a87c9a1a09e9f47",
+            "earnedSouls": 4400,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_improved_spirit",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47597381341803424,
+            "endScore": 0.4906975828985327,
+            "pathDamage": 0.47875612416287583,
+            "endDamage": 0.5126064252068026,
+            "pathSurvival": 0.4694817550134037,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-save-completion-early",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "1a87c9a1a09e9f47",
+              "earnedSouls": 4400,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_improved_spirit",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47597381341803424,
+              "endScore": 0.4906975828985327,
+              "pathDamage": 0.47875612416287583,
+              "endDamage": 0.5126064252068026,
+              "pathSurvival": 0.4694817550134037,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-save-completion-early",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-4",
+          "reachedSouls": 4400,
+          "continuationComplete": true,
+          "searchSteps": 2,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 354,
+          "transitionCalls": 9,
+          "evaluations": 201,
+          "duplicateStates": 5,
+          "terminalCandidates": 5,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 2,
+          "retainedAtWidth4": false,
+          "retainedCandidateIds": [],
+          "pathRankRelativeToFiveSeeds": 5,
+          "representative": {
+            "id": "4f99abe525875d51",
+            "earnedSouls": 4400,
+            "cash": 400,
+            "inventory": [
+              "upgrade_health",
+              "upgrade_titan_round",
+              "upgrade_improved_spirit",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47258075892608936,
+            "endScore": 0.4906975828985327,
+            "pathDamage": 0.4678920899254117,
+            "endDamage": 0.5126064252068026,
+            "pathSurvival": 0.4835209865943373,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-save-completion-early",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "4f99abe525875d51",
+              "earnedSouls": 4400,
+              "cash": 400,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_improved_spirit",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47258075892608936,
+              "endScore": 0.4906975828985327,
+              "pathDamage": 0.4678920899254117,
+              "endDamage": 0.5126064252068026,
+              "pathSurvival": 0.4835209865943373,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-save-completion-early",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "centralComparison": {
+        "target": "lost-high-velocity",
+        "competitor": "sweet-retained-1",
+        "targetPathScore": 0.4768409578190946,
+        "sweet1PathScore": 0.47781339288552505,
+        "pathScoreDelta": -0.000972435066430466,
+        "targetEndScore": 0.4786434445650398,
+        "sweet1EndScore": 0.4906975828985327,
+        "endScoreDelta": -0.012054138333492892,
+        "scoreDefinition": "Sweet Path Score to the tested horizon",
+        "scoreCrossover": false,
+        "paretoCrossover": false,
+        "retentionCrossover": true,
+        "pairwise": {
+          "targetOnPairwiseFront": false,
+          "sweetOnPairwiseFront": true,
+          "targetDominatesAllSweet": false,
+          "sweetDominatesAllTarget": true,
+          "relation": "sweet-1-dominates-target"
+        },
+        "targetParetoLayer": 1,
+        "sweet1ParetoLayer": 0,
+        "targetRetainedAtWidth4": true,
+        "sweet1RetainedAtWidth4": true
+      },
+      "pooledParetoLayerSizes": [
+        1,
+        2,
+        2
+      ]
+    },
+    {
+      "horizon": 5200,
+      "additionalSouls": 1600,
+      "runs": [
+        {
+          "seed": "lost-high-velocity",
+          "reachedSouls": 5200,
+          "continuationComplete": true,
+          "searchSteps": 14,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 2924,
+          "transitionCalls": 50,
+          "evaluations": 585,
+          "duplicateStates": 86,
+          "terminalCandidates": 26,
+          "frontSize": 2,
+          "paretoLayerRelativeToFiveSeeds": 0,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "21c58f6fac19179e",
+            "6ceb399a4a0e15fc"
+          ],
+          "pathRankRelativeToFiveSeeds": 2,
+          "representative": {
+            "id": "21c58f6fac19179e",
+            "earnedSouls": 5200,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds",
+              "upgrade_health"
+            ],
+            "pathScore": 0.4805656860395116,
+            "endScore": 0.501051691251805,
+            "pathDamage": 0.4973037268189548,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.44151025755414447,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "21c58f6fac19179e",
+              "earnedSouls": 5200,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds",
+                "upgrade_health"
+              ],
+              "pathScore": 0.4805656860395116,
+              "endScore": 0.501051691251805,
+              "pathDamage": 0.4973037268189548,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.44151025755414447,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                }
+              ]
+            },
+            {
+              "id": "6ceb399a4a0e15fc",
+              "earnedSouls": 5200,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_blitz_bullets"
+              ],
+              "pathScore": 0.47966945588295534,
+              "endScore": 0.5026083373771191,
+              "pathDamage": 0.4984858427147278,
+              "endDamage": 0.5296217887476403,
+              "pathSurvival": 0.4357645532754867,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_high_velocity_mag",
+                  "item": "upgrade_health",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_high_velocity_mag",
+                  "item": "upgrade_health",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-1",
+          "reachedSouls": 5200,
+          "continuationComplete": true,
+          "searchSteps": 14,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 2407,
+          "transitionCalls": 47,
+          "evaluations": 579,
+          "duplicateStates": 53,
+          "terminalCandidates": 26,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 0,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "015c8b01f9853119"
+          ],
+          "pathRankRelativeToFiveSeeds": 1,
+          "representative": {
+            "id": "015c8b01f9853119",
+            "earnedSouls": 5200,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.4813885157111066,
+            "endScore": 0.501051691251805,
+            "pathDamage": 0.4935543083966695,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.45300166611146,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "015c8b01f9853119",
+              "earnedSouls": 5200,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.4813885157111066,
+              "endScore": 0.501051691251805,
+              "pathDamage": 0.4935543083966695,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.45300166611146,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-2",
+          "reachedSouls": 5200,
+          "continuationComplete": true,
+          "searchSteps": 6,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 2582,
+          "transitionCalls": 36,
+          "evaluations": 474,
+          "duplicateStates": 36,
+          "terminalCandidates": 12,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 3,
+          "retainedAtWidth4": false,
+          "retainedCandidateIds": [],
+          "pathRankRelativeToFiveSeeds": 4,
+          "representative": {
+            "id": "c2136f1025281f6d",
+            "earnedSouls": 5200,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47934795290937837,
+            "endScore": 0.501051691251805,
+            "pathDamage": 0.4906392186799149,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.45300166611146,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "c2136f1025281f6d",
+              "earnedSouls": 5200,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47934795290937837,
+              "endScore": 0.501051691251805,
+              "pathDamage": 0.4906392186799149,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.45300166611146,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-3",
+          "reachedSouls": 5200,
+          "continuationComplete": true,
+          "searchSteps": 14,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 2407,
+          "transitionCalls": 47,
+          "evaluations": 579,
+          "duplicateStates": 53,
+          "terminalCandidates": 26,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 2,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "e28520d2358d2cf5"
+          ],
+          "pathRankRelativeToFiveSeeds": 3,
+          "representative": {
+            "id": "e28520d2358d2cf5",
+            "earnedSouls": 5200,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_health",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.4798319484693836,
+            "endScore": 0.501051691251805,
+            "pathDamage": 0.48623949099452884,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.4648810159107114,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "e28520d2358d2cf5",
+              "earnedSouls": 5200,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_health",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.4798319484693836,
+              "endScore": 0.501051691251805,
+              "pathDamage": 0.48623949099452884,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.4648810159107114,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-4",
+          "reachedSouls": 5200,
+          "continuationComplete": true,
+          "searchSteps": 14,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 2407,
+          "transitionCalls": 47,
+          "evaluations": 579,
+          "duplicateStates": 53,
+          "terminalCandidates": 26,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 4,
+          "retainedAtWidth4": false,
+          "retainedCandidateIds": [],
+          "pathRankRelativeToFiveSeeds": 5,
+          "representative": {
+            "id": "bd2d5bebb0315043",
+            "earnedSouls": 5200,
+            "cash": 800,
+            "inventory": [
+              "upgrade_health",
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_rapid_rounds"
+            ],
+            "pathScore": 0.47696090236081484,
+            "endScore": 0.501051691251805,
+            "pathDamage": 0.47704684663975144,
+            "endDamage": 0.5273980085686202,
+            "pathSurvival": 0.47676036570996283,
+            "endSurvival": 0.43957695084590315,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "bd2d5bebb0315043",
+              "earnedSouls": 5200,
+              "cash": 800,
+              "inventory": [
+                "upgrade_health",
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_rapid_rounds"
+              ],
+              "pathScore": 0.47696090236081484,
+              "endScore": 0.501051691251805,
+              "pathDamage": 0.47704684663975144,
+              "endDamage": 0.5273980085686202,
+              "pathSurvival": 0.47676036570996283,
+              "endSurvival": 0.43957695084590315,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "centralComparison": {
+        "target": "lost-high-velocity",
+        "competitor": "sweet-retained-1",
+        "targetPathScore": 0.4805656860395116,
+        "sweet1PathScore": 0.4813885157111066,
+        "pathScoreDelta": -0.0008228296715949712,
+        "targetEndScore": 0.501051691251805,
+        "sweet1EndScore": 0.501051691251805,
+        "endScoreDelta": 0,
+        "scoreDefinition": "Sweet Path Score to the tested horizon",
+        "scoreCrossover": false,
+        "paretoCrossover": true,
+        "retentionCrossover": true,
+        "pairwise": {
+          "targetOnPairwiseFront": true,
+          "sweetOnPairwiseFront": true,
+          "targetDominatesAllSweet": false,
+          "sweetDominatesAllTarget": false,
+          "relation": "same-pareto-front-tradeoff"
+        },
+        "targetParetoLayer": 0,
+        "sweet1ParetoLayer": 0,
+        "targetRetainedAtWidth4": true,
+        "sweet1RetainedAtWidth4": true
+      },
+      "pooledParetoLayerSizes": [
+        2,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "horizon": 6800,
+      "additionalSouls": 3200,
+      "runs": [
+        {
+          "seed": "lost-high-velocity",
+          "reachedSouls": 6800,
+          "continuationComplete": true,
+          "searchSteps": 12,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 8406,
+          "transitionCalls": 76,
+          "evaluations": 1194,
+          "duplicateStates": 89,
+          "terminalCandidates": 9,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 1,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "10bac2156eca0da9"
+          ],
+          "pathRankRelativeToFiveSeeds": 2,
+          "representative": {
+            "id": "10bac2156eca0da9",
+            "earnedSouls": 6800,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_blitz_bullets",
+              "upgrade_medic_bullets",
+              "upgrade_health"
+            ],
+            "pathScore": 0.48381794436155406,
+            "endScore": 0.4581110316285201,
+            "pathDamage": 0.5067164867833823,
+            "endDamage": 0.47974991007613355,
+            "pathSurvival": 0.4303880120439554,
+            "endSurvival": 0.4076203152507555,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5600
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6800
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "10bac2156eca0da9",
+              "earnedSouls": 6800,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_blitz_bullets",
+                "upgrade_medic_bullets",
+                "upgrade_health"
+              ],
+              "pathScore": 0.48381794436155406,
+              "endScore": 0.4581110316285201,
+              "pathDamage": 0.5067164867833823,
+              "endDamage": 0.47974991007613355,
+              "pathSurvival": 0.4303880120439554,
+              "endSurvival": 0.4076203152507555,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5600
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6800
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-1",
+          "reachedSouls": 6800,
+          "continuationComplete": true,
+          "searchSteps": 12,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 8406,
+          "transitionCalls": 73,
+          "evaluations": 849,
+          "duplicateStates": 19,
+          "terminalCandidates": 10,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 0,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "6cd409df8ec5f901"
+          ],
+          "pathRankRelativeToFiveSeeds": 1,
+          "representative": {
+            "id": "6cd409df8ec5f901",
+            "earnedSouls": 6800,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_medic_bullets",
+              "upgrade_high_velocity_mag",
+              "upgrade_blitz_bullets",
+              "upgrade_health"
+            ],
+            "pathScore": 0.4844471670515973,
+            "endScore": 0.4581110316285201,
+            "pathDamage": 0.5038492844604583,
+            "endDamage": 0.47974991007613355,
+            "pathSurvival": 0.43917555976425554,
+            "endSurvival": 0.4076203152507555,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5600
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6800
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "6cd409df8ec5f901",
+              "earnedSouls": 6800,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_medic_bullets",
+                "upgrade_high_velocity_mag",
+                "upgrade_blitz_bullets",
+                "upgrade_health"
+              ],
+              "pathScore": 0.4844471670515973,
+              "endScore": 0.4581110316285201,
+              "pathDamage": 0.5038492844604583,
+              "endDamage": 0.47974991007613355,
+              "pathSurvival": 0.43917555976425554,
+              "endSurvival": 0.4076203152507555,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5600
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6800
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-2",
+          "reachedSouls": 6800,
+          "continuationComplete": true,
+          "searchSteps": 22,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 9015,
+          "transitionCalls": 95,
+          "evaluations": 958,
+          "duplicateStates": 94,
+          "terminalCandidates": 27,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 4,
+          "retainedAtWidth4": false,
+          "retainedCandidateIds": [],
+          "pathRankRelativeToFiveSeeds": 5,
+          "representative": {
+            "id": "f6bd35a8e1140d37",
+            "earnedSouls": 6800,
+            "cash": 800,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_medic_bullets",
+              "upgrade_high_velocity_mag",
+              "upgrade_blitz_bullets"
+            ],
+            "pathScore": 0.48074677318527337,
+            "endScore": 0.43636515621039845,
+            "pathDamage": 0.4985073460574203,
+            "endDamage": 0.47974991007613355,
+            "pathSurvival": 0.4393054364835974,
+            "endSurvival": 0.33513406385701666,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "save",
+                "earnedSouls": 4000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5600
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6000
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6800
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "f6bd35a8e1140d37",
+              "earnedSouls": 6800,
+              "cash": 800,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_medic_bullets",
+                "upgrade_high_velocity_mag",
+                "upgrade_blitz_bullets"
+              ],
+              "pathScore": 0.48074677318527337,
+              "endScore": 0.43636515621039845,
+              "pathDamage": 0.4985073460574203,
+              "endDamage": 0.47974991007613355,
+              "pathSurvival": 0.4393054364835974,
+              "endSurvival": 0.33513406385701666,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "save",
+                  "earnedSouls": 4000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5600
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6000
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6800
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-3",
+          "reachedSouls": 6800,
+          "continuationComplete": true,
+          "searchSteps": 12,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 8406,
+          "transitionCalls": 73,
+          "evaluations": 849,
+          "duplicateStates": 19,
+          "terminalCandidates": 10,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 2,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "9f6f1c2a79a3ae35"
+          ],
+          "pathRankRelativeToFiveSeeds": 3,
+          "representative": {
+            "id": "9f6f1c2a79a3ae35",
+            "earnedSouls": 6800,
+            "cash": 400,
+            "inventory": [
+              "upgrade_titan_round",
+              "upgrade_medic_bullets",
+              "upgrade_high_velocity_mag",
+              "upgrade_blitz_bullets",
+              "upgrade_health"
+            ],
+            "pathScore": 0.48325685092557386,
+            "endScore": 0.4581110316285201,
+            "pathDamage": 0.49825560056470364,
+            "endDamage": 0.47974991007613355,
+            "pathSurvival": 0.4482597684342713,
+            "endSurvival": 0.4076203152507555,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5600
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6800
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "9f6f1c2a79a3ae35",
+              "earnedSouls": 6800,
+              "cash": 400,
+              "inventory": [
+                "upgrade_titan_round",
+                "upgrade_medic_bullets",
+                "upgrade_high_velocity_mag",
+                "upgrade_blitz_bullets",
+                "upgrade_health"
+              ],
+              "pathScore": 0.48325685092557386,
+              "endScore": 0.4581110316285201,
+              "pathDamage": 0.49825560056470364,
+              "endDamage": 0.47974991007613355,
+              "pathSurvival": 0.4482597684342713,
+              "endSurvival": 0.4076203152507555,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5600
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6800
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "seed": "sweet-retained-4",
+          "reachedSouls": 6800,
+          "continuationComplete": true,
+          "searchSteps": 12,
+          "stepBudget": 160,
+          "searchExhausted": true,
+          "generatedCandidates": 8406,
+          "transitionCalls": 73,
+          "evaluations": 849,
+          "duplicateStates": 19,
+          "terminalCandidates": 10,
+          "frontSize": 1,
+          "paretoLayerRelativeToFiveSeeds": 3,
+          "retainedAtWidth4": true,
+          "retainedCandidateIds": [
+            "0759fd9a22758676"
+          ],
+          "pathRankRelativeToFiveSeeds": 4,
+          "representative": {
+            "id": "0759fd9a22758676",
+            "earnedSouls": 6800,
+            "cash": 400,
+            "inventory": [
+              "upgrade_medic_bullets",
+              "upgrade_titan_round",
+              "upgrade_high_velocity_mag",
+              "upgrade_blitz_bullets",
+              "upgrade_health"
+            ],
+            "pathScore": 0.48106134507784476,
+            "endScore": 0.4581110316285201,
+            "pathDamage": 0.4912259313522268,
+            "endDamage": 0.47974991007613355,
+            "pathSurvival": 0.45734397710428715,
+            "endSurvival": 0.4076203152507555,
+            "sources": [
+              "generated-terminal",
+              "retained-terminal"
+            ],
+            "continuationEvents": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4400
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 4800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5200
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 5600
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6000
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              },
+              {
+                "type": "save",
+                "earnedSouls": 6800
+              }
+            ],
+            "continuationTransactions": [
+              {
+                "type": "purchase",
+                "item": "upgrade_rapid_rounds",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_improved_spirit",
+                "item": "upgrade_high_velocity_mag",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "upgrade",
+                "from": "upgrade_rapid_rounds",
+                "item": "upgrade_blitz_bullets",
+                "payment": 800
+              },
+              {
+                "type": "replacement",
+                "from": "upgrade_health",
+                "item": "upgrade_medic_bullets",
+                "payment": 400,
+                "saleProceeds": 400
+              },
+              {
+                "type": "purchase",
+                "item": "upgrade_health",
+                "payment": 800
+              }
+            ]
+          },
+          "front": [
+            {
+              "id": "0759fd9a22758676",
+              "earnedSouls": 6800,
+              "cash": 400,
+              "inventory": [
+                "upgrade_medic_bullets",
+                "upgrade_titan_round",
+                "upgrade_high_velocity_mag",
+                "upgrade_blitz_bullets",
+                "upgrade_health"
+              ],
+              "pathScore": 0.48106134507784476,
+              "endScore": 0.4581110316285201,
+              "pathDamage": 0.4912259313522268,
+              "endDamage": 0.47974991007613355,
+              "pathSurvival": 0.45734397710428715,
+              "endSurvival": 0.4076203152507555,
+              "sources": [
+                "generated-terminal",
+                "retained-terminal"
+              ],
+              "continuationEvents": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4400
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 4800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5200
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 5600
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6000
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                },
+                {
+                  "type": "save",
+                  "earnedSouls": 6800
+                }
+              ],
+              "continuationTransactions": [
+                {
+                  "type": "purchase",
+                  "item": "upgrade_rapid_rounds",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_improved_spirit",
+                  "item": "upgrade_high_velocity_mag",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "upgrade",
+                  "from": "upgrade_rapid_rounds",
+                  "item": "upgrade_blitz_bullets",
+                  "payment": 800
+                },
+                {
+                  "type": "replacement",
+                  "from": "upgrade_health",
+                  "item": "upgrade_medic_bullets",
+                  "payment": 400,
+                  "saleProceeds": 400
+                },
+                {
+                  "type": "purchase",
+                  "item": "upgrade_health",
+                  "payment": 800
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "centralComparison": {
+        "target": "lost-high-velocity",
+        "competitor": "sweet-retained-1",
+        "targetPathScore": 0.48381794436155406,
+        "sweet1PathScore": 0.4844471670515973,
+        "pathScoreDelta": -0.0006292226900432296,
+        "targetEndScore": 0.4581110316285201,
+        "sweet1EndScore": 0.4581110316285201,
+        "endScoreDelta": 0,
+        "scoreDefinition": "Sweet Path Score to the tested horizon",
+        "scoreCrossover": false,
+        "paretoCrossover": false,
+        "retentionCrossover": true,
+        "pairwise": {
+          "targetOnPairwiseFront": false,
+          "sweetOnPairwiseFront": true,
+          "targetDominatesAllSweet": false,
+          "sweetDominatesAllTarget": true,
+          "relation": "sweet-1-dominates-target"
+        },
+        "targetParetoLayer": 1,
+        "sweet1ParetoLayer": 0,
+        "targetRetainedAtWidth4": true,
+        "sweet1RetainedAtWidth4": true
+      },
+      "pooledParetoLayerSizes": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "crossovers": {
+    "score": {
+      "horizon": 4000,
+      "additionalSouls": 400
+    },
+    "pareto": {
+      "horizon": 4000,
+      "additionalSouls": 400
+    },
+    "retention": {
+      "horizon": 4000,
+      "additionalSouls": 400
+    },
+    "earliestAny": {
+      "horizon": 4000,
+      "additionalSouls": 400
+    },
+    "firstRelevant": {
+      "horizon": 4000,
+      "additionalSouls": 400
+    }
+  },
+  "adaptiveStopReason": "initial-grid-sufficient",
+  "hypothesisClass": "H1_SHORT_LOOKAHEAD"
+}
