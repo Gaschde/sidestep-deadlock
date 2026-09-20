@@ -74,15 +74,25 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
     return next;
   };
 
-  const transitions = (state) => {
-    const successors = [];
+  const saveTransition = (state) => {
     const nextSoul = axis ? axis.find((souls) => souls > state.earnedSouls)
       : state.earnedSouls < budget ? state.earnedSouls + 1 : undefined;
+    if (nextSoul === undefined) return null;
+    telemetry?.count?.("saveTransitions");
+    return withEvent(
+      state,
+      { type: "save", earnedSouls: nextSoul },
+      nextSoul,
+      state.cash + nextSoul - state.earnedSouls,
+      state.inventory
+    );
+  };
+
+  const transitions = (state) => {
+    const successors = [];
     const saveStarted = telemetry?.enabled ? performance.now() : 0;
-    if (nextSoul !== undefined) {
-      successors.push(withEvent(state, { type: "save", earnedSouls: nextSoul }, nextSoul, state.cash + nextSoul - state.earnedSouls, state.inventory));
-      telemetry?.count?.("saveTransitions");
-    }
+    const save = saveTransition(state);
+    if (save) successors.push(save);
     if (telemetry?.enabled) telemetry.add("saveGenerationMs", performance.now() - saveStarted);
     const purchaseStarted = telemetry?.enabled ? performance.now() : 0;
     for (const item of items) {
@@ -142,6 +152,7 @@ export function createDeadlockDomain({ data, itemIds, soulAxis, budget = 60000, 
   return {
     initial,
     transitions,
+    saveTransition,
     supportedUpgradesByFrom: new Map(upgrades.reduce((groups, edge) => {
       const entries = groups.get(edge.from_item_id) || [];
       entries.push(edge);
