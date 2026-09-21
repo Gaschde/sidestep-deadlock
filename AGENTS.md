@@ -78,3 +78,9 @@ python tools/calculate_build.py warden --boon 35 --walker-slots 3 --item upgrade
 3. Bedingte Effekte nur mit dokumentiertem Trigger und Dauer bewerten.
 4. API-Snapshots werden versioniert importiert; `data/core/` und `data/heroes/` werden nicht direkt überschrieben.
 5. `archive/api/` ist die verbindliche API-Snapshot-Ablage; `review_required.json` erfordert explizite Freigabe.
+
+## Optimizer-Experiment-Historie
+
+- Vor neuen Optimizer-Experimenten muss docs/research/optimizer-next/experiment-index.md geprüft werden.
+- Bereits beantwortete Hypothesen dürfen nicht erneut getestet werden, außer neue Evidenz vorliegt, sich die relevante Search-/Objective-/State-Semantik geändert hat oder ausdrücklich eine Replikation verlangt wird.
+- Nach jedem abgeschlossenen Optimizer-Experiment muss docs/research/optimizer-next/experiment-index.md aktualisiert werden.
