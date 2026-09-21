@@ -1,6 +1,6 @@
 {
   "schemaVersion": "optimizer-common-horizon-retention-shadow-v1",
-  "sourceCommit": "e33f78fb0090ffc399ba4bad5c36257c4a7b28b0",
+  "sourceCommit": "b2fc48a8e2640347e50029d6a78d6871138b8a26",
   "caseId": "production-40k-warden-carry-weapon",
   "scope": {
     "hero": "warden",
@@ -60,7 +60,7 @@
       4000
     ],
     "baseline": {
-      "runtimeMs": 2.3938289999999824,
+      "runtimeMs": 2.367479000000003,
       "targetLayer": 15,
       "retainedPathIds": [
         "aa4d4665b9434b92",
@@ -79,7 +79,7 @@
       }
     },
     "shadow": {
-      "runtimeMs": 14.131376000000046,
+      "runtimeMs": 8.426373000000012,
       "enabled": true,
       "applied": true,
       "reason": "next-present-economic-horizon",
@@ -95,9 +95,9 @@
       "materializedProjectedNodes": 244,
       "saveTransitions": 244,
       "maxSaveStepsPerCandidate": 1,
-      "projectionRuntimeMs": 0.9747440000001006,
-      "materializationRuntimeMs": 0.9747440000001006,
-      "horizonScoreRuntimeMs": 11.567120999998679,
+      "projectionRuntimeMs": 0.5370240000000308,
+      "materializationRuntimeMs": 0.5370240000000308,
+      "horizonScoreRuntimeMs": 6.894925000000342,
       "horizonVectorRequests": 248,
       "targetLayer": 0,
       "retainedPathIds": [
@@ -5514,7 +5514,7 @@
   },
   "stage2": {
     "skipped": false,
-    "runtimeMs": 56437.156827,
+    "runtimeMs": 41816.775093,
     "steps": 128,
     "duplicateStates": 1397,
     "maxCandidatePool": 3469,
@@ -5557,7 +5557,7 @@
   },
   "stage3": {
     "baseline": {
-      "runtimeMs": 56975.063523,
+      "runtimeMs": 44232.13852099999,
       "evaluations": 29636,
       "generatedStates": 151978,
       "transitionCalls": 663,
@@ -5567,7 +5567,7 @@
       "finalFrontSize": 1
     },
     "shadow": {
-      "runtimeMs": 85999.64107600001,
+      "runtimeMs": 65527.24449699999,
       "evaluations": 43655,
       "generatedStates": 165683,
       "transitionCalls": 729,
@@ -5589,10 +5589,10 @@
         "horizonVectorCacheMisses": 59362,
         "horizonVectorRequests": 59362,
         "additionalCarryEvaluations": 0,
-        "projectionRuntimeMs": 953.8748919999925,
-        "materializationRuntimeMs": 953.9297450000886,
-        "horizonScoreRuntimeMs": 17320.86761300046,
-        "shadowRetentionRuntimeMs": 18777.76494099977,
+        "projectionRuntimeMs": 661.0152709999238,
+        "materializationRuntimeMs": 661.0613859998411,
+        "horizonScoreRuntimeMs": 12530.353769996902,
+        "shadowRetentionRuntimeMs": 13548.549698000046,
         "peakProjectedCandidates": 3113,
         "peakProjectionEntries": 3113,
         "maxSaveStepsPerCandidate": 1,
@@ -5671,8 +5671,8 @@
       }
     },
     "delta": {
-      "runtimeMs": 29024.577553000017,
-      "runtimeRatio": 1.5094259796881704,
+      "runtimeMs": 21295.105976,
+      "runtimeRatio": 1.481439665547479,
       "evaluations": 14019,
       "generatedStates": 13705,
       "transitionCalls": 66,
