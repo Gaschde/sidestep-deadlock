@@ -159,6 +159,197 @@ function partialLayerSelection(layer, capacity, diversityKey, profiler = null) {
   return selected;
 }
 
+// Diagnostic-only mirror of partialLayerSelection. It is deliberately not used
+// by retention: observers may explain a selected slot, but cannot affect it.
+function partialLayerSelectionReasons(layer, capacity, diversityKey) {
+  const selected = [];
+  const selectedSet = new Set();
+  const reasons = new Map();
+  const add = (entry, reason) => {
+    if (entry && selected.length < capacity && !selectedSet.has(entry)) {
+      selected.push(entry);
+      selectedSet.add(entry);
+      reasons.set(entry, reason);
+    }
+  };
+  if (capacity <= 0) return { selected, reasons };
+  if (layer.length <= capacity) {
+    for (const entry of [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))) add(entry, "full-layer");
+    return { selected, reasons };
+  }
+  if (capacity === 1) {
+    add([...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))[0], "stable-id-capacity-1");
+    return { selected, reasons };
+  }
+  add([...layer].sort((a, b) => b.pathScore - a.pathScore || b.endScore - a.endScore || stableId(a).localeCompare(stableId(b)))[0], "path-extreme");
+  add([...layer].sort((a, b) => b.endScore - a.endScore || b.pathScore - a.pathScore || stableId(a).localeCompare(stableId(b)))[0], "end-extreme");
+  const buckets = new Map();
+  for (const entry of [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))) {
+    if (selectedSet.has(entry)) continue;
+    const key = String(diversityKey(entry.node));
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(entry);
+  }
+  let progressed = true;
+  while (selected.length < capacity && progressed) {
+    progressed = false;
+    for (const key of [...buckets.keys()].sort((a, b) => a.localeCompare(b))) {
+      const entry = buckets.get(key)?.shift();
+      if (entry) { add(entry, "diversity-round-robin"); progressed = true; }
+      if (selected.length >= capacity) break;
+    }
+  }
+  for (const entry of [...layer].sort((a, b) => stableId(a).localeCompare(stableId(b)))) add(entry, "stable-fallback");
+  return { selected, reasons };
+}
+
+function retentionEvidence(nodes, selection, width, vectorFor, diversityKey, relevantNodes) {
+  const layers = pathEndNonDominatedLayers(decoratePathEndNodes(nodes, vectorFor));
+  const selected = [];
+  const reasons = new Map();
+  let truncatedLayerIndex = null;
+  let capacityFillLayerIndex = null;
+  for (let index = 0; index < layers.length && selected.length < width; index += 1) {
+    const capacity = width - selected.length;
+    if (layers[index].length <= capacity) {
+      for (const entry of layers[index]) { selected.push(entry); reasons.set(entry.node, "full-layer"); }
+    } else {
+      truncatedLayerIndex = index;
+      const partial = partialLayerSelectionReasons(layers[index], capacity, diversityKey);
+      selected.push(...partial.selected);
+      for (const [entry, reason] of partial.reasons) reasons.set(entry.node, reason);
+    }
+    if (selected.length >= width) capacityFillLayerIndex = index;
+  }
+  if (JSON.stringify(selected.map((entry) => entry.node.serial)) !== JSON.stringify(selection.selected.map((node) => node.serial))) {
+    throw new Error("Diagnostic retention mirror diverged from production selection.");
+  }
+  const layerByNode = new Map();
+  layers.forEach((layer, index) => layer.forEach((entry) => layerByNode.set(entry.node, index)));
+  return {
+    exactLayerSizes: layers.map((layer) => layer.length),
+    truncatedLayerIndex,
+    capacityFillLayerIndex,
+    precedingLayerCount: capacityFillLayerIndex ?? layers.length,
+    widthCapacity: width,
+    candidates: [...relevantNodes].map((node) => ({
+      nodeId: node.serial,
+      earnedSouls: node.state.earnedSouls,
+      paretoLayer: layerByNode.get(node) ?? null,
+      retained: selection.selected.includes(node),
+      selectedReason: reasons.get(node) || null,
+      diversityKey: diversityKey(node)
+    })),
+    selected: selected.map((entry) => ({ nodeId: entry.node.serial, reason: reasons.get(entry.node) || null }))
+  };
+}
+
+function createRetentionFirstLossObserver() {
+  const direct = new WeakMap();
+  const semantic = new WeakMap();
+  const origins = new Map();
+  let active = null;
+  const keys = (map, node) => map.get(node) || new Set();
+  const addCount = (record, kind, field, value = 1) => { record[kind][field] += value; };
+  const recordsFor = (node, map) => [...keys(map, node)].map((key) => origins.get(key)).filter(Boolean);
+  const setKeys = (map, node, source) => { if (source.size) map.set(node, new Set(source)); };
+  const blank = () => ({ retainedParents: 0, generatedDescendants: 0, postDedupeRepresentatives: 0, postRetentionRepresentatives: 0, terminals: 0 });
+  const observer = {
+    registerOrigin(node, key, metadata) {
+      setKeys(direct, node, new Set([...keys(direct, node), key]));
+      setKeys(semantic, node, new Set([...keys(semantic, node), key]));
+      origins.set(key, { key, ...metadata, direct: { ...blank(), retainedParents: 1 }, semantic: { ...blank(), retainedParents: 1 }, steps: [], firstDirectLoss: null, firstSemanticOutcome: null });
+    },
+    inherit(parent, node) {
+      setKeys(direct, node, keys(direct, parent));
+      setKeys(semantic, node, keys(semantic, parent));
+    },
+    observeDedupeGroup(group, representative) {
+      const union = new Set();
+      for (const node of group) for (const key of keys(semantic, node)) union.add(key);
+      setKeys(semantic, representative, union);
+    },
+    beginStep(step, beam) {
+      active = { step, records: new Map(), terminalStart: new Map() };
+      for (const node of beam) {
+        for (const origin of recordsFor(node, direct)) {
+          if (!active.records.has(origin.key)) active.records.set(origin.key, { direct: blank(), semantic: blank() });
+          addCount(active.records.get(origin.key), "direct", "retainedParents");
+        }
+        for (const origin of recordsFor(node, semantic)) {
+          if (!active.records.has(origin.key)) active.records.set(origin.key, { direct: blank(), semantic: blank() });
+          addCount(active.records.get(origin.key), "semantic", "retainedParents");
+        }
+      }
+      for (const [key, origin] of origins) active.terminalStart.set(key, origin.semantic.terminals);
+    },
+    observeGenerated(node) {
+      if (!active) return;
+      for (const origin of recordsFor(node, direct)) { active.records.get(origin.key)?.direct && addCount(active.records.get(origin.key), "direct", "generatedDescendants"); }
+      for (const origin of recordsFor(node, semantic)) { active.records.get(origin.key)?.semantic && addCount(active.records.get(origin.key), "semantic", "generatedDescendants"); }
+    },
+    observePostDedupe(nodes) {
+      if (!active) return;
+      for (const node of nodes) {
+        for (const origin of recordsFor(node, direct)) active.records.get(origin.key)?.direct && addCount(active.records.get(origin.key), "direct", "postDedupeRepresentatives");
+        for (const origin of recordsFor(node, semantic)) active.records.get(origin.key)?.semantic && addCount(active.records.get(origin.key), "semantic", "postDedupeRepresentatives");
+      }
+    },
+    observePostRetention(nodes) {
+      if (!active) return;
+      for (const node of nodes) {
+        for (const origin of recordsFor(node, direct)) active.records.get(origin.key)?.direct && addCount(active.records.get(origin.key), "direct", "postRetentionRepresentatives");
+        for (const origin of recordsFor(node, semantic)) active.records.get(origin.key)?.semantic && addCount(active.records.get(origin.key), "semantic", "postRetentionRepresentatives");
+      }
+    },
+    observeTerminal(node) {
+      for (const origin of recordsFor(node, direct)) origin.direct.terminals += 1;
+      for (const origin of recordsFor(node, semantic)) origin.semantic.terminals += 1;
+    },
+    endStep(context) {
+      if (!active) return;
+      for (const [key, counts] of active.records) {
+        const origin = origins.get(key);
+        const terminalDelta = origin.semantic.terminals - (active.terminalStart.get(key) || 0);
+        const row = { step: active.step, ...counts, terminalDelta, commonHorizon: context.commonHorizon };
+        const directLost = counts.direct.retainedParents > 0 && counts.direct.postRetentionRepresentatives === 0;
+        const semanticLost = counts.semantic.retainedParents > 0 && counts.semantic.postRetentionRepresentatives === 0;
+        if (directLost && !origin.firstDirectLoss) {
+          row.directOutcome = origin.direct.terminals > 0 ? "termination"
+            : counts.direct.generatedDescendants === 0 ? "generation-exhaustion"
+              : counts.direct.postDedupeRepresentatives === 0 && counts.semantic.postDedupeRepresentatives > 0
+                ? "dedupe-representative-only-loss"
+                : "direct-retention-loss";
+          origin.firstDirectLoss = { step: active.step, outcome: row.directOutcome };
+        }
+        if (semanticLost && !origin.firstSemanticOutcome) {
+          row.semanticOutcome = origin.semantic.terminals > 0 ? "termination"
+            : counts.semantic.generatedDescendants === 0 ? "generation-exhaustion"
+              : counts.semantic.postDedupeRepresentatives === 0 ? "semantic-dedupe-loss"
+                : "true-retention-loss";
+          origin.firstSemanticOutcome = { step: active.step, outcome: row.semanticOutcome };
+        }
+        if (row.directOutcome || row.semanticOutcome) {
+          const relevant = context.unique.filter((node) => keys(direct, node).has(key) || keys(semantic, node).has(key));
+          row.retentionEvidence = retentionEvidence(context.unique, context.selection, context.width, context.vectorFor, context.diversityKey, relevant);
+        }
+        origin.steps.push(row);
+      }
+      active = null;
+    },
+    directKeys: (node) => [...keys(direct, node)].sort(),
+    semanticKeys: (node) => [...keys(semantic, node)].sort(),
+    summary: () => [...origins.values()].map((origin) => ({ ...origin }))
+  };
+  return observer;
+}
+
+// Exported only for synthetic diagnostic tests; production search creates it
+// solely behind commonHorizonRetentionFirstLossAudit.
+export function createRetentionFirstLossObserverForTest() {
+  return createRetentionFirstLossObserver();
+}
+
 function retainPathEndParetoLayers(layers, width, diversityKey, profiler = null, layering = null) {
   const selected = [];
   let truncatedLayerIndex = null;
@@ -506,18 +697,26 @@ export function selectPathEndParetoBeamFullReferenceForTest(nodes, width, vector
   return retainPathEndParetoLayers(layers, width, diversityKey);
 }
 
-export function dedupeFuturePathHistory(nodes, futureKey, vectorFor, transactionCounter = transactionCount) {
+export function dedupeFuturePathHistory(nodes, futureKey, vectorFor, transactionCounter = transactionCount, diagnosticObserver = null) {
   if (!Array.isArray(nodes)) throw new TypeError("nodes muss ein Array sein.");
   const unique = new Map();
+  const equivalenceGroups = diagnosticObserver ? new Map() : null;
   for (const node of nodes) {
     const vector = vectorFor(node);
     const key = `${futureKey(node)}::path=${vector.pathScore}::end=${vector.endScore}`;
     const prior = unique.get(key);
+    if (equivalenceGroups) {
+      if (!equivalenceGroups.has(key)) equivalenceGroups.set(key, []);
+      equivalenceGroups.get(key).push(node);
+    }
     if (!prior ||
         transactionCounter(node) < transactionCounter(prior) ||
         (transactionCounter(node) === transactionCounter(prior) && stableId(node) < stableId(prior))) {
       unique.set(key, node);
     }
+  }
+  if (equivalenceGroups) {
+    for (const [key, group] of equivalenceGroups) diagnosticObserver.observeDedupeGroup(group, unique.get(key));
   }
   return [...unique.values()];
 }
@@ -543,6 +742,8 @@ export function runControlledMultiobjectiveBeamCarry({
   commonHorizonShadow = false,
   commonHorizonScoreOnlyShadow = false,
   commonHorizonRetentionAudit = false,
+  commonHorizonRetentionFirstLossAudit = false,
+  diagnosticSnapshotAfterSelectionStep = null,
   onProgress
 }) {
   if (!Number.isSafeInteger(beamWidth) || beamWidth < 1) throw new RangeError("beamWidth ist ungültig.");
@@ -560,8 +761,18 @@ export function runControlledMultiobjectiveBeamCarry({
   if (typeof commonHorizonRetentionAudit !== "boolean") {
     throw new TypeError("commonHorizonRetentionAudit muss boolean sein.");
   }
+  if (typeof commonHorizonRetentionFirstLossAudit !== "boolean") {
+    throw new TypeError("Common-Horizon First-Loss Audit muss boolean sein.");
+  }
+  if (diagnosticSnapshotAfterSelectionStep !== null &&
+      (!Number.isSafeInteger(diagnosticSnapshotAfterSelectionStep) || diagnosticSnapshotAfterSelectionStep < 0)) {
+    throw new RangeError("Diagnostic Snapshot Step muss null oder nichtnegativ ganzzahlig sein.");
+  }
   if (commonHorizonRetentionAudit && !commonHorizonScoreOnlyShadow) {
     throw new RangeError("Common-Horizon Retention Audit benötigt den Score-only Shadow.");
+  }
+  if (commonHorizonRetentionFirstLossAudit && !commonHorizonRetentionAudit) {
+    throw new RangeError("Common-Horizon First-Loss Audit benötigt den Retention Audit.");
   }
   if (commonHorizonRetentionAudit && timeMs !== Infinity) {
     throw new RangeError("Common-Horizon Retention Audit benötigt timeMs=Infinity, damit Observer-Overhead den Search nicht abschneidet.");
@@ -723,6 +934,7 @@ export function runControlledMultiobjectiveBeamCarry({
     comparisonRuntimeMs: 0,
     classificationRuntimeMs: 0
   } : null;
+  const firstLossAudit = commonHorizonRetentionFirstLossAudit ? createRetentionFirstLossObserver() : null;
 
   const registerAuditOrigin = (node, poolIndex, originStep) => {
     const key = `${poolIndex}:${node.serial}`;
@@ -747,6 +959,7 @@ export function runControlledMultiobjectiveBeamCarry({
       finalFrontDescendantCount: 0,
       finalSelectedDescendantCount: 0
     });
+    firstLossAudit?.registerOrigin(node, key, { poolIndex, originStep, originSouls: node.state.earnedSouls, nodeId: node.serial });
     return key;
   };
 
@@ -804,6 +1017,7 @@ export function runControlledMultiobjectiveBeamCarry({
       serial: `${parent.serial}|${JSON.stringify(event)}`
     };
     inheritAuditLineage(parent, node);
+    firstLossAudit?.inherit(parent, node);
     return node;
   };
 
@@ -862,6 +1076,7 @@ export function runControlledMultiobjectiveBeamCarry({
       terminalNodes.set(node.serial, node);
       profiler.count("terminalNodes");
       observeAuditTerminal(node);
+      firstLossAudit?.observeTerminal(node);
     }
     const sources = terminalSources.get(node.serial) || new Set();
     sources.add(source);
@@ -957,6 +1172,7 @@ export function runControlledMultiobjectiveBeamCarry({
   let maxReachedSouls = 0;
   const beamSearchStartedAt = profiler.enabled ? performance.now() : 0;
   while (beam.length && steps < maxSteps && performance.now() < searchDeadline) {
+    firstLossAudit?.beginStep(steps, beam);
     const candidates = [];
     let partialStep = false;
     for (const node of beam) {
@@ -972,30 +1188,40 @@ export function runControlledMultiobjectiveBeamCarry({
       const successors = transitions(node);
       for (const successor of successors) {
         observeAuditGenerated(successor, steps + 1);
+        firstLossAudit?.observeGenerated(successor);
         if (successor.state.earnedSouls === budget) observeTerminal(successor, "generated-terminal");
       }
       candidates.push(...successors);
     }
     if (partialStep) break;
-    if (!candidates.length) { beam = []; break; }
+    if (!candidates.length) {
+      firstLossAudit?.endStep({
+        unique: [], selection: { selected: [] }, width: beamWidth, vectorFor: nodeVector,
+        diversityKey, commonHorizon: null
+      });
+      beam = [];
+      break;
+    }
 
     maxCandidatePool = Math.max(maxCandidatePool, candidates.length);
     maxReachedSouls = Math.max(maxReachedSouls, ...candidates.map((node) => node.state.earnedSouls));
     const unique = profiler.time("dedupeMs", () =>
-      dedupeFuturePathHistory(candidates, futureKey, nodeVector));
+      dedupeFuturePathHistory(candidates, futureKey, nodeVector, transactionCount, firstLossAudit));
+    firstLossAudit?.observePostDedupe(unique);
     duplicateStates += candidates.length - unique.length;
     profiler.count("uniqueStates", unique.length);
     profiler.count("duplicateStates", candidates.length - unique.length);
     retentionCalls += 1;
     let selection;
     let shadowTrace = null;
+    let auditHorizonVectors = null;
     if (commonHorizonEnabled) {
       const beforeEvaluations = evaluations;
       const beforeVectorEvaluations = commonHorizonVectorEvaluations;
       const beforeVectorCacheHits = commonHorizonVectorCacheHits;
       const beforeVectorCacheMisses = commonHorizonVectorCacheMisses;
       const beforeSaveTransitions = commonHorizonSaveTransitionCalls;
-      const auditHorizonVectors = retentionAudit ? new WeakMap() : null;
+      auditHorizonVectors = retentionAudit ? new WeakMap() : null;
       const horizonVectorForPool = auditHorizonVectors
         ? (node, horizon) => {
             const vector = nodeVectorAtHorizon(node, horizon);
@@ -1146,6 +1372,19 @@ export function runControlledMultiobjectiveBeamCarry({
         selectPathEndParetoBeam(unique, beamWidth, nodeVector, diversityKey, profiler));
     }
     observeAuditRetained(selection.selected, steps);
+    firstLossAudit?.observePostRetention(selection.selected);
+    firstLossAudit?.endStep({
+      unique,
+      selection,
+      width: beamWidth,
+      vectorFor: shadowTrace?.applied ? (node) => auditHorizonVectors.get(node) : nodeVector,
+      diversityKey,
+      commonHorizon: shadowTrace ? {
+        applied: shadowTrace.applied,
+        horizon: shadowTrace.commonHorizon,
+        reason: shadowTrace.reason
+      } : null
+    });
     maxFirstFrontSize = Math.max(maxFirstFrontSize, selection.metadata.firstFrontSize);
     maxParetoLayerCount = Math.max(maxParetoLayerCount, selection.metadata.layerSizes.length);
     if (selection.metadata.frontierOverflow) frontierOverflowSteps += 1;
@@ -1177,6 +1416,49 @@ export function runControlledMultiobjectiveBeamCarry({
           retained: checkpointCounts(selection.selected)
         }
       });
+    }
+    if (diagnosticSnapshotAfterSelectionStep === steps) {
+      const snapshotVector = shadowTrace?.applied
+        ? (node) => nodeVectorAtHorizon(node, shadowTrace.commonHorizon)
+        : nodeVector;
+      const describeSnapshotNode = (node) => {
+        const vector = snapshotVector(node);
+        return {
+          path: node.serial,
+          parentPath: node.parent?.serial ?? null,
+          earnedSouls: node.state.earnedSouls,
+          pathScore: vector.pathScore,
+          endScore: vector.endScore,
+          futureKey: futureKey(node)
+        };
+      };
+      const diagnosticSnapshot = {
+        selectionStep: steps,
+        retentionVector: shadowTrace?.applied
+          ? { mode: "common-horizon", horizon: shadowTrace.commonHorizon }
+          : { mode: "current-path", horizon: null },
+        generated: candidates.map(describeSnapshotNode),
+        deduped: unique.map(describeSnapshotNode),
+        retained: selection.selected.map(describeSnapshotNode)
+      };
+      return {
+        front: [],
+        telemetry: {
+          runtimeMs: performance.now() - started,
+          diagnosticStoppedAfterSelectionStep: steps,
+          diagnosticSnapshot,
+          evaluations,
+          generatedStates,
+          transitionCalls,
+          duplicateStates,
+          beamWidth,
+          steps: steps + 1,
+          retentionCalls,
+          ...(commonHorizonEnabled ? { commonHorizonShadow: commonHorizonTelemetry } : {}),
+          selectionTrace,
+          searchComplete: false
+        }
+      };
     }
     beam = selection.selected;
     steps += 1;
@@ -1400,6 +1682,14 @@ export function runControlledMultiobjectiveBeamCarry({
       retentionCalls,
       ...(commonHorizonEnabled ? { commonHorizonShadow: commonHorizonTelemetry } : {}),
       ...(finalizedRetentionAudit ? { commonHorizonRetentionAudit: finalizedRetentionAudit } : {}),
+      ...(firstLossAudit ? { commonHorizonRetentionFirstLossAudit: {
+        enabled: true,
+        provenance: {
+          direct: "actual parent-chain lineage only",
+          semantic: "union propagated across each exact futureKey+pathScore+endScore dedupe equivalence group"
+        },
+        origins: firstLossAudit.summary()
+      } } : {}),
       maxCandidatePool,
       maxReachedSouls,
       maxFirstFrontSize,

@@ -6,6 +6,7 @@ import { buildOptimizerData } from "../app/optimizer.mjs";
 import { measureSoulAxisPath } from "../app/search-objective-v1.mjs";
 import {
   completeNodeBySaving,
+  createRetentionFirstLossObserverForTest,
   dedupeFuturePathHistory,
   pathEndLazyNonDominatedLayers,
   pathEndNonDominatedLayers,
@@ -83,6 +84,94 @@ test("future-safe dedupe keeps distinct Path-AUC histories for the same future s
     (entry) => entry.transactions
   );
   assert.deepEqual(deduped.map((entry) => entry.serial).sort(), ["history-diff", "same-b"]);
+});
+
+test("diagnostic semantic provenance survives an equivalent dedupe representative swap", () => {
+  const observer = createRetentionFirstLossObserverForTest();
+  const origin = node("origin", 0.4, 0.5, "x", 2);
+  observer.registerOrigin(origin, "pool:origin", { poolIndex: 0, originStep: 0, originSouls: 400 });
+  const tagged = node("z-tagged", 0.5, 0.5, "x", 2);
+  const representative = node("a-representative", 0.5, 0.5, "x", 1);
+  observer.inherit(origin, tagged);
+  const unique = dedupeFuturePathHistory(
+    [tagged, representative],
+    () => "same-future",
+    (entry) => entry.vector,
+    (entry) => entry.transactions,
+    observer
+  );
+  assert.deepEqual(unique, [representative]);
+  assert.deepEqual(observer.directKeys(representative), []);
+  assert.deepEqual(observer.semanticKeys(representative), ["pool:origin"]);
+});
+
+test("diagnostic origin registration unions existing direct and semantic provenance", () => {
+  const observer = createRetentionFirstLossObserverForTest();
+  const sharedNode = node("shared", 0.5, 0.5);
+  observer.registerOrigin(sharedNode, "pool:first", { poolIndex: 0, originStep: 0, originSouls: 400 });
+  observer.registerOrigin(sharedNode, "pool:second", { poolIndex: 1, originStep: 1, originSouls: 800 });
+  assert.deepEqual(observer.directKeys(sharedNode), ["pool:first", "pool:second"]);
+  assert.deepEqual(observer.semanticKeys(sharedNode), ["pool:first", "pool:second"]);
+});
+
+test("diagnostic observer identifies a true semantic retention extinction", () => {
+  const observer = createRetentionFirstLossObserverForTest();
+  const origin = { ...node("origin", 0.5, 0.5), state: { earnedSouls: 400, inventory: [] } };
+  const child = { ...node("child", 0.4, 0.4), state: { earnedSouls: 800, inventory: [] } };
+  const winner = { ...node("winner", 0.5, 0.5), state: { earnedSouls: 800, inventory: [] } };
+  observer.registerOrigin(origin, "pool:origin", { poolIndex: 0, originStep: 0, originSouls: 400 });
+  observer.inherit(origin, child);
+  observer.beginStep(1, [origin]);
+  observer.observeGenerated(child);
+  observer.observeDedupeGroup([child], child);
+  observer.observeDedupeGroup([winner], winner);
+  observer.observePostDedupe([child, winner]);
+  const selection = selectPathEndParetoBeam([child, winner], 1, (entry) => entry.vector, () => "x");
+  observer.observePostRetention(selection.selected);
+  observer.endStep({
+    unique: [child, winner],
+    selection,
+    width: 1,
+    vectorFor: (entry) => entry.vector,
+    diversityKey: () => "x",
+    commonHorizon: { applied: true, horizon: 800, reason: "test" }
+  });
+  const result = observer.summary()[0];
+  assert.deepEqual(result.firstSemanticOutcome, { step: 1, outcome: "true-retention-loss" });
+  assert.equal(result.steps[0].retentionEvidence.candidates[0].paretoLayer, 1);
+  assert.equal(result.steps[0].retentionEvidence.capacityFillLayerIndex, 0);
+  assert.equal(result.steps[0].retentionEvidence.precedingLayerCount, 0);
+});
+
+test("diagnostic observer preserves a terminal recorded before the loss step", () => {
+  const observer = createRetentionFirstLossObserverForTest();
+  const origin = { ...node("origin", 0.5, 0.5), state: { earnedSouls: 400, inventory: [] } };
+  const child = { ...node("child", 0.4, 0.4), state: { earnedSouls: 800, inventory: [] } };
+  const winner = { ...node("winner", 0.5, 0.5), state: { earnedSouls: 800, inventory: [] } };
+  observer.registerOrigin(origin, "pool:origin", { poolIndex: 0, originStep: 0, originSouls: 400 });
+  observer.observeTerminal(origin);
+  observer.inherit(origin, child);
+  observer.beginStep(1, [origin]);
+  observer.observeGenerated(child);
+  observer.observeDedupeGroup([child], child);
+  observer.observeDedupeGroup([winner], winner);
+  observer.observePostDedupe([child, winner]);
+  const selection = selectPathEndParetoBeam([child, winner], 1, (entry) => entry.vector, () => "x");
+  observer.observePostRetention(selection.selected);
+  observer.endStep({ unique: [child, winner], selection, width: 1, vectorFor: (entry) => entry.vector, diversityKey: () => "x", commonHorizon: null });
+  assert.deepEqual(observer.summary()[0].firstSemanticOutcome, { step: 1, outcome: "termination" });
+});
+
+test("diagnostic origin registration is not classified in the active retention step", () => {
+  const observer = createRetentionFirstLossObserverForTest();
+  observer.beginStep(1, []);
+  const late = { ...node("late", 0.5, 0.5), state: { earnedSouls: 400, inventory: [] } };
+  observer.registerOrigin(late, "pool:late", { poolIndex: 0, originStep: 1, originSouls: 400 });
+  observer.endStep({ unique: [], selection: { selected: [] }, width: 1, vectorFor: (entry) => entry.vector, diversityKey: () => "x", commonHorizon: null });
+  const result = observer.summary()[0];
+  assert.equal(result.firstDirectLoss, null);
+  assert.equal(result.firstSemanticOutcome, null);
+  assert.deepEqual(result.steps, []);
 });
 
 test("a dominated partial candidate can remain when capacity reaches a later Pareto layer", () => {
@@ -512,6 +601,64 @@ test("common-horizon retention audit is restricted to score-only unlimited-time 
     }),
     /benötigt timeMs=Infinity/
   );
+  assert.throws(
+    () => runControlledMultiobjectiveBeamCarry({
+      ...args,
+      commonHorizonScoreOnlyShadow: true,
+      commonHorizonRetentionFirstLossAudit: true
+    }),
+    /benötigt den Retention Audit/
+  );
+});
+
+test("first-loss observer leaves retained trace, front and search work unchanged", () => {
+  const data = canonicalData();
+  const slotUnlocks = [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }];
+  const args = {
+    data,
+    heroId: "warden",
+    damageFocus: "weapon",
+    itemIds: ["upgrade_rapid_rounds"],
+    budget: 800,
+    milestones: [800],
+    slotUnlocks,
+    beamWidth: 4,
+    maxSteps: 10,
+    timeMs: Infinity,
+    referenceTimeMs: 100,
+    commonHorizonScoreOnlyShadow: true,
+    commonHorizonRetentionAudit: true
+  };
+  const control = runControlledMultiobjectiveBeamCarry(args);
+  const observed = runControlledMultiobjectiveBeamCarry({ ...args, commonHorizonRetentionFirstLossAudit: true });
+  const ids = (result) => result.front.map((entry) => entry.state.events);
+  assert.deepEqual(observed.telemetry.selectionTrace, control.telemetry.selectionTrace);
+  assert.deepEqual(ids(observed), ids(control));
+  assert.equal(observed.telemetry.generatedStates, control.telemetry.generatedStates);
+  assert.equal(observed.telemetry.transitionCalls, control.telemetry.transitionCalls);
+});
+
+test("guarded diagnostic snapshot stops after one completed selection without terminalization", () => {
+  const data = canonicalData();
+  const result = runControlledMultiobjectiveBeamCarry({
+    data,
+    heroId: "warden",
+    damageFocus: "weapon",
+    itemIds: ["upgrade_rapid_rounds"],
+    budget: 800,
+    milestones: [800],
+    slotUnlocks: [{ earnedSouls: 0, slots: data.slots.item_limit - data.slots.starting_slots.universal }],
+    beamWidth: 4,
+    maxSteps: 10,
+    timeMs: Infinity,
+    referenceTimeMs: 100,
+    diagnosticSnapshotAfterSelectionStep: 0
+  });
+  assert.equal(result.front.length, 0);
+  assert.equal(result.telemetry.diagnosticStoppedAfterSelectionStep, 0);
+  assert.equal(result.telemetry.searchComplete, false);
+  assert.equal(result.telemetry.diagnosticSnapshot.generated.length > 0, true);
+  assert.equal(result.telemetry.diagnosticSnapshot.retained.length, result.telemetry.selectionTrace[0].retained);
 });
 
 test("shared browser-safe Multiobjective kernel reaches 40k for Warden focuses and Venator Weapon", () => {
