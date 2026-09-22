@@ -66,7 +66,7 @@
       "target": {
         "generatedStates": 500000,
         "evaluatedStates": 14064,
-        "transitionCalls": 9896,
+        "transitionCalls": 11051,
         "retentionCalls": 13,
         "maxDepth": 30,
         "stateCapReached": true,
@@ -96,8 +96,8 @@
       },
       "winner": {
         "generatedStates": 500000,
-        "evaluatedStates": 10797,
-        "transitionCalls": 10475,
+        "evaluatedStates": 11972,
+        "transitionCalls": 10660,
         "retentionCalls": 13,
         "maxDepth": 30,
         "stateCapReached": true,
@@ -134,8 +134,8 @@
       "stateCap": 500000,
       "target": {
         "generatedStates": 500000,
-        "evaluatedStates": 17285,
-        "transitionCalls": 9091,
+        "evaluatedStates": 18215,
+        "transitionCalls": 9240,
         "retentionCalls": 13,
         "maxDepth": 30,
         "stateCapReached": true,
@@ -165,8 +165,8 @@
       },
       "winner": {
         "generatedStates": 500000,
-        "evaluatedStates": 20031,
-        "transitionCalls": 10283,
+        "evaluatedStates": 20231,
+        "transitionCalls": 10459,
         "retentionCalls": 14,
         "maxDepth": 31,
         "stateCapReached": true,
@@ -204,7 +204,7 @@
       "target": {
         "generatedStates": 500000,
         "evaluatedStates": 36058,
-        "transitionCalls": 6047,
+        "transitionCalls": 6203,
         "retentionCalls": 11,
         "maxDepth": 28,
         "stateCapReached": true,
@@ -225,8 +225,8 @@
       },
       "winner": {
         "generatedStates": 500000,
-        "evaluatedStates": 35857,
-        "transitionCalls": 5862,
+        "evaluatedStates": 36041,
+        "transitionCalls": 6018,
         "retentionCalls": 11,
         "maxDepth": 28,
         "stateCapReached": true,
@@ -292,8 +292,8 @@
       },
       "winner": {
         "generatedStates": 500000,
-        "evaluatedStates": 29432,
-        "transitionCalls": 5554,
+        "evaluatedStates": 30949,
+        "transitionCalls": 5712,
         "retentionCalls": 11,
         "maxDepth": 28,
         "stateCapReached": true,
