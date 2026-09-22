@@ -235,6 +235,18 @@ Spätere Experimente dürfen den Scope früherer Befunde einschränken. Sie änd
 - **Offen:** Explizit ungetestet bleibt ein Lineage-vs-Lineage-Vergleich unter **einem gleichen Total-State-Budget**, Width 4 und Width 16, bei 5.2k/6.8k inklusive same-Soul-Closure.
 - **Pfade:** benchmarks/optimizer-v1/experiments/retention-loss-counterfactual/research-note.md; benchmarks/optimizer-v1/experiments/retention-loss-counterfactual/results.json; tools/optimizer-retention-loss-counterfactual.mjs.
 
+## 19 — Lineage-vs-Lineage Capacity Test
+
+- **Datum / Commit:** 2026-09-22; korrigierter Result-Source **ee1b61004267d254299555682676cb14e80c7e63**.
+- **Forschungsfrage:** Erklärt zu geringe lokale Search-Kapazität den späteren Verlust der bekannten Target-Lineage, oder bleibt sie bis mindestens 6.8k auch mit Width 16 tatsächlich schlechter?
+- **Aufbau:** Exakter gespeicherter Step-14-Pool; 24 Target-Seeds gemeinsam gegen vier gemeinsam konkurrierende Winner-Seeds; Width 4/16 bei 5.2k/6.8k; identischer Total-State-Cap 500k pro Lineage-Gruppe; unpruned Same-Soul-Closure. Nach Korrektur auf globale semantische Closure-Deduplizierung wurde der komplette Test mit unverändertem Cap wiederholt.
+- **Bestätigter Befund:** Alle acht Lineage-Gruppen erreichen den 500k-State-Cap, alle erreichen den Zielhorizont, aber keine Same-Soul-Closure ist vollständig. Beobachtet wird bei 5.2k unter Width 4 und 16 ein Target/Winner-Trade-off; bei 6.8k ist Target unter Width 4 vollständig dominiert, unter Width 16 dagegen nicht und dominiert mindestens einen Winner-Punkt. Wegen Budget-Limit/Closure-Zensierung sind diese Frontrelationen nicht architekturell interpretierbar.
+- **Interpretation:** 500k States genügen für diesen kontrollierten Closure-Test nicht. Der auffällige Width-16-Wechsel bei 6.8k ist noch keine Evidenz für H1; H1 und H2 bleiben offen.
+- **Status:** **PARTIAL** — BUDGET-LIMITED.
+- **Erledigt / ausgeschlossen:** Separate per-seed Budgets sind beseitigt; Target- und Winner-Seeds konkurrieren jeweils gemeinsam und Width 16 erhält keinen grösseren Total-State-Cap. Eine Architektur- oder Production-Folgerung ist wegen unvollständiger Closure ausgeschlossen.
+- **Offen:** Gleichen Test als Cap-Ladder 1M → 2M → 4M pro Lineage-Gruppe wiederholen und erst die erste Stufe interpretieren, auf der alle acht Gruppen ohne Cap mit vollständiger Same-Soul-Closure abschließen.
+- **Pfade:** benchmarks/optimizer-v1/experiments/lineage-vs-lineage-capacity/results.json; benchmarks/optimizer-v1/experiments/lineage-vs-lineage-capacity/research-note.md; tools/optimizer-lineage-capacity-test.mjs; .github/workflows/optimizer-lineage-capacity-test.yml.
+
 ## Pflegepflicht
 
 Nach jedem abgeschlossenen Optimizer-Experiment ist dieser Index im selben Research-Zyklus zu aktualisieren. Neue Einträge müssen Befund, Interpretation und offenen Punkt getrennt halten und auf die Primärartefakte verweisen.
