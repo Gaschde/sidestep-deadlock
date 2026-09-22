@@ -1,0 +1,345 @@
+{
+  "schemaVersion": "optimizer-lineage-vs-lineage-capacity-v1",
+  "sourceArtifact": "benchmarks/optimizer-v1/experiments/retention-loss-counterfactual/results.json",
+  "scope": {
+    "hero": "warden",
+    "focus": "weapon",
+    "objective": "carry-sweet-70-30-spec-77_5-22_5",
+    "targetPathId": "93260772842f0c27",
+    "selectionStep": 14,
+    "targetSeedCount": 24,
+    "winnerSeedCount": 4,
+    "stateCapPerLineageGroup": 500000,
+    "productionChanged": false
+  },
+  "reconstructedPool": {
+    "exactStoredStep14ReconstructionReused": true,
+    "storedSampleMatches": true,
+    "storedWinnerIdsMatch": true,
+    "targetChildIds": [
+      "0024ea2adcb31e81",
+      "0febea68a88b43f8",
+      "16ab787158497683",
+      "1761e814f4ad3711",
+      "223fe9af6b0b0380",
+      "37a37e8cb011e853",
+      "3edee9909bc863f7",
+      "4489e0aa3bd758c7",
+      "56d658d33fc6f55a",
+      "5f6ea2a69b751252",
+      "5fc586b10cb5b35b",
+      "65710ab5aac962d3",
+      "7ffacc79e8b5d0f4",
+      "813064bb66341693",
+      "85228d01fd4a2f4d",
+      "ae78098c7ad16578",
+      "c5ee89c6095ddfc6",
+      "c91c42da28b09909",
+      "cfa52f161ba18923",
+      "dc366db127791f6d",
+      "df76c32fcedefb1f",
+      "e6476d90fe0c0f2f",
+      "e6fa712cc8b4b69c",
+      "f07e1c6433459e2b"
+    ],
+    "winnerSeedIds": [
+      "42d12c4f5db4fb44",
+      "c8829df6b0ba4d09",
+      "dc0e2b4268acb042",
+      "f153a08386f1cd7a"
+    ]
+  },
+  "fairness": {
+    "targetSeedsCompeteJointly": true,
+    "winnerSeedsCompeteJointly": true,
+    "perSeedBudgets": false,
+    "identicalStateCapPerLineageGroup": true,
+    "width16GetsNoAdditionalStateCap": true,
+    "sameCandidateGenerationObjectiveReferenceRetentionEconomySlots": true,
+    "sameSoulClosure": "unpruned same-horizon purchase/upgrade/replacement expansion bounded only by the common state cap"
+  },
+  "conditions": [
+    {
+      "horizon": 5200,
+      "width": 4,
+      "stateCap": 500000,
+      "target": {
+        "generatedStates": 500000,
+        "evaluatedStates": 14064,
+        "transitionCalls": 9896,
+        "retentionCalls": 13,
+        "maxDepth": 30,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 2,
+        "front": [
+          {
+            "id": "7c7313af1c4cb2e8",
+            "pathScore": 0.4805656860395116,
+            "endScore": 0.5102522997780254,
+            "pathDamage": 0.4973037268189548,
+            "endDamage": 0.5405417350346494,
+            "pathSurvival": 0.44151025755414447,
+            "endSurvival": 0.43957695084590315
+          },
+          {
+            "id": "2745c68d0e1a7a76",
+            "pathScore": 0.47853374170712004,
+            "endScore": 0.5161792808110374,
+            "pathDamage": 0.49932583858295926,
+            "endDamage": 0.5810206317771881,
+            "pathSurvival": 0.4300188489968289,
+            "endSurvival": 0.3648827952233525
+          }
+        ]
+      },
+      "winner": {
+        "generatedStates": 500000,
+        "evaluatedStates": 10797,
+        "transitionCalls": 10475,
+        "retentionCalls": 13,
+        "maxDepth": 30,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 1,
+        "front": [
+          {
+            "id": "1d52bdc4c267f5cd",
+            "pathScore": 0.4813885157111066,
+            "endScore": 0.5102522997780254,
+            "pathDamage": 0.4935543083966695,
+            "endDamage": 0.5405417350346494,
+            "pathSurvival": 0.45300166611146,
+            "endSurvival": 0.43957695084590315
+          }
+        ]
+      },
+      "paretoRelation": {
+        "targetUndominatedByWinnerCount": 1,
+        "targetUndominatedByWinnerIds": [
+          "2745c68d0e1a7a76"
+        ],
+        "winnerPointsDominatedByTargetCount": 0,
+        "winnerPointsDominatedByTargetIds": [],
+        "entireTargetFrontDominated": false,
+        "relation": "tradeoff-no-target-dominance"
+      },
+      "interpretable": false
+    },
+    {
+      "horizon": 5200,
+      "width": 16,
+      "stateCap": 500000,
+      "target": {
+        "generatedStates": 500000,
+        "evaluatedStates": 17285,
+        "transitionCalls": 9091,
+        "retentionCalls": 13,
+        "maxDepth": 30,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 2,
+        "front": [
+          {
+            "id": "7c7313af1c4cb2e8",
+            "pathScore": 0.4805656860395116,
+            "endScore": 0.5102522997780254,
+            "pathDamage": 0.4973037268189548,
+            "endDamage": 0.5405417350346494,
+            "pathSurvival": 0.44151025755414447,
+            "endSurvival": 0.43957695084590315
+          },
+          {
+            "id": "2745c68d0e1a7a76",
+            "pathScore": 0.47853374170712004,
+            "endScore": 0.5161792808110374,
+            "pathDamage": 0.49932583858295926,
+            "endDamage": 0.5810206317771881,
+            "pathSurvival": 0.4300188489968289,
+            "endSurvival": 0.3648827952233525
+          }
+        ]
+      },
+      "winner": {
+        "generatedStates": 500000,
+        "evaluatedStates": 20031,
+        "transitionCalls": 10283,
+        "retentionCalls": 14,
+        "maxDepth": 31,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 1,
+        "front": [
+          {
+            "id": "1d52bdc4c267f5cd",
+            "pathScore": 0.4813885157111066,
+            "endScore": 0.5102522997780254,
+            "pathDamage": 0.4935543083966695,
+            "endDamage": 0.5405417350346494,
+            "pathSurvival": 0.45300166611146,
+            "endSurvival": 0.43957695084590315
+          }
+        ]
+      },
+      "paretoRelation": {
+        "targetUndominatedByWinnerCount": 1,
+        "targetUndominatedByWinnerIds": [
+          "2745c68d0e1a7a76"
+        ],
+        "winnerPointsDominatedByTargetCount": 0,
+        "winnerPointsDominatedByTargetIds": [],
+        "entireTargetFrontDominated": false,
+        "relation": "tradeoff-no-target-dominance"
+      },
+      "interpretable": false
+    },
+    {
+      "horizon": 6800,
+      "width": 4,
+      "stateCap": 500000,
+      "target": {
+        "generatedStates": 500000,
+        "evaluatedStates": 36058,
+        "transitionCalls": 6047,
+        "retentionCalls": 11,
+        "maxDepth": 28,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 1,
+        "front": [
+          {
+            "id": "90c0ec458fe988ec",
+            "pathScore": 0.48381794436155406,
+            "endScore": 0.4581746358223659,
+            "pathDamage": 0.5067164867833823,
+            "endDamage": 0.4798407732101989,
+            "pathSurvival": 0.4303880120439554,
+            "endSurvival": 0.4076203152507555
+          }
+        ]
+      },
+      "winner": {
+        "generatedStates": 500000,
+        "evaluatedStates": 35857,
+        "transitionCalls": 5862,
+        "retentionCalls": 11,
+        "maxDepth": 28,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 1,
+        "front": [
+          {
+            "id": "74b033edef16bbcf",
+            "pathScore": 0.4844471670515973,
+            "endScore": 0.4581746358223659,
+            "pathDamage": 0.5038492844604583,
+            "endDamage": 0.4798407732101989,
+            "pathSurvival": 0.43917555976425554,
+            "endSurvival": 0.4076203152507555
+          }
+        ]
+      },
+      "paretoRelation": {
+        "targetUndominatedByWinnerCount": 0,
+        "targetUndominatedByWinnerIds": [],
+        "winnerPointsDominatedByTargetCount": 0,
+        "winnerPointsDominatedByTargetIds": [],
+        "entireTargetFrontDominated": true,
+        "relation": "winner-front-dominates-target-front"
+      },
+      "interpretable": false
+    },
+    {
+      "horizon": 6800,
+      "width": 16,
+      "stateCap": 500000,
+      "target": {
+        "generatedStates": 500000,
+        "evaluatedStates": 27170,
+        "transitionCalls": 6422,
+        "retentionCalls": 22,
+        "maxDepth": 38,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 2,
+        "front": [
+          {
+            "id": "81f69ced008d7678",
+            "pathScore": 0.484866325175484,
+            "endScore": 0.4667857885467149,
+            "pathDamage": 0.5044480817802963,
+            "endDamage": 0.48627479637530024,
+            "pathSurvival": 0.43917555976425554,
+            "endSurvival": 0.4213114369466825
+          },
+          {
+            "id": "8466c74c3ac31317",
+            "pathScore": 0.484816494439558,
+            "endScore": 0.46924131873337344,
+            "pathDamage": 0.5043768950146877,
+            "endDamage": 0.49565032022592403,
+            "pathSurvival": 0.43917555976425554,
+            "endSurvival": 0.4076203152507555
+          }
+        ]
+      },
+      "winner": {
+        "generatedStates": 500000,
+        "evaluatedStates": 29432,
+        "transitionCalls": 5554,
+        "retentionCalls": 11,
+        "maxDepth": 28,
+        "stateCapReached": true,
+        "horizonReached": true,
+        "sameSoulClosureComplete": false,
+        "frontierSize": 1,
+        "front": [
+          {
+            "id": "74b033edef16bbcf",
+            "pathScore": 0.4844471670515973,
+            "endScore": 0.4581746358223659,
+            "pathDamage": 0.5038492844604583,
+            "endDamage": 0.4798407732101989,
+            "pathSurvival": 0.43917555976425554,
+            "endSurvival": 0.4076203152507555
+          }
+        ]
+      },
+      "paretoRelation": {
+        "targetUndominatedByWinnerCount": 2,
+        "targetUndominatedByWinnerIds": [
+          "81f69ced008d7678",
+          "8466c74c3ac31317"
+        ],
+        "winnerPointsDominatedByTargetCount": 1,
+        "winnerPointsDominatedByTargetIds": [
+          "74b033edef16bbcf"
+        ],
+        "entireTargetFrontDominated": false,
+        "relation": "target-has-undominated-and-dominating-points"
+      },
+      "interpretable": false
+    }
+  ],
+  "qualitativeWidthChange": [
+    {
+      "horizon": 5200,
+      "width4": "tradeoff-no-target-dominance",
+      "width16": "tradeoff-no-target-dominance",
+      "changed": false
+    },
+    {
+      "horizon": 6800,
+      "width4": "winner-front-dominates-target-front",
+      "width16": "target-has-undominated-and-dominating-points",
+      "changed": true
+    }
+  ]
+}
