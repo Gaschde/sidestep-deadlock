@@ -71,8 +71,10 @@ function runGroup(rt, seedPaths, width, horizon) {
     const unique = dedupeFuturePathHistory(candidates, rt.futureKey, vector); retentions += 1; beam = selectPathEndParetoBeam(unique, width, vector, rt.diversityKey).selected;
     if (beam.every((node) => node.state.earnedSouls === horizon)) break;
   }
-  const closure = new Map([...terminals.values(), ...beam.filter((node) => node.state.earnedSouls === horizon)].map((node) => [node.serial, node])); let queue = [...closure.values()]; let closureComplete = false;
-  while (reached && queue.length && !cap) { const next = []; for (const node of queue) { for (const candidate of expand(node, (x) => x.state.earnedSouls === horizon && x.event?.type !== "save")) { maxDepth = Math.max(maxDepth, candidate.depth); if (!closure.has(candidate.serial)) { closure.set(candidate.serial, candidate); next.push(candidate); } } if (cap) break; } if (!next.length) { closureComplete = !cap; break; } queue = dedupeFuturePathHistory(next, rt.futureKey, vector); for (const node of queue) closure.set(node.serial, node); }
+  const closureKey = (node) => { const v = vector(node); return `${rt.futureKey(node)}::path=${v.pathScore}::end=${v.endScore}`; };
+  const closure = new Map(); for (const node of [...terminals.values(), ...beam.filter((node) => node.state.earnedSouls === horizon)]) { const key = closureKey(node); if (!closure.has(key)) closure.set(key, node); }
+  let queue = [...closure.values()]; let closureComplete = false;
+  while (reached && queue.length && !cap) { const next = []; for (const node of queue) { for (const candidate of expand(node, (x) => x.state.earnedSouls === horizon && x.event?.type !== "save")) { maxDepth = Math.max(maxDepth, candidate.depth); const key = closureKey(candidate); if (!closure.has(key)) { closure.set(key, candidate); next.push(candidate); } } if (cap) break; } if (!next.length) { closureComplete = !cap; break; } queue = dedupeFuturePathHistory(next, rt.futureKey, vector).filter((node) => closure.get(closureKey(node)) === node); }
   const nodes = [...closure.values()]; const front = pathEndParetoFront(nodes.map((node) => ({ node, ...vector(node) }))).map(frontRecord); const after = rt.counters;
   return { generatedStates: used, evaluatedStates: after.evaluations - before.evaluations, transitionCalls: after.transitionCalls - before.transitionCalls, retentionCalls: retentions, maxDepth, stateCapReached: cap, horizonReached: reached, sameSoulClosureComplete: closureComplete, frontierSize: front.length, front };
 }
