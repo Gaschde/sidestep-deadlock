@@ -1,0 +1,45 @@
+name: optimizer lineage capacity test
+
+on:
+  push:
+    branches:
+      - feature/optimizer-next
+    paths:
+      - tools/optimizer-lineage-capacity-test.mjs
+      - .github/workflows/optimizer-lineage-capacity-test.yml
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: JavaScript tests
+        run: npm test
+      - name: Run lineage-vs-lineage capacity test
+        run: node tools/optimizer-lineage-capacity-test.mjs --output artifacts/lineage-vs-lineage-capacity/results.json
+      - name: Stage diagnostic result for checks
+        run: |
+          mkdir -p benchmarks/optimizer-v1/experiments/lineage-vs-lineage-capacity
+          cp artifacts/lineage-vs-lineage-capacity/results.json benchmarks/optimizer-v1/experiments/lineage-vs-lineage-capacity/results.json
+      - name: Diff whitespace check
+        run: git diff --check
+      - name: Upload diagnostic artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: optimizer-lineage-vs-lineage-capacity
+          path: artifacts/lineage-vs-lineage-capacity/results.json
+      - name: Record diagnostic result on optimizer branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/optimizer-v1/experiments/lineage-vs-lineage-capacity/results.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data(benchmark): record lineage capacity test [skip ci]"
+          git push
